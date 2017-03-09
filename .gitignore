@@ -1,0 +1,22 @@
+#
+# Normal rules
+#
+.*
+*.orig
+*~
+\#*#
+
+
+# Git repos
+/linux
+/u-boot
+/rootfs
+/utils
+
+# Downloads
+/archives/debs/
+/archives/ubuntu-base/
+
+# Images
+/images
+
