@@ -21,7 +21,7 @@ rm -rf rootfs && install -d rootfs
 sudo mount -o loop images/rootfs.img rootfs
 sudo rm -rf rootfs/lost+found
 # ubuntu-base
-sudo tar -xzf archives/ubuntu-base/ubuntu-base-16.04.1-base-arm64.tar.gz -C rootfs/
+sudo tar -xzf archives/ubuntu-base/ubuntu-base-16.04.2-base-arm64.tar.gz -C rootfs/
 # use the backup debs
 sudo cp -r archives/debs/*.deb rootfs/var/cache/apt/archives
 # linux modules
