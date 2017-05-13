@@ -1,6 +1,6 @@
 #!/bin/sh
 
-fbset -fb /dev/fb0 -g 1920 1080 1920 2160 24
+fbset -fb /dev/fb0 -g 1920 1080 1920 2160 32
 #echo 1080p60hz > /sys/class/display/mode
 
 echo 0 > /sys/class/graphics/fb0/free_scale
