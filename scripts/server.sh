@@ -45,6 +45,10 @@ echo
 echo "NOTE: YOU ARE NOW IN THE VIRTUAL TARGET, SETUP ANYTHING YOU WANT."
 echo "      TYPE 'exit' TO CONTINUE IF FINISHED."
 echo
+sudo mount -o bind /proc rootfs/proc
+sudo mount -o bind /sys rootfs/sys
+sudo mount -o bind /dev rootfs/dev
+sudo mount -o bind /dev/pts rootfs/dev/pts
 sudo chroot rootfs/
 
 ## Generate ramdisk.img
@@ -60,6 +64,10 @@ sudo rm rootfs/boot/initrd.img
 
 ## Unmount to get the rootfs.img
 sudo sync
+sudo umount rootfs/dev/pts
+sudo umount rootfs/dev
+sudo umount rootfs/proc
+sudo umount rootfs/sys
 sudo umount rootfs
 
 ## Pack the images to update.img
