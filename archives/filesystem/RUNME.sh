@@ -34,7 +34,8 @@ apt-get update
 apt-get upgrade
 
 # Install the packages
-apt-get install ifupdown net-tools udev fbset vim sudo initramfs-tools
+apt-get install ifupdown net-tools udev fbset vim sudo initramfs-tools \
+		iputils-ping
 
 # Build the ramdisk
 mkinitramfs -o /boot/initrd.img 3.14.29 2>/dev/null
