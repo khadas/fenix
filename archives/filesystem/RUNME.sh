@@ -39,7 +39,7 @@ apt-get install ifupdown net-tools udev fbset vim sudo initramfs-tools \
 		iputils-ping
 
 # Build the ramdisk
-mkinitramfs -o /boot/initrd.img 3.14.29 2>/dev/null
+mkinitramfs -o /boot/initrd.img `cat linux-version` 2>/dev/null
 
 # Load WIFI at boot time(MUST HERE)
 echo dhd >> /etc/modules
