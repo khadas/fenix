@@ -1,0 +1,9 @@
+[Unit]
+Description=Khadas Bluetooth service
+
+[Service]
+Type=forking
+ExecStart=/usr/local/bin/bluetooth-khadas.sh
+
+[Install]
+WantedBy=multi-user.target

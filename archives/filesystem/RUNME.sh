@@ -35,6 +35,7 @@ apt-get upgrade
 
 # Install the packages
 apt-get install ifupdown net-tools udev fbset vim sudo initramfs-tools \
+		bluez rfkill libbluetooth-dev \
 		iputils-ping
 
 # Build the ramdisk
@@ -42,6 +43,9 @@ mkinitramfs -o /boot/initrd.img 3.14.29 2>/dev/null
 
 # Load WIFI at boot time(MUST HERE)
 echo dhd >> /etc/modules
+
+# Bluetooth
+systemctl enable bluetooth-khadas
 
 # Clean up
 #apt-get clean

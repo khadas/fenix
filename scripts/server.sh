@@ -31,6 +31,10 @@ sudo cp -r archives/filesystem/etc/initramfs-tools/ rootfs/etc/
 # WIFI
 sudo mkdir rootfs/lib/firmware
 sudo cp -r archives/hwpacks/wlan-firmware/brcm/ rootfs/lib/firmware/
+# Bluetooth
+sudo cp -r archives/hwpacks/bluez/brcm_patchram_plus rootfs/usr/local/bin/
+sudo cp -r archives/hwpacks/bluez/bluetooth-khadas.service rootfs/lib/systemd/system/
+sudo cp -r archives/hwpacks/bluez/bluetooth-khadas.sh rootfs/usr/local/bin/
 # rc.local
 sudo cp -r archives/filesystem/etc/rc.local rootfs/etc/
 # firstboot initialization: for 'ROOTFS' partition resize
