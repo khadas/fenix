@@ -54,7 +54,7 @@ fi
 
 # Clean up
 rm linux-version
-#apt clean
+apt clean
 #history -c
 
 # Self-deleting
