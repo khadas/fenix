@@ -27,6 +27,9 @@ sudo cp -a rootfs/etc/apt/sources.list rootfs/etc/apt/sources.list.orig
 sudo sed -i "s/http:\/\/ports.ubuntu.com\/ubuntu-ports\//http:\/\/mirrors.ustc.edu.cn\/ubuntu-ports\//g" rootfs/etc/apt/sources.list
 # linux modules
 sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules_install INSTALL_MOD_PATH=../rootfs/
+# linux version
+grep "Linux/arm64" linux/.config | awk  '{print $3}' > images/linux-version
+sudo cp -r images/linux-version rootfs/
 # initramfs
 sudo cp -r archives/filesystem/etc/initramfs-tools/ rootfs/etc/
 # WIFI

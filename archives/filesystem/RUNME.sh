@@ -53,6 +53,7 @@ if [ -f /etc/apt/sources.list.orig ]; then
 fi
 
 # Clean up
+rm linux-version
 #apt-get clean
 #history -c
 
