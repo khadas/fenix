@@ -28,13 +28,13 @@ ln -s libEGL.so.1 libEGL.so
 cd -
 
 # Fetch the latest package lists from server
-apt-get update
+apt update
 
 # Upgrade
-apt-get upgrade
+apt -y upgrade
 
 # Install the packages
-apt-get install ifupdown net-tools udev fbset vim sudo initramfs-tools \
+apt -y install ifupdown net-tools udev fbset vim sudo initramfs-tools \
 		bluez rfkill libbluetooth-dev \
 		iputils-ping
 
@@ -54,7 +54,7 @@ fi
 
 # Clean up
 rm linux-version
-#apt-get clean
+#apt clean
 #history -c
 
 # Self-deleting
