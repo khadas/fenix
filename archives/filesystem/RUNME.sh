@@ -47,6 +47,11 @@ echo dhd >> /etc/modules
 # Bluetooth
 systemctl enable bluetooth-khadas
 
+# Restore the sources.list from mirrors to original
+if [ -f /etc/apt/sources.list.orig ]; then
+	mv /etc/apt/sources.list.orig /etc/apt/sources.list
+fi
+
 # Clean up
 #apt-get clean
 #history -c

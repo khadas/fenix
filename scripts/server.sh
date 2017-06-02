@@ -22,8 +22,9 @@ sudo mount -o loop images/rootfs.img rootfs
 sudo rm -rf rootfs/lost+found
 # ubuntu-base
 sudo tar -xzf archives/ubuntu-base/ubuntu-base-16.04.2-base-arm64.tar.gz -C rootfs/
-# use the backup debs
-sudo cp -r archives/debs/*.deb rootfs/var/cache/apt/archives
+# [Optional] Mirrors for ubuntu-ports
+sudo cp -a rootfs/etc/apt/sources.list rootfs/etc/apt/sources.list.orig
+sudo sed -i "s/http:\/\/ports.ubuntu.com\/ubuntu-ports\//http:\/\/mirrors.ustc.edu.cn\/ubuntu-ports\//g" rootfs/etc/apt/sources.list
 # linux modules
 sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules_install INSTALL_MOD_PATH=../rootfs/
 # initramfs
@@ -58,9 +59,6 @@ sudo chroot rootfs/
 ## Generate ramdisk.img
 cp rootfs/boot/initrd.img images/initrd.img
 ./utils/mkbootimg --kernel linux/arch/arm64/boot/Image --ramdisk images/initrd.img -o images/ramdisk.img
-
-## Backup the debs for rebuilding
-cp -r rootfs/var/cache/apt/archives/*.deb archives/debs
 
 ## Clean up
 sudo rm rootfs/var/cache/apt/archives/*.deb
