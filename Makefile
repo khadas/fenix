@@ -21,7 +21,7 @@ github:
 	./scripts/github.sh
 
 clean:
-	rm -rf $(IMAGES_DIR)/*.img
+	./scripts/clean.sh
 
 ## Refs
 # Buildroot
