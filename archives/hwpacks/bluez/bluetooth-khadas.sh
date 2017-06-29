@@ -2,6 +2,10 @@
 
 model=`cat /sys/bus/mmc/devices/sdio:0001/sdio:0001:1/device`
 
+/bin/echo 0 > /sys/class/rfkill/rfkill0/state
+/bin/sleep 2
+/bin/echo 1 > /sys/class/rfkill/rfkill0/state
+
 # Load the firmware
 if [ "$model" = "0xa9bf" ]; then
     # VIM Pro
