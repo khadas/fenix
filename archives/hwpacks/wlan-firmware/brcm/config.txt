@@ -1,7 +1,8 @@
 kso_enable=0
 ccode=CN
 regrev=38
-nv_by_chip=3 \
+nv_by_chip=4 \
 43430 0 nvram_ap6212.txt \
 43430 1 nvram_ap6212a.txt \
-17221 6 nvram_ap6255.txt
+17221 6 nvram_ap6255.txt  \
+17236 2 nvram_ap6356.txt
