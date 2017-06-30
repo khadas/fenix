@@ -16,6 +16,9 @@ elif [ "$model" = "0xa9a6" ]; then
 elif [ "$model" = "0x4356" ]; then
 	# VIM2
 	/usr/local/bin/brcm_patchram_plus  --patchram /lib/firmware/brcm/bcm4356a2.hcd --no2bytes --tosleep 1000 /dev/ttyS1
+elif [ "$model" = "0x4359" ]; then
+    # VIM2 Pro
+	/usr/local/bin/brcm_patchram_plus  --patchram /lib/firmware/brcm/BCM4359C0.hcd --no2bytes --tosleep 1000 /dev/ttyS1
 fi
 
 # FIXME Delay
