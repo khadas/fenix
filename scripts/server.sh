@@ -382,6 +382,9 @@ build_rootfs() {
 	cp rootfs/boot/initrd.img images/initrd.img
 	./utils/mkbootimg --kernel linux/arch/arm64/boot/Image --ramdisk images/initrd.img -o images/ramdisk.img
 
+	## Logo
+	cp archives/logo/logo.img images/
+
 	## Clean up
 	sudo rm rootfs/boot/initrd.img
 
