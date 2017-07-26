@@ -6,7 +6,7 @@ release:
 	./scripts/image release
 
 image:
-	./scripts/image mkimage
+	./scripts/make_image.sh
 
 balbes150:
 	./scripts/balbes150.sh
