@@ -25,6 +25,9 @@ ubuntu-mate:
 github:
 	./scripts/github.sh
 
+remount:
+	./scripts/remount_rootfs.sh
+
 clean:
 	./scripts/clean.sh
 
