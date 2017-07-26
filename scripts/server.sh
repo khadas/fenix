@@ -15,6 +15,8 @@ PROJECT_DIR="${BASE_DIR}/project"
 KHADAS_DIR="${PROJECT_DIR}/khadas"
 UBUNTU_WORKING_DIR="${KHADAS_DIR}/ubuntu"
 
+CURRENT_FILE="$0"
+
 ERROR="\033[31mError:\033[0m"
 WARNING="\033[35mWarning:\033[0m"
 
@@ -59,7 +61,7 @@ prepare_uboot_configuration() {
 			UBOOT_DEFCONFIG="kvim2_defconfig"
 			;;
 		*)
-			error_msg $0 $LINENO "Unsupported board:$BOARD"
+			error_msg $CURRENT_FILE $LINENO "Unsupported board:$BOARD"
 			UBOOT_DEFCONFIG=
 			ret=-1
 	esac
@@ -78,7 +80,7 @@ prepare_linux_dtb() {
 			LINUX_DTB="kvim2.dtb"
 			;;
 		*)
-			error_msg $0 $LINENO "Unsupported board:$BOARD"
+			error_msg $CURRENT_FILE $LINENO "Unsupported board:$BOARD"
 			LINUX_DTB=
 			ret=-1
 			;;
@@ -97,7 +99,7 @@ prepare_git_branch() {
 			UBOOT_GIT_BRANCH="ubuntu-vim2"
 			;;
 		*)
-			error_msg $0 $LINENO "Unsupported board:$BOARD"
+			error_msg $CURRENT_FILE $LINENO "Unsupported board:$BOARD"
 			UBOOT_GIT_BRANCH=
 			ret=-1
 			;;
@@ -111,7 +113,7 @@ prepare_git_branch() {
 			LINUX_GIT_BRANCH="ubuntu-4.9"
 			;;
 		*)
-			error_msg $0 $LINENO "Unsupported linux version:$LINUX"
+			error_msg $CURRENT_FILE $LINENO "Unsupported linux version:$LINUX"
 			LINUX_GIT_BRANCH=
 			ret=-1
 	esac
@@ -133,7 +135,7 @@ fixup_dtb_link() {
 			ln -s ../../linux/arch/arm64/boot/dts/$LINUX_DTB kvim.dtb
 			;;
 		*)
-			error_msg $0 $LINENO "Unsupported linux version:$LINUX"
+			error_msg $CURRENT_FILE $LINENO "Unsupported linux version:$LINUX"
 			ret=-1
 	esac
 
@@ -156,7 +158,7 @@ prepare_ubuntu_base() {
 			UBUNTU_BASE="artful-base-arm64.tar.gz"
 			;;
 		*)
-			error_msg $0 $LINENO "Unsupported ubuntu version:$UBUNTU"
+			error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu version:$UBUNTU"
 			UBUNTU_BASE=
 			ret=-1
 	esac
@@ -193,7 +195,7 @@ prepare_working_environment() {
 		##Clone fenix.git from Khadas GitHub
 		echo "Fenix repository dose not exist, clone fenix repository('master') from Khadas GitHub..."
 		git clone https://github.com/khadas/fenix.git ubuntu
-		[ $? != 0 ] && error_msg $0 $LINENO "Failed to clone 'fenix.git'" && return -1
+		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to clone 'fenix.git'" && return -1
 	fi
 
 	install -d ${UBUNTU_WORKING_DIR}/{linux,rootfs,archives/{ubuntu-base,debs,hwpacks},images,scripts}
@@ -204,7 +206,7 @@ prepare_working_environment() {
 		##Clone utils.git from Khadas GitHub
 		echo "Utils repository dose not exist, clone utils repository('master') from Khadas GitHub..."
 		git clone https://github.com/khadas/utils.git
-		[ $? != 0 ] && error_msg $0 $LINENO "Failed to clone 'utils.git'" && return -1
+		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to clone 'utils.git'" && return -1
 	fi
 
 	cd images/
@@ -212,7 +214,7 @@ prepare_working_environment() {
 		##Clone upgrade.git from Khadas GitHub
 		echo "Upgrade repository dose not exist, clone upgrade repository('master') from Khadas GitHub..."
 		git clone https://github.com/khadas/upgrade.git
-		[ $? != 0 ] && error_msg $0 $LINENO "Failed to clone 'upgrade.git'" && return -1
+		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to clone 'upgrade.git'" && return -1
 	fi
 
 	cd -
@@ -223,7 +225,7 @@ build_uboot() {
 	ret=0
 
 	if [ "$UBOOT_GIT_BRANCH" == "" ]; then
-		error_msg $0 $LINENO "'UBOOT_GIT_BRANCH' is empty!"
+		error_msg $CURRENT_FILE $LINENO "'UBOOT_GIT_BRANCH' is empty!"
 		return -1
 	fi
 
@@ -232,7 +234,7 @@ build_uboot() {
 		echo "U-boot repository does not exist, clone u-boot repository('$UBOOT_GIT_BRANCH') form Khadas GitHub..."
 		## Clone u-boot from Khadas GitHub
 		git clone https://github.com/khadas/u-boot -b $UBOOT_GIT_BRANCH
-		[ $? != 0 ] && error_msg $0 $LINENO "Failed to clone 'u-boot'" && return -1
+		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to clone 'u-boot'" && return -1
 	fi
 
 	cd u-boot/
@@ -241,7 +243,7 @@ build_uboot() {
 		echo "U-boot: Switch to branch '$UBOOT_GIT_BRANCH'"
 		make distclean
 		git checkout $UBOOT_GIT_BRANCH
-		[ $? != 0 ] && error_msg $0 $LINENO "U-boot: Switch to branch '$UBOOT_GIT_BRANCH' failed." && return -1
+		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "U-boot: Switch to branch '$UBOOT_GIT_BRANCH' failed." && return -1
 	else
 		echo "U-boot: Already on branch '$UBOOT_GIT_BRANCH'"
 	fi
@@ -258,8 +260,8 @@ build_linux() {
 	ret=0
 
 	if [ "$LINUX_GIT_BRANCH" == "" ] || [ "$LINUX_DTB" == "" ]; then
-		[ "$LINUX_GIT_BRANCH" == "" ] && error_msg $0 $LINENO "'LINUX_GIT_BRANCH' is empty!"
-		[ "$LINUX_DTB" == "" ] && error_msg $0 $LINENO "'LINUX_DTB' is empty!"
+		[ "$LINUX_GIT_BRANCH" == "" ] && error_msg $CURRENT_FILE $LINENO "'LINUX_GIT_BRANCH' is empty!"
+		[ "$LINUX_DTB" == "" ] && error_msg $CURRENT_FILE $LINENO "'LINUX_DTB' is empty!"
 		return -1
 	fi
 
@@ -268,7 +270,7 @@ build_linux() {
 		echo "Linux repository does not exist, clone linux repository('$LINUX_GIT_BRANCH') form Khadas GitHub..."
 		## Clone linux from Khadas GitHub
 		git clone https://github.com/khadas/linux -b $LINUX_GIT_BRANCH
-		[ $? != 0 ] && error_msg "Failed to clone 'linux'" && return -1
+		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to clone 'linux'" && return -1
 	fi
 
 	cd linux/
@@ -278,7 +280,7 @@ build_linux() {
 		echo "Linux: Switch to branch '$LINUX_GIT_BRANCH'"
 		make ARCH=arm64 distclean
 		git checkout $LINUX_GIT_BRANCH
-		[ $? != 0 ] && error_msg $0 $LINENO "Linux: Switch to branch '$LINUX_GIT_BRANCH' failed." && return -1
+		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Linux: Switch to branch '$LINUX_GIT_BRANCH' failed." && return -1
 	else
 		echo "Linux: Already on branch '$LINUX_GIT_BRANCH'"
 	fi
@@ -292,7 +294,7 @@ build_linux() {
 setup_ubuntu_base() {
 	ret=0
 	if [ "$UBUNTU_BASE" == "" ]; then
-		error_msg $0 $1 "'UBUNTU_BASE' is empty!"
+		error_msg $CURRENT_FILE $LINENO "'UBUNTU_BASE' is empty!"
 		return -1
 	fi
 
@@ -306,10 +308,10 @@ setup_ubuntu_base() {
 		elif [ "$UBUNTU" == "17.10" ]; then
 			wget http://cdimage.ubuntu.com/ubuntu-base/daily/current/$UBUNTU_BASE
 		else
-			error_msg $0 $1 "Unsupported ubuntu version:'$UBUNTU'"
+			error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu version:'$UBUNTU'"
 			ret=-1
 		fi
-		[ $? != 0 ] && error_msg $0 $LINENO "Failed to download '$UBUNTU_BASE'" && ret=-1
+		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to download '$UBUNTU_BASE'" && ret=-1
 	fi
 
 	cd -
@@ -339,7 +341,7 @@ build_rootfs() {
 	elif [ "$LINUX" == "3.14" ];then
 		sudo cp linux/arch/arm64/boot/dts/$LINUX_DTB rootfs/boot/
 	else
-		error_msg $0 $1 "Unsupported linux version:'$LINUX'"
+		error_msg $CURRENT_FILE $LINENO "Unsupported linux version:'$LINUX'"
 		ret=-1
 	fi
 	sudo cp linux/arch/arm64/boot/Image rootfs/boot/
