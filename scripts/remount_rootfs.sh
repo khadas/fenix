@@ -2,6 +2,11 @@
 
 ########################### Parameters ###################################
 
+BOARD="$1"
+LINUX="$2"
+LINUX_DTB=
+
+
 BASE_DIR="$HOME"
 PROJECT_DIR="${BASE_DIR}/project"
 KHADAS_DIR="${PROJECT_DIR}/khadas"
@@ -30,6 +35,36 @@ warning_msg() {
 	    echo -e "$1:$2" $WARNING "$3"
 }
 
+## $1 board              <VIM | VIM2>
+## $2 linux version      <4.9 | 3.14>
+check_parameters() {
+	if [ "$1" == "" ] || [ "$2" == "" ]; then
+		echo "usage: $0 <VIM|VIM2> <4.9|3.14>"
+		return -1
+	fi
+
+	return 0
+}
+
+## Select linux dtb
+prepare_linux_dtb() {
+	ret=0
+	case "$BOARD" in
+		VIM)
+			LINUX_DTB="kvim.dtb"
+			;;
+		VIM2)
+			LINUX_DTB="kvim2.dtb"
+			;;
+		*)
+			error_msg $CURRENT_FILE $LINENO "Unsupported board:$BOARD"
+			LINUX_DTB=
+			ret=-1
+			;;
+	esac
+
+	return $ret
+}
 
 remount_rootfs() {
 	cd ${UBUNTU_WORKING_DIR}
@@ -38,6 +73,25 @@ remount_rootfs() {
 	sudo mount -o loop images/rootfs.img rootfs
 	[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to mount rootfs.img!" && return -1
 	echo "Mount image/rootfs.img on rootfs/ OK."
+
+	## [Optional] Mirrors for ubuntu-ports
+	sudo cp -a rootfs/etc/apt/sources.list rootfs/etc/apt/sources.list.orig
+	sudo sed -i "s/http:\/\/ports.ubuntu.com\/ubuntu-ports\//http:\/\/mirrors.ustc.edu.cn\/ubuntu-ports\//g" rootfs/etc/apt/sources.list
+	## Update linux modules
+	sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules_install INSTALL_MOD_PATH=../rootfs/
+	## Update linux dtb Image
+	if [ "$LINUX" == "4.9" ];then
+		sudo cp linux/arch/arm64/boot/dts/amlogic/$LINUX_DTB rootfs/boot/
+	elif [ "$LINUX" == "3.14" ];then
+		sudo cp linux/arch/arm64/boot/dts/$LINUX_DTB rootfs/boot/
+	else
+		error_msg $CURRENT_FILE $LINENO "Unsupported linux version:'$LINUX'"
+		sudo sync
+		sudo umount rootfs
+		return -1
+	fi
+
+	sudo cp linux/arch/arm64/boot/Image rootfs/boot/
 
 	## linux version
 	grep "Linux/arm64" linux/.config | awk  '{print $3}' > images/linux-version
@@ -56,7 +110,7 @@ remount_rootfs() {
 	sudo mount -o bind /sys rootfs/sys
 	sudo mount -o bind /dev rootfs/dev
 	sudo mount -o bind /dev/pts rootfs/dev/pts
-	sudo chroot rootfs/
+	sudo chroot rootfs/ bash -c "/RUNME.sh"
 
 	## Generate ramdisk.img
 	cp rootfs/boot/initrd.img images/initrd.img
@@ -78,7 +132,9 @@ remount_rootfs() {
 
 
 ########################################################
-remount_rootfs			&&
+check_parameters $1 $2      &&
+prepare_linux_dtb           &&
+remount_rootfs              &&
 
 echo -e "\nDone."
 echo -e "\n`date`"

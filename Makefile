@@ -26,7 +26,12 @@ github:
 	./scripts/github.sh
 
 remount:
-	./scripts/remount_rootfs.sh
+ifeq ($(and $(KHADAS_BOARD),$(LINUX)),)
+	@echo "Usage: make <KHADAS_BOARD=VIM|VIM2> <LINUX=3.14|4.9> remount"
+	@echo "   eg: make KHADAS_BOARD=VIM2 LINUX=4.9 remount"
+else
+	./scripts/remount_rootfs.sh $(KHADAS_BOARD) $(LINUX)
+endif
 
 clean:
 	./scripts/clean.sh
