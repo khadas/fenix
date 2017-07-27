@@ -1,6 +1,6 @@
 IMAGES_DIR=images
 
-all: github
+all: help
 
 release:
 	./scripts/image release
@@ -32,6 +32,19 @@ ifeq ($(and $(KHADAS_BOARD),$(LINUX)),)
 else
 	./scripts/remount_rootfs.sh $(KHADAS_BOARD) $(LINUX)
 endif
+
+help:
+	@echo -e "Fenix scripts help messages.\n"
+	@echo -e "Create ubuntu server update image."
+	@echo -e "    make <KHADAS_BOARD=VIM|VIM2> <UBUNTU=16.04.2|17.04|17.10> <LINUX=3.14|4.9> server\n"
+	@echo -e "Remount rootfs and recreate initrd."
+	@echo -e "    make <KHADAS_BOARD=VIM|VIM2> <LINUX=3.14|4.9> remount\n"
+	@echo -e "Update repositories from Khadas GitHub."
+	@echo -e "    make github\n"
+	@echo -e "Pack update image."
+	@echo -e "    make image\n"
+	@echo -e "Cleanup."
+	@echo -e "    make clean\n"
 
 clean:
 	./scripts/clean.sh
