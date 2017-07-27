@@ -98,7 +98,7 @@ remount_rootfs() {
 	sudo cp -r images/linux-version rootfs/
 
 	## script executing on chroot
-	sudo cp -r archives/filesystem/RUNME.sh rootfs/
+	sudo cp -r archives/filesystem/RUNME_REMOUNT.sh rootfs/
 
 	## Chroot
 	sudo cp -a /usr/bin/qemu-aarch64-static rootfs/usr/bin/
@@ -110,7 +110,7 @@ remount_rootfs() {
 	sudo mount -o bind /sys rootfs/sys
 	sudo mount -o bind /dev rootfs/dev
 	sudo mount -o bind /dev/pts rootfs/dev/pts
-	sudo chroot rootfs/ bash -c "/RUNME.sh"
+	sudo chroot rootfs/ bash -c "/RUNME_REMOUNT.sh"
 
 	## Generate ramdisk.img
 	cp rootfs/boot/initrd.img images/initrd.img
