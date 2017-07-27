@@ -10,7 +10,7 @@ LINUX_GIT_BRANCH_4_9="ubuntu-4.9"
 BASE_DIR="$HOME"
 PROJECT_DIR="${BASE_DIR}/project"
 KHADAS_DIR="${PROJECT_DIR}/khadas"
-UBUNTU_WORKING_DIR="${KHADAS_DIR}/ubuntu"
+UBUNTU_WORKING_DIR="$(dirname "$(dirname "$(readlink -fm "$0")")")"
 
 CURRENT_FILE="$0"
 

@@ -15,7 +15,7 @@ AML_UPDATE_TOOL_CONFIG=
 BASE_DIR="$HOME"
 PROJECT_DIR="${BASE_DIR}/project"
 KHADAS_DIR="${PROJECT_DIR}/khadas"
-UBUNTU_WORKING_DIR="${KHADAS_DIR}/ubuntu"
+UBUNTU_WORKING_DIR="$(dirname "$(dirname "$(readlink -fm "$0")")")"
 
 CURRENT_FILE="$0"
 
@@ -191,15 +191,14 @@ display_parameters() {
 
 ## Prepare working environment
 prepare_working_environment() {
-	install -d ${UBUNTU_WORKING_DIR}
-	cd ${KHADAS_DIR}
-
-	if [ ! -d "ubuntu/.git" ]; then
-		##Clone fenix.git from Khadas GitHub
-		echo "Fenix repository dose not exist, clone fenix repository('master') from Khadas GitHub..."
-		git clone https://github.com/khadas/fenix.git ubuntu
-		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to clone 'fenix.git'" && return -1
-	fi
+#	install -d ${UBUNTU_WORKING_DIR}
+#
+#	if [ ! -d "ubuntu/.git" ]; then
+#		##Clone fenix.git from Khadas GitHub
+#		echo "Fenix repository dose not exist, clone fenix repository('master') from Khadas GitHub..."
+#		git clone https://github.com/khadas/fenix.git ubuntu
+#		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to clone 'fenix.git'" && return -1
+#	fi
 
 	install -d ${UBUNTU_WORKING_DIR}/{linux,rootfs,archives/{ubuntu-base,debs,hwpacks},images,scripts}
 
