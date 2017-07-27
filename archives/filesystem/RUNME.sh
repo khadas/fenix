@@ -44,6 +44,11 @@ apt-get -y --allow-unauthenticated  install ifupdown net-tools udev fbset vim su
 		bluez rfkill libbluetooth-dev \
 		iputils-ping
 
+# Install armhf library
+dpkg --add-architecture armhf
+apt-get --allow-unauthenticated update
+apt-get -y --allow-unauthenticated install libc6:armhf
+
 # Install Docker
 apt-get -y --allow-unauthenticated install lxc aufs-tools cgroup-lite apparmor docker.io
 usermod -aG docker khadas
