@@ -10,6 +10,8 @@ UBUNTU_BASE=
 UBOOT_GIT_BRANCH=
 LINUX_GIT_BRANCH=
 
+AML_UPDATE_TOOL_CONFIG=
+
 BASE_DIR="$HOME"
 PROJECT_DIR="${BASE_DIR}/project"
 KHADAS_DIR="${PROJECT_DIR}/khadas"
@@ -182,6 +184,7 @@ display_parameters() {
 	echo "project directory:             $PROJECT_DIR"
 	echo "khadas directory:              $KHADAS_DIR"
 	echo "ubuntu working directory:      $UBUNTU_WORKING_DIR"
+	echo "amlogic update tool config:    $AML_UPDATE_TOOL_CONFIG"
 	echo "*********************************************************"
 	echo ""
 }
@@ -219,6 +222,27 @@ prepare_working_environment() {
 
 	cd -
 }
+
+## Prepare amlogic usb updete tool configuration
+prepare_aml_update_tool_config() {
+	ret=0
+	case "$BOARD" in
+		VIM)
+			AML_UPDATE_TOOL_CONFIG="package.conf"
+			;;
+		VIM2)
+			AML_UPDATE_TOOL_CONFIG="package_VIM2.conf"
+			;;
+		*)
+			error_msg $CURRENT_FILE $LINENO "Unsupported board:$BOARD"
+			AML_UPDATE_TOOL_CONFIG=
+			ret=-1
+			;;
+	esac
+
+	return $ret
+}
+
 
 ## Build U-Boot
 build_uboot() {
@@ -404,7 +428,14 @@ build_rootfs() {
 ## Pack the images to update.img
 pack_update_image() {
 	cd ${UBUNTU_WORKING_DIR}
-	./utils/aml_image_v2_packer -r images/upgrade/package.conf images/upgrade/ images/update.img
+
+	if [ $AML_UPDATE_TOOL_CONFIG == "" ]; then
+		error_msg $CURRENT_FILE $LINENO "'AML_UPDATE_TOOL_CONFIG' is empty!"
+		return -1
+	fi
+
+	echo "Packing update image using config: $AML_UPDATE_TOOL_CONFIG"
+	./utils/aml_image_v2_packer -r images/upgrade/$AML_UPDATE_TOOL_CONFIG images/upgrade/ images/update.img
 }
 
 ###########################################################
@@ -414,6 +445,7 @@ prepare_linux_dtb              &&
 prepare_git_branch             &&
 prepare_ubuntu_base            &&
 prepare_working_environment    &&
+prepare_aml_update_tool_config &&
 display_parameters             &&
 fixup_dtb_link                 &&
 setup_ubuntu_base              &&

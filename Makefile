@@ -6,7 +6,12 @@ release:
 	./scripts/image release
 
 image:
-	./scripts/make_image.sh
+ifeq ($(and $(KHADAS_BOARD)),)
+	@echo "Usage: make <KHADAS_BOARD=VIM|VIM2> image"
+	@echo "   eg: make KHADAS_BOARD=VIM2 image"
+else
+	./scripts/make_image.sh $(KHADAS_BOARD)
+endif
 
 balbes150:
 	./scripts/balbes150.sh
@@ -42,7 +47,7 @@ help:
 	@echo -e "Update repositories from Khadas GitHub."
 	@echo -e "    make github\n"
 	@echo -e "Pack update image."
-	@echo -e "    make image\n"
+	@echo -e "    make <KHADAS_BOARD=VIM|VIM2> image\n"
 	@echo -e "Cleanup."
 	@echo -e "    make clean\n"
 
