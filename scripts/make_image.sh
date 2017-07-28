@@ -2,8 +2,6 @@
 
 ########################### Parameters ###################################
 
-KHADAS_BOARD="$1"
-
 AML_UPDATE_TOOL_CONFIG=
 
 BASE_DIR="$HOME"

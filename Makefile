@@ -2,13 +2,17 @@ IMAGES_DIR=images
 
 all: help
 
+define help_message
+	@echo "You should setup environment first."
+	@echo "Run 'source env/setenv.sh' to setup environment."
+endef
+
 release:
 	./scripts/image release
 
 image:
 ifeq ($(and $(KHADAS_BOARD)),)
-	@echo "Usage: make <KHADAS_BOARD=VIM|VIM2> image"
-	@echo "   eg: make KHADAS_BOARD=VIM2 image"
+	$(call help_message)
 else
 	./scripts/make_image.sh $(KHADAS_BOARD)
 endif
@@ -18,8 +22,7 @@ balbes150:
 
 server:
 ifeq ($(and $(KHADAS_BOARD),$(UBUNTU),$(LINUX)),)
-	@echo "Usage: make <KHADAS_BOARD=VIM|VIM2> <UBUNTU=16.04.2|17.04|17.10> <LINUX=3.14|4.9> server"
-	@echo "   eg: make KHADAS_BOARD=VIM2 UBUNTU=16.04.2 LINUX=4.9 server"
+	$(call help_message)
 else
 	./scripts/server.sh $(KHADAS_BOARD) $(UBUNTU) $(LINUX)
 endif
@@ -32,30 +35,19 @@ github:
 
 remount:
 ifeq ($(and $(KHADAS_BOARD),$(LINUX)),)
-	@echo "Usage: make <KHADAS_BOARD=VIM|VIM2> <LINUX=3.14|4.9> remount"
-	@echo "   eg: make KHADAS_BOARD=VIM2 LINUX=4.9 remount"
+	$(call help_message)
 else
 	./scripts/remount_rootfs.sh $(KHADAS_BOARD) $(LINUX)
 endif
 
 help:
-	@echo "Fenix scripts help messages."
-	@echo ""
-	@echo "Create ubuntu server update image."
-	@echo "    make <KHADAS_BOARD=VIM|VIM2> <UBUNTU=16.04.2|17.04|17.10> <LINUX=3.14|4.9> server"
-	@echo ""
-	@echo "Remount rootfs and recreate initrd."
-	@echo "    make <KHADAS_BOARD=VIM|VIM2> <LINUX=3.14|4.9> remount"
-	@echo ""
-	@echo "Update repositories from Khadas GitHub."
-	@echo "    make github"
-	@echo ""
-	@echo "Pack update image."
-	@echo "    make <KHADAS_BOARD=VIM|VIM2> image"
-	@echo ""
-	@echo "Cleanup."
-	@echo "    make clean"
-	@echo ""
+	@echo "Fenix scripts help messages:"
+	@echo "  server        - Create ubuntu server update image."
+	@echo "  remount       - Remount rootfs and recreate initrd."
+	@echo "  github        - Update repositories from Khadas GitHub."
+	@echo "  image         - Pack update image."
+	@echo "  clean         - Cleanup."
+
 clean:
 	./scripts/clean.sh
 

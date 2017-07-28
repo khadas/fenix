@@ -1,9 +1,7 @@
 #!/bin/bash
 
 ########################### Parameters ###################################
-KHADAS_BOARD="$1"
-UBUNTU="$2"
-LINUX="$3"
+
 UBOOT_DEFCONFIG=
 LINUX_DTB=
 UBUNTU_BASE=
