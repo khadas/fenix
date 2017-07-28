@@ -2,7 +2,7 @@
 
 ########################### Parameters ###################################
 
-BOARD="$1"
+KHADAS_BOARD="$1"
 LINUX="$2"
 LINUX_DTB=
 
@@ -49,7 +49,7 @@ check_parameters() {
 ## Select linux dtb
 prepare_linux_dtb() {
 	ret=0
-	case "$BOARD" in
+	case "$KHADAS_BOARD" in
 		VIM)
 			LINUX_DTB="kvim.dtb"
 			;;
@@ -57,7 +57,7 @@ prepare_linux_dtb() {
 			LINUX_DTB="kvim2.dtb"
 			;;
 		*)
-			error_msg $CURRENT_FILE $LINENO "Unsupported board:$BOARD"
+			error_msg $CURRENT_FILE $LINENO "Unsupported board:$KHADAS_BOARD"
 			LINUX_DTB=
 			ret=-1
 			;;

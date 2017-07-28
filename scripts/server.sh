@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ########################### Parameters ###################################
-BOARD="$1"
+KHADAS_BOARD="$1"
 UBUNTU="$2"
 LINUX="$3"
 UBOOT_DEFCONFIG=
@@ -55,7 +55,7 @@ check_parameters() {
 ## Select uboot configuration
 prepare_uboot_configuration() {
 	ret=0
-	case "$BOARD" in
+	case "$KHADAS_BOARD" in
 		VIM)
 			UBOOT_DEFCONFIG="kvim_defconfig"
 			;;
@@ -63,7 +63,7 @@ prepare_uboot_configuration() {
 			UBOOT_DEFCONFIG="kvim2_defconfig"
 			;;
 		*)
-			error_msg $CURRENT_FILE $LINENO "Unsupported board:$BOARD"
+			error_msg $CURRENT_FILE $LINENO "Unsupported board:$KHADAS_BOARD"
 			UBOOT_DEFCONFIG=
 			ret=-1
 	esac
@@ -74,7 +74,7 @@ prepare_uboot_configuration() {
 ## Select linux dtb
 prepare_linux_dtb() {
 	ret=0
-	case "$BOARD" in
+	case "$KHADAS_BOARD" in
 		VIM)
 			LINUX_DTB="kvim.dtb"
 			;;
@@ -82,7 +82,7 @@ prepare_linux_dtb() {
 			LINUX_DTB="kvim2.dtb"
 			;;
 		*)
-			error_msg $CURRENT_FILE $LINENO "Unsupported board:$BOARD"
+			error_msg $CURRENT_FILE $LINENO "Unsupported board:$KHADAS_BOARD"
 			LINUX_DTB=
 			ret=-1
 			;;
@@ -93,7 +93,7 @@ prepare_linux_dtb() {
 
 prepare_git_branch() {
 	ret=0
-	case "$BOARD" in
+	case "$KHADAS_BOARD" in
 		VIM)
 			UBOOT_GIT_BRANCH="ubuntu"
 			;;
@@ -101,7 +101,7 @@ prepare_git_branch() {
 			UBOOT_GIT_BRANCH="ubuntu-vim2"
 			;;
 		*)
-			error_msg $CURRENT_FILE $LINENO "Unsupported board:$BOARD"
+			error_msg $CURRENT_FILE $LINENO "Unsupported board:$KHADAS_BOARD"
 			UBOOT_GIT_BRANCH=
 			ret=-1
 			;;
@@ -172,7 +172,7 @@ prepare_ubuntu_base() {
 display_parameters() {
 	echo ""
 	echo "***********************PARAMETERS************************"
-	echo "board:                         $BOARD"
+	echo "board:                         $KHADAS_BOARD"
 	echo "linux version:                 $LINUX"
 	echo "ubuntu version:                $UBUNTU"
 	echo "uboot configuration:           $UBOOT_DEFCONFIG"
@@ -225,7 +225,7 @@ prepare_working_environment() {
 ## Prepare amlogic usb updete tool configuration
 prepare_aml_update_tool_config() {
 	ret=0
-	case "$BOARD" in
+	case "$KHADAS_BOARD" in
 		VIM)
 			AML_UPDATE_TOOL_CONFIG="package.conf"
 			;;
@@ -233,7 +233,7 @@ prepare_aml_update_tool_config() {
 			AML_UPDATE_TOOL_CONFIG="package_VIM2.conf"
 			;;
 		*)
-			error_msg $CURRENT_FILE $LINENO "Unsupported board:$BOARD"
+			error_msg $CURRENT_FILE $LINENO "Unsupported board:$KHADAS_BOARD"
 			AML_UPDATE_TOOL_CONFIG=
 			ret=-1
 			;;

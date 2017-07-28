@@ -2,7 +2,7 @@
 
 ########################### Parameters ###################################
 
-BOARD="$1"
+KHADAS_BOARD="$1"
 
 AML_UPDATE_TOOL_CONFIG=
 
@@ -46,7 +46,7 @@ check_parameters() {
 ## Prepare amlogic usb updete tool configuration
 prepare_aml_update_tool_config() {
 	ret=0
-	case "$BOARD" in
+	case "$KHADAS_BOARD" in
 		VIM)
 			AML_UPDATE_TOOL_CONFIG="package.conf"
 			;;
@@ -54,7 +54,7 @@ prepare_aml_update_tool_config() {
 			AML_UPDATE_TOOL_CONFIG="package_VIM2.conf"
 			;;
 		*)
-			error_msg $CURRENT_FILE $LINENO "Unsupported board:$BOARD"
+			error_msg $CURRENT_FILE $LINENO "Unsupported board:$KHADAS_BOARD"
 			AML_UPDATE_TOOL_CONFIG=
 			ret=-1
 			;;
