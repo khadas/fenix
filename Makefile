@@ -39,18 +39,23 @@ else
 endif
 
 help:
-	@echo -e "Fenix scripts help messages.\n"
-	@echo -e "Create ubuntu server update image."
-	@echo -e "    make <KHADAS_BOARD=VIM|VIM2> <UBUNTU=16.04.2|17.04|17.10> <LINUX=3.14|4.9> server\n"
-	@echo -e "Remount rootfs and recreate initrd."
-	@echo -e "    make <KHADAS_BOARD=VIM|VIM2> <LINUX=3.14|4.9> remount\n"
-	@echo -e "Update repositories from Khadas GitHub."
-	@echo -e "    make github\n"
-	@echo -e "Pack update image."
-	@echo -e "    make <KHADAS_BOARD=VIM|VIM2> image\n"
-	@echo -e "Cleanup."
-	@echo -e "    make clean\n"
-
+	@echo "Fenix scripts help messages."
+	@echo ""
+	@echo "Create ubuntu server update image."
+	@echo "    make <KHADAS_BOARD=VIM|VIM2> <UBUNTU=16.04.2|17.04|17.10> <LINUX=3.14|4.9> server"
+	@echo ""
+	@echo "Remount rootfs and recreate initrd."
+	@echo "    make <KHADAS_BOARD=VIM|VIM2> <LINUX=3.14|4.9> remount"
+	@echo ""
+	@echo "Update repositories from Khadas GitHub."
+	@echo "    make github"
+	@echo ""
+	@echo "Pack update image."
+	@echo "    make <KHADAS_BOARD=VIM|VIM2> image"
+	@echo ""
+	@echo "Cleanup."
+	@echo "    make clean"
+	@echo ""
 clean:
 	./scripts/clean.sh
 
