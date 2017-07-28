@@ -344,7 +344,7 @@ setup_ubuntu_base() {
 build_rootfs() {
 	ret=0
 	cd ${UBUNTU_WORKING_DIR}
-	dd if=/dev/zero of=images/rootfs.img bs=1M count=0 seek=800
+	dd if=/dev/zero of=images/rootfs.img bs=1M count=0 seek=900
 	sudo mkfs.ext4 -F -L ROOTFS images/rootfs.img
 	rm -rf rootfs && install -d rootfs
 	sudo mount -o loop images/rootfs.img rootfs
