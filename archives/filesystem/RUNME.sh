@@ -71,6 +71,9 @@ ln -s /boot/kvim2.dtb kvim2.dtb
 # Load WIFI at boot time(MUST HERE)
 echo dhd >> /etc/modules
 
+# Load WIFI - for mainline
+echo brcmfmac >> /etc/modules
+
 # Load AUFS module
 echo aufs >> /etc/modules
 
