@@ -38,6 +38,23 @@ warning_msg() {
 	echo -e "$1:$2" $WARNING "$3"
 }
 
+## Calculate time
+## $1 - time in seconds
+time_cal() {
+	local days hours minutes seconds temp
+
+	second=$(($1 % 60))
+	minute=$(($1 / 60))
+	temp=$minute
+	minute=$(($temp % 60))
+	hour=$(($temp / 60))
+	temp=$hour
+	hour=$(($temp % 24))
+	day=$(($temp / 24))
+
+	echo "Time elapsed: $day days $hour hours $minute minutes $second seconds."
+}
+
 ## $1 board              <VIM | VIM2>
 ## $2 ubuntu version     <16.04.2 | 17.04 | 17.10>
 ## $3 linux version      <4.9 | 3.14>
@@ -436,6 +453,7 @@ pack_update_image() {
 }
 
 ###########################################################
+start_time=`date +%s`
 check_parameters $1 $2 $3      &&
 prepare_uboot_configuration    &&
 prepare_linux_dtb              &&
@@ -452,4 +470,8 @@ build_rootfs                   &&
 pack_update_image              &&
 
 echo -e "\nDone."
-echo -e "\n\n`date`"
+echo -e "\n`date`"
+
+end_time=`date +%s`
+
+time_cal $(($end_time - $start_time))
