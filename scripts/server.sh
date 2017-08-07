@@ -395,6 +395,35 @@ build_rootfs() {
 	sudo cp -r archives/hwpacks/bluez/brcm_patchram_plus rootfs/usr/local/bin/
 	sudo cp -r archives/hwpacks/bluez/bluetooth-khadas.service rootfs/lib/systemd/system/
 	sudo cp -r archives/hwpacks/bluez/bluetooth-khadas.sh rootfs/usr/local/bin/
+
+	# GPU user space binary drivers
+	## Headers
+	sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL rootfs/usr/include/
+	sudo cp -arf archives/hwpacks/mali/r7p0/include/GLES rootfs/usr/include/
+	sudo cp -arf archives/hwpacks/mali/r7p0/include/GLES2 rootfs/usr/include/
+	sudo cp -arf archives/hwpacks/mali/r7p0/include/KHR rootfs/usr/include/
+
+	### fbdev
+	sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL_platform/platform_fbdev/*.h rootfs/usr/include/EGL/
+	### wayland
+	### sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL_platform/platform_wayland/*.h rootfs/usr/include/EGL/
+
+	## libMali.so
+	### fbdev
+	sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/*.so* rootfs/usr/lib/
+	sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/*.so* rootfs/usr/lib/aarch64-linux-gnu
+
+	### wayland
+	### sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/wayland/*.so* rootfs/usr/lib/
+	### sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/wayland/*.so* rootfs/usr/lib/aarch64-linux-gnu
+
+	### links
+	sudo cp -arf archives/hwpacks/mali/r7p0/lib/*.so* rootfs/usr/lib/
+	sudo cp -arf archives/hwpacks/mali/r7p0/lib/*.so* rootfs/usr/lib/aarch64-linux-gnu
+
+	sudo mkdir -p rootfs/usr/lib/pkgconfig/
+	sudo cp -arf archives/hwpacks/mali/r7p0/lib/pkgconfig/*.pc rootfs/usr/lib/pkgconfig/
+
 	# rc.local
 	sudo cp -r archives/filesystem/etc/rc.local rootfs/etc/
 	# firstboot initialization: for 'ROOTFS' partition resize
