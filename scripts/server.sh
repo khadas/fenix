@@ -424,6 +424,11 @@ build_rootfs() {
 	sudo mkdir -p rootfs/usr/lib/pkgconfig/
 	sudo cp -arf archives/hwpacks/mali/r7p0/lib/pkgconfig/*.pc rootfs/usr/lib/pkgconfig/
 
+	# Mali m450 framebuffer mode examples
+	sudo mkdir -p rootfs/usr/share/arm/
+	sudo cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/lib/* rootfs/usr/lib/
+	sudo cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/opengles_20 rootfs/usr/share/arm/
+
 	# rc.local
 	sudo cp -r archives/filesystem/etc/rc.local rootfs/etc/
 	# firstboot initialization: for 'ROOTFS' partition resize
