@@ -396,38 +396,40 @@ build_rootfs() {
 	sudo cp -r archives/hwpacks/bluez/bluetooth-khadas.service rootfs/lib/systemd/system/
 	sudo cp -r archives/hwpacks/bluez/bluetooth-khadas.sh rootfs/usr/local/bin/
 
-	# GPU user space binary drivers
-	## Headers
-	sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL rootfs/usr/include/
-	sudo cp -arf archives/hwpacks/mali/r7p0/include/GLES rootfs/usr/include/
-	sudo cp -arf archives/hwpacks/mali/r7p0/include/GLES2 rootfs/usr/include/
-	sudo cp -arf archives/hwpacks/mali/r7p0/include/KHR rootfs/usr/include/
+	if [ "$KHADAS_BOARD" == "VIM" ]; then
+		# GPU user space binary drivers
+		## Headers
+		sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL rootfs/usr/include/
+		sudo cp -arf archives/hwpacks/mali/r7p0/include/GLES rootfs/usr/include/
+		sudo cp -arf archives/hwpacks/mali/r7p0/include/GLES2 rootfs/usr/include/
+		sudo cp -arf archives/hwpacks/mali/r7p0/include/KHR rootfs/usr/include/
 
-	### fbdev
-	sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL_platform/platform_fbdev/*.h rootfs/usr/include/EGL/
-	### wayland
-	### sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL_platform/platform_wayland/*.h rootfs/usr/include/EGL/
+		### fbdev
+		sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL_platform/platform_fbdev/*.h rootfs/usr/include/EGL/
+		### wayland
+		### sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL_platform/platform_wayland/*.h rootfs/usr/include/EGL/
 
-	## libMali.so
-	### fbdev
-	sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/*.so* rootfs/usr/lib/
-	sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/*.so* rootfs/usr/lib/aarch64-linux-gnu
+		## libMali.so
+		### fbdev
+		sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/*.so* rootfs/usr/lib/
+		sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/*.so* rootfs/usr/lib/aarch64-linux-gnu
 
-	### wayland
-	### sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/wayland/*.so* rootfs/usr/lib/
-	### sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/wayland/*.so* rootfs/usr/lib/aarch64-linux-gnu
+		### wayland
+		### sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/wayland/*.so* rootfs/usr/lib/
+		### sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/wayland/*.so* rootfs/usr/lib/aarch64-linux-gnu
 
-	### links
-	sudo cp -arf archives/hwpacks/mali/r7p0/lib/*.so* rootfs/usr/lib/
-	sudo cp -arf archives/hwpacks/mali/r7p0/lib/*.so* rootfs/usr/lib/aarch64-linux-gnu
+		### links
+		sudo cp -arf archives/hwpacks/mali/r7p0/lib/*.so* rootfs/usr/lib/
+		sudo cp -arf archives/hwpacks/mali/r7p0/lib/*.so* rootfs/usr/lib/aarch64-linux-gnu
 
-	sudo mkdir -p rootfs/usr/lib/pkgconfig/
-	sudo cp -arf archives/hwpacks/mali/r7p0/lib/pkgconfig/*.pc rootfs/usr/lib/pkgconfig/
+		sudo mkdir -p rootfs/usr/lib/pkgconfig/
+		sudo cp -arf archives/hwpacks/mali/r7p0/lib/pkgconfig/*.pc rootfs/usr/lib/pkgconfig/
 
-	# Mali m450 framebuffer mode examples
-	sudo mkdir -p rootfs/usr/share/arm/
-	sudo cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/lib/* rootfs/usr/lib/
-	sudo cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/opengles_20 rootfs/usr/share/arm/
+		# Mali m450 framebuffer mode examples
+		sudo mkdir -p rootfs/usr/share/arm/
+		sudo cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/lib/* rootfs/usr/lib/
+		sudo cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/opengles_20 rootfs/usr/share/arm/
+	fi
 
 	# rc.local
 	sudo cp -r archives/filesystem/etc/rc.local rootfs/etc/
