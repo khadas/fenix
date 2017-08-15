@@ -28,6 +28,12 @@ echo "127.0.0.1    Khadas" >> /etc/hosts
 # Setup DNS resolver
 echo "nameserver 127.0.1.1" > /etc/resolv.conf
 
+# Locale
+locale-gen "en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+update-locale LC_ALL="en_US.UTF-8" LANG="en_US.UTF-8" LC_MESSAGES=POSIX
+dpkg-reconfigure -f noninteractive locales
+
 sed -i "s/^# deb http/deb http/g" /etc/apt/sources.list
 
 # Fetch the latest package lists from server
