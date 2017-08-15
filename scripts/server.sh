@@ -452,7 +452,7 @@ build_rootfs() {
 	sudo mount -o bind /sys rootfs/sys
 	sudo mount -o bind /dev rootfs/dev
 	sudo mount -o bind /dev/pts rootfs/dev/pts
-	sudo chroot rootfs/ bash -c "/RUNME.sh"
+	sudo chroot rootfs/ bash "/RUNME.sh" $UBUNTU
 
 	## Generate ramdisk.img
 	cp rootfs/boot/initrd.img images/initrd.img

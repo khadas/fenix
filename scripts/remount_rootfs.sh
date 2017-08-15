@@ -108,7 +108,7 @@ remount_rootfs() {
 	sudo mount -o bind /sys rootfs/sys
 	sudo mount -o bind /dev rootfs/dev
 	sudo mount -o bind /dev/pts rootfs/dev/pts
-	sudo chroot rootfs/ bash -c "/RUNME_REMOUNT.sh"
+	sudo chroot rootfs/ bash "/RUNME_REMOUNT.sh" $UBUNTU
 
 	## Generate ramdisk.img
 	cp rootfs/boot/initrd.img images/initrd.img

@@ -3,6 +3,16 @@
 # Commands for ROM release
 #
 
+if [ "$1" == "16.04.2" ]; then
+	APT_OPTIONS=
+elif [ "$1" == "17.04" ] || [ "$1" == "17.10" ]; then
+	APT_OPTIONS="--allow-unauthenticated"
+else
+	echo "Unsupported ubuntu version!"
+	APT_OPTIONS=
+	exit
+fi
+
 # Setup password for root user
 echo root:khadas | chpasswd
 
@@ -24,20 +34,20 @@ sed -i "s/^# deb http/deb http/g" /etc/apt/sources.list
 apt-get update
 
 # Upgrade
-apt-get -y --allow-unauthenticated upgrade
+apt-get -y $APT_OPTIONS upgrade
 
 # Install the packages
-apt-get -y --allow-unauthenticated  install ifupdown net-tools udev fbset vim sudo initramfs-tools \
+apt-get -y $APT_OPTIONS install ifupdown net-tools udev fbset vim sudo initramfs-tools \
 		bluez rfkill libbluetooth-dev \
 		iputils-ping
 
 # Install armhf library
 dpkg --add-architecture armhf
-apt-get --allow-unauthenticated update
-apt-get -y --allow-unauthenticated install libc6:armhf
+apt-get update
+apt-get -y $APT_OPTIONS install libc6:armhf
 
 # Install Docker
-apt-get -y --allow-unauthenticated install lxc aufs-tools cgroup-lite apparmor docker.io
+apt-get -y $APT_OPTIONS install lxc aufs-tools cgroup-lite apparmor docker.io
 usermod -aG docker khadas
 
 # Build the ramdisk

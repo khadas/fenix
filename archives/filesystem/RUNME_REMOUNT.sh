@@ -3,13 +3,23 @@
 # Commands for ROM release
 #
 
+if [ "$1" == "16.04.2" ]; then
+	APT_OPTIONS=
+elif [ "$1" == "17.04" ] || [ "$2" == "17.10" ]; then
+	APT_OPTIONS="--allow-unauthenticated"
+else
+	echo "Unsupported ubuntu version!"
+	APT_OPTIONS=
+	exit
+fi
+
 sed -i "s/^# deb http/deb http/g" /etc/apt/sources.list
 
 # Fetch the latest package lists from server
 apt-get update
 
 # Upgrade
-apt-get -y --allow-unauthenticated upgrade
+apt-get -y $APT_OPTIONS upgrade
 
 # Build the ramdisk
 mkinitramfs -o /boot/initrd.img `cat linux-version` 2>/dev/null
