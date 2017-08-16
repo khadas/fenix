@@ -40,6 +40,18 @@ else
 	./scripts/remount_rootfs.sh $(KHADAS_BOARD) $(LINUX)
 endif
 
+info:
+	@echo ""
+	@echo "Current environment:"
+	@echo "==========================================="
+	@echo
+	@echo "#KHADAS_BOARD=${KHADAS_BOARD}"
+	@echo "#LINUX=${LINUX}"
+	@echo "#UBUNTU=${UBUNTU}"
+	@echo
+	@echo "==========================================="
+	@echo ""
+
 help:
 	@echo "Fenix scripts help messages:"
 	@echo "  server        - Create ubuntu server update image."
@@ -47,7 +59,7 @@ help:
 	@echo "  github        - Update repositories from Khadas GitHub."
 	@echo "  image         - Pack update image."
 	@echo "  clean         - Cleanup."
-
+	@echo "  info          - Display current environment."
 clean:
 	./scripts/clean.sh
 
