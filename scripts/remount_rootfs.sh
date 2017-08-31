@@ -95,6 +95,9 @@ remount_rootfs() {
 	grep "Linux/arm64" linux/.config | awk  '{print $3}' > images/linux-version
 	sudo cp -r images/linux-version rootfs/
 
+	## firstboot initialization: for 'ROOTFS' partition resize
+	sudo touch rootfs/etc/default/FIRSTBOOT
+
 	## script executing on chroot
 	sudo cp -r archives/filesystem/RUNME_REMOUNT.sh rootfs/
 
