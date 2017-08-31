@@ -3,7 +3,7 @@
 ########################### Parameters ###################################
 
 UBOOT_GIT_BRANCH_VIM="ubuntu"
-UBOOT_GIT_BRANCH_VIM2="ubuntu-vim2"
+UBOOT_GIT_BRANCH_VIM2="ubuntu"
 LINUX_GIT_BRANCH_3_14="ubuntu"
 LINUX_GIT_BRANCH_4_9="ubuntu-4.9"
 

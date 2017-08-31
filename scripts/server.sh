@@ -113,7 +113,7 @@ prepare_git_branch() {
 			UBOOT_GIT_BRANCH="ubuntu"
 			;;
 		VIM2)
-			UBOOT_GIT_BRANCH="ubuntu-vim2"
+			UBOOT_GIT_BRANCH="ubuntu"
 			;;
 		*)
 			error_msg $CURRENT_FILE $LINENO "Unsupported board:$KHADAS_BOARD"
