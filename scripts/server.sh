@@ -245,7 +245,7 @@ prepare_aml_update_tool_config() {
 			AML_UPDATE_TOOL_CONFIG="package.conf"
 			;;
 		VIM2)
-			AML_UPDATE_TOOL_CONFIG="package_VIM2.conf"
+			AML_UPDATE_TOOL_CONFIG="package.conf"
 			;;
 		*)
 			error_msg $CURRENT_FILE $LINENO "Unsupported board:$KHADAS_BOARD"
