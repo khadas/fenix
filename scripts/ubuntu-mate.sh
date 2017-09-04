@@ -4,7 +4,7 @@
 
 UBOOT_DEFCONFIG=
 LINUX_DTB=
-UBUNTU_BASE=
+UBUNTU_MATE=
 UBOOT_GIT_BRANCH=
 LINUX_GIT_BRANCH=
 
@@ -161,22 +161,22 @@ fixup_dtb_link() {
 	return $ret
 }
 
-## Select ubuntu base
-prepare_ubuntu_base() {
+## Select ubuntu mate
+prepare_ubuntu_mate() {
 	ret=0
 	case "$UBUNTU" in
 		16.04.2)
-			UBUNTU_BASE="ubuntu-base-16.04.2-base-arm64.tar.gz"
+			UBUNTU_MATE="ubuntu-mate-16.04.2-arm64.tar.gz"
 			;;
 		17.04)
-			UBUNTU_BASE="ubuntu-base-17.04-base-arm64.tar.gz"
+			UBUNTU_MATE="ubuntu-mate-17.04-arm64.tar.gz"
 			;;
 		17.10)
-			UBUNTU_BASE="artful-base-arm64.tar.gz"
+			UBUNTU_MATE="artful-mate-arm64.tar.gz"
 			;;
 		*)
 			error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu version:$UBUNTU"
-			UBUNTU_BASE=
+			UBUNTU_MATE=
 			ret=-1
 	esac
 
@@ -192,7 +192,7 @@ display_parameters() {
 	echo "ubuntu version:                $UBUNTU"
 	echo "uboot configuration:           $UBOOT_DEFCONFIG"
 	echo "linux dtb:                     $LINUX_DTB"
-	echo "ubuntu base:                   $UBUNTU_BASE"
+	echo "ubuntu mate:                   $UBUNTU_MATE"
 	echo "uboot git branch:              $UBOOT_GIT_BRANCH"
 	echo "linux git branch:              $LINUX_GIT_BRANCH"
 	echo "base directory:                $BASE_DIR"
@@ -328,28 +328,20 @@ build_linux() {
 	make -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image $LINUX_DTB  modules
 }
 
-## Setup ubuntu base
-setup_ubuntu_base() {
+## Setup ubuntu mate
+setup_ubuntu_mate() {
 	ret=0
-	if [ "$UBUNTU_BASE" == "" ]; then
-		error_msg $CURRENT_FILE $LINENO "'UBUNTU_BASE' is empty!"
+	if [ "$UBUNTU_MATE" == "" ]; then
+		error_msg $CURRENT_FILE $LINENO "'UBUNTU_MATE' is empty!"
 		return -1
 	fi
 
-	cd ${UBUNTU_WORKING_DIR}/archives/ubuntu-base
+	cd ${UBUNTU_WORKING_DIR}/archives/ubuntu-mate
 
-	if [ ! -f $UBUNTU_BASE ]; then
-		echo "'$UBUNTU_BASE' does not exist, begin to downloading..."
-		if [ "$UBUNTU" == "16.04.2" ] || [ "$UBUNTU" == "17.04" ]; then
-			wget http://cdimage.ubuntu.com/ubuntu-base/releases/$UBUNTU/release/$UBUNTU_BASE
-		##FIXME
-		elif [ "$UBUNTU" == "17.10" ]; then
-			wget http://cdimage.ubuntu.com/ubuntu-base/daily/current/$UBUNTU_BASE
-		else
-			error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu version:'$UBUNTU'"
-			ret=-1
-		fi
-		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to download '$UBUNTU_BASE'" && ret=-1
+	if [ ! -f $UBUNTU_MATE ]; then
+		# FIXME
+		error_msg $CURRENT_FILE $LINENO "'$UBUNTU_MATE' does not exist, please download it into folder
+					'`pwd`' manually, and try again!" && ret=-1
 	fi
 
 	cd -
@@ -361,13 +353,14 @@ setup_ubuntu_base() {
 build_rootfs() {
 	ret=0
 	cd ${UBUNTU_WORKING_DIR}
-	dd if=/dev/zero of=images/rootfs.img bs=1M count=0 seek=900
+	dd if=/dev/zero of=images/rootfs.img bs=1M count=0 seek=3400
 	sudo mkfs.ext4 -F -L ROOTFS images/rootfs.img
 	rm -rf rootfs && install -d rootfs
 	sudo mount -o loop images/rootfs.img rootfs
 	sudo rm -rf rootfs/lost+found
-	# ubuntu-base
-	sudo tar -xzf archives/ubuntu-base/$UBUNTU_BASE -C rootfs/
+	# ubuntu-mate
+	echo "Extracting ubuntu mate rootfs, please wait..."
+	sudo tar -xzf archives/ubuntu-mate/$UBUNTU_MATE -C rootfs/
 	# [Optional] Mirrors for ubuntu-ports
 	sudo cp -a rootfs/etc/apt/sources.list rootfs/etc/apt/sources.list.orig
 	sudo sed -i "s/http:\/\/ports.ubuntu.com\/ubuntu-ports\//http:\/\/mirrors.ustc.edu.cn\/ubuntu-ports\//g" rootfs/etc/apt/sources.list
@@ -388,8 +381,10 @@ build_rootfs() {
 	sudo cp -r images/linux-version rootfs/
 	# initramfs
 	sudo cp -r archives/filesystem/etc/initramfs-tools/ rootfs/etc/
+	# fixup network-manager script
+	sudo cp -r archives/filesystem/etc/init.d/khadas-restart-nm.sh rootfs/etc/init.d/khadas-restart-nm.sh
 	# WIFI
-	sudo mkdir rootfs/lib/firmware
+	sudo mkdir -p rootfs/lib/firmware
 	sudo cp -r archives/hwpacks/wlan-firmware/brcm/ rootfs/lib/firmware/
 	# Bluetooth
 	sudo cp -r archives/hwpacks/bluez/brcm_patchram_plus rootfs/usr/local/bin/
@@ -440,7 +435,7 @@ build_rootfs() {
 	sudo cp ./utils/mkimage-arm64 rootfs/usr/local/bin/mkimage
 
 	## script executing on chroot
-	sudo cp -r archives/filesystem/RUNME.sh rootfs/
+	sudo cp -r archives/filesystem/RUNME_mate.sh rootfs/
 
 	## Chroot
 	sudo cp -a /usr/bin/qemu-aarch64-static rootfs/usr/bin/
@@ -452,7 +447,7 @@ build_rootfs() {
 	sudo mount -o bind /sys rootfs/sys
 	sudo mount -o bind /dev rootfs/dev
 	sudo mount -o bind /dev/pts rootfs/dev/pts
-	sudo chroot rootfs/ bash "/RUNME.sh" $UBUNTU
+	sudo chroot rootfs/ bash "/RUNME_mate.sh" $UBUNTU
 
 	## Generate ramdisk.img
 	cp rootfs/boot/initrd.img images/initrd.img
@@ -494,12 +489,12 @@ check_parameters $1 $2 $3      &&
 prepare_uboot_configuration    &&
 prepare_linux_dtb              &&
 prepare_git_branch             &&
-prepare_ubuntu_base            &&
+prepare_ubuntu_mate            &&
 prepare_working_environment    &&
 prepare_aml_update_tool_config &&
 display_parameters             &&
 fixup_dtb_link                 &&
-setup_ubuntu_base              &&
+setup_ubuntu_mate              &&
 build_uboot                    &&
 build_linux                    &&
 build_rootfs                   &&

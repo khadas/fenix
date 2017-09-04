@@ -28,7 +28,11 @@ else
 endif
 
 ubuntu-mate:
-	./scripts/ubuntu-mate.sh
+ifeq ($(and $(KHADAS_BOARD),$(UBUNTU),$(LINUX)),)
+	$(call help_message)
+else
+	./scripts/ubuntu-mate.sh $(KHADAS_BOARD) $(UBUNTU) $(LINUX)
+endif
 
 github:
 	./scripts/github.sh
@@ -55,6 +59,7 @@ info:
 help:
 	@echo "Fenix scripts help messages:"
 	@echo "  server        - Create ubuntu server update image."
+	@echo "  ubuntu-mate   - Create ubuntu mate update image."
 	@echo "  remount       - Remount rootfs and recreate initrd."
 	@echo "  github        - Update repositories from Khadas GitHub."
 	@echo "  image         - Pack update image."
