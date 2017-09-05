@@ -103,15 +103,31 @@ remount_rootfs() {
 
 	## Chroot
 	sudo cp -a /usr/bin/qemu-aarch64-static rootfs/usr/bin/
-	echo
-	echo "NOTE: YOU ARE NOW IN THE VIRTUAL TARGET, SETUP ANYTHING YOU WANT."
-	echo "      TYPE 'exit' TO CONTINUE IF FINISHED."
-	echo
+
 	sudo mount -o bind /proc rootfs/proc
 	sudo mount -o bind /sys rootfs/sys
 	sudo mount -o bind /dev rootfs/dev
 	sudo mount -o bind /dev/pts rootfs/dev/pts
-	sudo chroot rootfs/ bash "/RUNME_REMOUNT.sh" $UBUNTU
+
+	while true; do
+		read -n1 -p $'\n(A)utorun script, (M)anual chroot or (Q)uit? [a/m/q]' answer
+		case $answer in
+			[Aa]* )
+				echo -e "\nAutorun script."
+				sudo chroot rootfs/ bash "/RUNME_REMOUNT.sh" $UBUNTU
+				break;;
+			[Mm]* )
+				echo -e "\n\nNOTE: YOU ARE NOW IN THE VIRTUAL TARGET, SETUP ANYTHING YOU WANT."
+				echo -e "      TYPE 'exit' TO CONTINUE IF FINISHED.\n"
+				sudo chroot rootfs/
+				break;;
+			[Qq]* )
+				echo -e "\nQuit."
+				break;;
+			* )
+				echo -e "\n(A)utorun script, (M)anual chroot or (Q)uit? [a/m/q]"
+		esac
+	done
 
 	## Generate ramdisk.img
 	cp rootfs/boot/initrd.img images/initrd.img
