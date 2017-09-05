@@ -55,12 +55,13 @@ time_cal() {
 	echo "Time elapsed: $day days $hour hours $minute minutes $second seconds."
 }
 
-## $1 board              <VIM | VIM2>
-## $2 ubuntu version     <16.04.2 | 17.04 | 17.10>
-## $3 linux version      <4.9 | 3.14>
+## $1 board              	<VIM | VIM2>
+## $2 ubuntu version     	<16.04.2 | 17.04 | 17.10>
+## $3 linux version      	<4.9 | 3.14>
+## $4 ubuntu architecture	<arm64 | armhf>
 check_parameters() {
-	if [ "$1" == "" ] || [ "$2" == "" ]  || [ "$3" == "" ]; then
-		echo "usage: $0 <VIM|VIM2> <16.04.2|17.04|17.10> <4.9|3.14>"
+	if [ "$1" == "" ] || [ "$2" == "" ]  || [ "$3" == "" ] || [ "$4" == "" ]; then
+		echo "usage: $0 <VIM|VIM2> <16.04.2|17.04|17.10> <4.9|3.14> <arm64|armhf>"
 		return -1;
 	fi
 
@@ -164,18 +165,24 @@ fixup_dtb_link() {
 ## Select ubuntu mate
 prepare_ubuntu_mate() {
 	ret=0
+
+	if [ "$UBUNTU_ARCH" != "arm64" ] && [ "$UBUNTU_ARCH" != "armhf" ]; then
+		error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu architecture: $UBUNTU_ARCH"
+		return -1
+	fi
+
 	case "$UBUNTU" in
 		16.04.2)
-			UBUNTU_MATE="ubuntu-mate-16.04.2-arm64.tar.gz"
+			UBUNTU_MATE="ubuntu-mate-16.04.2-$UBUNTU_ARCH.tar.gz"
 			;;
 		17.04)
-			UBUNTU_MATE="ubuntu-mate-17.04-arm64.tar.gz"
+			UBUNTU_MATE="ubuntu-mate-17.04-$UBUNTU_ARCH.tar.gz"
 			;;
 		17.10)
-			UBUNTU_MATE="artful-mate-arm64.tar.gz"
+			UBUNTU_MATE="artful-mate-$UBUNTU_ARCH.tar.gz"
 			;;
 		*)
-			error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu version:$UBUNTU"
+			error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu version:$UBUNTU_ARCH"
 			UBUNTU_MATE=
 			ret=-1
 	esac
@@ -190,6 +197,7 @@ display_parameters() {
 	echo "board:                         $KHADAS_BOARD"
 	echo "linux version:                 $LINUX"
 	echo "ubuntu version:                $UBUNTU"
+	echo "ubuntu architecture:           $UBUNTU_ARCH"
 	echo "uboot configuration:           $UBOOT_DEFCONFIG"
 	echo "linux dtb:                     $LINUX_DTB"
 	echo "ubuntu mate:                   $UBUNTU_MATE"
@@ -387,7 +395,7 @@ build_rootfs() {
 	sudo mkdir -p rootfs/lib/firmware
 	sudo cp -r archives/hwpacks/wlan-firmware/brcm/ rootfs/lib/firmware/
 	# Bluetooth
-	sudo cp -r archives/hwpacks/bluez/brcm_patchram_plus rootfs/usr/local/bin/
+	sudo cp -r archives/hwpacks/bluez/brcm_patchram_plus-$UBUNTU_ARCH rootfs/usr/local/bin/brcm_patchram_plus
 	sudo cp -r archives/hwpacks/bluez/bluetooth-khadas.service rootfs/lib/systemd/system/
 	sudo cp -r archives/hwpacks/bluez/bluetooth-khadas.sh rootfs/usr/local/bin/
 
@@ -406,24 +414,40 @@ build_rootfs() {
 
 		## libMali.so
 		### fbdev
-		sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/*.so* rootfs/usr/lib/
-		sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/*.so* rootfs/usr/lib/aarch64-linux-gnu
+		if [ "$UBUNTU_ARCH" == "arm64" ]; then
+			sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/*.so* rootfs/usr/lib/
+			sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/*.so* rootfs/usr/lib/aarch64-linux-gnu
+		elif [ "$UBUNTU_ARCH" == "armhf" ]; then
+			sudo cp -arf archives/hwpacks/mali/r7p0/lib/eabihf/r7p0/m450/*.so* rootfs/usr/lib/
+			sudo cp -arf archives/hwpacks/mali/r7p0/lib/eabihf/r7p0/m450/*.so* rootfs/usr/lib/arm-linux-gnueabihf
+		fi
 
 		### wayland
-		### sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/wayland/*.so* rootfs/usr/lib/
-		### sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/wayland/*.so* rootfs/usr/lib/aarch64-linux-gnu
+		### if [ "$UBUNTU_ARCH" == "arm64" ]; then
+		###     sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/wayland/*.so* rootfs/usr/lib/
+		###     sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/wayland/*.so* rootfs/usr/lib/aarch64-linux-gnu
+		###elif [ "$UBUNTU_ARCH" == "armhf" ]; then
+		###     sudo cp -arf archives/hwpacks/mali/r7p0/lib/eabihf/r7p0/m450/wayland/*.so* rootfs/usr/lib/
+		###     sudo cp -arf archives/hwpacks/mali/r7p0/lib/eabihf/r7p0/m450/wayland/*.so* rootfs/usr/lib/arm-linux-gnueabihf
+		### fi
 
 		### links
 		sudo cp -arf archives/hwpacks/mali/r7p0/lib/*.so* rootfs/usr/lib/
-		sudo cp -arf archives/hwpacks/mali/r7p0/lib/*.so* rootfs/usr/lib/aarch64-linux-gnu
+		if [ "$UBUNTU_ARCH" == "arm64" ]; then
+			sudo cp -arf archives/hwpacks/mali/r7p0/lib/*.so* rootfs/usr/lib/aarch64-linux-gnu
+		elif [ "$UBUNTU_ARCH" == "armhf" ]; then
+			sudo cp -arf archives/hwpacks/mali/r7p0/lib/*.so* rootfs/usr/lib/arm-linux-gnueabihf
+		fi
 
 		sudo mkdir -p rootfs/usr/lib/pkgconfig/
 		sudo cp -arf archives/hwpacks/mali/r7p0/lib/pkgconfig/*.pc rootfs/usr/lib/pkgconfig/
 
 		# Mali m450 framebuffer mode examples
-		sudo mkdir -p rootfs/usr/share/arm/
-		sudo cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/lib/* rootfs/usr/lib/
-		sudo cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/opengles_20 rootfs/usr/share/arm/
+		if [ "$UBUNTU_ARCH" == "arm64" ]; then
+			sudo mkdir -p rootfs/usr/share/arm/
+			sudo cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/lib/* rootfs/usr/lib/
+			sudo cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/opengles_20 rootfs/usr/share/arm/
+		fi
 	fi
 
 	# rc.local
@@ -432,13 +456,23 @@ build_rootfs() {
 	sudo touch rootfs/etc/default/FIRSTBOOT
 
 	# mkimage tool
-	sudo cp ./utils/mkimage-arm64 rootfs/usr/local/bin/mkimage
+	sudo cp ./utils/mkimage-$UBUNTU_ARCH rootfs/usr/local/bin/mkimage
 
 	## script executing on chroot
 	sudo cp -r archives/filesystem/RUNME_mate.sh rootfs/
 
 	## Chroot
-	sudo cp -a /usr/bin/qemu-aarch64-static rootfs/usr/bin/
+	if [ "$UBUNTU_ARCH" == "arm64" ]; then
+		sudo cp -a /usr/bin/qemu-aarch64-static rootfs/usr/bin/
+	elif [ "$UBUNTU_ARCH" == "armhf" ]; then
+		sudo cp -a /usr/bin/qemu-arm-static rootfs/usr/bin/
+	else
+		error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu architecture: '$UBUNTU_ARCH'"
+		sudo sync
+		sudo umount rootfs
+		return -1
+	fi
+
 	echo
 	echo "NOTE: YOU ARE NOW IN THE VIRTUAL TARGET, SETUP ANYTHING YOU WANT."
 	echo "      TYPE 'exit' TO CONTINUE IF FINISHED."
@@ -485,7 +519,7 @@ pack_update_image() {
 
 ###########################################################
 start_time=`date +%s`
-check_parameters $1 $2 $3      &&
+check_parameters $1 $2 $3 $4   &&
 prepare_uboot_configuration    &&
 prepare_linux_dtb              &&
 prepare_git_branch             &&

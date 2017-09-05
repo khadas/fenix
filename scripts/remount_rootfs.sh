@@ -33,11 +33,12 @@ warning_msg() {
 	    echo -e "$1:$2" $WARNING "$3"
 }
 
-## $1 board              <VIM | VIM2>
-## $2 linux version      <4.9 | 3.14>
+## $1 board              	<VIM | VIM2>
+## $2 linux version      	<4.9 | 3.14>
+## $3 ubuntu architecture   <arm64 | armhf>
 check_parameters() {
-	if [ "$1" == "" ] || [ "$2" == "" ]; then
-		echo "usage: $0 <VIM|VIM2> <4.9|3.14>"
+	if [ "$1" == "" ] || [ "$2" == "" ] || [ "$3" == "" ]; then
+		echo "usage: $0 <VIM|VIM2> <4.9|3.14> <arm64|armhf>"
 		return -1
 	fi
 
@@ -102,7 +103,11 @@ remount_rootfs() {
 	sudo cp -r archives/filesystem/RUNME_REMOUNT.sh rootfs/
 
 	## Chroot
-	sudo cp -a /usr/bin/qemu-aarch64-static rootfs/usr/bin/
+	if [ "$UBUNTU_ARCH" == "arm64" ]; then
+		sudo cp -a /usr/bin/qemu-aarch64-static rootfs/usr/bin/
+	elif [ "$UBUNTU_ARCH" == "armhf" ]; then
+		sudo cp -a /usr/bin/qemu-arm-static rootfs/usr/bin/
+	fi
 
 	sudo mount -o bind /proc rootfs/proc
 	sudo mount -o bind /sys rootfs/sys
@@ -149,7 +154,7 @@ remount_rootfs() {
 
 
 ########################################################
-check_parameters $1 $2      &&
+check_parameters $1 $2 $3   &&
 prepare_linux_dtb           &&
 remount_rootfs              &&
 

@@ -21,27 +21,27 @@ balbes150:
 	./scripts/balbes150.sh
 
 server:
-ifeq ($(and $(KHADAS_BOARD),$(UBUNTU),$(LINUX)),)
+ifeq ($(and $(KHADAS_BOARD),$(UBUNTU),$(LINUX),$(UBUNTU_ARCH)),)
 	$(call help_message)
 else
-	./scripts/server.sh $(KHADAS_BOARD) $(UBUNTU) $(LINUX)
+	./scripts/server.sh $(KHADAS_BOARD) $(UBUNTU) $(LINUX) $(UBUNTU_ARCH)
 endif
 
 ubuntu-mate:
-ifeq ($(and $(KHADAS_BOARD),$(UBUNTU),$(LINUX)),)
+ifeq ($(and $(KHADAS_BOARD),$(UBUNTU),$(LINUX),$(UBUNTU_ARCH)),)
 	$(call help_message)
 else
-	./scripts/ubuntu-mate.sh $(KHADAS_BOARD) $(UBUNTU) $(LINUX)
+	./scripts/ubuntu-mate.sh $(KHADAS_BOARD) $(UBUNTU) $(LINUX) $(UBUNTU_ARCH)
 endif
 
 github:
 	./scripts/github.sh
 
 remount:
-ifeq ($(and $(KHADAS_BOARD),$(LINUX)),)
+ifeq ($(and $(KHADAS_BOARD),$(LINUX),$(UBUNTU_ARCH)),)
 	$(call help_message)
 else
-	./scripts/remount_rootfs.sh $(KHADAS_BOARD) $(LINUX)
+	./scripts/remount_rootfs.sh $(KHADAS_BOARD) $(LINUX) $(UBUNTU_ARCH)
 endif
 
 info:
@@ -52,6 +52,7 @@ info:
 	@echo "#KHADAS_BOARD=${KHADAS_BOARD}"
 	@echo "#LINUX=${LINUX}"
 	@echo "#UBUNTU=${UBUNTU}"
+	@echo "#UBUNTU_ARCH=${UBUNTU_ARCH}"
 	@echo
 	@echo "==========================================="
 	@echo ""

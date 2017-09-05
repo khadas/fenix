@@ -13,6 +13,8 @@ else
 	exit
 fi
 
+UBUNTU_ARCH=$2
+
 # Setup password for root user
 echo root:khadas | chpasswd
 
@@ -47,10 +49,12 @@ apt-get -y $APT_OPTIONS install ifupdown net-tools udev fbset vim sudo initramfs
 		bluez rfkill libbluetooth-dev \
 		iputils-ping
 
-# Install armhf library
-dpkg --add-architecture armhf
-apt-get update
-apt-get -y $APT_OPTIONS install libc6:armhf
+if [ "$UBUNTU_ARCH" == "arm64" ]; then
+	# Install armhf library
+	dpkg --add-architecture armhf
+	apt-get update
+	apt-get -y $APT_OPTIONS install libc6:armhf
+fi
 
 # Install Docker
 apt-get -y $APT_OPTIONS install lxc aufs-tools cgroup-lite apparmor docker.io
