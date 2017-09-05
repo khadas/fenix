@@ -13,6 +13,11 @@ else
 	exit
 fi
 
+# Setup DNS resolver
+cp -arf /etc/resolv.conf /etc/resolv.conf.origin
+rm -rf /etc/resolv.conf
+echo "nameserver 127.0.1.1" > /etc/resolv.conf
+
 sed -i "s/^# deb http/deb http/g" /etc/apt/sources.list
 
 # Fetch the latest package lists from server
@@ -34,6 +39,10 @@ mkimage -n 'linux-4.9' -A arm64 -O linux -T kernel -C none -a 0x1080000 -e 0x108
 if [ -f /etc/apt/sources.list.orig ]; then
 	mv /etc/apt/sources.list.orig /etc/apt/sources.list
 fi
+
+# Restore resolv.conf
+rm -rf /etc/resolv.conf
+mv /etc/resolv.conf.origin /etc/resolv.conf
 
 # Clean up
 rm linux-version
