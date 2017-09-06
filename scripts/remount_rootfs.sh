@@ -81,8 +81,12 @@ remount_rootfs() {
 	## Update linux dtb Image
 	if [ "$LINUX" == "4.9" ];then
 		sudo cp linux/arch/arm64/boot/dts/amlogic/$LINUX_DTB rootfs/boot/
+		# Backup dtb
+		sudo cp linux/arch/arm64/boot/dts/amlogic/$LINUX_DTB rootfs/boot/$LINUX_DTB.old
 	elif [ "$LINUX" == "3.14" ];then
 		sudo cp linux/arch/arm64/boot/dts/$LINUX_DTB rootfs/boot/
+		# Backup dtb
+		sudo cp linux/arch/arm64/boot/dts/$LINUX_DTB rootfs/boot/$LINUX_DTB.old
 	else
 		error_msg $CURRENT_FILE $LINENO "Unsupported linux version:'$LINUX'"
 		sudo sync

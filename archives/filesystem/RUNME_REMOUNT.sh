@@ -35,6 +35,10 @@ mkimage -A arm64 -O linux -T ramdisk -a 0x0 -e 0x0 -n "initrd"  -d /boot/initrd.
 #Generate uImage
 mkimage -n 'linux-4.9' -A arm64 -O linux -T kernel -C none -a 0x1080000 -e 0x1080000 -d /boot/Image /boot/uImage
 
+# Backup
+cp /boot/uInitrd /boot/uInitrd.old
+cp /boot/uImage /boot/uImage.old
+
 # Restore the sources.list from mirrors to original
 if [ -f /etc/apt/sources.list.orig ]; then
 	mv /etc/apt/sources.list.orig /etc/apt/sources.list

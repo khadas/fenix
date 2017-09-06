@@ -75,6 +75,14 @@ ln -s /boot/uInitrd uInitrd
 ln -s /boot/kvim.dtb kvim.dtb
 ln -s /boot/kvim2.dtb kvim2.dtb
 
+# Backup
+cp /boot/uInitrd /boot/uInitrd.old
+cp /boot/uImage /boot/uImage.old
+ln -s /boot/uImage.old uImage.old
+ln -s /boot/uInitrd.old uInitrd.old
+ln -s /boot/kvim.dtb.old kvim.dtb.old
+ln -s /boot/kvim2.dtb.old kvim2.dtb.old
+
 # Load mali module
 echo mali >> /etc/modules
 
