@@ -236,10 +236,10 @@ prepare_working_environment() {
 
 	cd images/
 	if [ ! -d "upgrade/.git" ]; then
-		##Clone upgrade.git from Khadas GitHub
-		echo "Upgrade repository dose not exist, clone upgrade repository('master') from Khadas GitHub..."
-		git clone https://github.com/khadas/upgrade.git
-		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to clone 'upgrade.git'" && return -1
+		##Clone images_upgrade.git from Khadas GitHub
+		echo "Upgrade repository dose not exist, clone images_upgrade repository('master') from Khadas GitHub..."
+		git clone https://github.com/khadas/images_upgrade.git upgrade
+		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to clone 'images_upgrade.git'" && return -1
 	fi
 
 	cd -
