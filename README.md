@@ -5,7 +5,7 @@
 ```
 # mkdir -p ~/project/khadas
 # cd ~/project/khadas
-# git clone https://github.com/numbqq/fenix ubuntu
+# git clone https://github.com/khadas/fenix ubuntu
 # cd ubuntu
 ```
 
