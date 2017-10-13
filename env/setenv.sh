@@ -3,12 +3,14 @@
 ################################################################
 
 KHADAS_BOARD_ARRAY=("VIM" "VIM2")
-LINUX_VERSION_ARRAY=("3.14" "4.9")
+VIM_SUPPORTED_LINUX_VERSION_ARRAY=("3.14" "4.9")
+VIM2_SUPPORTED_LINUX_VERSION_ARRAY=("4.9")
 UBUNTU_VERSION_ARRAY=("16.04.2" "17.04" "17.10")
 UBUNTU_ARCH_ARRAY=("arm64" "armhf")
 
 KHADAS_BOARD_ARRAY_LEN=${#KHADAS_BOARD_ARRAY[@]}
-LINUX_VERSION_ARRAY_LEN=${#LINUX_VERSION_ARRAY[@]}
+VIM_SUPPORTED_LINUX_VERSION_ARRAY_LEN=${#VIM_SUPPORTED_LINUX_VERSION_ARRAY[@]}
+VIM2_SUPPORTED_LINUX_VERSION_ARRAY_LEN=${#VIM2_SUPPORTED_LINUX_VERSION_ARRAY[@]}
 UBUNTU_VERSION_ARRAY_LEN=${#UBUNTU_VERSION_ARRAY[@]}
 UBUNTU_ARCH_ARRAY_LEN=${#UBUNTU_ARCH_ARRAY[@]}
 
@@ -75,16 +77,23 @@ function choose_linux_version() {
 	echo ""
 	echo "Choose linux version:"
 	i=0
-	while [[ $i -lt $LINUX_VERSION_ARRAY_LEN ]]
+	local LINUX_VERSION_ARRAY_LEN
+	local LINUX_VERSION_ARRAY_ELEMENT
+	local LINUX_VERSION
+
+	LINUX_VERSION_ARRAY_LEN=${KHADAS_BOARD}_SUPPORTED_LINUX_VERSION_ARRAY_LEN
+	while [[ $i -lt ${!LINUX_VERSION_ARRAY_LEN} ]]
 	do
-		echo "$((${i}+1)). linux-${LINUX_VERSION_ARRAY[$i]}"
+		LINUX_VERSION_ARRAY_ELEMENT=${KHADAS_BOARD}_SUPPORTED_LINUX_VERSION_ARRAY[$i]
+		LINUX_VERSION=${!LINUX_VERSION_ARRAY_ELEMENT}
+		echo "$((${i}+1)). linux-${LINUX_VERSION}"
 		let i++
 	done
 
 	echo ""
 
 	local DEFAULT_NUM
-	DEFAULT_NUM=2
+	DEFAULT_NUM=1
 
 	export LINUX=
 	local ANSWER
@@ -103,9 +112,10 @@ function choose_linux_version() {
 		fi
 
 		if [ -n "`echo $ANSWER | sed -n '/^[0-9][0-9]*$/p'`" ]; then
-			if [ $ANSWER -le $LINUX_VERSION_ARRAY_LEN ] && [ $ANSWER -gt 0 ]; then
+			if [ $ANSWER -le ${!LINUX_VERSION_ARRAY_LEN} ] && [ $ANSWER -gt 0 ]; then
 				index=$((${ANSWER}-1))
-				LINUX="${LINUX_VERSION_ARRAY[$index]}"
+				LINUX_VERSION_ARRAY_ELEMENT=${KHADAS_BOARD}_SUPPORTED_LINUX_VERSION_ARRAY[$index]
+				LINUX="${!LINUX_VERSION_ARRAY_ELEMENT}"
 			else
 				echo
 				echo "number not in range. Please try again."
