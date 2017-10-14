@@ -243,6 +243,8 @@ prepare_working_environment() {
 	fi
 
 	cd -
+
+	return 0
 }
 
 ## Prepare amlogic usb updete tool configuration
