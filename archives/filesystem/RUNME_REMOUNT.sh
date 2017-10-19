@@ -13,6 +13,8 @@ else
 	exit
 fi
 
+INSTALL_TYPE=$2
+
 # Setup DNS resolver
 cp -arf /etc/resolv.conf /etc/resolv.conf.origin
 rm -rf /etc/resolv.conf
@@ -32,12 +34,14 @@ mkinitramfs -o /boot/initrd.img `cat linux-version` 2>/dev/null
 # Generate uInitrd
 mkimage -A arm64 -O linux -T ramdisk -a 0x0 -e 0x0 -n "initrd"  -d /boot/initrd.img  /boot/uInitrd
 
-#Generate uImage
-mkimage -n 'linux-4.9' -A arm64 -O linux -T kernel -C none -a 0x1080000 -e 0x1080000 -d /boot/Image /boot/uImage
+if [ "$INSTALL_TYPE" == "EMMC" ]; then
+	#Generate uImage
+	mkimage -n 'linux-4.9' -A arm64 -O linux -T kernel -C none -a 0x1080000 -e 0x1080000 -d /boot/Image /boot/uImage
 
-# Backup
-cp /boot/uInitrd /boot/uInitrd.old
-cp /boot/uImage /boot/uImage.old
+	# Backup
+	cp /boot/uInitrd /boot/uInitrd.old
+	cp /boot/uImage /boot/uImage.old
+fi
 
 # Restore the sources.list from mirrors to original
 if [ -f /etc/apt/sources.list.orig ]; then

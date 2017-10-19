@@ -11,20 +11,20 @@ release:
 	./scripts/image release
 
 image:
-ifeq ($(and $(KHADAS_BOARD)),)
+ifeq ($(and $(KHADAS_BOARD),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/make_image.sh $(KHADAS_BOARD)
+	./scripts/make_image.sh $(KHADAS_BOARD) $(INSTALL_TYPE)
 endif
 
 balbes150:
 	./scripts/balbes150.sh
 
 server:
-ifeq ($(and $(KHADAS_BOARD),$(UBUNTU),$(LINUX),$(UBUNTU_ARCH)),)
+ifeq ($(and $(KHADAS_BOARD),$(UBUNTU),$(LINUX),$(UBUNTU_ARCH),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/server.sh $(KHADAS_BOARD) $(UBUNTU) $(LINUX) $(UBUNTU_ARCH)
+	./scripts/server.sh $(KHADAS_BOARD) $(UBUNTU) $(LINUX) $(UBUNTU_ARCH) $(INSTALL_TYPE)
 endif
 
 ubuntu-mate:
@@ -38,10 +38,10 @@ github:
 	./scripts/github.sh
 
 remount:
-ifeq ($(and $(KHADAS_BOARD),$(LINUX),$(UBUNTU_ARCH)),)
+ifeq ($(and $(KHADAS_BOARD),$(LINUX),$(UBUNTU_ARCH),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/remount_rootfs.sh $(KHADAS_BOARD) $(LINUX) $(UBUNTU_ARCH)
+	./scripts/remount_rootfs.sh $(KHADAS_BOARD) $(LINUX) $(UBUNTU_ARCH) $(INSTALL_TYPE)
 endif
 
 info:
@@ -53,6 +53,7 @@ info:
 	@echo "#LINUX=${LINUX}"
 	@echo "#UBUNTU=${UBUNTU}"
 	@echo "#UBUNTU_ARCH=${UBUNTU_ARCH}"
+	@echo "#INSTALL_TYPE=${INSTALL_TYPE}"
 	@echo
 	@echo "==========================================="
 	@echo ""

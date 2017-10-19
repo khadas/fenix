@@ -8,6 +8,8 @@ BASE_DIR="$HOME"
 PROJECT_DIR="${BASE_DIR}/project"
 KHADAS_DIR="${PROJECT_DIR}/khadas"
 UBUNTU_WORKING_DIR="$(dirname "$(dirname "$(readlink -fm "$0")")")"
+IMAGE_DIR="images/"
+IMAGE_FILE_NAME="KHADAS-${KHADAS_BOARD}-${INSTALL_TYPE}.img"
 
 CURRENT_FILE="$0"
 
@@ -32,9 +34,10 @@ warning_msg() {
 }
 
 ## $1 board              <VIM | VIM2>
+## $2 install type       <EMMC | SD-USB>
 check_parameters() {
 	if [ "$1" == "" ]; then
-		echo "usage: $0 <VIM|VIM2>"
+		echo "usage: $0 <VIM|VIM2> <EMMC|SD-USB>"
 		return -1;
 	fi
 
@@ -62,21 +65,34 @@ prepare_aml_update_tool_config() {
 }
 
 
-## Pack the images to update.img
+## Pack the images
 pack_update_image() {
 	cd ${UBUNTU_WORKING_DIR}
 
-	if [ $AML_UPDATE_TOOL_CONFIG == "" ]; then
-		error_msg $CURRENT_FILE $LINENO "'AML_UPDATE_TOOL_CONFIG' is empty!"
+	echo "Image install type: $INSTALL_TYPE"
+	if [ "$INSTALL_TYPE" == "EMMC" ]; then
+		if [ $AML_UPDATE_TOOL_CONFIG == "" ]; then
+			error_msg $CURRENT_FILE $LINENO "'AML_UPDATE_TOOL_CONFIG' is empty!"
+			return -1
+		fi
+		echo "Packing update image using config: $AML_UPDATE_TOOL_CONFIG"
+		./utils/aml_image_v2_packer -r images/upgrade/$AML_UPDATE_TOOL_CONFIG images/upgrade/ images/${IMAGE_FILE_NAME}
+	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
+
+		IMAGE_LOOP_DEV="$(sudo losetup --show -f ${IMAGE_DIR}${IMAGE_FILE_NAME})"
+		sudo partprobe "${IMAGE_LOOP_DEV}"
+		sudo dd if=u-boot/fip/u-boot.bin.sd.bin of="${IMAGE_LOOP_DEV}" conv=fsync bs=1 count=442
+		sudo dd if=u-boot/fip/u-boot.bin.sd.bin of="${IMAGE_LOOP_DEV}" conv=fsync bs=512 skip=1 seek=1
+
+		sudo losetup -d "${IMAGE_LOOP_DEV}"
+	else
+		error_msg $CURRENT_FILE $LINENO "Unsupported install type: '$INSTALL_TYPE'"
 		return -1
 	fi
-
-	echo "Packing update image using config: $AML_UPDATE_TOOL_CONFIG"
-	./utils/aml_image_v2_packer -r images/upgrade/$AML_UPDATE_TOOL_CONFIG images/upgrade/ images/update.img
 }
 
 ##########################################################
-check_parameters $1               &&
+check_parameters $@               &&
 prepare_aml_update_tool_config    &&
 pack_update_image                 &&
 
