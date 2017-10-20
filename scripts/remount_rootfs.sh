@@ -114,7 +114,16 @@ remount_rootfs() {
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		sudo ./utils/mkimage -A arm64 -O linux -T kernel -C none -a $IMAGE_LINUX_LOADADDR -e $IMAGE_LINUX_LOADADDR -n linux-$IMAGE_LINUX_VERSION -d $BOOT_DIR/vmlinuz-$IMAGE_LINUX_VERSION $BOOT_DIR/uImage
 		sudo cp $BOOT_DIR/uImage $BOOT_DIR/uImag.old
+		# Universal multi-boot
+		sudo cp archives/filesystem/boot/* $BOOT_DIR
+		sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S905 autoscript" -d $BOOT_DIR/s905_autoscript.cmd $BOOT_DIR/s905_autoscript
+		sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "AML autoscript" -d $BOOT_DIR/aml_autoscript.txt $BOOT_DIR/aml_autoscript
+		cd $BOOT_DIR
+		sudo rm aml_autoscript.zip
+		sudo zip aml_autoscript.zip aml_autoscript aml_autoscript.txt
+		cd -
 	fi
+
 	## Update linux modules
 	sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules_install INSTALL_MOD_PATH=../rootfs/
 	sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- headers_install INSTALL_HDR_PATH=$PWD/rootfs/usr/
