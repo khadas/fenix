@@ -13,6 +13,8 @@ else
 	exit
 fi
 
+INSTALL_TYPE=$2
+
 # Setup host
 echo Khadas > /etc/hostname
 echo "127.0.0.1    localhost.localdomain localhost" > /etc/hosts
@@ -52,22 +54,24 @@ mkinitramfs -o /boot/initrd.img `cat linux-version` 2>/dev/null
 # Generate uInitrd
 mkimage -A arm64 -O linux -T ramdisk -a 0x0 -e 0x0 -n "initrd"  -d /boot/initrd.img  /boot/uInitrd
 
-#Generate uImage
-mkimage -n 'linux-4.9' -A arm64 -O linux -T kernel -C none -a 0x1080000 -e 0x1080000 -d /boot/Image /boot/uImage
+if [ "$INSTALL_TYPE" == "EMMC" ]; then
+	#Generate uImage
+	mkimage -n 'linux-4.9' -A arm64 -O linux -T kernel -C none -a 0x1080000 -e 0x1080000 -d /boot/Image /boot/uImage
 
-# Create links
-ln -s /boot/uImage uImage
-ln -s /boot/uInitrd uInitrd
-ln -s /boot/kvim.dtb kvim.dtb
-ln -s /boot/kvim2.dtb kvim2.dtb
+	# Create links
+	ln -s /boot/uImage uImage
+	ln -s /boot/uInitrd uInitrd
+	ln -s /boot/kvim.dtb kvim.dtb
+	ln -s /boot/kvim2.dtb kvim2.dtb
 
-# Backup
-cp /boot/uInitrd /boot/uInitrd.old
-cp /boot/uImage /boot/uImage.old
-ln -s /boot/uImage.old uImage.old
-ln -s /boot/uInitrd.old uInitrd.old
-ln -s /boot/kvim.dtb.old kvim.dtb.old
-ln -s /boot/kvim2.dtb.old kvim2.dtb.old
+	# Backup
+	cp /boot/uInitrd /boot/uInitrd.old
+	cp /boot/uImage /boot/uImage.old
+	ln -s /boot/uImage.old uImage.old
+	ln -s /boot/uInitrd.old uInitrd.old
+	ln -s /boot/kvim.dtb.old kvim.dtb.old
+	ln -s /boot/kvim2.dtb.old kvim2.dtb.old
+fi
 
 # Load mali module
 echo mali >> /etc/modules
@@ -83,6 +87,11 @@ echo aufs >> /etc/modules
 
 # Bluetooth
 systemctl enable bluetooth-khadas
+
+# Resize service
+if [ "$INSTALL_TYPE" == "SD-USB" ]; then
+	systemctl enable resize2fs
+fi
 
 # Restore the sources.list from mirrors to original
 if [ -f /etc/apt/sources.list.orig ]; then

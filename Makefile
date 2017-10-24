@@ -28,10 +28,10 @@ else
 endif
 
 ubuntu-mate:
-ifeq ($(and $(KHADAS_BOARD),$(UBUNTU),$(LINUX),$(UBUNTU_ARCH)),)
+ifeq ($(and $(KHADAS_BOARD),$(UBUNTU),$(LINUX),$(UBUNTU_ARCH),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/ubuntu-mate.sh $(KHADAS_BOARD) $(UBUNTU) $(LINUX) $(UBUNTU_ARCH)
+	./scripts/ubuntu-mate.sh $(KHADAS_BOARD) $(UBUNTU) $(LINUX) $(UBUNTU_ARCH) $(INSTALL_TYPE)
 endif
 
 github:
