@@ -15,39 +15,105 @@ fi
 
 UBUNTU_ARCH=$2
 INSTALL_TYPE=$3
+UBUNTU_MATE_ROOTFS_TYPE=$4
 
-# Setup host
-echo Khadas > /etc/hostname
-echo "127.0.0.1    localhost.localdomain localhost" > /etc/hosts
-echo "127.0.0.1    Khadas" >> /etc/hosts
+if [ "$UBUNTU_MATE_ROOTFS_TYPE" == "mate-rootfs" ]; then
+	# Setup host
+	echo Khadas > /etc/hostname
+	echo "127.0.0.1    localhost.localdomain localhost" > /etc/hosts
+	echo "127.0.0.1    Khadas" >> /etc/hosts
 
-# Setup DNS resolver
-cp -arf /etc/resolv.conf /etc/resolv.conf.origin
-rm -rf /etc/resolv.conf
-echo "nameserver 127.0.1.1" > /etc/resolv.conf
+	# Setup DNS resolver
+	cp -arf /etc/resolv.conf /etc/resolv.conf.origin
+	rm -rf /etc/resolv.conf
+	echo "nameserver 127.0.1.1" > /etc/resolv.conf
 
-# Locale
-locale-gen "en_US.UTF-8"
-export LC_ALL="en_US.UTF-8"
-update-locale LC_ALL="en_US.UTF-8" LANG="en_US.UTF-8" LC_MESSAGES=POSIX
-dpkg-reconfigure -f noninteractive locales
+	# Locale
+	locale-gen "en_US.UTF-8"
+	export LC_ALL="en_US.UTF-8"
+	update-locale LC_ALL="en_US.UTF-8" LANG="en_US.UTF-8" LC_MESSAGES=POSIX
+	dpkg-reconfigure -f noninteractive locales
 
-sed -i "s/^# deb http/deb http/g" /etc/apt/sources.list
+	sed -i "s/^# deb http/deb http/g" /etc/apt/sources.list
 
-# Fetch the latest package lists from server
-apt-get update
+	## Mirrors
+	cp -a /etc/apt/sources.list /etc/apt/sources.list.orig
+	sed -i "s/http:\/\/ports.ubuntu.com\/ubuntu-ports\//http:\/\/mirrors.ustc.edu.cn\/ubuntu-ports\//g" /etc/apt/sources.list
 
-# Upgrade
-apt-get -y $APT_OPTIONS upgrade
+	# Fetch the latest package lists from server
+	apt-get update
 
-# Fixup /media/khadas ACL attribute
-setfacl -m u:khadas:rx /media/khadas
-setfacl -m g::--- /media/khadas
+	# Upgrade
+	apt-get -y $APT_OPTIONS upgrade
 
-# Fixup network-manager
-cd /etc/init.d/
-update-rc.d khadas-restart-nm.sh defaults 99
-cd -
+	# Fixup /media/khadas ACL attribute
+	setfacl -m u:khadas:rx /media/khadas
+	setfacl -m g::--- /media/khadas
+
+	# Fixup network-manager
+	cd /etc/init.d/
+	update-rc.d khadas-restart-nm.sh defaults 99
+	cd -
+elif [ "$UBUNTU_MATE_ROOTFS_TYPE" == "chroot-install" ]; then
+	# Setup password for root user
+	echo root:khadas | chpasswd
+
+	# Admin user khadas
+	useradd -m -p "pal8k5d7/m9GY" -s /bin/bash khadas
+	usermod -aG sudo,adm khadas
+
+	# Setup host
+	echo Khadas > /etc/hostname
+	echo "127.0.0.1    localhost.localdomain localhost" > /etc/hosts
+	echo "127.0.0.1    Khadas" >> /etc/hosts
+
+	# Setup DNS resolver
+	echo "nameserver 127.0.1.1" > /etc/resolv.conf
+
+	# Locale
+	locale-gen "en_US.UTF-8"
+	export LC_ALL="en_US.UTF-8"
+	update-locale LC_ALL="en_US.UTF-8" LANG="en_US.UTF-8" LC_MESSAGES=POSIX
+	dpkg-reconfigure -f noninteractive locales
+
+	## Apt sources.list: add [universe] and [multiverse] repositories
+	sed -i "s/^# deb http/deb http/g" /etc/apt/sources.list
+
+	## Mirrors
+	cp -a /etc/apt/sources.list /etc/apt/sources.list.orig
+	sed -i "s/http:\/\/ports.ubuntu.com\/ubuntu-ports\//http:\/\/mirrors.ustc.edu.cn\/ubuntu-ports\//g" /etc/apt/sources.list
+
+	# Fetch the latest package lists from server
+	apt-get update
+
+	# Upgrade
+	apt-get -y $APT_OPTIONS upgrade
+
+	# Install the packages
+	apt-get -y $APT_OPTIONS install ifupdown net-tools udev fbset vim sudo initramfs-tools \
+		bluez rfkill libbluetooth-dev \
+		iputils-ping parted
+
+	if [ "$UBUNTU_ARCH" == "arm64" ]; then
+	    # Install armhf library
+	    dpkg --add-architecture armhf
+	    apt-get update
+	    apt-get -y $APT_OPTIONS install libc6:armhf
+	fi
+
+	# Install Docker
+	apt-get -y $APT_OPTIONS install lxc aufs-tools cgroup-lite apparmor docker.io
+	usermod -aG docker khadas
+
+	## Mate desktop
+	apt -y $APT_OPTIONS install mate-desktop-environment ubuntu-mate-core
+
+	## Gnome-player
+	apt -y  $APT_OPTIONS install gnome-mplayer
+
+	## Bluetooth menu
+	apt -y $APT_OPTIONS install bluetooth blueman
+fi
 
 # Build the ramdisk
 mkinitramfs -o /boot/initrd.img `cat linux-version` 2>/dev/null
@@ -100,8 +166,10 @@ if [ -f /etc/apt/sources.list.orig ]; then
 fi
 
 # Restore resolv.conf
-rm -rf /etc/resolv.conf
-mv /etc/resolv.conf.origin /etc/resolv.conf
+if [ -f /etc/resolv.conf.origin ]; then
+	rm -rf /etc/resolv.conf
+	mv /etc/resolv.conf.origin /etc/resolv.conf
+fi
 
 # Clean up
 rm linux-version

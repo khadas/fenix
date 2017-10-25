@@ -182,7 +182,7 @@ prepare_ubuntu_rootfs() {
 		return -1
 	fi
 
-	if [ "$UBUNTU_TYPE" == "server" ]; then
+	if [ "$UBUNTU_TYPE" == "server" ] || [ "$UBUNTU_MATE_ROOTFS_TYPE" == "chroot-install" ]; then
 		case "$UBUNTU" in
 			16.04.2)
 				UBUNTU_ROOTFS="ubuntu-base-16.04.2-base-$UBUNTU_ARCH.tar.gz"
@@ -204,10 +204,10 @@ prepare_ubuntu_rootfs() {
 				UBUNTU_ROOTFS="ubuntu-mate-16.04.2-$UBUNTU_ARCH.tar.gz"
 				;;
 			*)
-				error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu version:$UBUNTU_TYPE $UBUNTU"
+				error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu version:$UBUNTU_TYPE $UBUNTU for $UBUNTU_MATE_ROOTFS_TYPE"
 				UBUNTU_ROOTFS=
 				ret=-1
-				esac
+		esac
 	else
 		error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu image type:$UBUNTU_TYPE"
 		return -1
@@ -381,15 +381,19 @@ setup_ubuntu_rootfs() {
 		cd ${UBUNTU_WORKING_DIR}/archives/ubuntu-base
 	elif [ "$UBUNTU_TYPE" == "mate" ]; then
 		IMAGE_SIZE=$UBUNTU_MATE_IMAGE_SIZE
-		if [ "$UBUNTU" == "16.04.2" ]; then
-			cd ${UBUNTU_WORKING_DIR}/archives/ubuntu-mate
-		else
-			error_msg $CURRENT_FILE $LINENO "Ubuntu mate $UBUNTU is not supported to build use ubuntu mate rootfs now!" && return -1
+		if [ "$UBUNTU_MATE_ROOTFS_TYPE" == "mate-rootfs" ]; then
+			if [ "$UBUNTU" == "16.04.2" ]; then
+				cd ${UBUNTU_WORKING_DIR}/archives/ubuntu-mate
+			else
+				error_msg $CURRENT_FILE $LINENO "Ubuntu mate $UBUNTU is not supported to build use ubuntu mate rootfs now!" && return -1
+			fi
+		elif [ "$UBUNTU_MATE_ROOTFS_TYPE" == "chroot-install" ]; then
+			cd ${UBUNTU_WORKING_DIR}/archives/ubuntu-base
 		fi
 	fi
 
 	if [ ! -f $UBUNTU_ROOTFS ]; then
-		if [ "$UBUNTU_TYPE" == "server" ]; then
+		if [ "$UBUNTU_TYPE" == "server" ] || [ "$UBUNTU_MATE_ROOTFS_TYPE" == "chroot-install" ]; then
 			echo "'$UBUNTU_ROOTFS' does not exist, begin to downloading..."
 			if [ "$UBUNTU" == "16.04.2" ] || [ "$UBUNTU" == "17.04" ]; then
 				wget http://cdimage.ubuntu.com/ubuntu-base/releases/$UBUNTU/release/$UBUNTU_ROOTFS
@@ -405,7 +409,6 @@ setup_ubuntu_rootfs() {
 			else
 				error_msg $CURRENT_FILE $LINENO "Ubuntu mate $UBUNTU is not supported to build use ubuntu mate rootfs now!" && ret=-1
 			fi
-
 		fi
 
 		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to download '$UBUNTU_ROOTFS'" && ret=-1
@@ -525,9 +528,14 @@ EOF
 		# ubuntu-base
 		sudo tar -xzf archives/ubuntu-base/$UBUNTU_ROOTFS -C rootfs/
 	elif [ "$UBUNTU_TYPE" == "mate" ]; then
-		# ubuntu-mate
-		echo "Extracting ubuntu mate rootfs, please wait..."
-		sudo tar -xzf archives/ubuntu-mate/$UBUNTU_ROOTFS -C rootfs/
+		if [ "$UBUNTU_MATE_ROOTFS_TYPE" == "mate-rootfs" ]; then
+			# ubuntu-mate
+			echo "Extracting ubuntu mate rootfs, please wait..."
+			sudo tar -xzf archives/ubuntu-mate/$UBUNTU_ROOTFS -C rootfs/
+		elif [ "$UBUNTU_MATE_ROOTFS_TYPE" == "chroot-install" ]; then
+			# Install ubuntu mate in chroot, use ubuntu base
+			sudo tar -xzf archives/ubuntu-base/$UBUNTU_ROOTFS -C rootfs/
+		fi
 	fi
 	# [Optional] Mirrors for ubuntu-ports
 	sudo cp -a rootfs/etc/apt/sources.list rootfs/etc/apt/sources.list.orig
@@ -628,7 +636,7 @@ EOF
 	sudo mount -o bind /sys rootfs/sys
 	sudo mount -o bind /dev rootfs/dev
 	sudo mount -o bind /dev/pts rootfs/dev/pts
-	sudo chroot rootfs/ bash "/RUNME_${UBUNTU_TYPE}.sh" $UBUNTU $UBUNTU_ARCH $INSTALL_TYPE
+	sudo chroot rootfs/ bash "/RUNME_${UBUNTU_TYPE}.sh" $UBUNTU $UBUNTU_ARCH $INSTALL_TYPE $UBUNTU_MATE_ROOTFS_TYPE
 
 	## Generate ramdisk.img
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then

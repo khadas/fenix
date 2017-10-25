@@ -8,6 +8,8 @@ VIM2_SUPPORTED_LINUX_VERSION_ARRAY=("4.9")
 UBUNTU_VERSION_ARRAY=("16.04.2" "17.04" "17.10")
 UBUNTU_ARCH_ARRAY=("arm64" "armhf")
 INSTALL_TYPE_ARRAY=("EMMC" "SD-USB")
+UBUNTU_TYPE_ARRAY=("server" "mate")
+UBUNTU_MATE_ROOTFS_TYPE_ARRAY=("chroot-install" "mate-rootfs")
 
 KHADAS_BOARD_ARRAY_LEN=${#KHADAS_BOARD_ARRAY[@]}
 VIM_SUPPORTED_LINUX_VERSION_ARRAY_LEN=${#VIM_SUPPORTED_LINUX_VERSION_ARRAY[@]}
@@ -15,12 +17,16 @@ VIM2_SUPPORTED_LINUX_VERSION_ARRAY_LEN=${#VIM2_SUPPORTED_LINUX_VERSION_ARRAY[@]}
 UBUNTU_VERSION_ARRAY_LEN=${#UBUNTU_VERSION_ARRAY[@]}
 UBUNTU_ARCH_ARRAY_LEN=${#UBUNTU_ARCH_ARRAY[@]}
 INSTALL_TYPE_ARRAY_LEN=${#INSTALL_TYPE_ARRAY[@]}
+UBUNTU_TYPE_ARRAY_LEN=${#UBUNTU_TYPE_ARRAY[@]}
+UBUNTU_MATE_ROOTFS_TYPE_ARRAY_LEN=${#UBUNTU_MATE_ROOTFS_TYPE_ARRAY[@]}
 
 KHADAS_BOARD=
 LINUX=
 UBUNTU=
 UBUNTU_ARCH=
 INSTALL_TYPE=
+UBUNTU_TYPE=
+UBUNTU_MATE_ROOTFS_TYPE=
 
 ###############################################################
 ## Choose Khadas board
@@ -293,11 +299,123 @@ function choose_install_type() {
 	done
 }
 
+function choose_ubuntu_type() {
+	echo ""
+	echo "Choose ubuntu type:"
+	i=0
+	while [[ $i -lt $UBUNTU_TYPE_ARRAY_LEN ]]
+	do
+		echo "$((${i}+1)). ubuntu-${UBUNTU_TYPE_ARRAY[$i]}"
+		let i++
+	done
+
+	echo ""
+
+	local DEFAULT_NUM
+	DEFAULT_NUM=1
+
+	export UBUNTU_TYPE=
+	local ANSWER
+	while [ -z $UBUNTU_TYPE ]
+	do
+		echo -n "Which ubuntu type would you like? ["$DEFAULT_NUM"] "
+		if [ -z "$1" ]; then
+			read ANSWER
+		else
+			echo $1
+			ANSWER=$1
+		fi
+
+		if [ -z "$ANSWER" ]; then
+			ANSWER="$DEFAULT_NUM"
+		fi
+
+		if [ -n "`echo $ANSWER | sed -n '/^[0-9][0-9]*$/p'`" ]; then
+			if [ $ANSWER -le $UBUNTU_TYPE_ARRAY_LEN ] && [ $ANSWER -gt 0 ]; then
+				index=$((${ANSWER}-1))
+				UBUNTU_TYPE="${UBUNTU_TYPE_ARRAY[$index]}"
+			else
+				echo
+				echo "number not in range. Please try again."
+				echo
+			fi
+		else
+			echo
+			echo "I didn't understand your response.  Please try again."
+			echo
+		fi
+
+		if [ -n "$1" ]; then
+			break
+		fi
+	done
+}
+
+function choose_ubuntu_mate_rootfs_type() {
+	if [ "$UBUNTU_TYPE" != "mate" ]; then
+		return
+	fi
+
+	echo ""
+	echo "Choose ubuntu mate rootfs type:"
+	i=0
+	while [[ $i -lt $UBUNTU_MATE_ROOTFS_TYPE_ARRAY_LEN ]]
+	do
+		echo "$((${i}+1)). ${UBUNTU_MATE_ROOTFS_TYPE_ARRAY[$i]}"
+		let i++
+	done
+
+	echo ""
+
+	local DEFAULT_NUM
+	DEFAULT_NUM=1
+
+	export UBUNTU_MATE_ROOTFS_TYPE=
+	local ANSWER
+	while [ -z $UBUNTU_MATE_ROOTFS_TYPE ]
+	do
+		echo -n "Which ubuntu mate rootfs type would you like? ["$DEFAULT_NUM"] "
+		if [ -z "$1" ]; then
+			read ANSWER
+		else
+			echo $1
+			ANSWER=$1
+		fi
+
+		if [ -z "$ANSWER" ]; then
+			ANSWER="$DEFAULT_NUM"
+		fi
+
+		if [ -n "`echo $ANSWER | sed -n '/^[0-9][0-9]*$/p'`" ]; then
+			if [ $ANSWER -le $UBUNTU_MATE_ROOTFS_TYPE_ARRAY_LEN ] && [ $ANSWER -gt 0 ]; then
+				index=$((${ANSWER}-1))
+				UBUNTU_MATE_ROOTFS_TYPE="${UBUNTU_MATE_ROOTFS_TYPE_ARRAY[$index]}"
+			else
+				echo
+				echo "number not in range. Please try again."
+				echo
+			fi
+		else
+			echo
+			echo "I didn't understand your response.  Please try again."
+			echo
+		fi
+
+		if [ -n "$1" ]; then
+			break
+		fi
+	done
+}
+
 function lunch() {
 	echo "==========================================="
 	echo
 	echo "#KHADAS_BOARD=${KHADAS_BOARD}"
 	echo "#LINUX=${LINUX}"
+	echo "#UBUNTU_TYPE=${UBUNTU_TYPE}"
+	if [ "$UBUNTU_TYPE" == "mate" ]; then
+		echo "#UBUNTU_MATE_ROOTFS_TYPE=${UBUNTU_MATE_ROOTFS_TYPE}"
+	fi
 	echo "#UBUNTU=${UBUNTU}"
 	echo "#UBUNTU_ARCH=${UBUNTU_ARCH}"
 	echo "#INSTALL_TYPE=${INSTALL_TYPE}"
@@ -310,6 +428,8 @@ choose_khadas_board
 choose_linux_version
 choose_ubuntu_version
 choose_ubuntu_architecture
+choose_ubuntu_type
+choose_ubuntu_mate_rootfs_type
 choose_install_type
 lunch
 
