@@ -16,14 +16,19 @@ fi
 UBUNTU_ARCH=$2
 INSTALL_TYPE=$3
 
+# Setup password for root user
+echo root:khadas | chpasswd
+
+# Admin user khadas
+useradd -m -p "pal8k5d7/m9GY" -s /bin/bash khadas
+usermod -aG sudo,adm khadas
+
 # Setup host
 echo Khadas > /etc/hostname
 echo "127.0.0.1    localhost.localdomain localhost" > /etc/hosts
 echo "127.0.0.1    Khadas" >> /etc/hosts
 
 # Setup DNS resolver
-cp -arf /etc/resolv.conf /etc/resolv.conf.origin
-rm -rf /etc/resolv.conf
 echo "nameserver 127.0.1.1" > /etc/resolv.conf
 
 # Locale
@@ -40,14 +45,21 @@ apt-get update
 # Upgrade
 apt-get -y $APT_OPTIONS upgrade
 
-# Fixup /media/khadas ACL attribute
-setfacl -m u:khadas:rx /media/khadas
-setfacl -m g::--- /media/khadas
+# Install the packages
+apt-get -y $APT_OPTIONS install ifupdown net-tools udev fbset vim sudo initramfs-tools \
+		bluez rfkill libbluetooth-dev \
+		iputils-ping parted
 
-# Fixup network-manager
-cd /etc/init.d/
-update-rc.d khadas-restart-nm.sh defaults 99
-cd -
+if [ "$UBUNTU_ARCH" == "arm64" ]; then
+	# Install armhf library
+	dpkg --add-architecture armhf
+	apt-get update
+	apt-get -y $APT_OPTIONS install libc6:armhf
+fi
+
+# Install Docker
+apt-get -y $APT_OPTIONS install lxc aufs-tools cgroup-lite apparmor docker.io
+usermod -aG docker khadas
 
 # Build the ramdisk
 mkinitramfs -o /boot/initrd.img `cat linux-version` 2>/dev/null
@@ -98,10 +110,6 @@ fi
 if [ -f /etc/apt/sources.list.orig ]; then
 	mv /etc/apt/sources.list.orig /etc/apt/sources.list
 fi
-
-# Restore resolv.conf
-rm -rf /etc/resolv.conf
-mv /etc/resolv.conf.origin /etc/resolv.conf
 
 # Clean up
 rm linux-version

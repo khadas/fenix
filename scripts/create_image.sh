@@ -4,18 +4,25 @@
 
 UBOOT_DEFCONFIG=
 LINUX_DTB=
-UBUNTU_MATE=
+UBUNTU_ROOTFS=
 UBOOT_GIT_BRANCH=
 LINUX_GIT_BRANCH=
 
 AML_UPDATE_TOOL_CONFIG=
 
+UBUNTU_SERVER_IMAGE_SIZE=1500 # MB
+UBUNTU_MATE_IMAGE_SIZE=3800 # MB
+
+UBUNTU_TYPE=$1
+
 BASE_DIR="$HOME"
 PROJECT_DIR="${BASE_DIR}/project"
 KHADAS_DIR="${PROJECT_DIR}/khadas"
 UBUNTU_WORKING_DIR="$(dirname "$(dirname "$(readlink -fm "$0")")")"
-IMAGE_DIR="images/"
-IMAGE_FILE_NAME="KHADAS-${KHADAS_BOARD}-UBUNTU-MATE-${INSTALL_TYPE}.img"
+IMAGE_DIR="${UBUNTU_WORKING_DIR}/images/"
+IMAGE_FILE_NAME="KHADAS_${KHADAS_BOARD}_${INSTALL_TYPE}.img"
+IMAGE_FILE_NAME=$(echo $IMAGE_FILE_NAME | tr [A-Z] [a-z])
+IMAGE_SIZE=
 
 CURRENT_FILE="$0"
 
@@ -57,14 +64,15 @@ time_cal() {
 	echo "Time elapsed: $day days $hour hours $minute minutes $second seconds."
 }
 
-## $1 board              	<VIM | VIM2>
-## $2 ubuntu version     	<16.04.2 | 17.04 | 17.10>
-## $3 linux version      	<4.9 | 3.14>
-## $4 ubuntu architecture	<arm64 | armhf>
-## $5 install type         <EMMC | SD-USB>
+## $1 ubuntu type           <server | mate>
+## $2 board              	<VIM | VIM2>
+## $3 ubuntu version     	<16.04.2 | 17.04 | 17.10>
+## $4 linux version      	<4.9 | 3.14>
+## $5 ubuntu architecture   <arm64 | armhf>
+## $6 install type          <EMMC | SD-USB>
 check_parameters() {
-	if [ "$1" == "" ] || [ "$2" == "" ]  || [ "$3" == "" ] || [ "$4" == "" ] || [ "$5" == "" ]; then
-		echo "usage: $0 <VIM|VIM2> <16.04.2|17.04|17.10> <4.9|3.14> <arm64|armhf> <EMMC|SD-USB>"
+	if [ "$1" == "" ] || [ "$2" == "" ]  || [ "$3" == "" ] || [ "$4" == "" ] || [ "$5" == "" ] || [ "$6" == "" ]; then
+		echo "usage: $0 <server|mate> <VIM|VIM2> <16.04.2|17.04|17.10> <4.9|3.14> <arm64|armhf> <EMMC|SD-USB>"
 		return -1;
 	fi
 
@@ -165,8 +173,8 @@ fixup_dtb_link() {
 	return $ret
 }
 
-## Select ubuntu mate
-prepare_ubuntu_mate() {
+## Select ubuntu rootfs
+prepare_ubuntu_rootfs() {
 	ret=0
 
 	if [ "$UBUNTU_ARCH" != "arm64" ] && [ "$UBUNTU_ARCH" != "armhf" ]; then
@@ -174,21 +182,36 @@ prepare_ubuntu_mate() {
 		return -1
 	fi
 
-	case "$UBUNTU" in
-		16.04.2)
-			UBUNTU_MATE="ubuntu-mate-16.04.2-$UBUNTU_ARCH.tar.gz"
-			;;
-		17.04)
-			UBUNTU_MATE="ubuntu-mate-17.04-$UBUNTU_ARCH.tar.gz"
-			;;
-		17.10)
-			UBUNTU_MATE="artful-mate-$UBUNTU_ARCH.tar.gz"
-			;;
-		*)
-			error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu version:$UBUNTU_ARCH"
-			UBUNTU_MATE=
-			ret=-1
-	esac
+	if [ "$UBUNTU_TYPE" == "server" ]; then
+		case "$UBUNTU" in
+			16.04.2)
+				UBUNTU_ROOTFS="ubuntu-base-16.04.2-base-$UBUNTU_ARCH.tar.gz"
+				;;
+			17.04)
+				UBUNTU_ROOTFS="ubuntu-base-17.04-base-$UBUNTU_ARCH.tar.gz"
+				;;
+			17.10)
+				UBUNTU_ROOTFS="artful-base-$UBUNTU_ARCH.tar.gz"
+				;;
+			*)
+				error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu version:$UBUNTU_TYPE $UBUNTU"
+				UBUNTU_ROOTFS=
+				ret=-1
+			esac
+	elif [ "$UBUNTU_TYPE" == "mate" ]; then
+		case "$UBUNTU" in
+			16.04.2)
+				UBUNTU_ROOTFS="ubuntu-mate-16.04.2-$UBUNTU_ARCH.tar.gz"
+				;;
+			*)
+				error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu version:$UBUNTU_TYPE $UBUNTU"
+				UBUNTU_ROOTFS=
+				ret=-1
+				esac
+	else
+		error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu image type:$UBUNTU_TYPE"
+		return -1
+	fi
 
 	return $ret
 }
@@ -199,12 +222,13 @@ display_parameters() {
 	echo "***********************PARAMETERS************************"
 	echo "board:                         $KHADAS_BOARD"
 	echo "linux version:                 $LINUX"
+	echo "ubuntu type:                   $UBUNTU_TYPE"
 	echo "ubuntu version:                $UBUNTU"
 	echo "ubuntu architecture:           $UBUNTU_ARCH"
 	echo "install type:                  $INSTALL_TYPE"
 	echo "uboot configuration:           $UBOOT_DEFCONFIG"
 	echo "linux dtb:                     $LINUX_DTB"
-	echo "ubuntu mate:                   $UBUNTU_MATE"
+	echo "ubuntu rootfs:                 $UBUNTU_ROOTFS"
 	echo "uboot git branch:              $UBOOT_GIT_BRANCH"
 	echo "linux git branch:              $LINUX_GIT_BRANCH"
 	echo "base directory:                $BASE_DIR"
@@ -249,6 +273,8 @@ prepare_working_environment() {
 	fi
 
 	cd -
+
+	return 0
 }
 
 ## Prepare amlogic usb updete tool configuration
@@ -342,20 +368,47 @@ build_linux() {
 	make -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image $LINUX_DTB  modules
 }
 
-## Setup ubuntu mate
-setup_ubuntu_mate() {
+## Setup ubuntu rootfs
+setup_ubuntu_rootfs() {
 	ret=0
-	if [ "$UBUNTU_MATE" == "" ]; then
-		error_msg $CURRENT_FILE $LINENO "'UBUNTU_MATE' is empty!"
+	if [ "$UBUNTU_ROOTFS" == "" ]; then
+		error_msg $CURRENT_FILE $LINENO "'UBUNTU_ROOTFS' is empty!"
 		return -1
 	fi
 
-	cd ${UBUNTU_WORKING_DIR}/archives/ubuntu-mate
+	if [ "$UBUNTU_TYPE" == "server" ]; then
+		IMAGE_SIZE=$UBUNTU_SERVER_IMAGE_SIZE
+		cd ${UBUNTU_WORKING_DIR}/archives/ubuntu-base
+	elif [ "$UBUNTU_TYPE" == "mate" ]; then
+		IMAGE_SIZE=$UBUNTU_MATE_IMAGE_SIZE
+		if [ "$UBUNTU" == "16.04.2" ]; then
+			cd ${UBUNTU_WORKING_DIR}/archives/ubuntu-mate
+		else
+			error_msg $CURRENT_FILE $LINENO "Ubuntu mate $UBUNTU is not supported to build use ubuntu mate rootfs now!" && return -1
+		fi
+	fi
 
-	if [ ! -f $UBUNTU_MATE ]; then
-		# FIXME
-		error_msg $CURRENT_FILE $LINENO "'$UBUNTU_MATE' does not exist, please download it into folder
-					'`pwd`' manually, and try again!" && ret=-1
+	if [ ! -f $UBUNTU_ROOTFS ]; then
+		if [ "$UBUNTU_TYPE" == "server" ]; then
+			echo "'$UBUNTU_ROOTFS' does not exist, begin to downloading..."
+			if [ "$UBUNTU" == "16.04.2" ] || [ "$UBUNTU" == "17.04" ]; then
+				wget http://cdimage.ubuntu.com/ubuntu-base/releases/$UBUNTU/release/$UBUNTU_ROOTFS
+			elif [ "$UBUNTU" == "17.10" ]; then
+				wget http://cdimage.ubuntu.com/ubuntu-base/daily/current/$UBUNTU_ROOTFS
+			else
+				error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu version:'$UBUNTU'" && ret=-1
+			fi
+		elif [ "$UBUNTU_TYPE" == "mate" ]; then
+			if [ "$UBUNTU" == "16.04.2" ]; then
+				## FIXME
+				error_msg $CURRENT_FILE $LINENO "'$UBUNTU_ROOTFS' does not exist, please download it into folder '`pwd`' manually, and try again! Yon can refer to 'http://www.mediafire.com/file/sthi6u5gf7vxymz/ubuntu-mate-16.04.2-arm64.tar.gz' for ubuntu mate 16.04.2 rootfs." && ret=-1
+			else
+				error_msg $CURRENT_FILE $LINENO "Ubuntu mate $UBUNTU is not supported to build use ubuntu mate rootfs now!" && ret=-1
+			fi
+
+		fi
+
+		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to download '$UBUNTU_ROOTFS'" && ret=-1
 	fi
 
 	cd -
@@ -375,6 +428,7 @@ install_mali_driver() {
 
 		### fbdev
 		sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL_platform/platform_fbdev/*.h rootfs/usr/include/EGL/
+
 		### wayland
 		### sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL_platform/platform_wayland/*.h rootfs/usr/include/EGL/
 		## libMali.so
@@ -403,10 +457,8 @@ install_mali_driver() {
 		elif [ "$UBUNTU_ARCH" == "armhf" ]; then
 			sudo cp -arf archives/hwpacks/mali/r7p0/lib/*.so* rootfs/usr/lib/arm-linux-gnueabihf
 		fi
-
-		sudo mkdir -p rootfs/usr/lib/pkgconfig/
-		sudo cp -arf archives/hwpacks/mali/r7p0/lib/pkgconfig/*.pc rootfs/usr/lib/pkgconfig/
-
+			sudo mkdir -p rootfs/usr/lib/pkgconfig/
+			sudo cp -arf archives/hwpacks/mali/r7p0/lib/pkgconfig/*.pc rootfs/usr/lib/pkgconfig/
 		# Mali m450 framebuffer mode examples
 		if [ "$UBUNTU_ARCH" == "arm64" ]; then
 			sudo mkdir -p rootfs/usr/share/arm/
@@ -427,13 +479,13 @@ build_rootfs() {
 
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
 		BOOT_DIR="rootfs/boot"
-		dd if=/dev/zero of=images/rootfs.img bs=1M count=0 seek=3400
+		dd if=/dev/zero of=images/rootfs.img bs=1M count=0 seek=$IMAGE_SIZE
 		sudo mkfs.ext4 -F -L ROOTFS images/rootfs.img
 		rm -rf rootfs && install -d rootfs
 		sudo mount -o loop images/rootfs.img rootfs
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		BOOT_DIR="boot"
-		dd if=/dev/zero of=${IMAGE_DIR}${IMAGE_FILE_NAME} bs=1M count=0 seek=4000
+		dd if=/dev/zero of=${IMAGE_DIR}${IMAGE_FILE_NAME} bs=1M count=0 seek=$IMAGE_SIZE
 		sudo fdisk "${IMAGE_DIR}${IMAGE_FILE_NAME}" <<EOF
 o
 n
@@ -469,15 +521,19 @@ EOF
 	fi
 
 	sudo rm -rf rootfs/lost+found
-	# ubuntu-mate
-	echo "Extracting ubuntu mate rootfs, please wait..."
-	sudo tar -xzf archives/ubuntu-mate/$UBUNTU_MATE -C rootfs/
+	if [ "$UBUNTU_TYPE" == "server" ]; then
+		# ubuntu-base
+		sudo tar -xzf archives/ubuntu-base/$UBUNTU_ROOTFS -C rootfs/
+	elif [ "$UBUNTU_TYPE" == "mate" ]; then
+		# ubuntu-mate
+		echo "Extracting ubuntu mate rootfs, please wait..."
+		sudo tar -xzf archives/ubuntu-mate/$UBUNTU_ROOTFS -C rootfs/
+	fi
 	# [Optional] Mirrors for ubuntu-ports
 	sudo cp -a rootfs/etc/apt/sources.list rootfs/etc/apt/sources.list.orig
 	sudo sed -i "s/http:\/\/ports.ubuntu.com\/ubuntu-ports\//http:\/\/mirrors.ustc.edu.cn\/ubuntu-ports\//g" rootfs/etc/apt/sources.list
 
 	sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- install INSTALL_PATH=$PWD/${BOOT_DIR}
-
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		sudo ./utils/mkimage -A arm64 -O linux -T kernel -C none -a $IMAGE_LINUX_LOADADDR -e $IMAGE_LINUX_LOADADDR -n linux-$IMAGE_LINUX_VERSION -d $BOOT_DIR/vmlinuz-$IMAGE_LINUX_VERSION $BOOT_DIR/uImage
 		sudo cp $BOOT_DIR/uImage $BOOT_DIR/uImag.old
@@ -494,30 +550,31 @@ EOF
 	sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules_install INSTALL_MOD_PATH=../rootfs/
 	sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- headers_install INSTALL_HDR_PATH=$PWD/rootfs/usr/
 
-	# copy linux dtb Image
+	# copy linux dtb Image to boot folder
 	if [ "$LINUX" == "4.9" ];then
 		sudo cp linux/arch/arm64/boot/dts/amlogic/$LINUX_DTB $BOOT_DIR
-		# Backup dtb
+		## Bakup dtb
 		sudo cp linux/arch/arm64/boot/dts/amlogic/$LINUX_DTB $BOOT_DIR/$LINUX_DTB.old
 	elif [ "$LINUX" == "3.14" ];then
 		sudo cp linux/arch/arm64/boot/dts/$LINUX_DTB $BOOT_DIR
-		# Backup dtb
+		## Backup dtb
 		sudo cp linux/arch/arm64/boot/dts/$LINUX_DTB $BOOT_DIR/$LINUX_DTB.old
 	else
 		error_msg $CURRENT_FILE $LINENO "Unsupported linux version:'$LINUX'"
 		ret=-1
 	fi
 	sudo cp linux/arch/arm64/boot/Image $BOOT_DIR
-
 	# linux version
 	grep "Linux/arm64" linux/.config | awk  '{print $3}' > images/linux-version
 	sudo cp -r images/linux-version rootfs/
 	# initramfs
 	sudo cp -r archives/filesystem/etc/initramfs-tools/ rootfs/etc/
-	# fixup network-manager script
-	sudo cp -r archives/filesystem/etc/init.d/khadas-restart-nm.sh rootfs/etc/init.d/khadas-restart-nm.sh
+	if [ "$UBUNTU_TYPE" == "mate" ]; then
+		# fixup network-manager script
+		sudo cp -r archives/filesystem/etc/init.d/khadas-restart-nm.sh rootfs/etc/init.d/khadas-restart-nm.sh
+	fi
 	# WIFI
-	sudo mkdir -p rootfs/lib/firmware
+	sudo mkdir rootfs/lib/firmware
 	sudo cp -r archives/hwpacks/wlan-firmware/brcm/ rootfs/lib/firmware/
 	# Bluetooth
 	sudo cp -r archives/hwpacks/bluez/brcm_patchram_plus-$UBUNTU_ARCH rootfs/usr/local/bin/brcm_patchram_plus
@@ -549,7 +606,7 @@ EOF
 	sudo cp ./utils/mkimage-$UBUNTU_ARCH rootfs/usr/local/bin/mkimage
 
 	## script executing on chroot
-	sudo cp -r archives/filesystem/RUNME_mate.sh rootfs/
+	sudo cp -r archives/filesystem/RUNME_${UBUNTU_TYPE}.sh rootfs/
 
 	## Chroot
 	if [ "$UBUNTU_ARCH" == "arm64" ]; then
@@ -571,7 +628,7 @@ EOF
 	sudo mount -o bind /sys rootfs/sys
 	sudo mount -o bind /dev rootfs/dev
 	sudo mount -o bind /dev/pts rootfs/dev/pts
-	sudo chroot rootfs/ bash "/RUNME_mate.sh" $UBUNTU $INSTALL_TYPE
+	sudo chroot rootfs/ bash "/RUNME_${UBUNTU_TYPE}.sh" $UBUNTU $UBUNTU_ARCH $INSTALL_TYPE
 
 	## Generate ramdisk.img
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
@@ -605,7 +662,7 @@ EOF
 	return $ret
 }
 
-## Pack the images to update.img
+## Pack the images
 pack_update_image() {
 	cd ${UBUNTU_WORKING_DIR}
 
@@ -634,12 +691,12 @@ check_parameters $@            &&
 prepare_uboot_configuration    &&
 prepare_linux_dtb              &&
 prepare_git_branch             &&
-prepare_ubuntu_mate            &&
+prepare_ubuntu_rootfs          &&
 prepare_working_environment    &&
 prepare_aml_update_tool_config &&
 display_parameters             &&
 fixup_dtb_link                 &&
-setup_ubuntu_mate              &&
+setup_ubuntu_rootfs            &&
 build_uboot                    &&
 build_linux                    &&
 build_rootfs                   &&

@@ -10,7 +10,8 @@ PROJECT_DIR="${BASE_DIR}/project"
 KHADAS_DIR="${PROJECT_DIR}/khadas"
 UBUNTU_WORKING_DIR="$(dirname "$(dirname "$(readlink -fm "$0")")")"
 IMAGE_DIR="images/"
-IMAGE_FILE_NAME="KHADAS-${KHADAS_BOARD}-${INSTALL_TYPE}.img"
+IMAGE_FILE_NAME="KHADAS_${KHADAS_BOARD}_${INSTALL_TYPE}.img"
+IMAGE_FILE_NAME=$(echo $IMAGE_FILE_NAME | tr [A-Z] [a-z])
 
 CURRENT_FILE="$0"
 
