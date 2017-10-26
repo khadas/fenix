@@ -102,8 +102,8 @@ elif [ "$UBUNTU_MATE_ROOTFS_TYPE" == "chroot-install" ]; then
 	fi
 
 	# Install Docker
-	apt-get -y $APT_OPTIONS install lxc aufs-tools cgroup-lite apparmor docker.io
-	usermod -aG docker khadas
+	#apt-get -y $APT_OPTIONS install lxc aufs-tools cgroup-lite apparmor docker.io
+	#usermod -aG docker khadas
 
 	## Mate desktop
 	apt -y $APT_OPTIONS install mate-desktop-environment ubuntu-mate-core

@@ -58,8 +58,8 @@ if [ "$UBUNTU_ARCH" == "arm64" ]; then
 fi
 
 # Install Docker
-apt-get -y $APT_OPTIONS install lxc aufs-tools cgroup-lite apparmor docker.io
-usermod -aG docker khadas
+#apt-get -y $APT_OPTIONS install lxc aufs-tools cgroup-lite apparmor docker.io
+#usermod -aG docker khadas
 
 # Build the ramdisk
 mkinitramfs -o /boot/initrd.img `cat linux-version` 2>/dev/null
