@@ -10,8 +10,8 @@ LINUX_GIT_BRANCH=
 
 AML_UPDATE_TOOL_CONFIG=
 
-UBUNTU_SERVER_IMAGE_SIZE=1500 # MB
-UBUNTU_MATE_IMAGE_SIZE=3800 # MB
+UBUNTU_SERVER_IMAGE_SIZE=700 # MB
+UBUNTU_MATE_IMAGE_SIZE=3700 # MB
 
 UBUNTU_TYPE=$1
 
@@ -466,6 +466,7 @@ build_rootfs() {
 		sudo mount -o loop images/rootfs.img rootfs
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		BOOT_DIR="boot"
+		IMAGE_SIZE=$((IMAGE_SIZE + 300)) # SD/USB image szie = BOOT(256MB) + ROOTFS
 		dd if=/dev/zero of=${IMAGE_DIR}${IMAGE_FILE_NAME} bs=1M count=0 seek=$IMAGE_SIZE
 		sudo fdisk "${IMAGE_DIR}${IMAGE_FILE_NAME}" <<EOF
 o
