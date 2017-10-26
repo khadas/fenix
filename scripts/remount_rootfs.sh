@@ -117,7 +117,13 @@ remount_rootfs() {
 		sudo cp $BOOT_DIR/uImage $BOOT_DIR/uImag.old
 		# Universal multi-boot
 		sudo cp archives/filesystem/boot/* $BOOT_DIR
+		if [ "$KHADAS_BOARD" == "VIM" ]; then
+			sudo cp $BOOT_DIR/boot.ini.vim $BOOT_DIR/boot.ini
+		elif [ "$KHADAS_BOARD" == "VIM2" ]; then
+			sudo cp $BOOT_DIR/boot.ini.vim2 $BOOT_DIR/boot.ini
+		fi
 		sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S905 autoscript" -d $BOOT_DIR/s905_autoscript.cmd $BOOT_DIR/s905_autoscript
+		sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S912 autoscript" -d $BOOT_DIR/s912_autoscript.cmd $BOOT_DIR/s912_autoscript
 		sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "AML autoscript" -d $BOOT_DIR/aml_autoscript.txt $BOOT_DIR/aml_autoscript
 		cd $BOOT_DIR
 		sudo rm aml_autoscript.zip
@@ -201,6 +207,13 @@ remount_rootfs() {
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		sudo mv rootfs/boot/uInitrd $BOOT_DIR
 		sudo cp $BOOT_DIR/uInitrd $BOOT_DIR/uInitrd.old
+	fi
+
+	## Set default dtb.img
+	if [ "$KHADAS_BOARD" == "VIM" ]; then
+		sudo cp $BOOT_DIR/kvim.dtb $BOOT_DIR/dtb.img
+	elif [ "$KHADAS_BOARD" == "VIM2" ]; then
+		sudo cp $BOOT_DIR/kvim2.dtb $BOOT_DIR/dtb.img
 	fi
 
 	## Clean up
