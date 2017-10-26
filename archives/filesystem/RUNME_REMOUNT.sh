@@ -43,6 +43,9 @@ if [ "$INSTALL_TYPE" == "EMMC" ]; then
 	cp /boot/uImage /boot/uImage.old
 fi
 
+# Build time
+LC_ALL="C" date > /etc/build-time
+
 # Restore the sources.list from mirrors to original
 if [ -f /etc/apt/sources.list.orig ]; then
 	mv /etc/apt/sources.list.orig /etc/apt/sources.list
