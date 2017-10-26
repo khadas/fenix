@@ -576,11 +576,6 @@ EOF
 	# Install Mali driver
 	install_mali_driver
 
-	sudo mkdir -p rootfs/etc/apt/apt.conf.d rootfs/etc/dpkg/dpkg.cfg.d
-	sudo tee rootfs/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io << EOF
-force-unsafe-io
-EOF
-
 	# rc.local
 	sudo cp -r archives/filesystem/etc/rc.local rootfs/etc/
 	# firstboot initialization: for 'ROOTFS' partition resize
@@ -643,7 +638,6 @@ EOF
 
 	## Clean up
 	sudo rm rootfs/boot/initrd.img
-	sudo rm rootfs/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
 
 	## Unmount to get the rootfs.img
 	sudo sync
