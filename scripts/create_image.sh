@@ -183,31 +183,15 @@ prepare_ubuntu_rootfs() {
 	fi
 
 	if [ "$UBUNTU_TYPE" == "server" ] || [ "$UBUNTU_MATE_ROOTFS_TYPE" == "chroot-install" ]; then
-		case "$UBUNTU" in
-			16.04.2)
-				UBUNTU_ROOTFS="ubuntu-base-16.04.2-base-$UBUNTU_ARCH.tar.gz"
-				;;
-			17.04)
-				UBUNTU_ROOTFS="ubuntu-base-17.04-base-$UBUNTU_ARCH.tar.gz"
-				;;
-			17.10)
-				UBUNTU_ROOTFS="artful-base-$UBUNTU_ARCH.tar.gz"
-				;;
-			*)
-				error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu version:$UBUNTU_TYPE $UBUNTU"
-				UBUNTU_ROOTFS=
-				ret=-1
-			esac
+		UBUNTU_ROOTFS="ubuntu-base-$UBUNTU-base-$UBUNTU_ARCH.tar.gz"
 	elif [ "$UBUNTU_TYPE" == "mate" ]; then
-		case "$UBUNTU" in
-			16.04.2)
-				UBUNTU_ROOTFS="ubuntu-mate-16.04.2-$UBUNTU_ARCH.tar.gz"
-				;;
-			*)
-				error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu version:$UBUNTU_TYPE $UBUNTU for $UBUNTU_MATE_ROOTFS_TYPE"
-				UBUNTU_ROOTFS=
-				ret=-1
-		esac
+		if [ "$UBUNTU" == "16.04.2" ]; then
+			UBUNTU_ROOTFS="ubuntu-mate-$UBUNTU-$UBUNTU_ARCH.tar.gz"
+		else
+			error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu version:$UBUNTU_TYPE $UBUNTU for $UBUNTU_MATE_ROOTFS_TYPE"
+			UBUNTU_ROOTFS=
+			ret=-1
+		fi
 	else
 		error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu image type:$UBUNTU_TYPE"
 		return -1
@@ -395,13 +379,7 @@ setup_ubuntu_rootfs() {
 	if [ ! -f $UBUNTU_ROOTFS ]; then
 		if [ "$UBUNTU_TYPE" == "server" ] || [ "$UBUNTU_MATE_ROOTFS_TYPE" == "chroot-install" ]; then
 			echo "'$UBUNTU_ROOTFS' does not exist, begin to downloading..."
-			if [ "$UBUNTU" == "16.04.2" ] || [ "$UBUNTU" == "17.04" ]; then
-				wget http://cdimage.ubuntu.com/ubuntu-base/releases/$UBUNTU/release/$UBUNTU_ROOTFS
-			elif [ "$UBUNTU" == "17.10" ]; then
-				wget http://cdimage.ubuntu.com/ubuntu-base/daily/current/$UBUNTU_ROOTFS
-			else
-				error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu version:'$UBUNTU'" && ret=-1
-			fi
+			wget http://cdimage.ubuntu.com/ubuntu-base/releases/$UBUNTU/release/$UBUNTU_ROOTFS
 		elif [ "$UBUNTU_TYPE" == "mate" ]; then
 			if [ "$UBUNTU" == "16.04.2" ]; then
 				## FIXME
