@@ -21,6 +21,9 @@ if [ -f /etc/default/FIRSTBOOT ]; then
 fi
 # FIRSTBOOT_MAGIC_END
 
+# Add write right for fw_setenv
+chmod 666 /dev/env
+
 # Setup LED: breathing if bootup completed
 echo breathe > /sys/class/leds/red/trigger
 

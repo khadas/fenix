@@ -48,7 +48,7 @@ apt-get -y $APT_OPTIONS upgrade
 # Install the packages
 apt-get -y $APT_OPTIONS install ifupdown net-tools udev fbset vim sudo initramfs-tools \
 		bluez rfkill libbluetooth-dev \
-		iputils-ping parted
+		iputils-ping parted u-boot-tools
 
 if [ "$UBUNTU_ARCH" == "arm64" ]; then
 	# Install armhf library

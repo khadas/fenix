@@ -574,6 +574,9 @@ EOF
 	sudo cp -r archives/hwpacks/bluez/bluetooth-khadas.service rootfs/lib/systemd/system/
 	sudo cp -r archives/hwpacks/bluez/bluetooth-khadas.sh rootfs/usr/local/bin/
 
+	# fw_setenv config
+	sudo cp archives/filesystem/etc/fw_env.config rootfs/etc/
+
 	# Install Mali driver
 	install_mali_driver
 
