@@ -528,8 +528,10 @@ EOF
 		sudo cp archives/filesystem/boot/* $BOOT_DIR
 		if [ "$KHADAS_BOARD" == "VIM" ]; then
 			sudo cp $BOOT_DIR/boot.ini.vim $BOOT_DIR/boot.ini
+			sudo cp $BOOT_DIR/aml_autoscript.txt.vim $BOOT_DIR/aml_autoscript.txt
 		elif [ "$KHADAS_BOARD" == "VIM2" ]; then
 			sudo cp $BOOT_DIR/boot.ini.vim2 $BOOT_DIR/boot.ini
+			sudo cp $BOOT_DIR/aml_autoscript.txt.vim2 $BOOT_DIR/aml_autoscript.txt
 		fi
 		sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S905 autoscript" -d $BOOT_DIR/s905_autoscript.cmd $BOOT_DIR/s905_autoscript
 		sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S912 autoscript" -d $BOOT_DIR/s912_autoscript.cmd $BOOT_DIR/s912_autoscript
