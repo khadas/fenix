@@ -449,6 +449,42 @@ install_mali_driver() {
 	fi
 }
 
+# Arguments:
+#   $1 - kernel version
+#   $2 - kernel image file
+#   $3 - kernel map file
+#   $4 - default install path (blank if root directory)
+install_kernel() {
+	if [ "$(basename $2)" = "Image.gz" ]; then
+		# Compressed install
+		echo "Installing compressed kernel"
+		base=vmlinuz
+	else
+		# Normal install
+		echo "Installing normal kernel"
+		base=vmlinux
+	fi
+
+	if [ -f $4/$base-$1 ]; then
+		sudo mv $4/$base-$1 $4/$base-$1.old
+	fi
+	sudo cp $2 $4/$base-$1
+
+	# Install system map file
+	if [ -f $4/System.map-$1 ]; then
+		sudo mv $4/System.map-$1 $4/System.map-$1.old
+	fi
+	sudo cp $3 $4/System.map-$1
+
+	# Install config file
+	config=$(dirname "$3")
+	config="${config}/.config"
+	if [ -f $4/config-$1 ]; then
+		sudo mv $4/config-$1 $4/config-$1.old
+	fi
+	sudo cp $config $4/config-$1
+}
+
 ## Rootfs
 build_rootfs() {
 	ret=0
@@ -476,6 +512,7 @@ p
 2048
 524287
 a
+1
 t
 b
 n
@@ -520,9 +557,11 @@ EOF
 	sudo cp -a rootfs/etc/apt/sources.list rootfs/etc/apt/sources.list.orig
 	sudo sed -i "s/http:\/\/ports.ubuntu.com\/ubuntu-ports\//http:\/\/mirrors.ustc.edu.cn\/ubuntu-ports\//g" rootfs/etc/apt/sources.list
 
-	sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- install INSTALL_PATH=$PWD/${BOOT_DIR}
+	# FIXME for Ubuntu 14.04, execute /sbin/installkernel failed, so try to install image manually
+#	sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- install INSTALL_PATH=$PWD/${BOOT_DIR}
+	install_kernel $(grep "Linux/arm64" linux/.config | awk  '{print $3}') linux/arch/arm64/boot/Image linux/System.map $PWD/${BOOT_DIR}
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		sudo ./utils/mkimage -A arm64 -O linux -T kernel -C none -a $IMAGE_LINUX_LOADADDR -e $IMAGE_LINUX_LOADADDR -n linux-$IMAGE_LINUX_VERSION -d $BOOT_DIR/vmlinuz-$IMAGE_LINUX_VERSION $BOOT_DIR/uImage
+		sudo ./utils/mkimage -A arm64 -O linux -T kernel -C none -a $IMAGE_LINUX_LOADADDR -e $IMAGE_LINUX_LOADADDR -n linux-$IMAGE_LINUX_VERSION -d $BOOT_DIR/vmlinux-$IMAGE_LINUX_VERSION $BOOT_DIR/uImage
 		sudo cp $BOOT_DIR/uImage $BOOT_DIR/uImag.old
 		# Universal multi-boot
 		sudo cp archives/filesystem/boot/* $BOOT_DIR
