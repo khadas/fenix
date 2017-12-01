@@ -21,7 +21,7 @@ KHADAS_DIR="${PROJECT_DIR}/khadas"
 UBUNTU_WORKING_DIR="$(dirname "$(dirname "$(readlink -fm "$0")")")"
 IMAGE_DIR="${UBUNTU_WORKING_DIR}/images/"
 IMAGE_FILE_NAME="KHADAS_${KHADAS_BOARD}_${INSTALL_TYPE}.img"
-IMAGE_FILE_NAME=$(echo $IMAGE_FILE_NAME | tr [A-Z] [a-z])
+IMAGE_FILE_NAME=$(echo $IMAGE_FILE_NAME | tr "[A-Z]" "[a-z]")
 IMAGE_SIZE=
 
 CURRENT_FILE="$0"
