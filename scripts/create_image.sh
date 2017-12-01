@@ -256,7 +256,12 @@ prepare_working_environment() {
 		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to clone 'images_upgrade.git'" && return -1
 	fi
 
-	cd -
+	## Checkout master branch
+	cd upgrade
+	git checkout master
+	[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Upgrade: Switch to branch 'master' failed." && return -1
+
+	cd ${UBUNTU_WORKING_DIR}
 
 	return 0
 }
