@@ -626,6 +626,10 @@ EOF
 	# firstboot initialization: for 'ROOTFS' partition resize
 	sudo touch rootfs/etc/default/FIRSTBOOT
 
+# add 20171211
+	sudo cp -arf archives/filesystem/etc/network rootfs/etc/
+# end add 20171211
+
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		# resize2fs service to resize rootfs for SD/USB image
 		sudo cp -r archives/filesystem/lib/systemd/system/resize2fs.service rootfs/lib/systemd/system/
