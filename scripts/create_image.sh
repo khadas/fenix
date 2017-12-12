@@ -628,6 +628,7 @@ EOF
 
 # add 20171211
 	sudo cp -arf archives/filesystem/etc/network rootfs/etc/
+	sudo cp -r archives/filesystem/etc/fstab rootfs/etc/
 # end add 20171211
 
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
