@@ -11,6 +11,8 @@
 #
 # By default this script does nothing.
 
+#/boot/hdmi.sh&
+
 # Firstboot initialization
 # FIRSTBOOT_MAGIC_START
 if [ -f /etc/default/FIRSTBOOT ]; then
@@ -26,5 +28,7 @@ chmod 666 /dev/env
 
 # Setup LED: breathing if bootup completed
 echo breathe > /sys/class/leds/red/trigger
+
+/boot/fan.sh &
 
 exit 0

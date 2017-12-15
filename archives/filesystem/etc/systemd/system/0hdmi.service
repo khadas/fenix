@@ -1,0 +1,14 @@
+[Unit]
+Description=HDMI init
+DefaultDependencies=no
+Wants=rsyslog.service systemd-journald.service
+Before=syslog.target sysinit.target
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/boot/hdmi.sh
+RemainAfterExit=no
+
+[Install]
+WantedBy=sysinit.target

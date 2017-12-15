@@ -11,7 +11,7 @@ LINUX_GIT_BRANCH=
 AML_UPDATE_TOOL_CONFIG=
 
 UBUNTU_SERVER_IMAGE_SIZE=700 # MB
-UBUNTU_MATE_IMAGE_SIZE=3700 # MB
+UBUNTU_MATE_IMAGE_SIZE=4000 # MB
 
 UBUNTU_TYPE=$1
 
@@ -603,10 +603,10 @@ EOF
 	sudo cp -r images/linux-version rootfs/
 	# initramfs
 	sudo cp -r archives/filesystem/etc/initramfs-tools/ rootfs/etc/
-	if [ "$UBUNTU_TYPE" == "mate" ]; then
-		# fixup network-manager script
-		sudo cp -r archives/filesystem/etc/init.d/khadas-restart-nm.sh rootfs/etc/init.d/khadas-restart-nm.sh
-	fi
+#	if [ "$UBUNTU_TYPE" == "mate" ]; then
+#		# fixup network-manager script
+#		sudo cp -r archives/filesystem/etc/init.d/khadas-restart-nm.sh rootfs/etc/init.d/khadas-restart-nm.sh
+#	fi
 	# WIFI
 	sudo mkdir rootfs/lib/firmware
 	sudo cp -r archives/hwpacks/wlan-firmware/brcm/ rootfs/lib/firmware/
@@ -616,25 +616,27 @@ EOF
 	sudo cp -r archives/hwpacks/bluez/bluetooth-khadas.sh rootfs/usr/local/bin/
 
 	# fw_setenv config
-	sudo cp archives/filesystem/etc/fw_env.config rootfs/etc/
+#	sudo cp archives/filesystem/etc/fw_env.config rootfs/etc/
 
 	# Install Mali driver
 	install_mali_driver
 
 	# rc.local
-	sudo cp -r archives/filesystem/etc/rc.local rootfs/etc/
+#	sudo cp -r archives/filesystem/etc/rc.local rootfs/etc/
 	# firstboot initialization: for 'ROOTFS' partition resize
 	sudo touch rootfs/etc/default/FIRSTBOOT
 
 # add 20171211
-	sudo cp -arf archives/filesystem/etc/network rootfs/etc/
-	sudo cp -r archives/filesystem/etc/fstab rootfs/etc/
+	sudo cp -arf archives/filesystem/etc rootfs/
+#	sudo cp -r archives/filesystem/etc/fstab rootfs/etc/
+#	sudo cp -r archives/filesystem/boot/hdmi.sh rootfs/boot/
+#	sudo cp -r archives/filesystem/boot/fan.sh rootfs/boot/
 # end add 20171211
 
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		# resize2fs service to resize rootfs for SD/USB image
 		sudo cp -r archives/filesystem/lib/systemd/system/resize2fs.service rootfs/lib/systemd/system/
-		sudo cp -r archives/filesystem/etc/init.d/resize2fs rootfs/etc/init.d/
+#		sudo cp -r archives/filesystem/etc/init.d/resize2fs rootfs/etc/init.d/
 		# For SD/USB image use resize2fs.service to resize
 		sudo rm rootfs/etc/default/FIRSTBOOT
 	fi
