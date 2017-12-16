@@ -47,7 +47,7 @@ apt-get -y $APT_OPTIONS upgrade
 
 # Install the packages
 apt-get -y $APT_OPTIONS install ifupdown net-tools udev fbset vim sudo initramfs-tools \
-		bluez rfkill libbluetooth-dev \
+		bluez rfkill libbluetooth-dev mc \
 		iputils-ping parted u-boot-tools
 
 if [ "$UBUNTU_ARCH" == "arm64" ]; then
@@ -104,6 +104,7 @@ systemctl enable bluetooth-khadas
 # Resize service
 if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 	systemctl enable resize2fs
+	systemctl enable 0hdmi
 fi
 
 # Build time

@@ -23,6 +23,9 @@ elif [ $K_VER = "4.9.40" ]; then
     echo "kernel 4.9.40"
     PIN1=74
     PIN2=75
+else
+    echo "No kernel version"
+    exit
 fi
 
 echo $PIN1 > /sys/class/gpio/export
