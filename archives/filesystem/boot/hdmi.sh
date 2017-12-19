@@ -3,8 +3,8 @@
 #bpp=32
 bpp=24
 
-#mode=1080p60hz
-mode=720p60hz
+mode=1080p60hz
+#mode=720p60hz
 
 case $mode in
 	1080*)
