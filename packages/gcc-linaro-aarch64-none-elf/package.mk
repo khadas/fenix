@@ -11,3 +11,9 @@ PKG_SOURCE_NAME="$(basename $PKG_URL)"
 PKG_SHA256=""
 PKG_NEED_BUILD="NO"
 PKG_SHORTDESC="GCC for building U-Boot 2015.01"
+
+makeinstall_host() {
+	mkdir -p $TOOLCHAINS/gcc-linaro-aarch64-none-elf/
+	rm -rf $TOOLCHAINS/gcc-linaro-aarch64-none-elf/*
+	cp -a $BUILD/$PKG_NAME-$PKG_VERSION/* $TOOLCHAINS/gcc-linaro-aarch64-none-elf
+}

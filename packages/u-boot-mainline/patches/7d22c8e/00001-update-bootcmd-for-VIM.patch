@@ -1,0 +1,15 @@
+diff --git a/include/configs/khadas-vim.h b/include/configs/khadas-vim.h
+index 9d99bc5..7e4a408 100644
+--- a/include/configs/khadas-vim.h
++++ b/include/configs/khadas-vim.h
+@@ -18,4 +18,10 @@
+ 
+ #include <configs/meson-gxbb-common.h>
+ 
++#ifdef CONFIG_BOOTCOMMAND
++#undef CONFIG_BOOTCOMMAND
++#endif
++
++#define CONFIG_BOOTCOMMAND "if fatload mmc 1 1020000 s905_autoscript; then source 1020000; fi;"
++
+ #endif /* __CONFIG_H */

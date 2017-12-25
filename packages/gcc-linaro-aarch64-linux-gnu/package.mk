@@ -11,3 +11,9 @@ PKG_SOURCE_NAME="$(basename $PKG_URL)"
 PKG_SHA256=""
 PKG_NEED_BUILD="NO"
 PKG_SHORTDESC="GCC for building linux"
+
+makeinstall_host() {
+	mkdir -p $TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/
+	rm -rf $TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/*
+	cp -a $BUILD/$PKG_NAME-$PKG_VERSION/* $TOOLCHAINS/gcc-linaro-aarch64-linux-gnu
+}

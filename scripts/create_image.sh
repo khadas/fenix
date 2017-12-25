@@ -33,6 +33,10 @@ DOWNLOAD_PKG_DIR="$UBUNTU_WORKING_DIR/downloads"
 PKGS_DIR="$UBUNTU_WORKING_DIR/packages"
 ## Packages build directory
 BUILD="$UBUNTU_WORKING_DIR/build"
+## Build images
+BUILD_IMAGES="$BUILD/images"
+## Toolchains
+TOOLCHAINS="$BUILD/toolchains"
 
 CURRENT_FILE="$0"
 
@@ -405,37 +409,41 @@ build_package() {
 		unset -f pre_make_target
 		unset -f make_target
 		unset -f post_make_target
+		unset -f makeinstall_target
 
 		unset -f pre_build_host
 		unset -f pre_make_host
 		unset -f make_host
 		unset -f post_make_host
+		unset -f makeinstall_host
 
 		. $PKG_DIR/package.mk
 
-		if [ "$PKG_NEED_BUILD" == "YES" ]; then
 
-			if [ "$(type -t pre_build_$TARGET)" = "function" ]; then
-				pre_build_$TARGET
-			fi
+		if [ "$(type -t pre_build_$TARGET)" = "function" ]; then
+			pre_build_$TARGET
+		fi
 
-			if [ ! -d $PKG_BUILD ] ; then
-				mkdir -p $PKG_BUILD
-			fi
+		if [ ! -d $PKG_BUILD ] ; then
+			mkdir -p $PKG_BUILD
+		fi
 
-			cd $PKG_BUILD
+		cd $PKG_BUILD
 
-			if [ "$(type -t pre_make_$TARGET)" = "function" ]; then
-				pre_make_$TARGET
-			fi
+		if [ "$(type -t pre_make_$TARGET)" = "function" ]; then
+			pre_make_$TARGET
+		fi
 
-			if [ "$(type -t make_$TARGET)" = "function" ]; then
-				make_$TARGET
-			fi
+		if [ "$(type -t make_$TARGET)" = "function" ]; then
+			make_$TARGET
+		fi
 
-			if [ "$(type -t post_make_$TARGET)" = "function" ]; then
-				post_make_$TARGET
-			fi
+		if [ "$(type -t post_make_$TARGET)" = "function" ]; then
+			post_make_$TARGET
+		fi
+
+		if [ "$(type -t makeinstall_$TARGET)" = "function" ]; then
+			makeinstall_$TARGET
 		fi
 
 		PKG_DEEPMD5=$(find $STAMP_DEPENDS -exec md5sum {} \; 2>/dev/null | sort | md5sum | cut -d" " -f1)
@@ -445,15 +453,24 @@ build_package() {
 	fi
 }
 
-## Prepare toolhain
-prepare_toolchain() {
+## Prepare toolhains
+prepare_toolchains() {
 
 	build_package "gcc-linaro-aarch64-linux-gnu:host"
 	build_package "gcc-linaro-aarch64-none-elf:host"
 	build_package "gcc-linaro-arm-none-eabi:host"
-	build_package "gcc-linaro-aarch64-elf:host"
+	if [ "$UBOOT" == "mainline" ]; then
+		build_package "gcc-linaro-aarch64-elf:host"
+	fi
 
 	return 0
+}
+
+## Prepare packages
+prepare_packages() {
+	if [ "$UBOOT" == "mainline" ]; then
+		build_package "u-boot-mainline:target"
+	fi
 }
 
 ## Select uboot configuration
@@ -583,6 +600,7 @@ display_parameters() {
 	echo "***********************PARAMETERS************************"
 	echo "board:                         $KHADAS_BOARD"
 	echo "linux version:                 $LINUX"
+	echo "uboot version:                 $UBOOT"
 	echo "ubuntu type:                   $UBUNTU_TYPE"
 	echo "ubuntu version:                $UBUNTU"
 	echo "ubuntu architecture:           $UBUNTU_ARCH"
@@ -663,10 +681,13 @@ prepare_aml_update_tool_config() {
 	return $ret
 }
 
-
 ## Build U-Boot
 build_uboot() {
 	ret=0
+
+	if [ "$UBOOT" == "mainline" ]; then
+		return 0
+	fi
 
 	if [ "$UBOOT_GIT_BRANCH" == "" ]; then
 		error_msg $CURRENT_FILE $LINENO "'UBOOT_GIT_BRANCH' is empty!"
@@ -693,11 +714,7 @@ build_uboot() {
 	fi
 
 	echo "Build u-boot..."
-	. $PKGS_DIR/gcc-linaro-aarch64-none-elf/package.mk
-	UBOOT_GCC_VER=$PKG_VERSION
-	. $PKGS_DIR/gcc-linaro-arm-none-eabi/package.mk
-	UBOOT_GCC_T32_VER=$PKG_VERSION
-	export PATH=$BUILD/gcc-linaro-aarch64-none-elf-${UBOOT_GCC_VER}/bin:$BUILD/gcc-linaro-arm-none-eabi-${UBOOT_GCC_T32_VER}/bin:$PATH
+	export PATH=$TOOLCHAINS/gcc-linaro-aarch64-none-elf/bin:$TOOLCHAINS/gcc-linaro-arm-none-eabi/bin:$PATH
 	make $UBOOT_DEFCONFIG
 	make -j8 CROSS_COMPILE=aarch64-none-elf-
 	ret=$?
@@ -736,9 +753,7 @@ build_linux() {
 	fi
 
 	echo "Build linux..."
-	. $PKGS_DIR/gcc-linaro-aarch64-linux-gnu/package.mk
-	LINUX_GCC_VER=$PKG_VERSION
-	export PATH=$BUILD/gcc-linaro-aarch64-linux-gnu-${LINUX_GCC_VER}/bin:$PATH
+	export PATH=$TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/bin:$PATH
 	make ARCH=arm64 kvim_defconfig
 	make -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image $LINUX_DTB  modules
 }
@@ -1085,8 +1100,17 @@ pack_update_image() {
 		echo "Packing update image using config: $AML_UPDATE_TOOL_CONFIG"
 		./utils/aml_image_v2_packer -r images/upgrade/$AML_UPDATE_TOOL_CONFIG images/upgrade/ images/$IMAGE_FILE_NAME
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		sudo dd if=u-boot/fip/u-boot.bin.sd.bin of="${IMAGE_LOOP_DEV}" conv=fsync bs=1 count=442
-		sudo dd if=u-boot/fip/u-boot.bin.sd.bin of="${IMAGE_LOOP_DEV}" conv=fsync bs=512 skip=1 seek=1
+		if [ "$UBOOT" == "mainline" ]; then
+			UBOOT_SD_BIN="$BUILD_IMAGES/u-boot-mainline/u-boot.bin.sd.bin"
+		elif [ "$UBOOT" == "2015.01" ]; then
+			UBOOT_SD_BIN="u-boot/fip/u-boot.bin.sd.bin"
+		fi
+
+		echo "sudo dd if=$UBOOT_SD_BIN of="${IMAGE_LOOP_DEV}" conv=fsync bs=1 count=442"
+		echo "sudo dd if=$UBOOT_SD_BIN of="${IMAGE_LOOP_DEV}" conv=fsync bs=512 skip=1 seek=1"
+
+		sudo dd if=$UBOOT_SD_BIN of="${IMAGE_LOOP_DEV}" conv=fsync bs=1 count=442
+		sudo dd if=$UBOOT_SD_BIN of="${IMAGE_LOOP_DEV}" conv=fsync bs=512 skip=1 seek=1
 
 		sudo losetup -d "${IMAGE_LOOP_DEV}"
 	else
@@ -1097,21 +1121,22 @@ pack_update_image() {
 
 ###########################################################
 start_time=`date +%s`
-check_parameters $@            &&
-prepare_toolchain              &&
-prepare_uboot_configuration    &&
-prepare_linux_dtb              &&
-prepare_git_branch             &&
-prepare_ubuntu_rootfs          &&
-prepare_working_environment    &&
-prepare_aml_update_tool_config &&
-display_parameters             &&
-fixup_dtb_link                 &&
-setup_ubuntu_rootfs            &&
-build_uboot                    &&
-build_linux                    &&
-build_rootfs                   &&
-pack_update_image              &&
+check_parameters $@
+prepare_toolchains
+prepare_packages
+prepare_uboot_configuration
+prepare_linux_dtb
+prepare_git_branch
+prepare_ubuntu_rootfs
+prepare_working_environment
+prepare_aml_update_tool_config
+display_parameters
+fixup_dtb_link
+setup_ubuntu_rootfs
+build_uboot
+build_linux
+build_rootfs
+pack_update_image
 
 echo -e "\nDone."
 echo -e "\n`date`"

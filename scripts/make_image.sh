@@ -12,6 +12,17 @@ IMAGE_DIR="${UBUNTU_WORKING_DIR}/images/"
 IMAGE_FILE_NAME="KHADAS_${KHADAS_BOARD}_${INSTALL_TYPE}.img"
 IMAGE_FILE_NAME=$(echo $IMAGE_FILE_NAME | tr [A-Z] [a-z])
 
+## Download packages directory
+DOWNLOAD_PKG_DIR="$UBUNTU_WORKING_DIR/downloads"
+## Packages directory
+PKGS_DIR="$UBUNTU_WORKING_DIR/packages"
+## Packages build directory
+BUILD="$UBUNTU_WORKING_DIR/build"
+## Build images
+BUILD_IMAGES="$BUILD/images"
+## Toolchains
+TOOLCHAINS="$BUILD/toolchains"
+
 CURRENT_FILE="$0"
 
 ERROR="\033[31mError:\033[0m"
@@ -82,8 +93,15 @@ pack_update_image() {
 
 		IMAGE_LOOP_DEV="$(sudo losetup --show -f ${IMAGE_DIR}${IMAGE_FILE_NAME})"
 		sudo partprobe "${IMAGE_LOOP_DEV}"
-		sudo dd if=u-boot/fip/u-boot.bin.sd.bin of="${IMAGE_LOOP_DEV}" conv=fsync bs=1 count=442
-		sudo dd if=u-boot/fip/u-boot.bin.sd.bin of="${IMAGE_LOOP_DEV}" conv=fsync bs=512 skip=1 seek=1
+
+		if [ "$UBOOT" == "mainline" ]; then
+			UBOOT_SD_BIN="$BUILD_IMAGES/u-boot-mainline/u-boot.bin.sd.bin"
+		elif [ "$UBOOT" == "2015.01" ]; then
+			UBOOT_SD_BIN="u-boot/fip/u-boot.bin.sd.bin"
+		fi
+
+		sudo dd if=$UBOOT_SD_BIN of="${IMAGE_LOOP_DEV}" conv=fsync bs=1 count=442
+		sudo dd if=$UBOOT_SD_BIN of="${IMAGE_LOOP_DEV}" conv=fsync bs=512 skip=1 seek=1
 
 		sudo losetup -d "${IMAGE_LOOP_DEV}"
 	else
@@ -93,9 +111,9 @@ pack_update_image() {
 }
 
 ##########################################################
-check_parameters $@               &&
-prepare_aml_update_tool_config    &&
-pack_update_image                 &&
+check_parameters $@
+prepare_aml_update_tool_config
+pack_update_image
 
 echo -e "\nDone."
 echo -e "\n`date`"

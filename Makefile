@@ -51,6 +51,7 @@ info:
 	@echo
 	@echo "#KHADAS_BOARD=${KHADAS_BOARD}"
 	@echo "#LINUX=${LINUX}"
+	@echo "#UBOOT=${UBOOT}"
 	@echo "#UBUNTU=${UBUNTU}"
 	@echo "#UBUNTU_ARCH=${UBUNTU_ARCH}"
 	@echo "#INSTALL_TYPE=${INSTALL_TYPE}"
