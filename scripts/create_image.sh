@@ -695,18 +695,9 @@ EOF
 	install_kernel $(grep "Linux/arm64" linux/.config | awk  '{print $3}') linux/arch/arm64/boot/Image linux/System.map $PWD/${BOOT_DIR}
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		sudo ./utils/mkimage -A arm64 -O linux -T kernel -C none -a $IMAGE_LINUX_LOADADDR -e $IMAGE_LINUX_LOADADDR -n linux-$IMAGE_LINUX_VERSION -d $BOOT_DIR/vmlinux-$IMAGE_LINUX_VERSION $BOOT_DIR/uImage
-#		sudo cp $BOOT_DIR/uImage $BOOT_DIR/uImag.old
 		# Universal multi-boot
 		sudo cp archives/filesystem/boot/* $BOOT_DIR
-#		if [ "$KHADAS_BOARD" == "VIM" ]; then
-#			sudo cp $BOOT_DIR/boot.ini.vim $BOOT_DIR/boot.ini
-#			sudo cp $BOOT_DIR/aml_autoscript.txt.vim $BOOT_DIR/aml_autoscript.txt
-#		elif [ "$KHADAS_BOARD" == "VIM2" ]; then
-#			sudo cp $BOOT_DIR/boot.ini.vim2 $BOOT_DIR/boot.ini
-#			sudo cp $BOOT_DIR/aml_autoscript.txt.vim2 $BOOT_DIR/aml_autoscript.txt
-#		fi
 		sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S905 autoscript" -d $BOOT_DIR/s905_autoscript.cmd $BOOT_DIR/s905_autoscript
-#		sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S912 autoscript" -d $BOOT_DIR/s912_autoscript.cmd $BOOT_DIR/s912_autoscript
 		sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "AML autoscript" -d $BOOT_DIR/aml_autoscript.txt $BOOT_DIR/aml_autoscript
 		cd $BOOT_DIR
 		sudo zip aml_autoscript.zip aml_autoscript aml_autoscript.txt
@@ -723,11 +714,15 @@ EOF
 	if [ "$LINUX" == "4.9" ];then
 		sudo cp linux/arch/arm64/boot/dts/amlogic/$LINUX_DTB $BOOT_DIR
 		## Bakup dtb
-#		sudo cp linux/arch/arm64/boot/dts/amlogic/$LINUX_DTB $BOOT_DIR/$LINUX_DTB.old
+		if [ "$INSTALL_TYPE" == "EMMC" ]; then
+			sudo cp linux/arch/arm64/boot/dts/amlogic/$LINUX_DTB $BOOT_DIR/$LINUX_DTB.old
+		fi
 	elif [ "$LINUX" == "3.14" ];then
 		sudo cp linux/arch/arm64/boot/dts/$LINUX_DTB $BOOT_DIR
 		## Backup dtb
-#		sudo cp linux/arch/arm64/boot/dts/$LINUX_DTB $BOOT_DIR/$LINUX_DTB.old
+		if [ "$INSTALL_TYPE" == "EMMC" ]; then
+			sudo cp linux/arch/arm64/boot/dts/$LINUX_DTB $BOOT_DIR/$LINUX_DTB.old
+		fi
 	else
 		error_msg $CURRENT_FILE $LINENO "Unsupported linux version:'$LINUX'"
 		ret=-1
@@ -738,10 +733,6 @@ EOF
 	sudo cp -r images/linux-version rootfs/
 	# initramfs
 	sudo cp -r archives/filesystem/etc/initramfs-tools/ rootfs/etc/
-#	if [ "$UBUNTU_TYPE" == "mate" ]; then
-#		# fixup network-manager script
-#		sudo cp -r archives/filesystem/etc/init.d/khadas-restart-nm.sh rootfs/etc/init.d/khadas-restart-nm.sh
-#	fi
 	# WIFI
 	sudo mkdir rootfs/lib/firmware
 	sudo cp -r archives/hwpacks/wlan-firmware/brcm/ rootfs/lib/firmware/
@@ -750,25 +741,17 @@ EOF
 	sudo cp -r archives/hwpacks/bluez/bluetooth-khadas.service rootfs/lib/systemd/system/
 	sudo cp -r archives/hwpacks/bluez/bluetooth-khadas.sh rootfs/usr/local/bin/
 
-	# fw_setenv config
-#	sudo cp archives/filesystem/etc/fw_env.config rootfs/etc/
-
 	# Install Mali driver
 	install_mali_driver
 
-	# rc.local
-#	sudo cp -r archives/filesystem/etc/rc.local rootfs/etc/
 	# firstboot initialization: for 'ROOTFS' partition resize
 	sudo touch rootfs/etc/default/FIRSTBOOT
 
-# add 20171211
 	sudo cp -arf archives/filesystem/etc rootfs/
-# end add 20171211
 
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		# resize2fs service to resize rootfs for SD/USB image
 		sudo cp -r archives/filesystem/lib/systemd/system/resize2fs.service rootfs/lib/systemd/system/
-#		sudo cp -r archives/filesystem/etc/init.d/resize2fs rootfs/etc/init.d/
 		# For SD/USB image use resize2fs.service to resize
 		sudo rm rootfs/etc/default/FIRSTBOOT
 	fi
@@ -807,15 +790,7 @@ EOF
 		./utils/mkbootimg --kernel linux/arch/arm64/boot/Image --ramdisk images/initrd.img -o images/ramdisk.img
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		sudo mv rootfs/boot/uInitrd $BOOT_DIR
-#		sudo cp $BOOT_DIR/uInitrd $BOOT_DIR/uInitrd.old
 	fi
-
-	## Set default dtb.img
-#	if [ "$KHADAS_BOARD" == "VIM" ]; then
-#		sudo cp $BOOT_DIR/kvim.dtb $BOOT_DIR/dtb.img
-#	elif [ "$KHADAS_BOARD" == "VIM2" ]; then
-#		sudo cp $BOOT_DIR/kvim2.dtb $BOOT_DIR/dtb.img
-#	fi
 
 	## Logo
 	cp archives/logo/logo.img images/
