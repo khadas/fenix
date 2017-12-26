@@ -158,8 +158,10 @@ systemctl enable bluetooth-khadas
 # Resize service
 if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 	systemctl enable resize2fs
-	systemctl enable 0hdmi
 fi
+
+# HDMI service
+systemctl enable 0hdmi
 
 # Build time
 LC_ALL="C" date > /etc/build-time

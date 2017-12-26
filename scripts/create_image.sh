@@ -711,6 +711,8 @@ EOF
 		cd $BOOT_DIR
 		sudo zip aml_autoscript.zip aml_autoscript aml_autoscript.txt
 		cd -
+	elif [ "$INSTALL_TYPE" == "EMMC" ]; then
+		sudo cp archives/filesystem/boot/hdmi.sh $BOOT_DIR
 	fi
 
 	# linux modules

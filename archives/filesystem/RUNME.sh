@@ -106,6 +106,9 @@ if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 	systemctl enable resize2fs
 fi
 
+# HDMI service
+systemctl enable 0hdmi
+
 # Restore the sources.list from mirrors to original
 if [ -f /etc/apt/sources.list.orig ]; then
 	mv /etc/apt/sources.list.orig /etc/apt/sources.list
