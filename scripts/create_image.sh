@@ -10,7 +10,7 @@ LINUX_GIT_BRANCH=
 
 AML_UPDATE_TOOL_CONFIG=
 
-UBUNTU_SERVER_IMAGE_SIZE=700 # MB
+UBUNTU_SERVER_IMAGE_SIZE=900 # MB
 UBUNTU_MATE_IMAGE_SIZE=4000 # MB
 
 UBUNTU_TYPE=$1
@@ -23,6 +23,36 @@ IMAGE_DIR="${UBUNTU_WORKING_DIR}/images/"
 IMAGE_FILE_NAME="KHADAS_${KHADAS_BOARD}_${INSTALL_TYPE}.img"
 IMAGE_FILE_NAME=$(echo $IMAGE_FILE_NAME | tr "[A-Z]" "[a-z]")
 IMAGE_SIZE=
+
+# Download package directory
+DOWNLOAD_PKG_DIR="$UBUNTU_WORKING_DIR/downloads"
+
+## Toolchain GCC
+TOOLCHAIN_DIR="$UBUNTU_WORKING_DIR/toolchains"
+
+## Linux gcc
+LINUX_GCC_VERSION="6.3.1-2017.02"
+LINUX_GCC_VERSION_SHORT="6.3-2017.02"
+LINUX_GCC_URL="https://releases.linaro.org/components/toolchain/binaries/${LINUX_GCC_VERSION_SHORT}/aarch64-linux-gnu/gcc-linaro-${LINUX_GCC_VERSION}-x86_64_aarch64-linux-gnu.tar.xz"
+LINUX_GCC_DIR="$TOOLCHAIN_DIR/LINUX_GCC/gcc-linaro-${LINUX_GCC_VERSION}-x86_64_aarch64-linux-gnu"
+LINUX_GCC_TAR="$DOWNLOAD_PKG_DIR/LINUX_GCC/$(basename $LINUX_GCC_URL)"
+STAMP_LINUX_GCC_DOWNLOAD="$DOWNLOAD_PKG_DIR/LINUX_GCC/.fenix-linux-gcc-download"
+STAMP_LINUX_GCC_UNPACK="$TOOLCHAIN_DIR/LINUX_GCC/.fenix-linux-gcc-unpack"
+
+## Uboot gcc
+UBOOT_GCC_URL="https://releases.linaro.org/archive/13.11/components/toolchain/binaries/gcc-linaro-aarch64-none-elf-4.8-2013.11_linux.tar.xz"
+UBOOT_GCC_DIR="$TOOLCHAIN_DIR/UBOOT_GCC/gcc-linaro-aarch64-none-elf-4.8-2013.11_linux"
+UBOOT_GCC_TAR="$DOWNLOAD_PKG_DIR/UBOOT_GCC/$(basename $UBOOT_GCC_URL)"
+STAMP_UBOOT_GCC_DOWNLOAD="$DOWNLOAD_PKG_DIR/UBOOT_GCC/.fenix-uboot-gcc-download"
+STAMP_UBOOT_GCC_UNPACK="$TOOLCHAIN_DIR/UBOOT_GCC/.fenix-uboot-gcc-unpack"
+
+## Uboot gcc-T32
+UBOOT_GCC_T32_URL="https://releases.linaro.org/archive/13.11/components/toolchain/binaries/gcc-linaro-arm-none-eabi-4.8-2013.11_linux.tar.xz"
+UBOOT_GCC_T32_DIR="$TOOLCHAIN_DIR/UBOOT_GCC_T32/gcc-linaro-arm-none-eabi-4.8-2013.11_linux"
+UBOOT_GCC_T32_TAR="$DOWNLOAD_PKG_DIR/UBOOT_GCC_T32/$(basename $UBOOT_GCC_T32_URL)"
+STAMP_UBOOT_GCC_T32_DOWNLOAD="$DOWNLOAD_PKG_DIR/UBOOT_GCC_T32/.fenix-uboot-gcc-t32-download"
+STAMP_UBOOT_GCC_T32_UNPACK="$TOOLCHAIN_DIR/UBOOT_GCC_T32/.fenix-uboot-gcc-t32-unpack"
+
 
 CURRENT_FILE="$0"
 
@@ -75,6 +105,101 @@ check_parameters() {
 		echo "usage: $0 <server|mate> <VIM|VIM2> <16.04.2|17.04|17.10> <4.9|3.14> <arm64|armhf> <EMMC|SD-USB>"
 		return -1;
 	fi
+
+	return 0
+}
+
+## Download package
+## S1 package
+download_package() {
+
+	local PKG="$1"
+	local PKG_TAR_DEEPMD5
+	local STAMP_PKG_TAR_DEEPMD5=STAMP_${PKG}_TAR_DEEPMD5
+	local STAMP_PKG_DOWNLOAD=STAMP_${PKG}_DOWNLOAD
+	local PKG_TAR=${PKG}_TAR
+	local PKG_URL=${PKG}_URL
+
+	mkdir -p $DOWNLOAD_PKG_DIR/$PKG
+	cd $DOWNLOAD_PKG_DIR/$PKG
+
+	# Download
+	if [ -f ${!STAMP_PKG_DOWNLOAD} ]; then
+		. "${!STAMP_PKG_DOWNLOAD}"
+		echo -n "Checking ${!PKG_TAR}..."
+		[ -z "${PKG_TAR_DEEPMD5}" ] && PKG_TAR_DEEPMD5=$(md5sum ${!PKG_TAR} | cut -d" " -f1)
+		if [ ! "${PKG_TAR_DEEPMD5}" = "${!STAMP_PKG_TAR_DEEPMD5}" ]; then
+			echo "FAILED"
+			echo "Clean ${!PKG_TAR}..."
+			rm -rf ${!PKG_TAR}
+			rm -rf ${!PKG_DIR}
+			echo "Downloading ${!PKG_TAR}..."
+			wget ${!PKG_URL}
+			[ $? != 0 ] && error_msg "Failed to download ${!PKG_URL}, please try again!" && return -1
+			PKG_TAR_DEEPMD5=$(md5sum ${!PKG_TAR} | cut -d" " -f1)
+			echo "${STAMP_PKG_TAR_DEEPMD5}=\"${PKG_TAR_DEEPMD5}\"" > ${!STAMP_PKG_DOWNLOAD}
+		fi
+		echo "OK"
+	else
+		rm -rf ${!PKG_TAR}
+		echo "Downloading ${!PKG_TAR}..."
+		wget ${!PKG_URL}
+		[ $? != 0 ] && error_msg "Failed to download ${!PKG_URL}, please try again!" && return -1
+		PKG_TAR_DEEPMD5=$(md5sum ${!PKG_TAR} | cut -d" " -f1)
+		echo "${STAMP_PKG_TAR_DEEPMD5}=\"${PKG_TAR_DEEPMD5}\"" > ${!STAMP_PKG_DOWNLOAD}
+	fi
+}
+
+## Build package
+## $1 package name
+build_package() {
+
+	local PKG="$1"
+	local PKG_DIR_DEEPMD5
+	local STAMP_PKG_DIR_DEEPMD5=STAMP_${PKG}_DIR_DEEPMD5
+	local STAMP_PKG_UNPACK=STAMP_${PKG}_UNPACK
+	local PKG_TAR=${PKG}_TAR
+	local PKG_DIR=${PKG}_DIR
+	local PKG_URL=${PKG}_URL
+
+	download_package "$PKG"
+
+	mkdir -p $TOOLCHAIN_DIR/$PKG
+	cd $TOOLCHAIN_DIR/$PKG
+
+	# Unpack
+	if [ -f "${!STAMP_PKG_UNPACK}" ]; then
+		. "${!STAMP_PKG_UNPACK}"
+		echo -n "Checking ${!PKG_DIR}..."
+		[ -z "${PKG_DIR_DEEPMD5}" ] && PKG_DIR_DEEPMD5=$(find ${!PKG_DIR} -exec md5sum {} \; 2>/dev/null | sort | md5sum | cut -d" " -f1)
+		if [ ! "${PKG_DIR_DEEPMD5}" = "${!STAMP_PKG_DIR_DEEPMD5}" ]; then
+			echo "FAILED"
+			echo "Clean ${!PKG_DIR}..."
+			rm -rf ${!PKG_DIR}
+		else
+			echo "OK"
+			return 0
+		fi
+	fi
+
+	echo "Extracting ${!PKG_TAR}..."
+	tar xfJ ${!PKG_TAR}
+	[ "$?" != 0 ] && error_msg "Extracting ${!PKG_TAR} failed!" && return -1
+	PKG_DIR_DEEPMD5=$(find ${!PKG_DIR} -exec md5sum {} \; 2>/dev/null | sort | md5sum | cut -d" " -f1)
+	echo "${STAMP_PKG_DIR_DEEPMD5}=\"${PKG_DIR_DEEPMD5}\"" > ${!STAMP_PKG_UNPACK}
+
+	return 0
+}
+
+
+## Prepare toolhain
+prepare_toolchain() {
+	mkdir -p $TOOLCHAIN_DIR
+	cd $TOOLCHAIN_DIR
+
+	build_package "LINUX_GCC"
+	build_package "UBOOT_GCC"
+	build_package "UBOOT_GCC_T32"
 
 	return 0
 }
@@ -316,8 +441,10 @@ build_uboot() {
 	fi
 
 	echo "Build u-boot..."
+	export PATH=$UBOOT_GCC_DIR/bin:$UBOOT_GCC_T32_DIR/bin:$PATH
 	make $UBOOT_DEFCONFIG
-	make -j8 CROSS_COMPILE=aarch64-linux-gnu-
+	make -j8 CROSS_COMPILE=aarch64-none-elf-
+	ret=$?
 
 	return $ret
 }
@@ -353,6 +480,7 @@ build_linux() {
 	fi
 
 	echo "Build linux..."
+	export PATH=$LINUX_GCC_DIR/bin:$PATH
 	make ARCH=arm64 kvim_defconfig
 	make -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image $LINUX_DTB  modules
 }
@@ -735,6 +863,7 @@ pack_update_image() {
 ###########################################################
 start_time=`date +%s`
 check_parameters $@            &&
+prepare_toolchain              &&
 prepare_uboot_configuration    &&
 prepare_linux_dtb              &&
 prepare_git_branch             &&
