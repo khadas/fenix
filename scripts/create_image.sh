@@ -754,6 +754,9 @@ EOF
 		sudo cp -r archives/filesystem/lib/systemd/system/resize2fs.service rootfs/lib/systemd/system/
 		# For SD/USB image use resize2fs.service to resize
 		sudo rm rootfs/etc/default/FIRSTBOOT
+	elif [ "$INSTALL_TYPE" == "EMMC" ]; then
+		# Remove fstab for EMMC image
+		sudo rm rootfs/etc/fstab
 	fi
 
 	# mkimage tool
