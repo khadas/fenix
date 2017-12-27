@@ -744,17 +744,14 @@ EOF
 	# Install Mali driver
 	install_mali_driver
 
-	# firstboot initialization: for 'ROOTFS' partition resize
-	sudo touch rootfs/etc/default/FIRSTBOOT
-
 	sudo cp -arf archives/filesystem/etc rootfs/
+	sudo cp -r archives/filesystem/lib/systemd/system/* rootfs/lib/systemd/system/
 
-	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		# resize2fs service to resize rootfs for SD/USB image
-		sudo cp -r archives/filesystem/lib/systemd/system/resize2fs.service rootfs/lib/systemd/system/
-		# For SD/USB image use resize2fs.service to resize
-		sudo rm rootfs/etc/default/FIRSTBOOT
-	elif [ "$INSTALL_TYPE" == "EMMC" ]; then
+	if [ "$INSTALL_TYPE" == "EMMC" ]; then
+		# firstboot initialization: for 'ROOTFS' partition resize
+		# just for EMMC image.
+		sudo touch rootfs/etc/default/FIRSTBOOT
+
 		# Remove fstab for EMMC image
 		sudo rm rootfs/etc/fstab
 	fi

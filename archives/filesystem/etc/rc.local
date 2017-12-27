@@ -13,16 +13,6 @@
 
 #/boot/hdmi.sh &
 
-# Firstboot initialization
-# FIRSTBOOT_MAGIC_START
-if [ -f /etc/default/FIRSTBOOT ]; then
-	echo "Firstboot: resize rootfs."
-	resize2fs /dev/rootfs
-
-	rm -f /etc/default/FIRSTBOOT
-fi
-# FIRSTBOOT_MAGIC_END
-
 # Add write right for fw_setenv
 chmod 666 /dev/env
 

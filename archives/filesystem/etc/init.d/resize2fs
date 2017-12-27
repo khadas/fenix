@@ -17,6 +17,17 @@
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 Log=/var/log/armhwinfo.log
 
+if [ -f /etc/default/FIRSTBOOT ]; then
+	# Resize EMMC partitions
+	echo "Firstboot: resize rootfs."
+	resize2fs /dev/rootfs
+
+	rm -f /etc/default/FIRSTBOOT
+
+	systemctl disable resize2fs
+	exit 0
+fi
+
 do_expand_partition()
 {
 	local rootpart=$(findmnt -n -o SOURCE /) # i.e. /dev/mmcblk0p1
