@@ -53,6 +53,13 @@ UBOOT_GCC_T32_TAR="$DOWNLOAD_PKG_DIR/UBOOT_GCC_T32/$(basename $UBOOT_GCC_T32_URL
 STAMP_UBOOT_GCC_T32_DOWNLOAD="$DOWNLOAD_PKG_DIR/UBOOT_GCC_T32/.fenix-uboot-gcc-t32-download"
 STAMP_UBOOT_GCC_T32_UNPACK="$TOOLCHAIN_DIR/UBOOT_GCC_T32/.fenix-uboot-gcc-t32-unpack"
 
+## Uboot gcc for mainline
+UBOOT_GCC_ML_URL="https://releases.linaro.org/components/toolchain/binaries/7.2-2017.11/aarch64-elf/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf.tar.xz"
+UBOOT_GCC_ML_DIR="$TOOLCHAIN_DIR/UBOOT_GCC_ML/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf"
+UBOOT_GCC_ML_TAR="$DOWNLOAD_PKG_DIR/UBOOT_GCC_ML/$(basename $UBOOT_GCC_ML_URL)"
+STAMP_UBOOT_GCC_ML_DOWNLOAD="$DOWNLOAD_PKG_DIR/UBOOT_GCC_ML/.fenix-uboot-gcc-ml-download"
+STAMP_UBOOT_GCC_ML_UNPACK="$TOOLCHAIN_DIR/UBOOT_GCC_ML/.fenix-uboot-gcc-ml-unpack"
+
 
 CURRENT_FILE="$0"
 
@@ -200,6 +207,7 @@ prepare_toolchain() {
 	build_package "LINUX_GCC"
 	build_package "UBOOT_GCC"
 	build_package "UBOOT_GCC_T32"
+	build_package "UBOOT_GCC_ML"
 
 	return 0
 }
