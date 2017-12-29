@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#set -e -o pipefail
+
 ########################### Parameters ###################################
 
 UBOOT_DEFCONFIG=
@@ -24,42 +26,13 @@ IMAGE_FILE_NAME="KHADAS_${KHADAS_BOARD}_${INSTALL_TYPE}.img"
 IMAGE_FILE_NAME=$(echo $IMAGE_FILE_NAME | tr "[A-Z]" "[a-z]")
 IMAGE_SIZE=
 
-# Download package directory
+
+## Download packages directory
 DOWNLOAD_PKG_DIR="$UBUNTU_WORKING_DIR/downloads"
-
-## Toolchain GCC
-TOOLCHAIN_DIR="$UBUNTU_WORKING_DIR/toolchains"
-
-## Linux gcc
-LINUX_GCC_VERSION="6.3.1-2017.02"
-LINUX_GCC_VERSION_SHORT="6.3-2017.02"
-LINUX_GCC_URL="https://releases.linaro.org/components/toolchain/binaries/${LINUX_GCC_VERSION_SHORT}/aarch64-linux-gnu/gcc-linaro-${LINUX_GCC_VERSION}-x86_64_aarch64-linux-gnu.tar.xz"
-LINUX_GCC_DIR="$TOOLCHAIN_DIR/LINUX_GCC/gcc-linaro-${LINUX_GCC_VERSION}-x86_64_aarch64-linux-gnu"
-LINUX_GCC_TAR="$DOWNLOAD_PKG_DIR/LINUX_GCC/$(basename $LINUX_GCC_URL)"
-STAMP_LINUX_GCC_DOWNLOAD="$DOWNLOAD_PKG_DIR/LINUX_GCC/.fenix-linux-gcc-download"
-STAMP_LINUX_GCC_UNPACK="$TOOLCHAIN_DIR/LINUX_GCC/.fenix-linux-gcc-unpack"
-
-## Uboot gcc
-UBOOT_GCC_URL="https://releases.linaro.org/archive/13.11/components/toolchain/binaries/gcc-linaro-aarch64-none-elf-4.8-2013.11_linux.tar.xz"
-UBOOT_GCC_DIR="$TOOLCHAIN_DIR/UBOOT_GCC/gcc-linaro-aarch64-none-elf-4.8-2013.11_linux"
-UBOOT_GCC_TAR="$DOWNLOAD_PKG_DIR/UBOOT_GCC/$(basename $UBOOT_GCC_URL)"
-STAMP_UBOOT_GCC_DOWNLOAD="$DOWNLOAD_PKG_DIR/UBOOT_GCC/.fenix-uboot-gcc-download"
-STAMP_UBOOT_GCC_UNPACK="$TOOLCHAIN_DIR/UBOOT_GCC/.fenix-uboot-gcc-unpack"
-
-## Uboot gcc-T32
-UBOOT_GCC_T32_URL="https://releases.linaro.org/archive/13.11/components/toolchain/binaries/gcc-linaro-arm-none-eabi-4.8-2013.11_linux.tar.xz"
-UBOOT_GCC_T32_DIR="$TOOLCHAIN_DIR/UBOOT_GCC_T32/gcc-linaro-arm-none-eabi-4.8-2013.11_linux"
-UBOOT_GCC_T32_TAR="$DOWNLOAD_PKG_DIR/UBOOT_GCC_T32/$(basename $UBOOT_GCC_T32_URL)"
-STAMP_UBOOT_GCC_T32_DOWNLOAD="$DOWNLOAD_PKG_DIR/UBOOT_GCC_T32/.fenix-uboot-gcc-t32-download"
-STAMP_UBOOT_GCC_T32_UNPACK="$TOOLCHAIN_DIR/UBOOT_GCC_T32/.fenix-uboot-gcc-t32-unpack"
-
-## Uboot gcc for mainline
-UBOOT_GCC_ML_URL="https://releases.linaro.org/components/toolchain/binaries/7.2-2017.11/aarch64-elf/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf.tar.xz"
-UBOOT_GCC_ML_DIR="$TOOLCHAIN_DIR/UBOOT_GCC_ML/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf"
-UBOOT_GCC_ML_TAR="$DOWNLOAD_PKG_DIR/UBOOT_GCC_ML/$(basename $UBOOT_GCC_ML_URL)"
-STAMP_UBOOT_GCC_ML_DOWNLOAD="$DOWNLOAD_PKG_DIR/UBOOT_GCC_ML/.fenix-uboot-gcc-ml-download"
-STAMP_UBOOT_GCC_ML_UNPACK="$TOOLCHAIN_DIR/UBOOT_GCC_ML/.fenix-uboot-gcc-ml-unpack"
-
+## Packages directory
+PKGS_DIR="$UBUNTU_WORKING_DIR/packages"
+## Packages build directory
+BUILD="$UBUNTU_WORKING_DIR/build"
 
 CURRENT_FILE="$0"
 
@@ -116,98 +89,369 @@ check_parameters() {
 	return 0
 }
 
+unset_package_vars() {
+	unset PKG_NAME
+	unset PKG_VERSION
+	unset PKG_VERSION_SHORT
+	unset PKG_REV
+	unset PKG_ARCH
+	unset PKG_LICENSE
+	unset PKG_SITE
+	unset PKG_URL
+	unset PKG_SOURCE_DIR
+	unset PKG_SOURCE_NAME
+	unset PKG_NEED_BUILD
+	unset PKG_SHA256
+}
+
 ## Download package
 ## S1 package
 download_package() {
 
 	local PKG="$1"
-	local PKG_TAR_DEEPMD5
-	local STAMP_PKG_TAR_DEEPMD5=STAMP_${PKG}_TAR_DEEPMD5
-	local STAMP_PKG_DOWNLOAD=STAMP_${PKG}_DOWNLOAD
-	local PKG_TAR=${PKG}_TAR
-	local PKG_URL=${PKG}_URL
+	local STAMP_URL
+	local STAMP_SHA
+	local WGET_CMD
 
 	mkdir -p $DOWNLOAD_PKG_DIR/$PKG
 	cd $DOWNLOAD_PKG_DIR/$PKG
 
-	# Download
-	if [ -f ${!STAMP_PKG_DOWNLOAD} ]; then
-		. "${!STAMP_PKG_DOWNLOAD}"
-		echo -n "Checking ${!PKG_TAR}..."
-		[ -z "${PKG_TAR_DEEPMD5}" ] && PKG_TAR_DEEPMD5=$(md5sum ${!PKG_TAR} | cut -d" " -f1)
-		if [ ! "${PKG_TAR_DEEPMD5}" = "${!STAMP_PKG_TAR_DEEPMD5}" ]; then
-			echo "FAILED"
-			echo "Clean ${!PKG_TAR}..."
-			rm -rf ${!PKG_TAR}
-			rm -rf ${!PKG_DIR}
-			echo "Downloading ${!PKG_TAR}..."
-			wget ${!PKG_URL}
-			[ $? != 0 ] && error_msg "Failed to download ${!PKG_URL}, please try again!" && return -1
-			PKG_TAR_DEEPMD5=$(md5sum ${!PKG_TAR} | cut -d" " -f1)
-			echo "${STAMP_PKG_TAR_DEEPMD5}=\"${PKG_TAR_DEEPMD5}\"" > ${!STAMP_PKG_DOWNLOAD}
+	unset_package_vars
+	if [ -f "$PKGS_DIR/$PKG/package.mk" ]; then
+		. $PKGS_DIR/$PKG/package.mk
+		if [ "$PKG_NAME" != "$PKG" ]; then
+			error_msg $CURRENT_FILE $LINENO "Package name mismatch! '$PKG_NAME' != '$PKG'"
+			return -1
 		fi
-		echo "OK"
 	else
-		rm -rf ${!PKG_TAR}
-		echo "Downloading ${!PKG_TAR}..."
-		wget ${!PKG_URL}
-		[ $? != 0 ] && error_msg "Failed to download ${!PKG_URL}, please try again!" && return -1
-		PKG_TAR_DEEPMD5=$(md5sum ${!PKG_TAR} | cut -d" " -f1)
-		echo "${STAMP_PKG_TAR_DEEPMD5}=\"${PKG_TAR_DEEPMD5}\"" > ${!STAMP_PKG_DOWNLOAD}
+		error_msg $CURRENT_FILE $LINENO "Package '$PKG' doesn't exist!"
+		return -1
+	fi
+
+	STAMP_URL="$PKG_SOURCE_NAME.url"
+	STAMP_SHA="$PKG_SOURCE_NAME.sha256"
+	WGET_CMD="wget --timeout=30 --tries=3 --passive-ftp --no-check-certificate -O $PKG_SOURCE_NAME"
+
+	# Check
+	if [ -f $PKG_SOURCE_NAME ]; then
+		if [ "$(cat $STAMP_URL 2>/dev/null)" == "${PKG_URL}" ]; then
+			[ -z "${PKG_SHA256}" -o "$(cat $STAMP_SHA 2>/dev/null)" == "${PKG_SHA256}" ] && return 0
+		fi
+	fi
+
+	rm -f $STAMP_URL $STAMP_SHA
+
+	# Download
+	local NBWGET=10
+	while [ $NBWGET -gt 0 ]; do
+		rm -rf $PKG_SOURCE_NAME
+
+		if $WGET_CMD "$PKG_URL"; then
+			CALC_SHA256="$(sha256sum $PKG_SOURCE_NAME | cut -d" " -f1)"
+			[ -z "${PKG_SHA256}" -o "${PKG_SHA256}" == "${CALC_SHA256}" ] && break
+
+			error_msg $CURRENT_FILE $LINENO "Incorrect checksum calculated on downloaded file: got ${CALC_SHA256}, wanted ${PKG_SHA256}"
+		fi
+		NBWGET=$((NBWGET - 1))
+	done
+
+	if [ $NBWGET -eq 0 ]; then
+		error_msg $CURRENT_FILE $LINENO "Cant't get $PKG_NAME sources : $PKG_URL\n Try later !!"
+		return -1
+	else
+		echo "Calculated checksum is: ${CALC_SHA256}"
+		echo "${PKG_URL}" > $STAMP_URL
+		echo "${CALC_SHA256}" > $STAMP_SHA
 	fi
 }
 
-## Build package
-## $1 package name
-build_package() {
-
-	local PKG="$1"
-	local PKG_DIR_DEEPMD5
-	local STAMP_PKG_DIR_DEEPMD5=STAMP_${PKG}_DIR_DEEPMD5
-	local STAMP_PKG_UNPACK=STAMP_${PKG}_UNPACK
-	local PKG_TAR=${PKG}_TAR
-	local PKG_DIR=${PKG}_DIR
-	local PKG_URL=${PKG}_URL
-
-	download_package "$PKG"
-
-	mkdir -p $TOOLCHAIN_DIR/$PKG
-	cd $TOOLCHAIN_DIR/$PKG
-
-	# Unpack
-	if [ -f "${!STAMP_PKG_UNPACK}" ]; then
-		. "${!STAMP_PKG_UNPACK}"
-		echo -n "Checking ${!PKG_DIR}..."
-		[ -z "${PKG_DIR_DEEPMD5}" ] && PKG_DIR_DEEPMD5=$(find ${!PKG_DIR} -exec md5sum {} \; 2>/dev/null | sort | md5sum | cut -d" " -f1)
-		if [ ! "${PKG_DIR_DEEPMD5}" = "${!STAMP_PKG_DIR_DEEPMD5}" ]; then
-			echo "FAILED"
-			echo "Clean ${!PKG_DIR}..."
-			rm -rf ${!PKG_DIR}
-		else
-			echo "OK"
-			return 0
-		fi
+## Extract package
+## $1 package
+## $2 target dir
+extract_package() {
+	if [ -z "$2" ]; then
+		echo "usage: $0 package_name target_dir"
+		return -1
 	fi
 
-	echo "Extracting ${!PKG_TAR}..."
-	tar xfJ ${!PKG_TAR}
-	[ "$?" != 0 ] && error_msg "Extracting ${!PKG_TAR} failed!" && return -1
-	PKG_DIR_DEEPMD5=$(find ${!PKG_DIR} -exec md5sum {} \; 2>/dev/null | sort | md5sum | cut -d" " -f1)
-	echo "${STAMP_PKG_DIR_DEEPMD5}=\"${PKG_DIR_DEEPMD5}\"" > ${!STAMP_PKG_UNPACK}
+	[ -z "$PKG_URL" -o -z "$PKG_SOURCE_NAME" ] && return -1
+	[ ! -d "$DOWNLOAD_PKG_DIR/$1" -o ! -d "$2" ] && return -1
+
+	echo "Extracting '$PKG_SOURCE_NAME' to '$2'..."
+
+	for pattern in .tar.gz .tar.xz .tar.bz2 .tgz .txz .tbz .7z .zip; do
+		if [[ $PKG_SOURCE_NAME =~ ${pattern//./\\.}$ ]]; then
+			f="$DOWNLOAD_PKG_DIR/$1/$PKG_SOURCE_NAME"
+			if [ ! -f $f ]; then
+				error_msg $CURRENT_FILE $LINENO "error: File $PKG_SOURCE_NAME doesn't exist in package $1 downloads directory"
+				return -1
+			fi
+			case $PKG_SOURCE_NAME in
+				*.tar)
+					tar xf $f -C $2
+					;;
+				*.tar.bz2 | *.tbz)
+					tar xjf $f -C $2
+					;;
+				*.tar.gz | *.tgz)
+					tar xzf $f -C $2
+					;;
+				*.tar.xz | *.txz)
+					tar xJf $f -C $2
+					;;
+				*.7z)
+					mkdir -p $2/$1
+					7z x -o$2/$1 $f
+					;;
+				*.zip)
+					unzip -q $f -d $2
+					;;
+				*.diff | *.patch)
+					cat $f | patch -d $2 -p1
+					;;
+				*.diff.bz2 | *.patch.bz2 | patch-*.bz2)
+					bzcat $f | patch -d $2 -p1
+					;;
+				*.diff.gz | *.patch.gz | patch-*.gz)
+					zcat $f | patch -d $2 -p1
+					;;
+				*)
+					cp -pPR $f $2
+					;;
+			esac
+			break
+		fi
+	done
+}
+
+## Clean package
+## $1 pakage
+clean_package() {
+
+	for i in $BUILD/$1-*; do
+		if [ -d $i -a -f "$i/.libreelec-unpack" ] ; then
+			. "$i/.libreelec-unpack"
+			if [ "$STAMP_PKG_NAME" = "$1" ]; then
+				printf "%${BUILD_INDENT}c ${boldred}*${endcolor} ${red}Removing $i ...${endcolor}\n" ' '
+				rm -rf $i
+			fi
+		else
+			# force clean if no stamp found (previous unpack failed)
+			printf "%${BUILD_INDENT}c * Removing $i ...\n" ' '
+			rm -rf $i
+		fi
+	done
+
 
 	return 0
 }
 
+## Unpack package
+## $1 package name
+unpack_package() {
+
+	local PKG="$1"
+	local STAMP
+	local STAMP_DEPENDS
+	local PKG_BUILD
+	local PKG_DIR
+
+	download_package "$PKG"
+
+	mkdir -p $BUILD
+
+	PKG_DIR="$PKGS_DIR/$PKG"
+	PKG_BUILD="$BUILD/${PKG_NAME}-${PKG_VERSION}"
+	STAMP=$PKG_BUILD/.fenix-unpack
+	STAMP_DEPENDS="$PKG_DIR"
+
+	local PKG_DEEPMD5=
+	for i in $BUILD/$PKG-*; do
+		if [ -d $i -a -f "$i/.fenix-unpack" ] ; then
+			. "$PKG_BUILD/.fenix-unpack"
+			if [ "$STAMP_PKG_NAME" = "$PKG" ]; then
+				[ -z "${PKG_DEEPMD5}" ] && PKG_DEEPMD5=$(find $STAMP_DEPENDS -exec md5sum {} \; 2>/dev/null | sort | md5sum | cut -d" " -f1)
+				if [ ! "$PKG_DEEPMD5" = "$STAMP_PKG_DEEPMD5" ] ; then
+					clean_package $PKG
+				fi
+			fi
+		fi
+	done
+
+	if [ -d "$PKG_BUILD" -a ! -f "$STAMP" ]; then
+		clean_package $PKG
+	fi
+
+	[ -f "$STAMP" ] && return 0
+
+	if [ -d "$DOWNLOAD_PKG_DIR/$PKG" ]; then
+		# unset functions
+		unset -f pre_unpack
+		unset -f unpack
+		unset -f post_unpack
+		unset -f pre_patch
+		unset -f post_patch
+
+		. $PKGS_DIR/$PKG/package.mk
+
+		if [ "$(type -t pre_unpack)" = "function" ]; then
+			pre_unpack
+		fi
+
+		if [ "$(type -t unpack)" = "function" ]; then
+			unpack
+		else
+			if [ -n "$PKG_URL" ]; then
+				extract_package $PKG $BUILD
+			fi
+		fi
+
+		if [ ! -d $BUILD/$PKG_NAME-$PKG_VERSION ]; then
+			if [ -n "$PKG_SOURCE_DIR" ]; then
+				mv $BUILD/$PKG_SOURCE_DIR $BUILD/$PKG_NAME-$PKG_VERSION
+			elif [ -d $BUILD/$PKG_NAME-$PKG_VERSION* ]; then
+				mv $BUILD/$PKG_NAME-$PKG_VERSION* $BUILD/$PKG_NAME-$PKG_VERSION
+			fi
+		fi
+
+		if [ -d "$PKG_DIR/sources" ]; then
+			[ ! -d "$BUILD/${PKG_NAME}-${PKG_VERSION}" ] && mkdir -p $BUILD/${PKG_NAME}-${PKG_VERSION}
+			cp -PRf $PKG_DIR/sources/* $BUILD/${PKG_NAME}-${PKG_VERSION}
+		fi
+
+		if [ "$(type -t post_unpack)" = "function" ]; then
+			post_unpack
+		fi
+
+		if [ "$(type -t pre_patch)" = "function" ]; then
+			pre_patch
+		fi
+
+		for i in $PKG_DIR/patches/$PKG_NAME-*.patch \
+				 $PKG_DIR/patches/$PKG_VERSION/*.patch; do
+
+			if [ -f "$i" ]; then
+				if [ -n "$(grep -E '^GIT binary patch$' $i)" ]; then
+					cat $i | git apply --directory=`echo "$PKG_BUILD" | cut -f1 -d\ ` -p1 --verbose --whitespace=nowarn --unsafe-paths
+				else
+					cat $i | patch -d `echo "$PKG_BUILD" | cut -f1 -d\ ` -p1
+				fi
+			fi
+		done
+
+		if [ "$(type -t post_patch)" = "function" ]; then
+			post_patch
+		fi
+
+		PKG_DEEPMD5=$(find $STAMP_DEPENDS -exec md5sum {} \; 2>/dev/null | sort | md5sum | cut -d" " -f1)
+		for i in PKG_NAME PKG_DEEPMD5; do
+			echo "STAMP_$i=\"${!i}\"" >> $STAMP
+		done
+	fi
+
+	return 0
+}
+
+## Build package
+## $1 package
+build_package() {
+
+	if [ -z "$1" ]; then
+		echo "usage: $0 package_name"
+		return -1
+	fi
+
+	local STAMPS
+	local PKG_DIR
+	local PKG_BUILD
+	local STAMP_DEPENDS
+	local PACKAGE_NAME
+	local TARGET
+
+	PACKAGE_NAME=$(echo $1 | awk -F : '{print $1}')
+	TARGET=$(echo $1 | awk -F : '{print $2}')
+	if [ -z "$TARGET" ]; then
+		TARGET="target"
+	fi
+
+	if [ ! -f $PKGS_DIR/$PACKAGE_NAME/package.mk ]; then
+		error_msg $CURRENT_FILE $LINENO "$1: no package.mk file found!"
+		return -1
+	fi
+
+
+	unpack_package $PACKAGE_NAME
+
+	STAMPS=$BUILD/.stamps
+	PKG_DIR="$PKGS_DIR/$PACKAGE_NAME"
+	PKG_BUILD="$BUILD/${PKG_NAME}-${PKG_VERSION}"
+
+	mkdir -p $STAMPS/$PKG_NAME
+	STAMP=$STAMPS/$PKG_NAME/build_$TARGET
+
+	STAMP_DEPENDS="$PKG_DIR"
+
+	if [ -f $STAMP ] ; then
+		. $STAMP
+		PKG_DEEPMD5=$(find $STAMP_DEPENDS -exec md5sum {} \; 2>/dev/null | sort | md5sum | cut -d" " -f1)
+		if [ ! "$PKG_DEEPMD5" = "$STAMP_PKG_DEEPMD5" ] ; then
+			rm -f $STAMP
+		fi
+	fi
+
+	if [ ! -f $STAMP ]; then
+		# unset functions
+		unset -f pre_build_target
+		unset -f pre_make_target
+		unset -f make_target
+		unset -f post_make_target
+
+		unset -f pre_build_host
+		unset -f pre_make_host
+		unset -f make_host
+		unset -f post_make_host
+
+		. $PKG_DIR/package.mk
+
+		if [ "$PKG_NEED_BUILD" == "YES" ]; then
+
+			if [ "$(type -t pre_build_$TARGET)" = "function" ]; then
+				pre_build_$TARGET
+			fi
+
+			if [ ! -d $PKG_BUILD ] ; then
+				mkdir -p $PKG_BUILD
+			fi
+
+			cd $PKG_BUILD
+
+			if [ "$(type -t pre_make_$TARGET)" = "function" ]; then
+				pre_make_$TARGET
+			fi
+
+			if [ "$(type -t make_$TARGET)" = "function" ]; then
+				make_$TARGET
+			fi
+
+			if [ "$(type -t post_make_$TARGET)" = "function" ]; then
+				post_make_$TARGET
+			fi
+		fi
+
+		PKG_DEEPMD5=$(find $STAMP_DEPENDS -exec md5sum {} \; 2>/dev/null | sort | md5sum | cut -d" " -f1)
+		for i in PKG_NAME PKG_DEEPMD5; do
+			echo "STAMP_$i=\"${!i}\"" >> $STAMP
+		done
+	fi
+}
 
 ## Prepare toolhain
 prepare_toolchain() {
-	mkdir -p $TOOLCHAIN_DIR
-	cd $TOOLCHAIN_DIR
 
-	build_package "LINUX_GCC"
-	build_package "UBOOT_GCC"
-	build_package "UBOOT_GCC_T32"
-	build_package "UBOOT_GCC_ML"
+	build_package "gcc-linaro-aarch64-linux-gnu:host"
+	build_package "gcc-linaro-aarch64-none-elf:host"
+	build_package "gcc-linaro-arm-none-eabi:host"
+	build_package "gcc-linaro-aarch64-elf:host"
 
 	return 0
 }
@@ -449,7 +693,11 @@ build_uboot() {
 	fi
 
 	echo "Build u-boot..."
-	export PATH=$UBOOT_GCC_DIR/bin:$UBOOT_GCC_T32_DIR/bin:$PATH
+	. $PKGS_DIR/gcc-linaro-aarch64-none-elf/package.mk
+	UBOOT_GCC_VER=$PKG_VERSION
+	. $PKGS_DIR/gcc-linaro-arm-none-eabi/package.mk
+	UBOOT_GCC_T32_VER=$PKG_VERSION
+	export PATH=$BUILD/gcc-linaro-aarch64-none-elf-${UBOOT_GCC_VER}/bin:$BUILD/gcc-linaro-arm-none-eabi-${UBOOT_GCC_T32_VER}/bin:$PATH
 	make $UBOOT_DEFCONFIG
 	make -j8 CROSS_COMPILE=aarch64-none-elf-
 	ret=$?
@@ -488,7 +736,9 @@ build_linux() {
 	fi
 
 	echo "Build linux..."
-	export PATH=$LINUX_GCC_DIR/bin:$PATH
+	. $PKGS_DIR/gcc-linaro-aarch64-linux-gnu/package.mk
+	LINUX_GCC_VER=$PKG_VERSION
+	export PATH=$BUILD/gcc-linaro-aarch64-linux-gnu-${LINUX_GCC_VER}/bin:$PATH
 	make ARCH=arm64 kvim_defconfig
 	make -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image $LINUX_DTB  modules
 }
