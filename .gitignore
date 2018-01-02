@@ -20,3 +20,7 @@
 # Images
 /images
 
+/build
+/downloads
+/boot
+/archives/ubuntu-mate
