@@ -3,7 +3,7 @@
 ################################################################
 
 KHADAS_BOARD_ARRAY=("VIM" "VIM2")
-VIM_SUPPORTED_LINUX_VERSION_ARRAY=("3.14" "4.9")
+VIM_SUPPORTED_LINUX_VERSION_ARRAY=("3.14" "4.9" "mainline")
 VIM2_SUPPORTED_LINUX_VERSION_ARRAY=("4.9")
 VIM_SUPPORTED_UBOOT_VERSION_ARRAY=("2015.01" "mainline")
 VIM2_SUPPORTED_UBOOT_VERSION_ARRAY=("2015.01")
@@ -90,6 +90,13 @@ function choose_khadas_board() {
 function choose_linux_version() {
 	echo ""
 	echo "Choose linux version:"
+	# FIXME
+	if [ "$UBOOT" == "mainline" ]; then
+		echo "Force set to linux-mainline"
+		export LINUX="mainline"
+		return 0
+	fi
+
 	i=0
 	local LINUX_VERSION_ARRAY_LEN
 	local LINUX_VERSION_ARRAY_ELEMENT
@@ -319,7 +326,7 @@ function choose_install_type() {
 	# FIXME
 	if [ "$UBOOT" == "mainline" ]; then
 		echo "Force set to install-${INSTALL_TYPE_ARRAY[1]}"
-		INSTALL_TYPE="${INSTALL_TYPE_ARRAY[1]}"
+		export INSTALL_TYPE="${INSTALL_TYPE_ARRAY[1]}"
 		return
 	else
 		i=0
@@ -499,8 +506,8 @@ function lunch() {
 
 #####################################################################3
 choose_khadas_board
-choose_linux_version
 choose_uboot_version
+choose_linux_version
 choose_ubuntu_version
 choose_ubuntu_architecture
 choose_ubuntu_type

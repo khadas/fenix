@@ -1,0 +1,32 @@
+From 12b40b3592d9c2dd4641af604ee1676bf63b214c Mon Sep 17 00:00:00 2001
+From: Neil Armstrong <narmstrong@baylibre.com>
+Date: Mon, 16 Oct 2017 15:56:02 +0200
+Subject: [PATCH 03/36] dt-bindings: display: amlogic,meson-vpu: Add optional
+ power domain property
+
+The Video Processing Unit power domain was setup by the Vendor U-Boot,
+add support for an optional Power Domain phandle to setup it from the kernel.
+
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+---
+ Documentation/devicetree/bindings/display/amlogic,meson-vpu.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/display/amlogic,meson-vpu.txt b/Documentation/devicetree/bindings/display/amlogic,meson-vpu.txt
+index 00f74ba..057b813 100644
+--- a/Documentation/devicetree/bindings/display/amlogic,meson-vpu.txt
++++ b/Documentation/devicetree/bindings/display/amlogic,meson-vpu.txt
+@@ -64,6 +64,10 @@ Required properties:
+ - reg-names: should contain the names of the previous memory regions
+ - interrupts: should contain the VENC Vsync interrupt number
+ 
++Optional properties:
++- power-domains: Optional phandle to associated power domain as described in
++	the file ../power/power_domain.txt
++
+ Required nodes:
+ 
+ The connections to the VPU output video ports are modeled using the OF graph
+-- 
+1.9.1
+

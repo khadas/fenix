@@ -1,8 +1,11 @@
 #!/bin/bash
 
+set -e -o pipefail
+
 ########################### Parameters ###################################
 
 LINUX_DTB=
+LINUX_DIR=
 
 
 BASE_DIR="$HOME"
@@ -12,6 +15,18 @@ UBUNTU_WORKING_DIR="$(dirname "$(dirname "$(readlink -fm "$0")")")"
 IMAGE_DIR="images/"
 IMAGE_FILE_NAME="KHADAS_${KHADAS_BOARD}_${INSTALL_TYPE}.img"
 IMAGE_FILE_NAME=$(echo $IMAGE_FILE_NAME | tr [A-Z] [a-z])
+
+## Download packages directory
+DOWNLOAD_PKG_DIR="$UBUNTU_WORKING_DIR/downloads"
+## Packages directory
+PKGS_DIR="$UBUNTU_WORKING_DIR/packages"
+## Packages build directory
+BUILD="$UBUNTU_WORKING_DIR/build"
+## Build images
+BUILD_IMAGES="$BUILD/images"
+## Toolchains
+TOOLCHAINS="$BUILD/toolchains"
+
 
 CURRENT_FILE="$0"
 
@@ -53,7 +68,11 @@ prepare_linux_dtb() {
 	ret=0
 	case "$KHADAS_BOARD" in
 		VIM)
-			LINUX_DTB="kvim.dtb"
+			if [ "$LINUX" == "mainline" ]; then
+				LINUX_DTB="meson-gxl-s905x-khadas-vim.dtb"
+			else
+				LINUX_DTB="kvim.dtb"
+			fi
 			;;
 		VIM2)
 			LINUX_DTB="kvim2.dtb"
@@ -68,11 +87,56 @@ prepare_linux_dtb() {
 	return $ret
 }
 
+## Prepare linux directory
+prepare_linux_dir() {
+	if [ "$LINUX" == "mainline" ]; then
+		LINUX_DIR="$BUILD/linux-mainline-*"
+	else
+		LINUX_DIR="$UBUNTU_WORKING_DIR/linux"
+	fi
+}
+
+# Arguments:
+#   $1 - kernel version
+#   $2 - kernel image file
+#   $3 - kernel map file
+#   $4 - default install path (blank if root directory)
+install_kernel() {
+    if [ "$(basename $2)" = "Image.gz" ]; then
+        # Compressed install
+        echo "Installing compressed kernel"
+        base=vmlinuz
+    else
+        # Normal install
+        echo "Installing normal kernel"
+        base=vmlinux
+    fi
+
+    if [ -f $4/$base-$1 ]; then
+        sudo mv $4/$base-$1 $4/$base-$1.old
+    fi
+    sudo cp $2 $4/$base-$1
+
+    # Install system map file
+    if [ -f $4/System.map-$1 ]; then
+        sudo mv $4/System.map-$1 $4/System.map-$1.old
+    fi
+    sudo cp $3 $4/System.map-$1
+
+    # Install config file
+    config=$(dirname "$3")
+    config="${config}/.config"
+    if [ -f $4/config-$1 ]; then
+        sudo mv $4/config-$1 $4/config-$1.old
+    fi
+    sudo cp $config $4/config-$1
+}
+
 remount_rootfs() {
 	cd ${UBUNTU_WORKING_DIR}
 
 	IMAGE_LINUX_LOADADDR="0x1080000"
-	IMAGE_LINUX_VERSION=`head -n 1 linux/include/config/kernel.release | xargs echo -n`
+	IMAGE_LINUX_VERSION=`head -n 1 $LINUX_DIR/include/config/kernel.release | xargs echo -n`
 
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		BOOT_DIR="boot"
@@ -111,20 +175,19 @@ remount_rootfs() {
 	sudo cp -a rootfs/etc/apt/sources.list rootfs/etc/apt/sources.list.orig
 	sudo sed -i "s/http:\/\/ports.ubuntu.com\/ubuntu-ports\//http:\/\/mirrors.ustc.edu.cn\/ubuntu-ports\//g" rootfs/etc/apt/sources.list
 
-	sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- install INSTALL_PATH=$PWD/${BOOT_DIR}
+#	sudo make -C $LINUX_DIR -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- install INSTALL_PATH=$PWD/${BOOT_DIR}
+	install_kernel $(grep "Linux/arm64" $LINUX_DIR/.config | awk  '{print $3}') $LINUX_DIR/arch/arm64/boot/Image $LINUX_DIR/System.map $PWD/${BOOT_DIR}
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		sudo ./utils/mkimage -A arm64 -O linux -T kernel -C none -a $IMAGE_LINUX_LOADADDR -e $IMAGE_LINUX_LOADADDR -n linux-$IMAGE_LINUX_VERSION -d $BOOT_DIR/vmlinuz-$IMAGE_LINUX_VERSION $BOOT_DIR/uImage
-		sudo cp $BOOT_DIR/uImage $BOOT_DIR/uImag.old
+		sudo ./utils/mkimage -A arm64 -O linux -T kernel -C none -a $IMAGE_LINUX_LOADADDR -e $IMAGE_LINUX_LOADADDR -n linux-$IMAGE_LINUX_VERSION -d $BOOT_DIR/vmlinux-$IMAGE_LINUX_VERSION $BOOT_DIR/uImage
 		# Universal multi-boot
 		sudo cp archives/filesystem/boot/* $BOOT_DIR
-		if [ "$KHADAS_BOARD" == "VIM" ]; then
-			sudo cp $BOOT_DIR/boot.ini.vim $BOOT_DIR/boot.ini
-		elif [ "$KHADAS_BOARD" == "VIM2" ]; then
-			sudo cp $BOOT_DIR/boot.ini.vim2 $BOOT_DIR/boot.ini
+		if [ "$LINUX" == "mainline" ]; then
+			sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S905 autoscript" -d $BOOT_DIR/s905_autoscript.cmd.mainline $BOOT_DIR/s905_autoscript
+		else
+			sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S905 autoscript" -d $BOOT_DIR/s905_autoscript.cmd $BOOT_DIR/s905_autoscript
 		fi
-		sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S905 autoscript" -d $BOOT_DIR/s905_autoscript.cmd $BOOT_DIR/s905_autoscript
-		sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S912 autoscript" -d $BOOT_DIR/s912_autoscript.cmd $BOOT_DIR/s912_autoscript
 		sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "AML autoscript" -d $BOOT_DIR/aml_autoscript.txt $BOOT_DIR/aml_autoscript
+
 		cd $BOOT_DIR
 		sudo rm aml_autoscript.zip
 		sudo zip aml_autoscript.zip aml_autoscript aml_autoscript.txt
@@ -132,17 +195,22 @@ remount_rootfs() {
 	fi
 
 	## Update linux modules
-	sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules_install INSTALL_MOD_PATH=../rootfs/
-	sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- headers_install INSTALL_HDR_PATH=$PWD/rootfs/usr/
+	sudo rm -rf rootfs/lib/modules
+	sudo make -C $LINUX_DIR -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules_install INSTALL_MOD_PATH=$PWD/rootfs/
+	sudo make -C $LINUX_DIR -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- headers_install INSTALL_HDR_PATH=$PWD/rootfs/usr/
 	## Update linux dtb Image
-	if [ "$LINUX" == "4.9" ];then
-		sudo cp linux/arch/arm64/boot/dts/amlogic/$LINUX_DTB $BOOT_DIR
+	if [ "$LINUX" == "4.9" -o "$LINUX" == "mainline" ];then
+		sudo cp $LINUX_DIR/arch/arm64/boot/dts/amlogic/$LINUX_DTB $BOOT_DIR
 		# Backup dtb
-		sudo cp linux/arch/arm64/boot/dts/amlogic/$LINUX_DTB $BOOTDIR/$LINUX_DTB.old
+		if [ "$INSTALL_TYPE" == "EMMC" ]; then
+			sudo cp $LINUX_DIR/arch/arm64/boot/dts/amlogic/$LINUX_DTB $BOOTDIR/$LINUX_DTB.old
+		fi
 	elif [ "$LINUX" == "3.14" ];then
-		sudo cp linux/arch/arm64/boot/dts/$LINUX_DTB $BOOT_DIR
+		sudo cp $LINUX_DIR/arch/arm64/boot/dts/$LINUX_DTB $BOOT_DIR
 		# Backup dtb
-		sudo cp linux/arch/arm64/boot/dts/$LINUX_DTB $BOOT_DIR/$LINUX_DTB.old
+		if [ "$INSTALL_TYPE" == "EMMC" ]; then
+			sudo cp $LINUX_DIR/arch/arm64/boot/dts/$LINUX_DTB $BOOT_DIR/$LINUX_DTB.old
+		fi
 	else
 		error_msg $CURRENT_FILE $LINENO "Unsupported linux version:'$LINUX'"
 		sudo sync
@@ -154,10 +222,10 @@ remount_rootfs() {
 		return -1
 	fi
 
-	sudo cp linux/arch/arm64/boot/Image $BOOT_DIR
+	sudo cp $LINUX_DIR/arch/arm64/boot/Image $BOOT_DIR
 
 	## linux version
-	grep "Linux/arm64" linux/.config | awk  '{print $3}' > images/linux-version
+	grep "Linux/arm64" $LINUX_DIR/.config | awk  '{print $3}' > images/linux-version
 	sudo cp -r images/linux-version rootfs/
 
 	## firstboot initialization: for 'ROOTFS' partition resize
@@ -203,17 +271,9 @@ remount_rootfs() {
 	## Generate ramdisk.img
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
 		cp rootfs/boot/initrd.img images/initrd.img
-		./utils/mkbootimg --kernel linux/arch/arm64/boot/Image --ramdisk images/initrd.img -o images/ramdisk.img
+		./utils/mkbootimg --kernel $LINUX_DIR/arch/arm64/boot/Image --ramdisk images/initrd.img -o images/ramdisk.img
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		sudo mv rootfs/boot/uInitrd $BOOT_DIR
-		sudo cp $BOOT_DIR/uInitrd $BOOT_DIR/uInitrd.old
-	fi
-
-	## Set default dtb.img
-	if [ "$KHADAS_BOARD" == "VIM" ]; then
-		sudo cp $BOOT_DIR/kvim.dtb $BOOT_DIR/dtb.img
-	elif [ "$KHADAS_BOARD" == "VIM2" ]; then
-		sudo cp $BOOT_DIR/kvim2.dtb $BOOT_DIR/dtb.img
 	fi
 
 	## Clean up
@@ -237,9 +297,10 @@ remount_rootfs() {
 
 
 ########################################################
-check_parameters $@         &&
-prepare_linux_dtb           &&
-remount_rootfs              &&
+check_parameters $@
+prepare_linux_dtb
+prepare_linux_dir
+remount_rootfs
 
 echo -e "\nDone."
 echo -e "\n`date`"

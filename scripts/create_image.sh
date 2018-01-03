@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#set -e -o pipefail
+set -e -o pipefail
 
 ########################### Parameters ###################################
 
@@ -9,10 +9,11 @@ LINUX_DTB=
 UBUNTU_ROOTFS=
 UBOOT_GIT_BRANCH=
 LINUX_GIT_BRANCH=
+LINUX_DIR=
 
 AML_UPDATE_TOOL_CONFIG=
 
-UBUNTU_SERVER_IMAGE_SIZE=900 # MB
+UBUNTU_SERVER_IMAGE_SIZE=1200 # MB
 UBUNTU_MATE_IMAGE_SIZE=4000 # MB
 
 UBUNTU_TYPE=$1
@@ -21,7 +22,7 @@ BASE_DIR="$HOME"
 PROJECT_DIR="${BASE_DIR}/project"
 KHADAS_DIR="${PROJECT_DIR}/khadas"
 UBUNTU_WORKING_DIR="$(dirname "$(dirname "$(readlink -fm "$0")")")"
-IMAGE_DIR="${UBUNTU_WORKING_DIR}/images/"
+IMAGE_DIR="${UBUNTU_WORKING_DIR}/images"
 IMAGE_FILE_NAME="KHADAS_${KHADAS_BOARD}_${INSTALL_TYPE}.img"
 IMAGE_FILE_NAME=$(echo $IMAGE_FILE_NAME | tr "[A-Z]" "[a-z]")
 IMAGE_SIZE=
@@ -81,12 +82,12 @@ time_cal() {
 ## $1 ubuntu type           <server | mate>
 ## $2 board              	<VIM | VIM2>
 ## $3 ubuntu version     	<16.04.2 | 17.04 | 17.10>
-## $4 linux version      	<4.9 | 3.14>
+## $4 linux version      	<4.9 | 3.14 | mainline>
 ## $5 ubuntu architecture   <arm64 | armhf>
 ## $6 install type          <EMMC | SD-USB>
 check_parameters() {
 	if [ "$1" == "" ] || [ "$2" == "" ]  || [ "$3" == "" ] || [ "$4" == "" ] || [ "$5" == "" ] || [ "$6" == "" ]; then
-		echo "usage: $0 <server|mate> <VIM|VIM2> <16.04.2|17.04|17.10> <4.9|3.14> <arm64|armhf> <EMMC|SD-USB>"
+		echo "usage: $0 <server|mate> <VIM|VIM2> <16.04.2|17.04|17.10> <4.9|3.14|mainline> <arm64|armhf> <EMMC|SD-USB>"
 		return -1;
 	fi
 
@@ -471,6 +472,10 @@ prepare_packages() {
 	if [ "$UBOOT" == "mainline" ]; then
 		build_package "u-boot-mainline:target"
 	fi
+
+	if [ "$LINUX" == "mainline" ]; then
+		build_package "linux-mainline:target"
+	fi
 }
 
 ## Select uboot configuration
@@ -497,7 +502,11 @@ prepare_linux_dtb() {
 	ret=0
 	case "$KHADAS_BOARD" in
 		VIM)
-			LINUX_DTB="kvim.dtb"
+			if [ "$LINUX" == "mainline" ]; then
+				LINUX_DTB="meson-gxl-s905x-khadas-vim.dtb"
+			else
+				LINUX_DTB="kvim.dtb"
+			fi
 			;;
 		VIM2)
 			LINUX_DTB="kvim2.dtb"
@@ -535,6 +544,9 @@ prepare_git_branch() {
 		4.9)
 			LINUX_GIT_BRANCH="ubuntu-4.9"
 			;;
+	mainline)
+			LINUX_GIT_BRANCH=
+			;;
 		*)
 			error_msg $CURRENT_FILE $LINENO "Unsupported linux version:$LINUX"
 			LINUX_GIT_BRANCH=
@@ -556,6 +568,8 @@ fixup_dtb_link() {
 			;;
 		3.14)
 			ln -s ../../linux/arch/arm64/boot/dts/$LINUX_DTB kvim.dtb
+			;;
+	mainline)
 			;;
 		*)
 			error_msg $CURRENT_FILE $LINENO "Unsupported linux version:$LINUX"
@@ -658,6 +672,12 @@ prepare_working_environment() {
 
 	cd ${UBUNTU_WORKING_DIR}
 
+	if [ "$LINUX" == "mainline" ]; then
+		LINUX_DIR="$BUILD/linux-mainline-*"
+	else
+		LINUX_DIR="$UBUNTU_WORKING_DIR/linux"
+	fi
+
 	return 0
 }
 
@@ -725,6 +745,10 @@ build_uboot() {
 ## Build Linux
 build_linux() {
 	ret=0
+
+	if [ "$LINUX" == "mainline" ]; then
+		return 0
+	fi
 
 	if [ "$LINUX_GIT_BRANCH" == "" ] || [ "$LINUX_DTB" == "" ]; then
 		[ "$LINUX_GIT_BRANCH" == "" ] && error_msg $CURRENT_FILE $LINENO "'LINUX_GIT_BRANCH' is empty!"
@@ -805,7 +829,7 @@ setup_ubuntu_rootfs() {
 
 install_mali_driver() {
 
-	if [ "$KHADAS_BOARD" == "VIM" ]; then
+	if [ "$KHADAS_BOARD" == "VIM" -a "$LINUX" != "mainline" ]; then
 		# GPU user space binary drivers
 		## Headers
 		sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL rootfs/usr/include/
@@ -897,7 +921,7 @@ build_rootfs() {
 	cd ${UBUNTU_WORKING_DIR}
 
 	IMAGE_LINUX_LOADADDR="0x1080000"
-	IMAGE_LINUX_VERSION=`head -n 1 linux/include/config/kernel.release | xargs echo -n`
+	IMAGE_LINUX_VERSION=`head -n 1 $LINUX_DIR/include/config/kernel.release | xargs echo -n`
 	BOOT_DIR=
 
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
@@ -909,8 +933,8 @@ build_rootfs() {
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		BOOT_DIR="boot"
 		IMAGE_SIZE=$((IMAGE_SIZE + 300)) # SD/USB image szie = BOOT(256MB) + ROOTFS
-		dd if=/dev/zero of=${IMAGE_DIR}${IMAGE_FILE_NAME} bs=1M count=0 seek=$IMAGE_SIZE
-		sudo fdisk "${IMAGE_DIR}${IMAGE_FILE_NAME}" <<EOF
+		dd if=/dev/zero of=${IMAGE_DIR}/${IMAGE_FILE_NAME} bs=1M count=0 seek=$IMAGE_SIZE
+		sudo fdisk "${IMAGE_DIR}/${IMAGE_FILE_NAME}" <<EOF
 o
 n
 p
@@ -930,7 +954,7 @@ p
 w
 
 EOF
-		IMAGE_LOOP_DEV="$(sudo losetup --show -f ${IMAGE_DIR}${IMAGE_FILE_NAME})"
+		IMAGE_LOOP_DEV="$(sudo losetup --show -f ${IMAGE_DIR}/${IMAGE_FILE_NAME})"
 		export IMAGE_LOOP_DEV
 		IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
 		IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
@@ -965,12 +989,16 @@ EOF
 
 	# FIXME for Ubuntu 14.04, execute /sbin/installkernel failed, so try to install image manually
 #	sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- install INSTALL_PATH=$PWD/${BOOT_DIR}
-	install_kernel $(grep "Linux/arm64" linux/.config | awk  '{print $3}') linux/arch/arm64/boot/Image linux/System.map $PWD/${BOOT_DIR}
+	install_kernel $(grep "Linux/arm64" $LINUX_DIR/.config | awk  '{print $3}') $LINUX_DIR/arch/arm64/boot/Image $LINUX_DIR/System.map $PWD/${BOOT_DIR}
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		sudo ./utils/mkimage -A arm64 -O linux -T kernel -C none -a $IMAGE_LINUX_LOADADDR -e $IMAGE_LINUX_LOADADDR -n linux-$IMAGE_LINUX_VERSION -d $BOOT_DIR/vmlinux-$IMAGE_LINUX_VERSION $BOOT_DIR/uImage
 		# Universal multi-boot
 		sudo cp archives/filesystem/boot/* $BOOT_DIR
-		sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S905 autoscript" -d $BOOT_DIR/s905_autoscript.cmd $BOOT_DIR/s905_autoscript
+		if [ "$LINUX" == "mainline" ]; then
+			sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S905 autoscript" -d $BOOT_DIR/s905_autoscript.cmd.mainline $BOOT_DIR/s905_autoscript
+		else
+			sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S905 autoscript" -d $BOOT_DIR/s905_autoscript.cmd $BOOT_DIR/s905_autoscript
+		fi
 		sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "AML autoscript" -d $BOOT_DIR/aml_autoscript.txt $BOOT_DIR/aml_autoscript
 		cd $BOOT_DIR
 		sudo zip aml_autoscript.zip aml_autoscript aml_autoscript.txt
@@ -980,29 +1008,29 @@ EOF
 	fi
 
 	# linux modules
-	sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules_install INSTALL_MOD_PATH=../rootfs/
-	sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- headers_install INSTALL_HDR_PATH=$PWD/rootfs/usr/
+	sudo make -C $LINUX_DIR -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules_install INSTALL_MOD_PATH=$PWD/rootfs/
+	sudo make -C $LINUX_DIR -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- headers_install INSTALL_HDR_PATH=$PWD/rootfs/usr/
 
 	# copy linux dtb Image to boot folder
-	if [ "$LINUX" == "4.9" ];then
-		sudo cp linux/arch/arm64/boot/dts/amlogic/$LINUX_DTB $BOOT_DIR
+	if [ "$LINUX" == "4.9" -o "$LINUX" == "mainline" ];then
+		sudo cp $LINUX_DIR/arch/arm64/boot/dts/amlogic/$LINUX_DTB $BOOT_DIR
 		## Bakup dtb
 		if [ "$INSTALL_TYPE" == "EMMC" ]; then
-			sudo cp linux/arch/arm64/boot/dts/amlogic/$LINUX_DTB $BOOT_DIR/$LINUX_DTB.old
+			sudo cp $LINUX_DIR/arch/arm64/boot/dts/amlogic/$LINUX_DTB $BOOT_DIR/$LINUX_DTB.old
 		fi
 	elif [ "$LINUX" == "3.14" ];then
-		sudo cp linux/arch/arm64/boot/dts/$LINUX_DTB $BOOT_DIR
+		sudo cp $LINUX_DIR/arch/arm64/boot/dts/$LINUX_DTB $BOOT_DIR
 		## Backup dtb
 		if [ "$INSTALL_TYPE" == "EMMC" ]; then
-			sudo cp linux/arch/arm64/boot/dts/$LINUX_DTB $BOOT_DIR/$LINUX_DTB.old
+			sudo cp $LINUX_DIR/arch/arm64/boot/dts/$LINUX_DTB $BOOT_DIR/$LINUX_DTB.old
 		fi
 	else
 		error_msg $CURRENT_FILE $LINENO "Unsupported linux version:'$LINUX'"
 		ret=-1
 	fi
-	sudo cp linux/arch/arm64/boot/Image $BOOT_DIR
+	sudo cp $LINUX_DIR/arch/arm64/boot/Image $BOOT_DIR
 	# linux version
-	grep "Linux/arm64" linux/.config | awk  '{print $3}' > images/linux-version
+	grep "Linux/arm64" $LINUX_DIR/.config | awk  '{print $3}' > images/linux-version
 	sudo cp -r images/linux-version rootfs/
 	# initramfs
 	sudo cp -r archives/filesystem/etc/initramfs-tools/ rootfs/etc/
@@ -1060,7 +1088,7 @@ EOF
 	## Generate ramdisk.img
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
 		cp rootfs/boot/initrd.img images/initrd.img
-		./utils/mkbootimg --kernel linux/arch/arm64/boot/Image --ramdisk images/initrd.img -o images/ramdisk.img
+		./utils/mkbootimg --kernel $LINUX_DIR/arch/arm64/boot/Image --ramdisk images/initrd.img -o images/ramdisk.img
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		sudo mv rootfs/boot/uInitrd $BOOT_DIR
 	fi
@@ -1076,7 +1104,9 @@ EOF
 	sudo umount rootfs/dev/pts
 	sudo umount rootfs/dev
 	sudo umount rootfs/proc
-	sudo umount rootfs/sys/kernel/security
+	if mount | grep "rootfs/sys/kernel/security" > /dev/null; then
+		sudo umount rootfs/sys/kernel/security
+	fi
 	sudo umount rootfs/sys
 	sudo umount rootfs
 
@@ -1105,9 +1135,6 @@ pack_update_image() {
 		elif [ "$UBOOT" == "2015.01" ]; then
 			UBOOT_SD_BIN="u-boot/fip/u-boot.bin.sd.bin"
 		fi
-
-		echo "sudo dd if=$UBOOT_SD_BIN of="${IMAGE_LOOP_DEV}" conv=fsync bs=1 count=442"
-		echo "sudo dd if=$UBOOT_SD_BIN of="${IMAGE_LOOP_DEV}" conv=fsync bs=512 skip=1 seek=1"
 
 		sudo dd if=$UBOOT_SD_BIN of="${IMAGE_LOOP_DEV}" conv=fsync bs=1 count=442
 		sudo dd if=$UBOOT_SD_BIN of="${IMAGE_LOOP_DEV}" conv=fsync bs=512 skip=1 seek=1
