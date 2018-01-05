@@ -102,9 +102,7 @@ echo aufs >> /etc/modules
 systemctl enable bluetooth-khadas
 
 # Resize service
-if [ "$INSTALL_TYPE" == "SD-USB" ]; then
-	systemctl enable resize2fs
-fi
+systemctl enable resize2fs
 
 # HDMI service
 systemctl enable 0hdmi
@@ -118,8 +116,9 @@ if [ -f /etc/apt/sources.list.orig ]; then
 fi
 
 # Clean up
-rm linux-version
-apt clean
+rm /linux-version
+apt-get -y clean
+apt-get -y autoclean
 #history -c
 
 # Self-deleting

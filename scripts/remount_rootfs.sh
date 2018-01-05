@@ -33,6 +33,8 @@ CURRENT_FILE="$0"
 ERROR="\033[31mError:\033[0m"
 WARNING="\033[35mWarning:\033[0m"
 
+trap cleanup INT EXIT TERM
+
 ############################## Functions #################################
 
 ## Print error message
@@ -62,6 +64,37 @@ check_parameters() {
 
 	return 0
 }
+
+## Umount
+do_umount() {
+    if mount | grep $1 > /dev/null; then
+        sudo umount $1
+    fi
+}
+
+## Cleanup
+cleanup() {
+    cd $UBUNTU_WORKING_DIR
+    echo "Cleanup..."
+    sync
+
+    if mount | grep $PWD/rootfs > /dev/null; then
+        do_umount "rootfs/dev/pts"
+        do_umount "rootfs/dev"
+        do_umount "rootfs/proc"
+        do_umount "rootfs/sys/kernel/security"
+        do_umount "rootfs/sys"
+        do_umount "rootfs"
+    fi
+
+    if [ "$INSTALL_TYPE" == "SD-USB" ]; then
+        if mount | grep $PWD/boot > /dev/null; then
+            do_umount "boot"
+            sudo losetup -d "${IMAGE_LOOP_DEV}"
+        fi
+    fi
+}
+
 
 ## Select linux dtb
 prepare_linux_dtb() {

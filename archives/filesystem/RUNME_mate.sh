@@ -3,6 +3,8 @@
 # Commands for ROM release
 #
 
+set -e -o pipefail
+
 if [ "$1" == "16.04.2" ]; then
 	APT_OPTIONS=
 elif [ "$1" == "17.04" ] || [ "$1" == "17.10" ]; then
@@ -16,12 +18,17 @@ fi
 UBUNTU_ARCH=$2
 INSTALL_TYPE=$3
 UBUNTU_MATE_ROOTFS_TYPE=$4
+LINUX=$5
 
 if [ "$UBUNTU_MATE_ROOTFS_TYPE" == "mate-rootfs" ]; then
 	# Setup host
 	echo Khadas > /etc/hostname
 	echo "127.0.0.1    localhost.localdomain localhost" > /etc/hosts
 	echo "127.0.0.1    Khadas" >> /etc/hosts
+
+	adduser khadas audio
+	adduser khadas dialout
+	adduser khadas video
 
 	# Setup DNS resolver
 	cp -arf /etc/resolv.conf /etc/resolv.conf.origin
@@ -50,6 +57,11 @@ if [ "$UBUNTU_MATE_ROOTFS_TYPE" == "mate-rootfs" ]; then
 	setfacl -m u:khadas:rx /media/khadas
 	setfacl -m g::--- /media/khadas
 
+	# FIXME Mate rootfs need update!
+	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
+		rm -rf /etc/default/FIRSTBOOT
+	fi
+
 	# Fixup network-manager
 	cd /etc/init.d/
 	update-rc.d khadas-restart-nm.sh defaults 99
@@ -61,6 +73,10 @@ elif [ "$UBUNTU_MATE_ROOTFS_TYPE" == "chroot-install" ]; then
 	# Admin user khadas
 	useradd -m -p "pal8k5d7/m9GY" -s /bin/bash khadas
 	usermod -aG sudo,adm khadas
+
+	adduser khadas audio
+	adduser khadas dialout
+	adduser khadas video
 
 	# Setup host
 	echo Khadas > /etc/hostname
@@ -115,6 +131,40 @@ elif [ "$UBUNTU_MATE_ROOTFS_TYPE" == "chroot-install" ]; then
 	apt -y $APT_OPTIONS install bluetooth blueman
 fi
 
+if [ "$LINUX" == "mainline" ] && [ "$UBUNTU_ARCH" == "arm64" ]; then
+	# Clean up packages
+	apt-get -y clean
+	apt-get -y autoclean
+
+	# OpenGL ES
+	apt-get install -y mesa-utils-extra
+
+	# disable mesa EGL libs
+	rm /etc/ld.so.conf.d/*_EGL.conf
+	ldconfig
+
+	apt-get install -y build-essential libtool automake autoconf xutils-dev xserver-xorg-dev xorg-dev libudev-dev
+
+	cd xf86-video-armsoc
+	./autogen.sh
+	./configure --prefix=/usr
+	make install
+	mkdir -p /etc/X11
+	cp xorg.conf /etc/X11/
+	cd -
+	rm -rf xf86-video-armsoc
+
+	# Clean up dev packages
+	apt-get purge -y build-essential libtool automake autoconf xutils-dev xserver-xorg-dev xorg-dev libudev-dev
+	apt-get -y autoremove
+
+	# Clean up packages
+	apt-get -y clean
+	apt-get -y autoclean
+fi
+
+cd /
+
 # Build the ramdisk
 mkinitramfs -o /boot/initrd.img `cat linux-version` 2>/dev/null
 
@@ -156,9 +206,7 @@ echo aufs >> /etc/modules
 systemctl enable bluetooth-khadas
 
 # Resize service
-if [ "$INSTALL_TYPE" == "SD-USB" ]; then
-	systemctl enable resize2fs
-fi
+systemctl enable resize2fs
 
 # HDMI service
 systemctl enable 0hdmi
@@ -172,14 +220,15 @@ if [ -f /etc/apt/sources.list.orig ]; then
 fi
 
 # Restore resolv.conf
-if [ -f /etc/resolv.conf.origin ]; then
+if [ -L /etc/resolv.conf.origin ]; then
 	rm -rf /etc/resolv.conf
 	mv /etc/resolv.conf.origin /etc/resolv.conf
 fi
 
 # Clean up
-rm linux-version
-apt clean
+rm /linux-version
+apt-get -y clean
+apt-get -y autoclean
 #history -c
 
 # Self-deleting

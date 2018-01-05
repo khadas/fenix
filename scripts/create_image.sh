@@ -44,6 +44,8 @@ CURRENT_FILE="$0"
 ERROR="\033[31mError:\033[0m"
 WARNING="\033[35mWarning:\033[0m"
 
+trap cleanup INT EXIT TERM
+
 ############################## Functions #################################
 
 ## Print error message
@@ -92,6 +94,36 @@ check_parameters() {
 	fi
 
 	return 0
+}
+
+## Umount
+do_umount() {
+	if mount | grep $1 > /dev/null; then
+		sudo umount $1
+	fi
+}
+
+## Cleanup
+cleanup() {
+	cd $UBUNTU_WORKING_DIR
+	echo "Cleanup..."
+	sync
+
+	if mount | grep $PWD/rootfs > /dev/null; then
+		do_umount "rootfs/dev/pts"
+		do_umount "rootfs/dev"
+		do_umount "rootfs/proc"
+		do_umount "rootfs/sys/kernel/security"
+		do_umount "rootfs/sys"
+		do_umount "rootfs"
+	fi
+
+	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
+		if mount | grep $PWD/boot > /dev/null; then
+			do_umount "boot"
+			sudo losetup -d "${IMAGE_LOOP_DEV}"
+		fi
+	fi
 }
 
 unset_package_vars() {
@@ -545,7 +577,7 @@ prepare_git_branch() {
 			LINUX_GIT_BRANCH="ubuntu-4.9"
 			;;
 	mainline)
-			LINUX_GIT_BRANCH=
+			LINUX_GIT_BRANCH="master"
 			;;
 		*)
 			error_msg $CURRENT_FILE $LINENO "Unsupported linux version:$LINUX"
@@ -876,6 +908,36 @@ install_mali_driver() {
 			sudo cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/lib/* rootfs/usr/lib/
 			sudo cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/opengles_20 rootfs/usr/share/arm/
 		fi
+	elif [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" == "mainline" ] && [ "$UBUNTU_TYPE" == "mate" ] && [ "$UBUNTU_ARCH" == "arm64" ]; then
+		# VIM mainline X11 mali driver
+		## install mali.ko
+		build_package "meson-gx-mali-450:target"
+		VER=$(ls $UBUNTU_WORKING_DIR/rootfs/lib/modules/)
+		sudo cp $BUILD/meson-gx-mali-450-*/mali.ko $UBUNTU_WORKING_DIR/rootfs/lib/modules/$VER/kernel/
+		sudo depmod -b $UBUNTU_WORKING_DIR/rootfs/ -a $VER
+		## libMali X11
+		cd $UBUNTU_WORKING_DIR
+		sudo mkdir -p rootfs/usr/lib/mali
+		sudo cp archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450-X/libMali.so rootfs/usr/lib/mali/
+		cd rootfs/usr/lib/mali
+		sudo ln -s libMali.so libGLESv2.so.2.0
+		sudo ln -s libMali.so libGLESv1_CM.so.1.1
+		sudo ln -s libMali.so libEGL.so.1.4
+		sudo ln -s libGLESv2.so.2.0 libGLESv2.so.2
+		sudo ln -s libGLESv1_CM.so.1.1 libGLESv1_CM.so.1
+		sudo ln -s libEGL.so.1.4 libEGL.so.1
+		sudo ln -s libGLESv2.so.2 libGLESv2.so
+		sudo ln -s libGLESv1_CM.so.1 libGLESv1_CM.so
+		sudo ln -s libEGL.so.1 libEGL.so
+		cd -
+		sudo cp -ar archives/hwpacks/mali/r7p0/include/* rootfs/usr/include/
+		sudo tee "rootfs/etc/ld.so.conf.d/mali.conf" <<EOF
+/usr/lib/mali
+EOF
+		build_package "xf86-video-armsoc:target"
+		sudo cp -r $BUILD/xf86-video-armsoc-* $UBUNTU_WORKING_DIR/rootfs/xf86-video-armsoc
+
+		cd $UBUNTU_WORKING_DIR
 	fi
 }
 
@@ -1035,7 +1097,7 @@ EOF
 	# initramfs
 	sudo cp -r archives/filesystem/etc/initramfs-tools/ rootfs/etc/
 	# WIFI
-	sudo mkdir rootfs/lib/firmware
+	sudo mkdir -p rootfs/lib/firmware
 	sudo cp -r archives/hwpacks/wlan-firmware/brcm/ rootfs/lib/firmware/
 	# Bluetooth
 	sudo cp -r archives/hwpacks/bluez/brcm_patchram_plus-$UBUNTU_ARCH rootfs/usr/local/bin/brcm_patchram_plus
@@ -1083,7 +1145,7 @@ EOF
 	sudo mount -o bind /sys rootfs/sys
 	sudo mount -o bind /dev rootfs/dev
 	sudo mount -o bind /dev/pts rootfs/dev/pts
-	sudo chroot rootfs/ bash "/RUNME_${UBUNTU_TYPE}.sh" $UBUNTU $UBUNTU_ARCH $INSTALL_TYPE $UBUNTU_MATE_ROOTFS_TYPE
+	sudo chroot rootfs/ bash "/RUNME_${UBUNTU_TYPE}.sh" $UBUNTU $UBUNTU_ARCH $INSTALL_TYPE $UBUNTU_MATE_ROOTFS_TYPE $LINUX
 
 	## Generate ramdisk.img
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
@@ -1091,6 +1153,13 @@ EOF
 		./utils/mkbootimg --kernel $LINUX_DIR/arch/arm64/boot/Image --ramdisk images/initrd.img -o images/ramdisk.img
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		sudo mv rootfs/boot/uInitrd $BOOT_DIR
+	fi
+
+	if [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" == "mainline" ] && [ "$UBUNTU_TYPE" == "mate" ] && [ "$UBUNTU_ARCH" == "arm64" ]; then
+		# Mali udev rule
+		sudo tee rootfs/etc/udev/rules.d/50-mali.rules <<EOF
+KERNEL=="mali", MODE="0660", GROUP="video"
+EOF
 	fi
 
 	## Logo
