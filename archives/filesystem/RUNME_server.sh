@@ -45,6 +45,9 @@ apt-get update
 # Upgrade
 apt-get -y $APT_OPTIONS upgrade
 
+apt-get -y clean
+apt-get -y autoclean
+
 # Install the packages
 apt-get -y $APT_OPTIONS install ifupdown net-tools udev fbset vim sudo initramfs-tools \
 		bluez rfkill libbluetooth-dev mc \
@@ -56,6 +59,9 @@ if [ "$UBUNTU_ARCH" == "arm64" ]; then
 	apt-get update
 	apt-get -y $APT_OPTIONS install libc6:armhf
 fi
+
+apt-get -y clean
+apt-get -y autoclean
 
 # Install Docker
 #apt-get -y $APT_OPTIONS install lxc aufs-tools cgroup-lite apparmor docker.io

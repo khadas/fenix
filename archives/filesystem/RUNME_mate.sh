@@ -53,6 +53,9 @@ if [ "$UBUNTU_MATE_ROOTFS_TYPE" == "mate-rootfs" ]; then
 	# Upgrade
 	apt-get -y $APT_OPTIONS upgrade
 
+	apt-get -y clean
+	apt-get -y autoclean
+
 	# Fixup /media/khadas ACL attribute
 	setfacl -m u:khadas:rx /media/khadas
 	setfacl -m g::--- /media/khadas
@@ -105,6 +108,9 @@ elif [ "$UBUNTU_MATE_ROOTFS_TYPE" == "chroot-install" ]; then
 	# Upgrade
 	apt-get -y $APT_OPTIONS upgrade
 
+	apt-get -y clean
+	apt-get -y autoclean
+
 	# Install the packages
 	apt-get -y $APT_OPTIONS install ifupdown net-tools udev fbset vim sudo initramfs-tools \
 		bluez rfkill libbluetooth-dev mc \
@@ -116,6 +122,9 @@ elif [ "$UBUNTU_MATE_ROOTFS_TYPE" == "chroot-install" ]; then
 	    apt-get update
 	    apt-get -y $APT_OPTIONS install libc6:armhf
 	fi
+
+	apt-get -y clean
+	apt-get -y autoclean
 
 	# Install Docker
 	#apt-get -y $APT_OPTIONS install lxc aufs-tools cgroup-lite apparmor docker.io
@@ -131,10 +140,10 @@ elif [ "$UBUNTU_MATE_ROOTFS_TYPE" == "chroot-install" ]; then
 	apt -y $APT_OPTIONS install bluetooth blueman
 fi
 
+apt-get -y clean
+apt-get -y autoclean
+
 if [ "$LINUX" == "mainline" ] && [ "$UBUNTU_ARCH" == "arm64" ]; then
-	# Clean up packages
-	apt-get -y clean
-	apt-get -y autoclean
 
 	# OpenGL ES
 	apt-get install -y mesa-utils-extra
