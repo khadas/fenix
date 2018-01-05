@@ -1,0 +1,24 @@
+From ea53472e9ec57dfd9bb2c46083d5b81422c61ebd Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Fri, 5 Jan 2018 17:07:40 +0800
+Subject: [PATCH 2/2] ARM64: defconfig: CONFIG_GPIO_SYSFS
+
+---
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index a4704f3..d576ce0 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -304,6 +304,7 @@ CONFIG_PINCTRL_MSM8994=y
+ CONFIG_PINCTRL_MSM8996=y
+ CONFIG_PINCTRL_QDF2XXX=y
+ CONFIG_PINCTRL_QCOM_SPMI_PMIC=y
++CONFIG_GPIO_SYSFS=y
+ CONFIG_GPIO_DWAPB=y
+ CONFIG_GPIO_PL061=y
+ CONFIG_GPIO_RCAR=y
+-- 
+1.9.1
+
