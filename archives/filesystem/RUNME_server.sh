@@ -30,6 +30,7 @@ echo "127.0.0.1    Khadas" >> /etc/hosts
 
 # Setup DNS resolver
 echo "nameserver 127.0.1.1" > /etc/resolv.conf
+echo "nameserver 8.8.8.8" >> /etc/resolv.conf
 
 # Locale
 locale-gen "en_US.UTF-8"
