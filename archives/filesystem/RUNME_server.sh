@@ -15,6 +15,7 @@ fi
 
 UBUNTU_ARCH=$2
 INSTALL_TYPE=$3
+LINUX=$5
 
 # Setup password for root user
 echo root:khadas | chpasswd
@@ -93,14 +94,21 @@ if [ "$INSTALL_TYPE" == "EMMC" ]; then
 	ln -s /boot/kvim2.dtb.old kvim2.dtb.old
 fi
 
+if [ "$LINUX" == "3.14" ]; then
+	echo dwc3 >> /etc/modules
+	echo dwc_otg >> /etc/modules
+fi
+
 # Load mali module
 echo mali >> /etc/modules
 
-# Load WIFI at boot time(MUST HERE)
-echo dhd >> /etc/modules
-
-# Load WIFI - for mainline
-echo brcmfmac >> /etc/modules
+if [ "$LINUX" == "mainline" ]; then
+	# Load WIFI - for mainline
+	echo brcmfmac >> /etc/modules
+else
+	# Load WIFI at boot time(MUST HERE)
+	echo dhd >> /etc/modules
+fi
 
 # Load AUFS module
 echo aufs >> /etc/modules

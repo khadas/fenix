@@ -14,7 +14,7 @@ LINUX_DIR=
 AML_UPDATE_TOOL_CONFIG=
 
 UBUNTU_SERVER_IMAGE_SIZE=800 # MB
-UBUNTU_MATE_IMAGE_SIZE=4000 # MB
+UBUNTU_MATE_IMAGE_SIZE=5000 # MB
 
 UBUNTU_TYPE=$1
 
@@ -861,7 +861,7 @@ setup_ubuntu_rootfs() {
 
 install_mali_driver() {
 
-	if [ "$KHADAS_BOARD" == "VIM" -a "$LINUX" != "mainline" ]; then
+	if [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" != "mainline" ]; then
 		# GPU user space binary drivers
 		## Headers
 		sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL rootfs/usr/include/
@@ -941,6 +941,20 @@ EOF
 	fi
 }
 
+## Install kodi
+install_kodi() {
+	if [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" == "3.14" ] && [ "$UBUNTU_TYPE" == "mate" ]; then
+		build_package "pkg-aml-kodi:target"
+		build_package "pkg-aml-mali:target"
+		build_package "pkg-aml-amremote:target"
+
+		cd $UBUNTU_WORKING_DIR
+		sudo cp $BUILD_IMAGES/pkg-aml-kodi/*.deb rootfs/pkg-aml-kodi_${UBUNTU_ARCH}.deb
+		sudo cp $BUILD_IMAGES/pkg-aml-mali/*.deb rootfs/pkg-aml-mali_${UBUNTU_ARCH}.deb
+		sudo cp $BUILD_IMAGES/pkg-aml-amremote/*.deb rootfs/pkg-aml-amremote_${UBUNTU_ARCH}.deb
+	fi
+}
+
 # Arguments:
 #   $1 - kernel version
 #   $2 - kernel image file
@@ -996,26 +1010,27 @@ build_rootfs() {
 		BOOT_DIR="boot"
 		IMAGE_SIZE=$((IMAGE_SIZE + 300)) # SD/USB image szie = BOOT(256MB) + ROOTFS
 		dd if=/dev/zero of=${IMAGE_DIR}/${IMAGE_FILE_NAME} bs=1M count=0 seek=$IMAGE_SIZE
-		sudo fdisk "${IMAGE_DIR}/${IMAGE_FILE_NAME}" <<EOF
-o
-n
-p
-1
-2048
-524287
-a
-1
-t
-b
-n
-p
-2
-524288
+		sudo fdisk "${IMAGE_DIR}/${IMAGE_FILE_NAME}" <<-EOF
+		o
+		n
+		p
+		1
+		2048
+		524287
+		a
+		1
+		t
+		b
+		n
+		p
+		2
+		524288
 
-p
-w
+		p
+		w
 
-EOF
+		EOF
+
 		IMAGE_LOOP_DEV="$(sudo losetup --show -f ${IMAGE_DIR}/${IMAGE_FILE_NAME})"
 		export IMAGE_LOOP_DEV
 		IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
@@ -1107,6 +1122,9 @@ EOF
 	# Install Mali driver
 	install_mali_driver
 
+	# Install Kodi
+	install_kodi
+
 	sudo cp -arf archives/filesystem/etc rootfs/
 	sudo cp -r archives/filesystem/lib/systemd/system/* rootfs/lib/systemd/system/
 
@@ -1145,7 +1163,7 @@ EOF
 	sudo mount -o bind /sys rootfs/sys
 	sudo mount -o bind /dev rootfs/dev
 	sudo mount -o bind /dev/pts rootfs/dev/pts
-	sudo chroot rootfs/ bash "/RUNME_${UBUNTU_TYPE}.sh" $UBUNTU $UBUNTU_ARCH $INSTALL_TYPE $UBUNTU_MATE_ROOTFS_TYPE $LINUX
+	sudo chroot rootfs/ bash "/RUNME_${UBUNTU_TYPE}.sh" $UBUNTU $UBUNTU_ARCH $INSTALL_TYPE ${UBUNTU_MATE_ROOTFS_TYPE:-NONE} $LINUX $KHADAS_BOARD
 
 	## Generate ramdisk.img
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
@@ -1157,9 +1175,9 @@ EOF
 
 	if [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" == "mainline" ] && [ "$UBUNTU_TYPE" == "mate" ] && [ "$UBUNTU_ARCH" == "arm64" ]; then
 		# Mali udev rule
-		sudo tee rootfs/etc/udev/rules.d/50-mali.rules <<EOF
-KERNEL=="mali", MODE="0660", GROUP="video"
-EOF
+		sudo tee rootfs/etc/udev/rules.d/50-mali.rules <<-EOF
+		KERNEL=="mali", MODE="0660", GROUP="video"
+		EOF
 	fi
 
 	## Logo
