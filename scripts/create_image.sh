@@ -864,6 +864,8 @@ install_mali_driver() {
 	if [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" != "mainline" ]; then
 		GPU_VER="r5p1"
 
+		cd $UBUNTU_WORKING_DIR
+
 		# GPU user space binary drivers
 		## Headers
 		sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL rootfs/usr/include/
@@ -910,6 +912,10 @@ install_mali_driver() {
 			sudo cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/lib/* rootfs/usr/lib/
 			sudo cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/opengles_20 rootfs/usr/share/arm/
 		fi
+
+		sudo mkdir -p rootfs/usr/lib/udev/rules.d
+		sudo cp -arf archives/filesystem/usr/lib/udev/rules.d/* rootfs/usr/lib/udev/rules.d
+
 	elif [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" == "mainline" ] && [ "$UBUNTU_TYPE" == "mate" ] && [ "$UBUNTU_ARCH" == "arm64" ]; then
 		# VIM mainline X11 mali driver
 		## install mali.ko
@@ -947,12 +953,12 @@ EOF
 install_kodi() {
 	if [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" == "3.14" ] && [ "$UBUNTU_TYPE" == "mate" ]; then
 		build_package "pkg-aml-kodi:target"
-		build_package "pkg-aml-mali:target"
+		build_package "pkg-aml-codec:target"
 		build_package "pkg-aml-amremote:target"
 
 		cd $UBUNTU_WORKING_DIR
 		sudo cp $BUILD_IMAGES/pkg-aml-kodi/*.deb rootfs/pkg-aml-kodi_${UBUNTU_ARCH}.deb
-		sudo cp $BUILD_IMAGES/pkg-aml-mali/*.deb rootfs/pkg-aml-mali_${UBUNTU_ARCH}.deb
+		sudo cp $BUILD_IMAGES/pkg-aml-codec/*.deb rootfs/pkg-aml-codec_${UBUNTU_ARCH}.deb
 		sudo cp $BUILD_IMAGES/pkg-aml-amremote/*.deb rootfs/pkg-aml-amremote_${UBUNTU_ARCH}.deb
 	fi
 }

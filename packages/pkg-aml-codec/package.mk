@@ -1,12 +1,12 @@
-PKG_NAME="pkg-aml-mali"
-PKG_VERSION="9ddeb75"
+PKG_NAME="pkg-aml-codec"
+PKG_VERSION="a361170"
 PKG_SOURCE_DIR="pkg-aml-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/pkg-aml"
 PKG_URL="https://github.com/numbqq/pkg-aml/archive/$PKG_VERSION.tar.gz"
 PKG_ARCH="arm aarch64"
 PKG_LICENSE="GPL"
-PKG_SHORTDESC="Amlogic Mali package"
-PKG_SOURCE_NAME="pkg-aml-mali-${PKG_VERSION}.tar.gz"
+PKG_SHORTDESC="libamcodec: Interface library for Amlogic media codecs"
+PKG_SOURCE_NAME="pkg-aml-codec-${PKG_VERSION}.tar.gz"
 PKG_SHA256=""
 PKG_NEED_BUILD="YES"
 
@@ -16,16 +16,17 @@ make_target() {
 	# set up control file
 	mkdir -p DEBIAN
 	cat <<-END > DEBIAN/control
-	Package: aml-mali-905
+	Package: aml-libamcodec-905
 	Version: 0.1
 	Architecture: $UBUNTU_ARCH
 	Maintainer: Khadas <hello@khadas.com>
 	Installed-Size: 1
-	Provides: aml-mali-905
-	Conflicts: aml-mali-905
-	Section: kernel
+	Provides: aml-libamcodec-905
+	Conflicts: aml-libamcodec-905
+	Depends:
+	Section: utils
 	Priority: optional
-	Description: lib mali S905
+	Description: aml-libamcodec-905
 	END
 
 	# pack

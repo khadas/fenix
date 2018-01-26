@@ -224,10 +224,10 @@ if [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" == "3.14" ]; then
 		systemctl --no-reload enable amlogic-remotecfg.service
 	fi
 
-	# Install mali
-	if [ -f /pkg-aml-mali_${UBUNTU_ARCH}.deb ]; then
-		dpkg -i /pkg-aml-mali_${UBUNTU_ARCH}.deb
-		rm -rf /pkg-aml-mali_${UBUNTU_ARCH}.deb
+	# Install libamcodec
+	if [ -f /pkg-aml-codec_${UBUNTU_ARCH}.deb ]; then
+		dpkg -i /pkg-aml-codec_${UBUNTU_ARCH}.deb
+		rm -rf /pkg-aml-codec_${UBUNTU_ARCH}.deb
 	fi
 
 	# Install kodi
