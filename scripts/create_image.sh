@@ -862,6 +862,8 @@ setup_ubuntu_rootfs() {
 install_mali_driver() {
 
 	if [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" != "mainline" ]; then
+		GPU_VER="r5p1"
+
 		# GPU user space binary drivers
 		## Headers
 		sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL rootfs/usr/include/
@@ -877,11 +879,11 @@ install_mali_driver() {
 		## libMali.so
 		### fbdev
 		if [ "$UBUNTU_ARCH" == "arm64" ]; then
-			sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/*.so* rootfs/usr/lib/
-			sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/*.so* rootfs/usr/lib/aarch64-linux-gnu
+			sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/$GPU_VER/m450/*.so* rootfs/usr/lib/
+			sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/$GPU_VER/m450/*.so* rootfs/usr/lib/aarch64-linux-gnu
 		elif [ "$UBUNTU_ARCH" == "armhf" ]; then
-			sudo cp -arf archives/hwpacks/mali/r7p0/lib/eabihf/r7p0/m450/*.so* rootfs/usr/lib/
-			sudo cp -arf archives/hwpacks/mali/r7p0/lib/eabihf/r7p0/m450/*.so* rootfs/usr/lib/arm-linux-gnueabihf
+			sudo cp -arf archives/hwpacks/mali/r7p0/lib/eabihf/$GPU_VER/m450/*.so* rootfs/usr/lib/
+			sudo cp -arf archives/hwpacks/mali/r7p0/lib/eabihf/$GPU_VER/m450/*.so* rootfs/usr/lib/arm-linux-gnueabihf
 		fi
 
 		### wayland
