@@ -274,9 +274,6 @@ fi
 # Load mali module
 echo mali >> /etc/modules
 
-# Load WIFI at boot time(MUST HERE)
-echo dhd >> /etc/modules
-
 if [ "$LINUX" == "mainline" ]; then
 	# Load WIFI - for mainline
 	echo brcmfmac >> /etc/modules
