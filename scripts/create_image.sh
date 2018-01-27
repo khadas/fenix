@@ -811,7 +811,7 @@ build_linux() {
 	echo "Build linux..."
 	export PATH=$TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/bin:$PATH
 	make ARCH=arm64 kvim_defconfig
-	make -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image $LINUX_DTB  modules
+	make -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image dtbs  modules
 }
 
 ## Setup ubuntu rootfs
