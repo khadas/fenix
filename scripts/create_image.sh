@@ -922,9 +922,9 @@ install_mali_driver() {
 		sudo ln -s libEGL.so.1 libEGL.so
 		cd -
 		sudo cp -ar archives/hwpacks/mali/r7p0/include/* rootfs/usr/include/
-		sudo tee "rootfs/etc/ld.so.conf.d/mali.conf" <<EOF
-/usr/lib/mali
-EOF
+		sudo tee "rootfs/etc/ld.so.conf.d/mali.conf" <<-EOF
+		/usr/lib/mali
+		EOF
 		build_package "xf86-video-armsoc:target"
 		sudo cp -r $BUILD/xf86-video-armsoc-* $UBUNTU_WORKING_DIR/rootfs/xf86-video-armsoc
 
