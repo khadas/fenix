@@ -37,7 +37,7 @@ warning_msg() {
 
 ## Pull latest repository from Kkadas GitHub
 update_github_repository() {
-	install -d ${UBUNTU_WORKING_DIR}/{linux,rootfs,archives/{ubuntu-base,debs,hwpacks},images,scripts}
+	install -d ${UBUNTU_WORKING_DIR}/{linux,rootfs,archives/{ubuntu-base,debs,hwpacks},scripts}
 	cd ${UBUNTU_WORKING_DIR}
 
 	## Update fenix repository
@@ -45,22 +45,6 @@ update_github_repository() {
 	git pull origin master
 	[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to update repository 'fenix/master'" && return -1
 	echo "Updating 'fenix/master' repository OK."
-
-	## Update upgrade repository
-	cd images/
-	if [ ! -d "upgrade/.git" ]; then
-		##Clone images_upgrade.git from Khadas GitHub
-		echo "Upgrade repository dose not exist, clone images_upgrade repository('master') from Khadas GitHub..."
-		git clone https://github.com/khadas/images_upgrade.git upgrade
-		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to clone 'images_upgrade.git/master'" && return -1
-	fi
-
-	cd upgrade/
-	echo "Updating 'upgrade/master' repository..."
-	git pull origin master
-	[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to update repository 'upgrade/master'" && return -1
-	echo "Updating 'upgrade/master' repository OK."
-	cd -
 
 	## Update u-boot repository
 	cd ${UBUNTU_WORKING_DIR}

@@ -12,7 +12,6 @@ BASE_DIR="$HOME"
 PROJECT_DIR="${BASE_DIR}/project"
 KHADAS_DIR="${PROJECT_DIR}/khadas"
 UBUNTU_WORKING_DIR="$(dirname "$(dirname "$(readlink -fm "$0")")")"
-IMAGE_DIR="images/"
 IMAGE_FILE_NAME="KHADAS_${KHADAS_BOARD}_${INSTALL_TYPE}.img"
 IMAGE_FILE_NAME=$(echo $IMAGE_FILE_NAME | tr "[A-Z]" "[a-z]")
 
@@ -174,7 +173,7 @@ remount_rootfs() {
 
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		BOOT_DIR="boot"
-		IMAGE_LOOP_DEV="$(sudo losetup --show -f ${IMAGE_DIR}${IMAGE_FILE_NAME})"
+		IMAGE_LOOP_DEV="$(sudo losetup --show -f ${BUILD_IMAGES}/${IMAGE_FILE_NAME})"
 		IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
 		IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
 		sudo partprobe "${IMAGE_LOOP_DEV}"
@@ -197,12 +196,12 @@ remount_rootfs() {
 	elif [ "$INSTALL_TYPE" == "EMMC" ]; then
 		BOOT_DIR="rootfs/boot"
 		echo "Mounting rootfs.img..."
-		sudo mount -o loop ${IMAGE_DIR}rootfs.img rootfs || {
+		sudo mount -o loop ${BUILD_IMAGES}/rootfs.img rootfs || {
 			error_msg $CURRENT_FILE $LINENO "Failed to mount rootfs.img!"
 
 			return -1
 		}
-		echo "Mount ${IMAGE_DIR}rootfs.img on rootfs/ OK."
+		echo "Mount ${BUILD_IMAGES}/rootfs.img on rootfs/ OK."
 	fi
 
 	## [Optional] Mirrors for ubuntu-ports
@@ -259,8 +258,8 @@ remount_rootfs() {
 	sudo cp $LINUX_DIR/arch/arm64/boot/Image $BOOT_DIR
 
 	## linux version
-	grep "Linux/arm64" $LINUX_DIR/.config | awk  '{print $3}' > images/linux-version
-	sudo cp -r images/linux-version rootfs/
+	grep "Linux/arm64" $LINUX_DIR/.config | awk  '{print $3}' > $BUILD_IMAGES/linux-version
+	sudo cp -r $BUILD_IMAGES/linux-version rootfs/
 
 	## firstboot initialization: for 'ROOTFS' partition resize
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
@@ -304,8 +303,8 @@ remount_rootfs() {
 
 	## Generate ramdisk.img
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
-		cp rootfs/boot/initrd.img images/initrd.img
-		$UTILS_DIR/mkbootimg --kernel $LINUX_DIR/arch/arm64/boot/Image --ramdisk images/initrd.img -o images/ramdisk.img
+		cp rootfs/boot/initrd.img $BUILD_IMAGES/initrd.img
+		$UTILS_DIR/mkbootimg --kernel $LINUX_DIR/arch/arm64/boot/Image --ramdisk $BUILD_IMAGES/initrd.img -o $BUILD_IMAGES/ramdisk.img
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		sudo mv rootfs/boot/uInitrd $BOOT_DIR
 	fi

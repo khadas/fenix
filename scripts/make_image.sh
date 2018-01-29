@@ -8,7 +8,6 @@ BASE_DIR="$HOME"
 PROJECT_DIR="${BASE_DIR}/project"
 KHADAS_DIR="${PROJECT_DIR}/khadas"
 UBUNTU_WORKING_DIR="$(dirname "$(dirname "$(readlink -fm "$0")")")"
-IMAGE_DIR="${UBUNTU_WORKING_DIR}/images/"
 IMAGE_FILE_NAME="KHADAS_${KHADAS_BOARD}_${INSTALL_TYPE}.img"
 IMAGE_FILE_NAME=$(echo $IMAGE_FILE_NAME | tr "[A-Z]" "[a-z]")
 
@@ -24,6 +23,7 @@ BUILD_IMAGES="$BUILD/images"
 TOOLCHAINS="$BUILD/toolchains"
 
 UTILS_DIR="$BUILD/utils-[0-9a-f]*"
+UPGRADE_DIR="$BUILD/images_upgrade-[0-9a-f]*"
 
 CURRENT_FILE="$0"
 
@@ -90,10 +90,10 @@ pack_update_image() {
 			return -1
 		fi
 		echo "Packing update image using config: $AML_UPDATE_TOOL_CONFIG"
-		$UTILS_DIR/aml_image_v2_packer -r images/upgrade/$AML_UPDATE_TOOL_CONFIG images/upgrade/ images/${IMAGE_FILE_NAME}
+		$UTILS_DIR/aml_image_v2_packer -r $UPGRADE_DIR/$AML_UPDATE_TOOL_CONFIG $UPGRADE_DIR $BUILD_IMAGES/${IMAGE_FILE_NAME}
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
 
-		IMAGE_LOOP_DEV="$(sudo losetup --show -f ${IMAGE_DIR}${IMAGE_FILE_NAME})"
+		IMAGE_LOOP_DEV="$(sudo losetup --show -f ${BUILD_IMAGES}/${IMAGE_FILE_NAME})"
 		sudo partprobe "${IMAGE_LOOP_DEV}"
 
 		if [ "$UBOOT" == "mainline" ]; then

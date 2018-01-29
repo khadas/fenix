@@ -22,7 +22,6 @@ BASE_DIR="$HOME"
 PROJECT_DIR="${BASE_DIR}/project"
 KHADAS_DIR="${PROJECT_DIR}/khadas"
 UBUNTU_WORKING_DIR="$(dirname "$(dirname "$(readlink -fm "$0")")")"
-IMAGE_DIR="${UBUNTU_WORKING_DIR}/images"
 IMAGE_FILE_NAME="KHADAS_${KHADAS_BOARD}_${INSTALL_TYPE}.img"
 IMAGE_FILE_NAME=$(echo $IMAGE_FILE_NAME | tr "[A-Z]" "[a-z]")
 IMAGE_SIZE=
@@ -40,6 +39,7 @@ BUILD_IMAGES="$BUILD/images"
 TOOLCHAINS="$BUILD/toolchains"
 
 UTILS_DIR="$BUILD/utils-[0-9a-f]*"
+UPGRADE_DIR="$BUILD/images_upgrade-[0-9a-f]*"
 
 CURRENT_FILE="$0"
 
@@ -512,6 +512,7 @@ prepare_packages() {
 	fi
 
 	build_package "utils:host"
+	build_package "images_upgrade:host"
 }
 
 ## Select uboot configuration
@@ -592,10 +593,10 @@ prepare_git_branch() {
 	return $ret
 }
 
-## Fixup ~/project/khadas/ubuntu/images/upgrade dtb link
+## Fixup upgrade dtb link
 fixup_dtb_link() {
 	ret=0
-	cd ${UBUNTU_WORKING_DIR}/images/upgrade
+	cd $UPGRADE_DIR
 	rm -rf kvim.dtb
 
 	case "$LINUX" in
@@ -665,7 +666,7 @@ display_parameters() {
 	echo "khadas directory:              $KHADAS_DIR"
 	echo "ubuntu working directory:      $UBUNTU_WORKING_DIR"
 	echo "amlogic update tool config:    $AML_UPDATE_TOOL_CONFIG"
-	echo "image directory:               $IMAGE_DIR"
+	echo "image directory:               $BUILD_IMAGES"
 	echo "image file name:               $IMAGE_FILE_NAME"
 	echo "*********************************************************"
 	echo ""
@@ -682,22 +683,7 @@ prepare_working_environment() {
 #		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to clone 'fenix.git'" && return -1
 #	fi
 
-	install -d ${UBUNTU_WORKING_DIR}/{linux,boot,rootfs,archives/{ubuntu-base,debs,hwpacks,ubuntu-mate},images,scripts}
-
-	cd ${UBUNTU_WORKING_DIR}
-
-	cd images/
-	if [ ! -d "upgrade/.git" ]; then
-		##Clone images_upgrade.git from Khadas GitHub
-		echo "Upgrade repository dose not exist, clone images_upgrade repository('master') from Khadas GitHub..."
-		git clone https://github.com/khadas/images_upgrade.git upgrade
-		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to clone 'images_upgrade.git'" && return -1
-	fi
-
-	## Checkout master branch
-	cd upgrade
-	git checkout master
-	[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Upgrade: Switch to branch 'master' failed." && return -1
+	install -d ${UBUNTU_WORKING_DIR}/{linux,boot,rootfs,archives/{ubuntu-base,debs,hwpacks,ubuntu-mate},scripts}
 
 	cd ${UBUNTU_WORKING_DIR}
 
@@ -1007,15 +993,15 @@ build_rootfs() {
 
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
 		BOOT_DIR="rootfs/boot"
-		dd if=/dev/zero of=images/rootfs.img bs=1M count=0 seek=$IMAGE_SIZE
-		sudo mkfs.ext4 -F -L ROOTFS images/rootfs.img
+		dd if=/dev/zero of=$BUILD_IMAGES/rootfs.img bs=1M count=0 seek=$IMAGE_SIZE
+		sudo mkfs.ext4 -F -L ROOTFS $BUILD_IMAGES/rootfs.img
 		rm -rf rootfs && install -d rootfs
-		sudo mount -o loop images/rootfs.img rootfs
+		sudo mount -o loop $BUILD_IMAGES/rootfs.img rootfs
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		BOOT_DIR="boot"
 		IMAGE_SIZE=$((IMAGE_SIZE + 300)) # SD/USB image szie = BOOT(256MB) + ROOTFS
-		dd if=/dev/zero of=${IMAGE_DIR}/${IMAGE_FILE_NAME} bs=1M count=0 seek=$IMAGE_SIZE
-		sudo fdisk "${IMAGE_DIR}/${IMAGE_FILE_NAME}" <<-EOF
+		dd if=/dev/zero of=${BUILD_IMAGES}/${IMAGE_FILE_NAME} bs=1M count=0 seek=$IMAGE_SIZE
+		sudo fdisk "${BUILD_IMAGES}/${IMAGE_FILE_NAME}" <<-EOF
 		o
 		n
 		p
@@ -1036,7 +1022,7 @@ build_rootfs() {
 
 		EOF
 
-		IMAGE_LOOP_DEV="$(sudo losetup --show -f ${IMAGE_DIR}/${IMAGE_FILE_NAME})"
+		IMAGE_LOOP_DEV="$(sudo losetup --show -f ${BUILD_IMAGES}/${IMAGE_FILE_NAME})"
 		export IMAGE_LOOP_DEV
 		IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
 		IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
@@ -1112,8 +1098,8 @@ build_rootfs() {
 	fi
 	sudo cp $LINUX_DIR/arch/arm64/boot/Image $BOOT_DIR
 	# linux version
-	grep "Linux/arm64" $LINUX_DIR/.config | awk  '{print $3}' > images/linux-version
-	sudo cp -r images/linux-version rootfs/
+	grep "Linux/arm64" $LINUX_DIR/.config | awk  '{print $3}' > $BUILD_IMAGES/linux-version
+	sudo cp -r $BUILD_IMAGES/linux-version rootfs/
 	# initramfs
 	sudo cp -r archives/filesystem/etc/initramfs-tools/ rootfs/etc/
 	# WIFI
@@ -1172,8 +1158,8 @@ build_rootfs() {
 
 	## Generate ramdisk.img
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
-		cp rootfs/boot/initrd.img images/initrd.img
-		$UTILS_DIR/mkbootimg --kernel $LINUX_DIR/arch/arm64/boot/Image --ramdisk images/initrd.img -o images/ramdisk.img
+		cp rootfs/boot/initrd.img $BUILD_IMAGES/initrd.img
+		$UTILS_DIR/mkbootimg --kernel $LINUX_DIR/arch/arm64/boot/Image --ramdisk $BUILD_IMAGES/initrd.img -o $BUILD_IMAGES/ramdisk.img
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		sudo mv rootfs/boot/uInitrd $BOOT_DIR
 	fi
@@ -1186,7 +1172,7 @@ build_rootfs() {
 	fi
 
 	## Logo
-	cp archives/logo/logo.img images/
+	cp archives/logo/logo.img $BUILD_IMAGES
 
 	## Clean up
 	sudo rm rootfs/boot/initrd.img
@@ -1220,7 +1206,7 @@ pack_update_image() {
 		fi
 
 		echo "Packing update image using config: $AML_UPDATE_TOOL_CONFIG"
-		$UTILS_DIR/aml_image_v2_packer -r images/upgrade/$AML_UPDATE_TOOL_CONFIG images/upgrade/ images/$IMAGE_FILE_NAME
+		$UTILS_DIR/aml_image_v2_packer -r $UPGRADE_DIR/$AML_UPDATE_TOOL_CONFIG $UPGRADE_DIR $BUILD_IMAGES/$IMAGE_FILE_NAME
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		if [ "$UBOOT" == "mainline" ]; then
 			UBOOT_SD_BIN="$BUILD_IMAGES/u-boot-mainline/u-boot.bin.sd.bin"
