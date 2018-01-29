@@ -46,21 +46,6 @@ update_github_repository() {
 	[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to update repository 'fenix/master'" && return -1
 	echo "Updating 'fenix/master' repository OK."
 
-	## Update utils repository
-	if [ ! -d "utils/.git" ]; then
-		##Clone utils.git from Khadas GitHub
-		echo "Utils repository dose not exist, clone utils repository('master') from Khadas GitHub..."
-		git clone https://github.com/khadas/utils.git
-		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to clone repository 'utils.git/master'" && return -1
-	fi
-
-	cd utils/
-	echo "Updating 'utils/master' repository..."
-	git pull origin master
-	[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to update repository 'utils/master'" && return -1
-	echo "Updating 'utils/master' repository OK."
-	cd -
-
 	## Update upgrade repository
 	cd images/
 	if [ ! -d "upgrade/.git" ]; then

@@ -39,6 +39,8 @@ BUILD_IMAGES="$BUILD/images"
 ## Toolchains
 TOOLCHAINS="$BUILD/toolchains"
 
+UTILS_DIR="$BUILD/utils-[0-9a-f]*"
+
 CURRENT_FILE="$0"
 
 ERROR="\033[31mError:\033[0m"
@@ -266,8 +268,8 @@ extract_package() {
 clean_package() {
 
 	for i in $BUILD/$1-*; do
-		if [ -d $i -a -f "$i/.libreelec-unpack" ] ; then
-			. "$i/.libreelec-unpack"
+		if [ -d $i -a -f "$i/.fenix-unpack" ] ; then
+			. "$i/.fenix-unpack"
 			if [ "$STAMP_PKG_NAME" = "$1" ]; then
 				printf "%${BUILD_INDENT}c ${boldred}*${endcolor} ${red}Removing $i ...${endcolor}\n" ' '
 				rm -rf $i
@@ -305,7 +307,7 @@ unpack_package() {
 	local PKG_DEEPMD5=
 	for i in $BUILD/$PKG-*; do
 		if [ -d $i -a -f "$i/.fenix-unpack" ] ; then
-			. "$PKG_BUILD/.fenix-unpack"
+			. "$i/.fenix-unpack"
 			if [ "$STAMP_PKG_NAME" = "$PKG" ]; then
 				[ -z "${PKG_DEEPMD5}" ] && PKG_DEEPMD5=$(find $STAMP_DEPENDS -exec md5sum {} \; 2>/dev/null | sort | md5sum | cut -d" " -f1)
 				if [ ! "$PKG_DEEPMD5" = "$STAMP_PKG_DEEPMD5" ] ; then
@@ -508,6 +510,8 @@ prepare_packages() {
 	if [ "$LINUX" == "mainline" ]; then
 		build_package "linux-mainline:target"
 	fi
+
+	build_package "utils:host"
 }
 
 ## Select uboot configuration
@@ -681,13 +685,6 @@ prepare_working_environment() {
 	install -d ${UBUNTU_WORKING_DIR}/{linux,boot,rootfs,archives/{ubuntu-base,debs,hwpacks,ubuntu-mate},images,scripts}
 
 	cd ${UBUNTU_WORKING_DIR}
-
-	if [ ! -d "utils/.git" ]; then
-		##Clone utils.git from Khadas GitHub
-		echo "Utils repository dose not exist, clone utils repository('master') from Khadas GitHub..."
-		git clone https://github.com/khadas/utils.git
-		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to clone 'utils.git'" && return -1
-	fi
 
 	cd images/
 	if [ ! -d "upgrade/.git" ]; then
@@ -1076,15 +1073,15 @@ build_rootfs() {
 #	sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- install INSTALL_PATH=$PWD/${BOOT_DIR}
 	install_kernel $(grep "Linux/arm64" $LINUX_DIR/.config | awk  '{print $3}') $LINUX_DIR/arch/arm64/boot/Image $LINUX_DIR/System.map $PWD/${BOOT_DIR}
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		sudo ./utils/mkimage -A arm64 -O linux -T kernel -C none -a $IMAGE_LINUX_LOADADDR -e $IMAGE_LINUX_LOADADDR -n linux-$IMAGE_LINUX_VERSION -d $BOOT_DIR/vmlinux-$IMAGE_LINUX_VERSION $BOOT_DIR/uImage
+		sudo $UTILS_DIR/mkimage -A arm64 -O linux -T kernel -C none -a $IMAGE_LINUX_LOADADDR -e $IMAGE_LINUX_LOADADDR -n linux-$IMAGE_LINUX_VERSION -d $BOOT_DIR/vmlinux-$IMAGE_LINUX_VERSION $BOOT_DIR/uImage
 		# Universal multi-boot
 		sudo cp archives/filesystem/boot/* $BOOT_DIR
 		if [ "$LINUX" == "mainline" ]; then
-			sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S905 autoscript" -d $BOOT_DIR/s905_autoscript.cmd.mainline $BOOT_DIR/s905_autoscript
+			sudo $UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S905 autoscript" -d $BOOT_DIR/s905_autoscript.cmd.mainline $BOOT_DIR/s905_autoscript
 		else
-			sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S905 autoscript" -d $BOOT_DIR/s905_autoscript.cmd $BOOT_DIR/s905_autoscript
+			sudo $UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S905 autoscript" -d $BOOT_DIR/s905_autoscript.cmd $BOOT_DIR/s905_autoscript
 		fi
-		sudo ./utils/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "AML autoscript" -d $BOOT_DIR/aml_autoscript.txt $BOOT_DIR/aml_autoscript
+		sudo $UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "AML autoscript" -d $BOOT_DIR/aml_autoscript.txt $BOOT_DIR/aml_autoscript
 		cd $BOOT_DIR
 		sudo zip aml_autoscript.zip aml_autoscript aml_autoscript.txt
 		cd -
@@ -1146,7 +1143,7 @@ build_rootfs() {
 	fi
 
 	# mkimage tool
-	sudo cp ./utils/mkimage-$UBUNTU_ARCH rootfs/usr/local/bin/mkimage
+	sudo cp $UTILS_DIR/mkimage-$UBUNTU_ARCH rootfs/usr/local/bin/mkimage
 
 	## script executing on chroot
 	sudo cp -r archives/filesystem/RUNME_${UBUNTU_TYPE}.sh rootfs/
@@ -1176,7 +1173,7 @@ build_rootfs() {
 	## Generate ramdisk.img
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
 		cp rootfs/boot/initrd.img images/initrd.img
-		./utils/mkbootimg --kernel $LINUX_DIR/arch/arm64/boot/Image --ramdisk images/initrd.img -o images/ramdisk.img
+		$UTILS_DIR/mkbootimg --kernel $LINUX_DIR/arch/arm64/boot/Image --ramdisk images/initrd.img -o images/ramdisk.img
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		sudo mv rootfs/boot/uInitrd $BOOT_DIR
 	fi
@@ -1223,7 +1220,7 @@ pack_update_image() {
 		fi
 
 		echo "Packing update image using config: $AML_UPDATE_TOOL_CONFIG"
-		./utils/aml_image_v2_packer -r images/upgrade/$AML_UPDATE_TOOL_CONFIG images/upgrade/ images/$IMAGE_FILE_NAME
+		$UTILS_DIR/aml_image_v2_packer -r images/upgrade/$AML_UPDATE_TOOL_CONFIG images/upgrade/ images/$IMAGE_FILE_NAME
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		if [ "$UBOOT" == "mainline" ]; then
 			UBOOT_SD_BIN="$BUILD_IMAGES/u-boot-mainline/u-boot.bin.sd.bin"
