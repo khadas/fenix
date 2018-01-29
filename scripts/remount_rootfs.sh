@@ -205,8 +205,11 @@ remount_rootfs() {
 	fi
 
 	## [Optional] Mirrors for ubuntu-ports
-	sudo cp -a rootfs/etc/apt/sources.list rootfs/etc/apt/sources.list.orig
-	sudo sed -i "s/http:\/\/ports.ubuntu.com\/ubuntu-ports\//http:\/\/mirrors.ustc.edu.cn\/ubuntu-ports\//g" rootfs/etc/apt/sources.list
+	if [ -f .khadas-build ]; then
+		echo "Using ustc mirrors..."
+		sudo cp -a rootfs/etc/apt/sources.list rootfs/etc/apt/sources.list.orig
+		sudo sed -i "s/http:\/\/ports.ubuntu.com\/ubuntu-ports\//http:\/\/mirrors.ustc.edu.cn\/ubuntu-ports\//g" rootfs/etc/apt/sources.list
+	fi
 
 #	sudo make -C $LINUX_DIR -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- install INSTALL_PATH=$PWD/${BOOT_DIR}
 	install_kernel $(grep "Linux/arm64" $LINUX_DIR/.config | awk  '{print $3}') $LINUX_DIR/arch/arm64/boot/Image $LINUX_DIR/System.map $PWD/${BOOT_DIR}

@@ -1052,8 +1052,11 @@ build_rootfs() {
 		fi
 	fi
 	# [Optional] Mirrors for ubuntu-ports
-	sudo cp -a rootfs/etc/apt/sources.list rootfs/etc/apt/sources.list.orig
-	sudo sed -i "s/http:\/\/ports.ubuntu.com\/ubuntu-ports\//http:\/\/mirrors.ustc.edu.cn\/ubuntu-ports\//g" rootfs/etc/apt/sources.list
+	if [ -f .khadas-build ]; then
+		echo "Using ustc mirrors..."
+		sudo cp -a rootfs/etc/apt/sources.list rootfs/etc/apt/sources.list.orig
+		sudo sed -i "s/http:\/\/ports.ubuntu.com\/ubuntu-ports\//http:\/\/mirrors.ustc.edu.cn\/ubuntu-ports\//g" rootfs/etc/apt/sources.list
+	fi
 
 	# FIXME for Ubuntu 14.04, execute /sbin/installkernel failed, so try to install image manually
 #	sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- install INSTALL_PATH=$PWD/${BOOT_DIR}

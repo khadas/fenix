@@ -44,10 +44,6 @@ if [ "$UBUNTU_MATE_ROOTFS_TYPE" == "mate-rootfs" ]; then
 
 	sed -i "s/^# deb http/deb http/g" /etc/apt/sources.list
 
-	## Mirrors
-	cp -a /etc/apt/sources.list /etc/apt/sources.list.orig
-	sed -i "s/http:\/\/ports.ubuntu.com\/ubuntu-ports\//http:\/\/mirrors.ustc.edu.cn\/ubuntu-ports\//g" /etc/apt/sources.list
-
 	# Fetch the latest package lists from server
 	apt-get update
 
@@ -98,10 +94,6 @@ elif [ "$UBUNTU_MATE_ROOTFS_TYPE" == "chroot-install" ]; then
 
 	## Apt sources.list: add [universe] and [multiverse] repositories
 	sed -i "s/^# deb http/deb http/g" /etc/apt/sources.list
-
-	## Mirrors
-	cp -a /etc/apt/sources.list /etc/apt/sources.list.orig
-	sed -i "s/http:\/\/ports.ubuntu.com\/ubuntu-ports\//http:\/\/mirrors.ustc.edu.cn\/ubuntu-ports\//g" /etc/apt/sources.list
 
 	# Fetch the latest package lists from server
 	apt-get update
