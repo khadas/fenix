@@ -1135,7 +1135,7 @@ build_rootfs() {
 	sudo cp $UTILS_DIR/mkimage-$UBUNTU_ARCH rootfs/usr/local/bin/mkimage
 
 	## script executing on chroot
-	sudo cp -r archives/filesystem/RUNME_${UBUNTU_TYPE}.sh rootfs/
+	sudo cp -r archives/filesystem/RUNME.sh rootfs/
 
 	## Chroot
 	if [ "$UBUNTU_ARCH" == "arm64" ]; then
@@ -1157,7 +1157,7 @@ build_rootfs() {
 	sudo mount -o bind /sys rootfs/sys
 	sudo mount -o bind /dev rootfs/dev
 	sudo mount -o bind /dev/pts rootfs/dev/pts
-	sudo chroot rootfs/ bash "/RUNME_${UBUNTU_TYPE}.sh" $UBUNTU $UBUNTU_ARCH $INSTALL_TYPE ${UBUNTU_MATE_ROOTFS_TYPE:-NONE} $LINUX $KHADAS_BOARD
+	sudo chroot rootfs/ bash "/RUNME.sh" $UBUNTU $UBUNTU_TYPE $UBUNTU_ARCH $INSTALL_TYPE ${UBUNTU_MATE_ROOTFS_TYPE:-NONE} $LINUX $KHADAS_BOARD
 
 	## Generate ramdisk.img
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
