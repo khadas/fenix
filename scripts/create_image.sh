@@ -991,6 +991,8 @@ build_rootfs() {
 	IMAGE_LINUX_VERSION=`head -n 1 $LINUX_DIR/include/config/kernel.release | xargs echo -n`
 	BOOT_DIR=
 
+	mkdir -p $BUILD_IMAGES
+
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
 		BOOT_DIR="rootfs/boot"
 		dd if=/dev/zero of=$BUILD_IMAGES/rootfs.img bs=1M count=0 seek=$IMAGE_SIZE
