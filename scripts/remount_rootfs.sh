@@ -104,11 +104,11 @@ prepare_linux_dtb() {
 			if [ "$LINUX" == "mainline" ]; then
 				LINUX_DTB="meson-gxl-s905x-khadas-vim.dtb"
 			else
-				LINUX_DTB="kvim.dtb"
+				LINUX_DTB="kvim_linux.dtb"
 			fi
 			;;
 		VIM2)
-			LINUX_DTB="kvim2.dtb"
+			LINUX_DTB="kvim2_linux.dtb"
 			;;
 		*)
 			error_msg $CURRENT_FILE $LINENO "Unsupported board:$KHADAS_BOARD"
@@ -235,16 +235,23 @@ remount_rootfs() {
 	sudo make -C $LINUX_DIR -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules_install INSTALL_MOD_PATH=$PWD/rootfs/
 	sudo make -C $LINUX_DIR -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- headers_install INSTALL_HDR_PATH=$PWD/rootfs/usr/
 	## Update linux dtb Image
+	## FIXME will use deb package in the future
 	if [ "$LINUX" == "4.9" -o "$LINUX" == "mainline" ];then
-		sudo cp $LINUX_DIR/arch/arm64/boot/dts/amlogic/$LINUX_DTB $BOOT_DIR
-		# Backup dtb
-		if [ "$INSTALL_TYPE" == "EMMC" ]; then
+		if [ "$INSTALL_TYPE" == "SD-USB" ]; then
+			sudo mkdir -p $BOOT_DIR/dtb
+			sudo cp $LINUX_DIR/arch/arm64/boot/dts/amlogic/*.dtb $BOOT_DIR/dtb
+		elif [ "$INSTALL_TYPE" == "EMMC" ]; then
+			sudo cp $LINUX_DIR/arch/arm64/boot/dts/amlogic/$LINUX_DTB $BOOT_DIR
+			# Backup dtb
 			sudo cp $LINUX_DIR/arch/arm64/boot/dts/amlogic/$LINUX_DTB $BOOTDIR/$LINUX_DTB.old
 		fi
 	elif [ "$LINUX" == "3.14" ];then
-		sudo cp $LINUX_DIR/arch/arm64/boot/dts/$LINUX_DTB $BOOT_DIR
-		# Backup dtb
-		if [ "$INSTALL_TYPE" == "EMMC" ]; then
+		if [ "$INSTALL_TYPE" == "SD-USB" ]; then
+			sudo mkdir -p $BOOT_DIR/dtb
+			sudo cp $LINUX_DIR/arch/arm64/boot/dts/*.dtb $BOOT_DIR
+		elif [ "$INSTALL_TYPE" == "EMMC" ]; then
+			sudo cp $LINUX_DIR/arch/arm64/boot/dts/$LINUX_DTB $BOOT_DIR
+			# Backup dtb
 			sudo cp $LINUX_DIR/arch/arm64/boot/dts/$LINUX_DTB $BOOT_DIR/$LINUX_DTB.old
 		fi
 	else

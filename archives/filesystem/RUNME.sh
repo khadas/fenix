@@ -218,16 +218,16 @@ if [ "$INSTALL_TYPE" == "EMMC" ]; then
 	# Create links
 	ln -s /boot/uImage uImage
 	ln -s /boot/uInitrd uInitrd
-	ln -s /boot/kvim.dtb kvim.dtb
-	ln -s /boot/kvim2.dtb kvim2.dtb
+	ln -s /boot/kvim_linux.dtb kvim.dtb
+	ln -s /boot/kvim2_linux.dtb kvim2.dtb
 
 	# Backup
 	cp /boot/uInitrd /boot/uInitrd.old
 	cp /boot/uImage /boot/uImage.old
 	ln -s /boot/uImage.old uImage.old
 	ln -s /boot/uInitrd.old uInitrd.old
-	ln -s /boot/kvim.dtb.old kvim.dtb.old
-	ln -s /boot/kvim2.dtb.old kvim2.dtb.old
+	ln -s /boot/kvim_linux.dtb.old kvim.dtb.old
+	ln -s /boot/kvim2_linux.dtb.old kvim2.dtb.old
 fi
 
 if [ "$LINUX" == "3.14" ]; then
