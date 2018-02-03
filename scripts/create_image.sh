@@ -1234,6 +1234,8 @@ pack_update_image() {
 		error_msg $CURRENT_FILE $LINENO "Unsupported install type: '$INSTALL_TYPE'"
 		return -1
 	fi
+
+	echo -e "\nIMAGE: $BUILD_IMAGES/$IMAGE_FILE_NAME"
 }
 
 ###########################################################
