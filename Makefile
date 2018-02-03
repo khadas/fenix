@@ -1,6 +1,12 @@
 IMAGES_DIR=images
 
-all: help
+all:
+ifeq ($(and $(UBUNTU_TYPE),$(KHADAS_BOARD),$(UBUNTU),$(LINUX),$(UBUNTU_ARCH),$(INSTALL_TYPE)),)
+	$(call help_message)
+else
+	./scripts/create_image.sh $(UBUNTU_TYPE) $(KHADAS_BOARD) $(UBUNTU) $(LINUX) $(UBUNTU_ARCH) $(INSTALL_TYPE)
+endif
+
 
 define help_message
 	@echo "You should setup environment first."
@@ -15,23 +21,6 @@ ifeq ($(and $(KHADAS_BOARD),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
 	./scripts/make_image.sh $(KHADAS_BOARD) $(INSTALL_TYPE)
-endif
-
-balbes150:
-	./scripts/balbes150.sh
-
-server:
-ifeq ($(and $(KHADAS_BOARD),$(UBUNTU),$(LINUX),$(UBUNTU_ARCH),$(INSTALL_TYPE)),)
-	$(call help_message)
-else
-	./scripts/create_image.sh server $(KHADAS_BOARD) $(UBUNTU) $(LINUX) $(UBUNTU_ARCH) $(INSTALL_TYPE)
-endif
-
-ubuntu-mate:
-ifeq ($(and $(KHADAS_BOARD),$(UBUNTU),$(LINUX),$(UBUNTU_ARCH),$(INSTALL_TYPE)),)
-	$(call help_message)
-else
-	./scripts/create_image.sh mate $(KHADAS_BOARD) $(UBUNTU) $(LINUX) $(UBUNTU_ARCH) $(INSTALL_TYPE)
 endif
 
 github:
@@ -52,6 +41,10 @@ info:
 	@echo "#KHADAS_BOARD=${KHADAS_BOARD}"
 	@echo "#LINUX=${LINUX}"
 	@echo "#UBOOT=${UBOOT}"
+	@echo "#UBUNTU_TYPE=${UBUNTU_TYPE}"
+ifeq ($(UBUNTU_TYPE),mate)
+	@echo "#UBUNTU_MATE_ROOTFS_TYPE=${UBUNTU_MATE_ROOTFS_TYPE}"
+endif
 	@echo "#UBUNTU=${UBUNTU}"
 	@echo "#UBUNTU_ARCH=${UBUNTU_ARCH}"
 	@echo "#INSTALL_TYPE=${INSTALL_TYPE}"
@@ -61,8 +54,7 @@ info:
 
 help:
 	@echo "Fenix scripts help messages:"
-	@echo "  server        - Create ubuntu server update image."
-	@echo "  ubuntu-mate   - Create ubuntu mate update image."
+	@echo "  all           - Create image according to environment."
 	@echo "  remount       - Remount rootfs and recreate initrd."
 	@echo "  github        - Update repositories from Khadas GitHub."
 	@echo "  image         - Pack update image."

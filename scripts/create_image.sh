@@ -653,6 +653,9 @@ display_parameters() {
 	echo "linux version:                 $LINUX"
 	echo "uboot version:                 $UBOOT"
 	echo "ubuntu type:                   $UBUNTU_TYPE"
+	if [ "$UBUNTU_TYPE" == "mate" ]; then
+		echo "ubuntu mate rootfs type:       $UBUNTU_MATE_ROOTFS_TYPE"
+	fi
 	echo "ubuntu version:                $UBUNTU"
 	echo "ubuntu architecture:           $UBUNTU_ARCH"
 	echo "install type:                  $INSTALL_TYPE"

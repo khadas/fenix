@@ -502,6 +502,10 @@ function lunch() {
 	echo "#INSTALL_TYPE=${INSTALL_TYPE}"
 	echo
 	echo "==========================================="
+	echo ""
+	echo "Environment setup done."
+	echo "Type 'make' to build."
+	echo ""
 }
 
 #####################################################################3
