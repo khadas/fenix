@@ -147,6 +147,16 @@ if [ "$UBUNTU_TYPE" == "mate" ] && [ "$UBUNTU_MATE_ROOTFS_TYPE" == "mate-rootfs"
 	cd -
 fi
 
+if [ "$UBUNTU_TYPE" == "mate" ]; then
+	# Enable network manager
+	if [ -f /etc/NetworkManager/NetworkManager.conf ]; then
+		sed "s/managed=\(.*\)/managed=true/g" -i /etc/NetworkManager/NetworkManager.conf
+		# Disable dns management withing NM
+		sed "s/\[main\]/\[main\]\ndns=none/g" -i /etc/NetworkManager/NetworkManager.conf
+		printf '[keyfile]\nunmanaged-devices=interface-name:p2p0\n' >> /etc/NetworkManager/NetworkManager.conf
+	fi
+fi
+
 if [ "$UBUNTU_TYPE" == "mate" ] && [ "$LINUX" == "mainline" ] && [ "$UBUNTU_ARCH" == "arm64" ]; then
 
 	# OpenGL ES
