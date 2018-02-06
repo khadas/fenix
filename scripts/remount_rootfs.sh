@@ -316,11 +316,12 @@ remount_rootfs() {
 		cp rootfs/boot/initrd.img $BUILD_IMAGES/initrd.img
 		$UTILS_DIR/mkbootimg --kernel $LINUX_DIR/arch/arm64/boot/Image --ramdisk $BUILD_IMAGES/initrd.img -o $BUILD_IMAGES/ramdisk.img
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		sudo mv rootfs/boot/uInitrd $BOOT_DIR
+		sudo cp -r rootfs/boot/* $BOOT_DIR
+		sudo rm -rf rootfs/boot/*
 	fi
 
 	## Clean up
-	sudo rm rootfs/boot/initrd.img
+	sudo rm -f rootfs/boot/initrd.img
 
 	## Unmount to get the rootfs.img
 	sudo sync
