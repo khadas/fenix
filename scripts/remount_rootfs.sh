@@ -214,7 +214,6 @@ remount_rootfs() {
 #	sudo make -C $LINUX_DIR -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- install INSTALL_PATH=$PWD/${BOOT_DIR}
 	install_kernel $(grep "Linux/arm64" $LINUX_DIR/.config | awk  '{print $3}') $LINUX_DIR/arch/arm64/boot/Image $LINUX_DIR/System.map $PWD/${BOOT_DIR}
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		sudo $UTILS_DIR/mkimage -A arm64 -O linux -T kernel -C none -a $IMAGE_LINUX_LOADADDR -e $IMAGE_LINUX_LOADADDR -n linux-$IMAGE_LINUX_VERSION -d $BOOT_DIR/vmlinux-$IMAGE_LINUX_VERSION $BOOT_DIR/uImage
 		# Universal multi-boot
 		sudo cp archives/filesystem/boot/* $BOOT_DIR
 		if [ "$LINUX" == "mainline" ]; then
