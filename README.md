@@ -1,4 +1,4 @@
-# Fenix scripts for building ubuntu update image
+# Fenix scripts for building ubuntu image
 
 ## How to use?
 - Clone Fenix repository
@@ -13,7 +13,7 @@
 ```
 # source env/setenv.sh
 ```
-- Build ubuntu server update image
+- Build ubuntu image
 ```
-# make server
+# make
 ```
