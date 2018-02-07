@@ -248,7 +248,7 @@ remount_rootfs() {
 	elif [ "$LINUX" == "3.14" ];then
 		if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 			sudo mkdir -p $BOOT_DIR/dtb
-			sudo cp $LINUX_DIR/arch/arm64/boot/dts/*.dtb $BOOT_DIR
+			sudo cp $LINUX_DIR/arch/arm64/boot/dts/*.dtb $BOOT_DIR/dtb
 		elif [ "$INSTALL_TYPE" == "EMMC" ]; then
 			sudo cp $LINUX_DIR/arch/arm64/boot/dts/$LINUX_DTB $BOOT_DIR
 			# Backup dtb
