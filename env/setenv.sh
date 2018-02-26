@@ -324,7 +324,7 @@ function choose_install_type() {
 	echo ""
 	echo "Choose install type:"
 	# FIXME
-	if [ "$UBOOT" == "mainline" ]; then
+	if [ "$UBOOT" == "mainline" ] || [ "$LINUX" == "mainline" ]; then
 		echo "Force set to install-${INSTALL_TYPE_ARRAY[1]}"
 		export INSTALL_TYPE="${INSTALL_TYPE_ARRAY[1]}"
 		return
