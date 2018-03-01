@@ -35,12 +35,9 @@ mkinitramfs -o /boot/initrd.img `cat linux-version` 2>/dev/null
 mkimage -A arm64 -O linux -T ramdisk -a 0x0 -e 0x0 -n "initrd"  -d /boot/initrd.img  /boot/uInitrd
 
 if [ "$INSTALL_TYPE" == "EMMC" ]; then
-	#Generate uImage
-	mkimage -n 'linux-4.9' -A arm64 -O linux -T kernel -C none -a 0x1080000 -e 0x1080000 -d /boot/Image /boot/uImage
-
 	# Backup
 	cp /boot/uInitrd /boot/uInitrd.old
-	cp /boot/uImage /boot/uImage.old
+	cp /boot/Image /boot/Image.old
 fi
 
 # Build time
