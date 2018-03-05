@@ -12,12 +12,11 @@ PKG_NEED_BUILD="YES"
 
 
 make_target() {
-	rm -rf .fenix-unpack
 	# set up control file
 	mkdir -p DEBIAN
 	cat <<-END > DEBIAN/control
 	Package: aml-amremote-905
-	Version: 0.1
+	Version: $VERSION
 	Architecture: $UBUNTU_ARCH
 	Maintainer: Khadas <hello@khadas.com>
 	Installed-Size: 1
@@ -30,13 +29,14 @@ make_target() {
 
 	# pack
 	cd ..
-	mv ${PKG_NAME}-${PKG_VERSION} ${PKG_NAME}-${PKG_VERSION}_${UBUNTU_ARCH}
-	dpkg -b ${PKG_NAME}-${PKG_VERSION}_${UBUNTU_ARCH}
-	mv ${PKG_NAME}-${PKG_VERSION}_${UBUNTU_ARCH} ${PKG_NAME}-${PKG_VERSION}
+	cp -r ${PKG_NAME}-${PKG_VERSION} ${PKG_NAME}_${VERSION}_${UBUNTU_ARCH}
+	rm -rf ${PKG_NAME}_${VERSION}_${UBUNTU_ARCH}/.fenix-unpack
+	dpkg -b ${PKG_NAME}_${VERSION}_${UBUNTU_ARCH}
+	rm -rf ${PKG_NAME}_${VERSION}_${UBUNTU_ARCH}
 }
 
 makeinstall_target() {
 	mkdir -p $BUILD_IMAGES/$PKG_NAME
 	rm -rf $BUILD_IMAGES/$PKG_NAME/*.deb
-	mv ${PKG_NAME}-${PKG_VERSION}_${UBUNTU_ARCH}.deb $BUILD_IMAGES/$PKG_NAME
+	mv ${PKG_NAME}_${VERSION}_${UBUNTU_ARCH}.deb $BUILD_IMAGES/$PKG_NAME
 }

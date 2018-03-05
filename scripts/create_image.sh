@@ -943,9 +943,9 @@ install_kodi() {
 		build_package "pkg-aml-amremote:target"
 
 		cd $UBUNTU_WORKING_DIR
-		sudo cp $BUILD_IMAGES/pkg-aml-kodi/*.deb rootfs/pkg-aml-kodi_${UBUNTU_ARCH}.deb
-		sudo cp $BUILD_IMAGES/pkg-aml-codec/*.deb rootfs/pkg-aml-codec_${UBUNTU_ARCH}.deb
-		sudo cp $BUILD_IMAGES/pkg-aml-amremote/*.deb rootfs/pkg-aml-amremote_${UBUNTU_ARCH}.deb
+		sudo cp $BUILD_IMAGES/pkg-aml-kodi/*.deb rootfs/
+		sudo cp $BUILD_IMAGES/pkg-aml-codec/*.deb rootfs/
+		sudo cp $BUILD_IMAGES/pkg-aml-amremote/*.deb rootfs/
 	fi
 }
 

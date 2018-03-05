@@ -188,9 +188,9 @@ fi
 
 if [ "$UBUNTU_TYPE" == "mate" ] && [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" == "3.14" ]; then
 	# Install amremote
-	if [ -f /pkg-aml-amremote_${UBUNTU_ARCH}.deb ]; then
-		dpkg -i /pkg-aml-amremote_${UBUNTU_ARCH}.deb
-		rm -rf /pkg-aml-amremote_${UBUNTU_ARCH}.deb
+	if [ -f /pkg-aml-amremote_*.deb ]; then
+		dpkg -i /pkg-aml-amremote_*.deb
+		rm -rf /pkg-aml-amremote_*.deb
 
 		# Enable khadas remote
 		cp /boot/remote.conf.vim /boot/remote.conf
@@ -199,15 +199,15 @@ if [ "$UBUNTU_TYPE" == "mate" ] && [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" ==
 	fi
 
 	# Install libamcodec
-	if [ -f /pkg-aml-codec_${UBUNTU_ARCH}.deb ]; then
-		dpkg -i /pkg-aml-codec_${UBUNTU_ARCH}.deb
-		rm -rf /pkg-aml-codec_${UBUNTU_ARCH}.deb
+	if [ -f /pkg-aml-codec_*.deb ]; then
+		dpkg -i /pkg-aml-codec_*.deb
+		rm -rf /pkg-aml-codec_*.deb
 	fi
 
 	# Install kodi
-	if [ -f /pkg-aml-kodi_${UBUNTU_ARCH}.deb ]; then
-		dpkg -i /pkg-aml-kodi_${UBUNTU_ARCH}.deb
-		rm -rf /pkg-aml-kodi_${UBUNTU_ARCH}.deb
+	if [ -f /pkg-aml-kodi_*.deb ]; then
+		dpkg -i /pkg-aml-kodi_*.deb
+		rm -rf /pkg-aml-kodi_*.deb
 	fi
 
 	usermod -a -G audio,video,disk,input,tty,root,users,games khadas
