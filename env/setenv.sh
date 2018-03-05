@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ################################################################
+UBUNTU_WORKING_DIR="$(pwd)"
 
 KHADAS_BOARD_ARRAY=("VIM" "VIM2")
 VIM_SUPPORTED_LINUX_VERSION_ARRAY=("3.14" "4.9" "mainline")
@@ -34,6 +35,21 @@ UBUNTU_TYPE=
 UBUNTU_MATE_ROOTFS_TYPE=
 
 ###############################################################
+## Export version
+function export_version() {
+	if [ ! -d "$UBUNTU_WORKING_DIR/env" ]; then
+		echo -e "\033[31mError:\033[0m You should execute the script in Fenix root directory.Please enter Fenix root directory and execute it again."
+		echo "Ctrl+C to abort."
+		# Hang
+		while true; do
+			sleep 1
+		done
+	fi
+
+	source $UBUNTU_WORKING_DIR/config/version
+	export VERSION
+}
+
 ## Choose Khadas board
 function choose_khadas_board() {
 	echo ""
@@ -489,6 +505,7 @@ function choose_ubuntu_mate_rootfs_type() {
 
 function lunch() {
 	echo "==========================================="
+	echo "#VERSION: $VERSION"
 	echo
 	echo "#KHADAS_BOARD=${KHADAS_BOARD}"
 	echo "#LINUX=${LINUX}"
@@ -509,6 +526,7 @@ function lunch() {
 }
 
 #####################################################################3
+export_version
 choose_khadas_board
 choose_uboot_version
 choose_linux_version

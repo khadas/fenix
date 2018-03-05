@@ -35,6 +35,7 @@ endif
 
 info:
 	@echo ""
+	@echo "Version: ${VERSION}"
 	@echo "Current environment:"
 	@echo "==========================================="
 	@echo
