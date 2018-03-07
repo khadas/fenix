@@ -33,8 +33,6 @@ CURRENT_FILE="$0"
 ERROR="\033[31mError:\033[0m"
 WARNING="\033[35mWarning:\033[0m"
 
-trap cleanup INT EXIT TERM
-
 ############################## Functions #################################
 
 ## Print error message
@@ -167,6 +165,8 @@ install_kernel() {
 
 remount_rootfs() {
 	cd ${UBUNTU_WORKING_DIR}
+
+	trap cleanup INT EXIT TERM
 
 	IMAGE_LINUX_LOADADDR="0x1080000"
 	IMAGE_LINUX_VERSION=`head -n 1 $LINUX_DIR/include/config/kernel.release | xargs echo -n`
@@ -334,6 +334,8 @@ remount_rootfs() {
 		sudo umount boot
 		sudo losetup -d "${IMAGE_LOOP_DEV}"
 	fi
+
+	trap - INT EXIT TERM
 
 	return 0
 }

@@ -46,8 +46,6 @@ CURRENT_FILE="$0"
 ERROR="\033[31mError:\033[0m"
 WARNING="\033[35mWarning:\033[0m"
 
-trap cleanup INT EXIT TERM
-
 ############################## Functions #################################
 
 ## Print error message
@@ -1002,6 +1000,8 @@ build_rootfs() {
 	ret=0
 	cd ${UBUNTU_WORKING_DIR}
 
+	trap cleanup INT EXIT TERM
+
 	IMAGE_LINUX_LOADADDR="0x1080000"
 	IMAGE_LINUX_VERSION=`head -n 1 $LINUX_DIR/include/config/kernel.release | xargs echo -n`
 	BOOT_DIR=
@@ -1218,6 +1218,8 @@ build_rootfs() {
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		sudo umount boot
 	fi
+
+	trap - INT EXIT TERM
 
 	return $ret
 }
