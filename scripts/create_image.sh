@@ -3,98 +3,10 @@
 set -e -o pipefail
 
 ########################### Parameters ###################################
-
-UBOOT_DEFCONFIG=
-LINUX_DTB=
-UBUNTU_ROOTFS=
-UBOOT_GIT_BRANCH=
-LINUX_GIT_BRANCH=
-LINUX_DIR=
-
-AML_UPDATE_TOOL_CONFIG=
-
-UBUNTU_SERVER_IMAGE_SIZE=800 # MB
-UBUNTU_MATE_IMAGE_SIZE=5000 # MB
-
-UBUNTU_TYPE=$1
-
-BASE_DIR="$HOME"
-PROJECT_DIR="${BASE_DIR}/project"
-KHADAS_DIR="${PROJECT_DIR}/khadas"
-UBUNTU_WORKING_DIR="$(dirname "$(dirname "$(readlink -fm "$0")")")"
-IMAGE_FILE_NAME="KHADAS_${KHADAS_BOARD}_${INSTALL_TYPE}.img"
-IMAGE_FILE_NAME=$(echo $IMAGE_FILE_NAME | tr "[A-Z]" "[a-z]")
-IMAGE_SIZE=
-
-
-## Download packages directory
-DOWNLOAD_PKG_DIR="$UBUNTU_WORKING_DIR/downloads"
-## Packages directory
-PKGS_DIR="$UBUNTU_WORKING_DIR/packages"
-## Packages build directory
-BUILD="$UBUNTU_WORKING_DIR/build"
-## Build images
-BUILD_IMAGES="$BUILD/images"
-## Toolchains
-TOOLCHAINS="$BUILD/toolchains"
-
-UTILS_DIR="$BUILD/utils-[0-9a-f]*"
-UPGRADE_DIR="$BUILD/images_upgrade-[0-9a-f]*"
-
-CURRENT_FILE="$0"
-
-ERROR="\033[31mError:\033[0m"
-WARNING="\033[35mWarning:\033[0m"
+source config/config
 
 ############################## Functions #################################
-
-## Print error message
-## $1 - file name
-## $2 - line number
-## $3 - message
-error_msg() {
-	echo -e "$1:$2" $ERROR "$3"
-}
-
-## Print warning message
-## $1 - file name
-## $2 - line number
-## $3 - message
-warning_msg() {
-	echo -e "$1:$2" $WARNING "$3"
-}
-
-## Calculate time
-## $1 - time in seconds
-time_cal() {
-	local days hours minutes seconds temp
-
-	second=$(($1 % 60))
-	minute=$(($1 / 60))
-	temp=$minute
-	minute=$(($temp % 60))
-	hour=$(($temp / 60))
-	temp=$hour
-	hour=$(($temp % 24))
-	day=$(($temp / 24))
-
-	echo "Time elapsed: $day days $hour hours $minute minutes $second seconds."
-}
-
-## $1 ubuntu type           <server | mate>
-## $2 board              	<VIM | VIM2>
-## $3 ubuntu version     	<16.04.2 | 17.04 | 17.10>
-## $4 linux version      	<4.9 | 3.14 | mainline>
-## $5 ubuntu architecture   <arm64 | armhf>
-## $6 install type          <EMMC | SD-USB>
-check_parameters() {
-	if [ "$1" == "" ] || [ "$2" == "" ]  || [ "$3" == "" ] || [ "$4" == "" ] || [ "$5" == "" ] || [ "$6" == "" ]; then
-		echo "usage: $0 <server|mate> <VIM|VIM2> <16.04.2|17.04|17.10> <4.9|3.14|mainline> <arm64|armhf> <EMMC|SD-USB>"
-		return -1;
-	fi
-
-	return 0
-}
+source config/functions
 
 ## Update git repository
 ## $1 git repository path
@@ -108,7 +20,7 @@ update_git_repo() {
 
 		cd $1
 		if [ ! -d .git ]; then
-			error_msg $CURRENT_FILE $LINENO "No Git repository found!"
+			error_msg "No Git repository found!"
 			cd -
 			return -1
 		fi
@@ -134,36 +46,6 @@ check_update() {
 	cd $UBUNTU_WORKING_DIR
 
 	update_git_repo "$PWD" "master"
-}
-
-## Umount
-do_umount() {
-	if mount | grep $1 > /dev/null; then
-		sudo umount $1
-	fi
-}
-
-## Cleanup
-cleanup() {
-	cd $UBUNTU_WORKING_DIR
-	echo "Cleanup..."
-	sync
-
-	if mount | grep $PWD/rootfs > /dev/null; then
-		do_umount "rootfs/dev/pts"
-		do_umount "rootfs/dev"
-		do_umount "rootfs/proc"
-		do_umount "rootfs/sys/kernel/security"
-		do_umount "rootfs/sys"
-		do_umount "rootfs"
-	fi
-
-	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		if mount | grep $PWD/boot > /dev/null; then
-			do_umount "boot"
-			sudo losetup -d "${IMAGE_LOOP_DEV}"
-		fi
-	fi
 }
 
 unset_package_vars() {
@@ -197,11 +79,11 @@ download_package() {
 	if [ -f "$PKGS_DIR/$PKG/package.mk" ]; then
 		. $PKGS_DIR/$PKG/package.mk
 		if [ "$PKG_NAME" != "$PKG" ]; then
-			error_msg $CURRENT_FILE $LINENO "Package name mismatch! '$PKG_NAME' != '$PKG'"
+			error_msg "Package name mismatch! '$PKG_NAME' != '$PKG'"
 			return -1
 		fi
 	else
-		error_msg $CURRENT_FILE $LINENO "Package '$PKG' doesn't exist!"
+		error_msg "Package '$PKG' doesn't exist!"
 		return -1
 	fi
 
@@ -227,13 +109,13 @@ download_package() {
 			CALC_SHA256="$(sha256sum $PKG_SOURCE_NAME | cut -d" " -f1)"
 			[ -z "${PKG_SHA256}" -o "${PKG_SHA256}" == "${CALC_SHA256}" ] && break
 
-			error_msg $CURRENT_FILE $LINENO "Incorrect checksum calculated on downloaded file: got ${CALC_SHA256}, wanted ${PKG_SHA256}"
+			error_msg "Incorrect checksum calculated on downloaded file: got ${CALC_SHA256}, wanted ${PKG_SHA256}"
 		fi
 		NBWGET=$((NBWGET - 1))
 	done
 
 	if [ $NBWGET -eq 0 ]; then
-		error_msg $CURRENT_FILE $LINENO "Cant't get $PKG_NAME sources : $PKG_URL\n Try later !!"
+		error_msg "Cant't get $PKG_NAME sources : $PKG_URL\n Try later !!"
 		return -1
 	else
 		echo "Calculated checksum is: ${CALC_SHA256}"
@@ -260,7 +142,7 @@ extract_package() {
 		if [[ $PKG_SOURCE_NAME =~ ${pattern//./\\.}$ ]]; then
 			f="$DOWNLOAD_PKG_DIR/$1/$PKG_SOURCE_NAME"
 			if [ ! -f $f ]; then
-				error_msg $CURRENT_FILE $LINENO "error: File $PKG_SOURCE_NAME doesn't exist in package $1 downloads directory"
+				error_msg "error: File $PKG_SOURCE_NAME doesn't exist in package $1 downloads directory"
 				return -1
 			fi
 			case $PKG_SOURCE_NAME in
@@ -452,7 +334,7 @@ build_package() {
 	fi
 
 	if [ ! -f $PKGS_DIR/$PACKAGE_NAME/package.mk ]; then
-		error_msg $CURRENT_FILE $LINENO "$1: no package.mk file found!"
+		error_msg "$1: no package.mk file found!"
 		return -1
 	fi
 
@@ -553,115 +435,12 @@ prepare_packages() {
 	build_package "images_upgrade:host"
 }
 
-## Select uboot configuration
-prepare_uboot_configuration() {
-	ret=0
-	case "$KHADAS_BOARD" in
-		VIM)
-			UBOOT_DEFCONFIG="kvim_defconfig"
-			;;
-		VIM2)
-			UBOOT_DEFCONFIG="kvim2_defconfig"
-			;;
-		*)
-			error_msg $CURRENT_FILE $LINENO "Unsupported board:$KHADAS_BOARD"
-			UBOOT_DEFCONFIG=
-			ret=-1
-	esac
-
-	return $ret
-}
-
-## Select linux dtb
-prepare_linux_dtb() {
-	ret=0
-	case "$KHADAS_BOARD" in
-		VIM)
-			if [ "$LINUX" == "mainline" ]; then
-				LINUX_DTB="meson-gxl-s905x-khadas-vim.dtb"
-			else
-				LINUX_DTB="kvim_linux.dtb"
-			fi
-			;;
-		VIM2)
-			LINUX_DTB="kvim2_linux.dtb"
-			;;
-		*)
-			error_msg $CURRENT_FILE $LINENO "Unsupported board:$KHADAS_BOARD"
-			LINUX_DTB=
-			ret=-1
-			;;
-	esac
-
-	return $ret
-}
-
-prepare_git_branch() {
-	ret=0
-	case "$KHADAS_BOARD" in
-		VIM)
-			UBOOT_GIT_BRANCH="khadas-vim-v2015.01"
-			;;
-		VIM2)
-			UBOOT_GIT_BRANCH="khadas-vim-v2015.01"
-			;;
-		*)
-			error_msg $CURRENT_FILE $LINENO "Unsupported board:$KHADAS_BOARD"
-			UBOOT_GIT_BRANCH=
-			ret=-1
-			;;
-	esac
-
-	case "$LINUX" in
-		3.14)
-			LINUX_GIT_BRANCH="khadas-vim-3.14.y"
-			;;
-		4.9)
-			LINUX_GIT_BRANCH="khadas-vim-4.9.y"
-			;;
-	mainline)
-			LINUX_GIT_BRANCH="master"
-			;;
-		*)
-			error_msg $CURRENT_FILE $LINENO "Unsupported linux version:$LINUX"
-			LINUX_GIT_BRANCH=
-			ret=-1
-	esac
-
-	return $ret
-}
-
-## Fixup upgrade dtb link
-fixup_dtb_link() {
-	ret=0
-	cd $UPGRADE_DIR
-	rm -rf kvim.dtb
-
-	case "$LINUX" in
-		4.9)
-			ln -s ../../linux/arch/arm64/boot/dts/amlogic/$LINUX_DTB kvim.dtb
-			;;
-		3.14)
-			ln -s ../../linux/arch/arm64/boot/dts/$LINUX_DTB kvim.dtb
-			;;
-	mainline)
-			;;
-		*)
-			error_msg $CURRENT_FILE $LINENO "Unsupported linux version:$LINUX"
-			ret=-1
-	esac
-
-	cd -
-
-	return $ret
-}
-
 ## Select ubuntu rootfs
 prepare_ubuntu_rootfs() {
 	ret=0
 
 	if [ "$UBUNTU_ARCH" != "arm64" ] && [ "$UBUNTU_ARCH" != "armhf" ]; then
-		error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu architecture: $UBUNTU_ARCH"
+		error_msg "Unsupported ubuntu architecture: $UBUNTU_ARCH"
 		return -1
 	fi
 
@@ -671,12 +450,12 @@ prepare_ubuntu_rootfs() {
 		if [ "$UBUNTU" == "16.04.2" ]; then
 			UBUNTU_ROOTFS="ubuntu-mate-$UBUNTU-$UBUNTU_ARCH.tar.gz"
 		else
-			error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu version:$UBUNTU_TYPE $UBUNTU for $UBUNTU_MATE_ROOTFS_TYPE"
+			error_msg "Unsupported ubuntu version:$UBUNTU_TYPE $UBUNTU for $UBUNTU_MATE_ROOTFS_TYPE"
 			UBUNTU_ROOTFS=
 			ret=-1
 		fi
 	else
-		error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu image type:$UBUNTU_TYPE"
+		error_msg "Unsupported ubuntu image type:$UBUNTU_TYPE"
 		return -1
 	fi
 
@@ -702,9 +481,6 @@ display_parameters() {
 	echo "ubuntu rootfs:                 $UBUNTU_ROOTFS"
 	echo "uboot git branch:              $UBOOT_GIT_BRANCH"
 	echo "linux git branch:              $LINUX_GIT_BRANCH"
-	echo "base directory:                $BASE_DIR"
-	echo "project directory:             $PROJECT_DIR"
-	echo "khadas directory:              $KHADAS_DIR"
 	echo "ubuntu working directory:      $UBUNTU_WORKING_DIR"
 	echo "amlogic update tool config:    $AML_UPDATE_TOOL_CONFIG"
 	echo "image directory:               $BUILD_IMAGES"
@@ -715,46 +491,14 @@ display_parameters() {
 
 ## Prepare working environment
 prepare_working_environment() {
-#	install -d ${UBUNTU_WORKING_DIR}
-#
-#	if [ ! -d "ubuntu/.git" ]; then
-#		##Clone fenix.git from Khadas GitHub
-#		echo "Fenix repository dose not exist, clone fenix repository('master') from Khadas GitHub..."
-#		git clone https://github.com/khadas/fenix.git ubuntu
-#		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to clone 'fenix.git'" && return -1
-#	fi
 
-	install -d ${UBUNTU_WORKING_DIR}/{linux,boot,rootfs,archives/{ubuntu-base,debs,hwpacks,ubuntu-mate},scripts}
+	install -d ${UBUNTU_WORKING_DIR}/archives/{ubuntu-base,ubuntu-mate}
 
 	cd ${UBUNTU_WORKING_DIR}
 
-	if [ "$LINUX" == "mainline" ]; then
-		LINUX_DIR="$BUILD/linux-mainline-*"
-	else
-		LINUX_DIR="$UBUNTU_WORKING_DIR/linux"
-	fi
+	prepare_linux_dir
 
 	return 0
-}
-
-## Prepare amlogic usb updete tool configuration
-prepare_aml_update_tool_config() {
-	ret=0
-	case "$KHADAS_BOARD" in
-		VIM)
-			AML_UPDATE_TOOL_CONFIG="package.conf"
-			;;
-		VIM2)
-			AML_UPDATE_TOOL_CONFIG="package.conf"
-			;;
-		*)
-			error_msg $CURRENT_FILE $LINENO "Unsupported board:$KHADAS_BOARD"
-			AML_UPDATE_TOOL_CONFIG=
-			ret=-1
-			;;
-	esac
-
-	return $ret
 }
 
 ## Build U-Boot
@@ -766,7 +510,7 @@ build_uboot() {
 	fi
 
 	if [ "$UBOOT_GIT_BRANCH" == "" ]; then
-		error_msg $CURRENT_FILE $LINENO "'UBOOT_GIT_BRANCH' is empty!"
+		error_msg "'UBOOT_GIT_BRANCH' is empty!"
 		return -1
 	fi
 
@@ -775,7 +519,7 @@ build_uboot() {
 		echo "U-boot repository does not exist, clone u-boot repository('$UBOOT_GIT_BRANCH') form Khadas GitHub..."
 		## Clone u-boot from Khadas GitHub
 		git clone https://github.com/khadas/u-boot -b $UBOOT_GIT_BRANCH
-		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to clone 'u-boot'" && return -1
+		[ $? != 0 ] && error_msg "Failed to clone 'u-boot'" && return -1
 	fi
 
 	cd u-boot/
@@ -790,7 +534,7 @@ build_uboot() {
 		echo "U-boot: Switch to branch '$UBOOT_GIT_BRANCH'"
 		make distclean
 		git checkout $UBOOT_GIT_BRANCH
-		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "U-boot: Switch to branch '$UBOOT_GIT_BRANCH' failed." && return -1
+		[ $? != 0 ] && error_msg "U-boot: Switch to branch '$UBOOT_GIT_BRANCH' failed." && return -1
 	else
 		echo "U-boot: Already on branch '$UBOOT_GIT_BRANCH'"
 	fi
@@ -816,8 +560,8 @@ build_linux() {
 	fi
 
 	if [ "$LINUX_GIT_BRANCH" == "" ] || [ "$LINUX_DTB" == "" ]; then
-		[ "$LINUX_GIT_BRANCH" == "" ] && error_msg $CURRENT_FILE $LINENO "'LINUX_GIT_BRANCH' is empty!"
-		[ "$LINUX_DTB" == "" ] && error_msg $CURRENT_FILE $LINENO "'LINUX_DTB' is empty!"
+		[ "$LINUX_GIT_BRANCH" == "" ] && error_msg "'LINUX_GIT_BRANCH' is empty!"
+		[ "$LINUX_DTB" == "" ] && error_msg "'LINUX_DTB' is empty!"
 		return -1
 	fi
 
@@ -826,7 +570,7 @@ build_linux() {
 		echo "Linux repository does not exist, clone linux repository('$LINUX_GIT_BRANCH') form Khadas GitHub..."
 		## Clone linux from Khadas GitHub
 		git clone https://github.com/khadas/linux -b $LINUX_GIT_BRANCH
-		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to clone 'linux'" && return -1
+		[ $? != 0 ] && error_msg "Failed to clone 'linux'" && return -1
 	fi
 
 	cd linux/
@@ -842,7 +586,7 @@ build_linux() {
 		echo "Linux: Switch to branch '$LINUX_GIT_BRANCH'"
 		make ARCH=arm64 distclean
 		git checkout $LINUX_GIT_BRANCH
-		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Linux: Switch to branch '$LINUX_GIT_BRANCH' failed." && return -1
+		[ $? != 0 ] && error_msg "Linux: Switch to branch '$LINUX_GIT_BRANCH' failed." && return -1
 	else
 		echo "Linux: Already on branch '$LINUX_GIT_BRANCH'"
 	fi
@@ -860,7 +604,7 @@ build_linux() {
 setup_ubuntu_rootfs() {
 	ret=0
 	if [ "$UBUNTU_ROOTFS" == "" ]; then
-		error_msg $CURRENT_FILE $LINENO "'UBUNTU_ROOTFS' is empty!"
+		error_msg "'UBUNTU_ROOTFS' is empty!"
 		return -1
 	fi
 
@@ -873,7 +617,7 @@ setup_ubuntu_rootfs() {
 			if [ "$UBUNTU" == "16.04.2" ]; then
 				cd ${UBUNTU_WORKING_DIR}/archives/ubuntu-mate
 			else
-				error_msg $CURRENT_FILE $LINENO "Ubuntu mate $UBUNTU is not supported to build use ubuntu mate rootfs now!" && return -1
+				error_msg "Ubuntu mate $UBUNTU is not supported to build use ubuntu mate rootfs now!" && return -1
 			fi
 		elif [ "$UBUNTU_MATE_ROOTFS_TYPE" == "chroot-install" ]; then
 			cd ${UBUNTU_WORKING_DIR}/archives/ubuntu-base
@@ -887,13 +631,13 @@ setup_ubuntu_rootfs() {
 		elif [ "$UBUNTU_TYPE" == "mate" ]; then
 			if [ "$UBUNTU" == "16.04.2" ]; then
 				## FIXME
-				error_msg $CURRENT_FILE $LINENO "'$UBUNTU_ROOTFS' does not exist, please download it into folder '`pwd`' manually, and try again! Yon can refer to 'http://www.mediafire.com/file/sthi6u5gf7vxymz/ubuntu-mate-16.04.2-arm64.tar.gz' for ubuntu mate 16.04.2 rootfs." && ret=-1
+				error_msg "'$UBUNTU_ROOTFS' does not exist, please download it into folder '`pwd`' manually, and try again! Yon can refer to 'http://www.mediafire.com/file/sthi6u5gf7vxymz/ubuntu-mate-16.04.2-arm64.tar.gz' for ubuntu mate 16.04.2 rootfs." && ret=-1
 			else
-				error_msg $CURRENT_FILE $LINENO "Ubuntu mate $UBUNTU is not supported to build use ubuntu mate rootfs now!" && ret=-1
+				error_msg "Ubuntu mate $UBUNTU is not supported to build use ubuntu mate rootfs now!" && ret=-1
 			fi
 		fi
 
-		[ $? != 0 ] && error_msg $CURRENT_FILE $LINENO "Failed to download '$UBUNTU_ROOTFS'" && ret=-1
+		[ $? != 0 ] && error_msg "Failed to download '$UBUNTU_ROOTFS'" && ret=-1
 	fi
 
 	cd -
@@ -910,66 +654,66 @@ install_mali_driver() {
 
 		# GPU user space binary drivers
 		## Headers
-		sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL rootfs/usr/include/
-		sudo cp -arf archives/hwpacks/mali/r7p0/include/GLES rootfs/usr/include/
-		sudo cp -arf archives/hwpacks/mali/r7p0/include/GLES2 rootfs/usr/include/
-		sudo cp -arf archives/hwpacks/mali/r7p0/include/KHR rootfs/usr/include/
+		sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL $ROOTFS/usr/include/
+		sudo cp -arf archives/hwpacks/mali/r7p0/include/GLES $ROOTFS/usr/include/
+		sudo cp -arf archives/hwpacks/mali/r7p0/include/GLES2 $ROOTFS/usr/include/
+		sudo cp -arf archives/hwpacks/mali/r7p0/include/KHR $ROOTFS/usr/include/
 
 		### fbdev
-		sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL_platform/platform_fbdev/*.h rootfs/usr/include/EGL/
+		sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL_platform/platform_fbdev/*.h $ROOTFS/usr/include/EGL/
 
 		### wayland
-		### sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL_platform/platform_wayland/*.h rootfs/usr/include/EGL/
+		### sudo cp -arf archives/hwpacks/mali/r7p0/include/EGL_platform/platform_wayland/*.h $ROOTFS/usr/include/EGL/
 		## libMali.so
 		### fbdev
 		if [ "$UBUNTU_ARCH" == "arm64" ]; then
-			sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/$GPU_VER/m450/*.so* rootfs/usr/lib/
-			sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/$GPU_VER/m450/*.so* rootfs/usr/lib/aarch64-linux-gnu
+			sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/$GPU_VER/m450/*.so* $ROOTFS/usr/lib/
+			sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/$GPU_VER/m450/*.so* $ROOTFS/usr/lib/aarch64-linux-gnu
 		elif [ "$UBUNTU_ARCH" == "armhf" ]; then
-			sudo cp -arf archives/hwpacks/mali/r7p0/lib/eabihf/$GPU_VER/m450/*.so* rootfs/usr/lib/
-			sudo cp -arf archives/hwpacks/mali/r7p0/lib/eabihf/$GPU_VER/m450/*.so* rootfs/usr/lib/arm-linux-gnueabihf
+			sudo cp -arf archives/hwpacks/mali/r7p0/lib/eabihf/$GPU_VER/m450/*.so* $ROOTFS/usr/lib/
+			sudo cp -arf archives/hwpacks/mali/r7p0/lib/eabihf/$GPU_VER/m450/*.so* $ROOTFS/usr/lib/arm-linux-gnueabihf
 		fi
 
 		### wayland
 		### if [ "$UBUNTU_ARCH" == "arm64" ]; then
-		###     sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/wayland/*.so* rootfs/usr/lib/
-		###     sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/wayland/*.so* rootfs/usr/lib/aarch64-linux-gnu
+		###     sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/wayland/*.so* $ROOTFS/usr/lib/
+		###     sudo cp -arf archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450/wayland/*.so* $ROOTFS/usr/lib/aarch64-linux-gnu
 		###elif [ "$UBUNTU_ARCH" == "armhf" ]; then
-		###     sudo cp -arf archives/hwpacks/mali/r7p0/lib/eabihf/r7p0/m450/wayland/*.so* rootfs/usr/lib/
-		###     sudo cp -arf archives/hwpacks/mali/r7p0/lib/eabihf/r7p0/m450/wayland/*.so* rootfs/usr/lib/arm-linux-gnueabihf
+		###     sudo cp -arf archives/hwpacks/mali/r7p0/lib/eabihf/r7p0/m450/wayland/*.so* $ROOTFS/usr/lib/
+		###     sudo cp -arf archives/hwpacks/mali/r7p0/lib/eabihf/r7p0/m450/wayland/*.so* $ROOTFS/usr/lib/arm-linux-gnueabihf
 		### fi
 
 		### links
-		sudo cp -arf archives/hwpacks/mali/r7p0/lib/*.so* rootfs/usr/lib/
+		sudo cp -arf archives/hwpacks/mali/r7p0/lib/*.so* $ROOTFS/usr/lib/
 		if [ "$UBUNTU_ARCH" == "arm64" ]; then
-			sudo cp -arf archives/hwpacks/mali/r7p0/lib/*.so* rootfs/usr/lib/aarch64-linux-gnu
+			sudo cp -arf archives/hwpacks/mali/r7p0/lib/*.so* $ROOTFS/usr/lib/aarch64-linux-gnu
 		elif [ "$UBUNTU_ARCH" == "armhf" ]; then
-			sudo cp -arf archives/hwpacks/mali/r7p0/lib/*.so* rootfs/usr/lib/arm-linux-gnueabihf
+			sudo cp -arf archives/hwpacks/mali/r7p0/lib/*.so* $ROOTFS/usr/lib/arm-linux-gnueabihf
 		fi
-			sudo mkdir -p rootfs/usr/lib/pkgconfig/
-			sudo cp -arf archives/hwpacks/mali/r7p0/lib/pkgconfig/*.pc rootfs/usr/lib/pkgconfig/
+			sudo mkdir -p $ROOTFS/usr/lib/pkgconfig/
+			sudo cp -arf archives/hwpacks/mali/r7p0/lib/pkgconfig/*.pc $ROOTFS/usr/lib/pkgconfig/
 		# Mali m450 framebuffer mode examples
 		if [ "$UBUNTU_ARCH" == "arm64" ]; then
-			sudo mkdir -p rootfs/usr/share/arm/
-			sudo cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/lib/* rootfs/usr/lib/
-			sudo cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/opengles_20 rootfs/usr/share/arm/
+			sudo mkdir -p $ROOTFS/usr/share/arm/
+			sudo cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/lib/* $ROOTFS/usr/lib/
+			sudo cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/opengles_20 $ROOTFS/usr/share/arm/
 		fi
 
-		sudo mkdir -p rootfs/usr/lib/udev/rules.d
-		sudo cp -arf archives/filesystem/usr/lib/udev/rules.d/* rootfs/usr/lib/udev/rules.d
+		sudo mkdir -p $ROOTFS/usr/lib/udev/rules.d
+		sudo cp -arf archives/filesystem/usr/lib/udev/rules.d/* $ROOTFS/usr/lib/udev/rules.d
 
 	elif [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" == "mainline" ] && [ "$UBUNTU_TYPE" == "mate" ] && [ "$UBUNTU_ARCH" == "arm64" ]; then
 		# VIM mainline X11 mali driver
 		## install mali.ko
 		build_package "meson-gx-mali-450:target"
-		VER=$(ls $UBUNTU_WORKING_DIR/rootfs/lib/modules/)
-		sudo cp $BUILD/meson-gx-mali-450-*/mali.ko $UBUNTU_WORKING_DIR/rootfs/lib/modules/$VER/kernel/
-		sudo depmod -b $UBUNTU_WORKING_DIR/rootfs/ -a $VER
+		VER=$(ls $ROOTFS/lib/modules/)
+		sudo cp $BUILD/meson-gx-mali-450-*/mali.ko $ROOTFS/lib/modules/$VER/kernel/
+		sudo depmod -b $ROOTFS/ -a $VER
 		## libMali X11
 		cd $UBUNTU_WORKING_DIR
-		sudo mkdir -p rootfs/usr/lib/mali
-		sudo cp archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450-X/libMali.so rootfs/usr/lib/mali/
-		cd rootfs/usr/lib/mali
+		sudo mkdir -p $ROOTFS/usr/lib/mali
+		sudo cp archives/hwpacks/mali/r7p0/lib/arm64/r7p0/m450-X/libMali.so $ROOTFS/usr/lib/mali/
+		cd $ROOTFS/usr/lib/mali
 		sudo ln -s libMali.so libGLESv2.so.2.0
 		sudo ln -s libMali.so libGLESv1_CM.so.1.1
 		sudo ln -s libMali.so libEGL.so.1.4
@@ -980,12 +724,12 @@ install_mali_driver() {
 		sudo ln -s libGLESv1_CM.so.1 libGLESv1_CM.so
 		sudo ln -s libEGL.so.1 libEGL.so
 		cd -
-		sudo cp -ar archives/hwpacks/mali/r7p0/include/* rootfs/usr/include/
-		sudo tee "rootfs/etc/ld.so.conf.d/mali.conf" <<-EOF
+		sudo cp -ar archives/hwpacks/mali/r7p0/include/* $ROOTFS/usr/include/
+		sudo tee "$ROOTFS/etc/ld.so.conf.d/mali.conf" <<-EOF
 		/usr/lib/mali
 		EOF
 		build_package "xf86-video-armsoc:target"
-		sudo cp -r $BUILD/xf86-video-armsoc-* $UBUNTU_WORKING_DIR/rootfs/xf86-video-armsoc
+		sudo cp -r $BUILD/xf86-video-armsoc-* $ROOTFS/xf86-video-armsoc
 
 		cd $UBUNTU_WORKING_DIR
 	fi
@@ -999,46 +743,10 @@ install_kodi() {
 		build_package "pkg-aml-amremote:target"
 
 		cd $UBUNTU_WORKING_DIR
-		sudo cp $BUILD_IMAGES/pkg-aml-kodi/*.deb rootfs/
-		sudo cp $BUILD_IMAGES/pkg-aml-codec/*.deb rootfs/
-		sudo cp $BUILD_IMAGES/pkg-aml-amremote/*.deb rootfs/
+		sudo cp $BUILD_IMAGES/pkg-aml-kodi/*.deb $ROOTFS/
+		sudo cp $BUILD_IMAGES/pkg-aml-codec/*.deb $ROOTFS/
+		sudo cp $BUILD_IMAGES/pkg-aml-amremote/*.deb $ROOTFS/
 	fi
-}
-
-# Arguments:
-#   $1 - kernel version
-#   $2 - kernel image file
-#   $3 - kernel map file
-#   $4 - default install path (blank if root directory)
-install_kernel() {
-	if [ "$(basename $2)" = "Image.gz" ]; then
-		# Compressed install
-		echo "Installing compressed kernel"
-		base=vmlinuz
-	else
-		# Normal install
-		echo "Installing normal kernel"
-		base=vmlinux
-	fi
-
-	if [ -f $4/$base-$1 ]; then
-		sudo mv $4/$base-$1 $4/$base-$1.old
-	fi
-	sudo cp $2 $4/$base-$1
-
-	# Install system map file
-	if [ -f $4/System.map-$1 ]; then
-		sudo mv $4/System.map-$1 $4/System.map-$1.old
-	fi
-	sudo cp $3 $4/System.map-$1
-
-	# Install config file
-	config=$(dirname "$3")
-	config="${config}/.config"
-	if [ -f $4/config-$1 ]; then
-		sudo mv $4/config-$1 $4/config-$1.old
-	fi
-	sudo cp $config $4/config-$1
 }
 
 ## Rootfs
@@ -1055,13 +763,13 @@ build_rootfs() {
 	mkdir -p $BUILD_IMAGES
 
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
-		BOOT_DIR="rootfs/boot"
+		BOOT_DIR="$ROOTFS/boot"
 		dd if=/dev/zero of=$BUILD_IMAGES/rootfs.img bs=1M count=0 seek=$IMAGE_SIZE
 		sudo mkfs.ext4 -F -L ROOTFS $BUILD_IMAGES/rootfs.img
-		rm -rf rootfs && install -d rootfs
-		sudo mount -o loop $BUILD_IMAGES/rootfs.img rootfs
+		rm -rf $ROOTFS && install -d $ROOTFS
+		sudo mount -o loop $BUILD_IMAGES/rootfs.img $ROOTFS
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		BOOT_DIR="boot"
+		BOOT_DIR="$BOOT"
 		IMAGE_SIZE=$((IMAGE_SIZE + 300)) # SD/USB image szie = BOOT(256MB) + ROOTFS
 		dd if=/dev/zero of=${BUILD_IMAGES}/${IMAGE_FILE_NAME} bs=1M count=0 seek=$IMAGE_SIZE
 		sudo fdisk "${BUILD_IMAGES}/${IMAGE_FILE_NAME}" <<-EOF
@@ -1092,38 +800,38 @@ build_rootfs() {
 		sudo partprobe "${IMAGE_LOOP_DEV}"
 		sudo mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
 		sudo mkfs.ext4 -F -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}"
-		rm -rf rootfs boot && install -d rootfs boot
-		sudo mount -o loop "${IMAGE_LOOP_DEV_BOOT}" boot
-		sudo mount -o loop "${IMAGE_LOOP_DEV_ROOTFS}" rootfs
+		rm -rf $ROOTFS $BOOT && install -d $ROOTFS $BOOT
+		sudo mount -o loop "${IMAGE_LOOP_DEV_BOOT}" $BOOT
+		sudo mount -o loop "${IMAGE_LOOP_DEV_ROOTFS}" $ROOTFS
 	else
-		error_msg $CURRENT_FILE $LINENO "Unsupported install type: '$INSTALL_TYPE'"
+		error_msg "Unsupported install type: '$INSTALL_TYPE'"
 		return -1
 	fi
 
-	sudo rm -rf rootfs/lost+found
+	sudo rm -rf $ROOTFS/lost+found
 	if [ "$UBUNTU_TYPE" == "server" ]; then
 		# ubuntu-base
-		sudo tar -xzf archives/ubuntu-base/$UBUNTU_ROOTFS -C rootfs/
+		sudo tar -xzf archives/ubuntu-base/$UBUNTU_ROOTFS -C $ROOTFS/
 	elif [ "$UBUNTU_TYPE" == "mate" ]; then
 		if [ "$UBUNTU_MATE_ROOTFS_TYPE" == "mate-rootfs" ]; then
 			# ubuntu-mate
 			echo "Extracting ubuntu mate rootfs, please wait..."
-			sudo tar -xzf archives/ubuntu-mate/$UBUNTU_ROOTFS -C rootfs/
+			sudo tar -xzf archives/ubuntu-mate/$UBUNTU_ROOTFS -C $ROOTFS/
 		elif [ "$UBUNTU_MATE_ROOTFS_TYPE" == "chroot-install" ]; then
 			# Install ubuntu mate in chroot, use ubuntu base
-			sudo tar -xzf archives/ubuntu-base/$UBUNTU_ROOTFS -C rootfs/
+			sudo tar -xzf archives/ubuntu-base/$UBUNTU_ROOTFS -C $ROOTFS/
 		fi
 	fi
 	# [Optional] Mirrors for ubuntu-ports
 	if [ -f .khadas-build ]; then
 		echo "Using ustc mirrors..."
-		sudo cp -a rootfs/etc/apt/sources.list rootfs/etc/apt/sources.list.orig
-		sudo sed -i "s/http:\/\/ports.ubuntu.com\/ubuntu-ports\//http:\/\/mirrors.ustc.edu.cn\/ubuntu-ports\//g" rootfs/etc/apt/sources.list
+		sudo cp -a $ROOTFS/etc/apt/sources.list $ROOTFS/etc/apt/sources.list.orig
+		sudo sed -i "s/http:\/\/ports.ubuntu.com\/ubuntu-ports\//http:\/\/mirrors.ustc.edu.cn\/ubuntu-ports\//g" $ROOTFS/etc/apt/sources.list
 	fi
 
 	# FIXME for Ubuntu 14.04, execute /sbin/installkernel failed, so try to install image manually
-#	sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- install INSTALL_PATH=$PWD/${BOOT_DIR}
-	install_kernel $(grep "Linux/arm64" $LINUX_DIR/.config | awk  '{print $3}') $LINUX_DIR/arch/arm64/boot/Image $LINUX_DIR/System.map $PWD/${BOOT_DIR}
+#	sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- install INSTALL_PATH=${BOOT_DIR}
+	install_kernel $(grep "Linux/arm64" $LINUX_DIR/.config | awk  '{print $3}') $LINUX_DIR/arch/arm64/boot/Image $LINUX_DIR/System.map ${BOOT_DIR}
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		# Universal multi-boot
 		sudo cp archives/filesystem/boot/* $BOOT_DIR
@@ -1141,8 +849,8 @@ build_rootfs() {
 	fi
 
 	# linux modules
-	sudo make -C $LINUX_DIR -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules_install INSTALL_MOD_PATH=$PWD/rootfs/
-	sudo make -C $LINUX_DIR -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- headers_install INSTALL_HDR_PATH=$PWD/rootfs/usr/
+	sudo make -C $LINUX_DIR -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules_install INSTALL_MOD_PATH=$ROOTFS/
+	sudo make -C $LINUX_DIR -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- headers_install INSTALL_HDR_PATH=$ROOTFS/usr/
 
 	# copy linux dtb Image to boot folder
 	# FIXME will use deb package in the future
@@ -1151,36 +859,36 @@ build_rootfs() {
 			sudo mkdir -p $BOOT_DIR/dtb
 			sudo cp $LINUX_DIR/arch/arm64/boot/dts/amlogic/*.dtb $BOOT_DIR/dtb
 		elif [ "$INSTALL_TYPE" == "EMMC" ]; then
-			sudo cp $LINUX_DIR/arch/arm64/boot/dts/amlogic/$LINUX_DTB $BOOT_DIR
+			sudo cp $LINUX_DIR/$LINUX_DTB $BOOT_DIR
 			## Bakup dtb
-			sudo cp $LINUX_DIR/arch/arm64/boot/dts/amlogic/$LINUX_DTB $BOOT_DIR/$LINUX_DTB.old
+			sudo cp $LINUX_DIR/$LINUX_DTB $BOOT_DIR/$(basename $LINUX_DTB).old
 		fi
 	elif [ "$LINUX" == "3.14" ];then
 		if [ "$INSTALL_TYPE" == "SD-USB" ];then
 			sudo mkdir -p $BOOT_DIR/dtb
 			sudo cp $LINUX_DIR/arch/arm64/boot/dts/*.dtb $BOOT_DIR/dtb
 		elif [ "$INSTALL_TYPE" == "EMMC" ]; then
-			sudo cp $LINUX_DIR/arch/arm64/boot/dts/$LINUX_DTB $BOOT_DIR
+			sudo cp $LINUX_DIR/$LINUX_DTB $BOOT_DIR
 			## Backup dtb
-			sudo cp $LINUX_DIR/arch/arm64/boot/dts/$LINUX_DTB $BOOT_DIR/$LINUX_DTB.old
+			sudo cp $LINUX_DIR/$LINUX_DTB $BOOT_DIR/$(basename $LINUX_DTB).old
 		fi
 	else
-		error_msg $CURRENT_FILE $LINENO "Unsupported linux version:'$LINUX'"
+		error_msg "Unsupported linux version:'$LINUX'"
 		ret=-1
 	fi
 	sudo cp $LINUX_DIR/arch/arm64/boot/Image $BOOT_DIR
 	# linux version
 	grep "Linux/arm64" $LINUX_DIR/.config | awk  '{print $3}' > $BUILD_IMAGES/linux-version
-	sudo cp -r $BUILD_IMAGES/linux-version rootfs/
+	sudo cp -r $BUILD_IMAGES/linux-version $ROOTFS/
 	# initramfs
-	sudo cp -r archives/filesystem/etc/initramfs-tools/ rootfs/etc/
+	sudo cp -r archives/filesystem/etc/initramfs-tools/ $ROOTFS/etc/
 	# WIFI
-	sudo mkdir -p rootfs/lib/firmware
-	sudo cp -r archives/hwpacks/wlan-firmware/brcm/ rootfs/lib/firmware/
+	sudo mkdir -p $ROOTFS/lib/firmware
+	sudo cp -r archives/hwpacks/wlan-firmware/brcm/ $ROOTFS/lib/firmware/
 	# Bluetooth
-	sudo cp -r archives/hwpacks/bluez/brcm_patchram_plus-$UBUNTU_ARCH rootfs/usr/local/bin/brcm_patchram_plus
-	sudo cp -r archives/hwpacks/bluez/bluetooth-khadas.service rootfs/lib/systemd/system/
-	sudo cp -r archives/hwpacks/bluez/bluetooth-khadas.sh rootfs/usr/local/bin/
+	sudo cp -r archives/hwpacks/bluez/brcm_patchram_plus-$UBUNTU_ARCH $ROOTFS/usr/local/bin/brcm_patchram_plus
+	sudo cp -r archives/hwpacks/bluez/bluetooth-khadas.service $ROOTFS/lib/systemd/system/
+	sudo cp -r archives/hwpacks/bluez/bluetooth-khadas.sh $ROOTFS/usr/local/bin/
 
 	# Install Mali driver
 	install_mali_driver
@@ -1188,33 +896,33 @@ build_rootfs() {
 	# Install Kodi
 	install_kodi
 
-	sudo cp -arf archives/filesystem/etc rootfs/
-	sudo cp -r archives/filesystem/lib/systemd/system/* rootfs/lib/systemd/system/
+	sudo cp -arf archives/filesystem/etc $ROOTFS/
+	sudo cp -r archives/filesystem/lib/systemd/system/* $ROOTFS/lib/systemd/system/
 
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
 		# firstboot initialization: for 'ROOTFS' partition resize
 		# just for EMMC image.
-		sudo touch rootfs/etc/default/FIRSTBOOT
+		sudo touch $ROOTFS/etc/default/FIRSTBOOT
 
 		# Remove fstab for EMMC image
-		sudo rm rootfs/etc/fstab
+		sudo rm $ROOTFS/etc/fstab
 	fi
 
 	# mkimage tool
-	sudo cp $UTILS_DIR/mkimage-$UBUNTU_ARCH rootfs/usr/local/bin/mkimage
+	sudo cp $UTILS_DIR/mkimage-$UBUNTU_ARCH $ROOTFS/usr/local/bin/mkimage
 
 	## script executing on chroot
-	sudo cp -r archives/filesystem/RUNME.sh rootfs/
+	sudo cp -r archives/filesystem/RUNME.sh $ROOTFS/
 
 	## Chroot
 	if [ "$UBUNTU_ARCH" == "arm64" ]; then
-		sudo cp -a /usr/bin/qemu-aarch64-static rootfs/usr/bin/
+		sudo cp -a /usr/bin/qemu-aarch64-static $ROOTFS/usr/bin/
 	elif [ "$UBUNTU_ARCH" == "armhf" ]; then
-		sudo cp -a /usr/bin/qemu-arm-static rootfs/usr/bin/
+		sudo cp -a /usr/bin/qemu-arm-static $ROOTFS/usr/bin/
 	else
-		error_msg $CURRENT_FILE $LINENO "Unsupported ubuntu architecture: '$UBUNTU_ARCH'"
+		error_msg "Unsupported ubuntu architecture: '$UBUNTU_ARCH'"
 		sudo sync
-		sudo umount rootfs
+		sudo umount $ROOTFS
 		return -1
 	fi
 
@@ -1222,24 +930,24 @@ build_rootfs() {
 	echo "NOTE: YOU ARE NOW IN THE VIRTUAL TARGET, SETUP ANYTHING YOU WANT."
 	echo "      TYPE 'exit' TO CONTINUE IF FINISHED."
 	echo
-	sudo mount -o bind /proc rootfs/proc
-	sudo mount -o bind /sys rootfs/sys
-	sudo mount -o bind /dev rootfs/dev
-	sudo mount -o bind /dev/pts rootfs/dev/pts
-	sudo chroot rootfs/ bash "/RUNME.sh" $UBUNTU $UBUNTU_TYPE $UBUNTU_ARCH $INSTALL_TYPE ${UBUNTU_MATE_ROOTFS_TYPE:-NONE} $LINUX $KHADAS_BOARD
+	sudo mount -o bind /proc $ROOTFS/proc
+	sudo mount -o bind /sys $ROOTFS/sys
+	sudo mount -o bind /dev $ROOTFS/dev
+	sudo mount -o bind /dev/pts $ROOTFS/dev/pts
+	sudo chroot $ROOTFS/ bash "/RUNME.sh" $UBUNTU $UBUNTU_TYPE $UBUNTU_ARCH $INSTALL_TYPE ${UBUNTU_MATE_ROOTFS_TYPE:-NONE} $LINUX $KHADAS_BOARD
 
 	## Generate ramdisk.img
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
-		cp rootfs/boot/initrd.img $BUILD_IMAGES/initrd.img
+		cp $ROOTFS/boot/initrd.img $BUILD_IMAGES/initrd.img
 		$UTILS_DIR/mkbootimg --kernel $LINUX_DIR/arch/arm64/boot/Image --ramdisk $BUILD_IMAGES/initrd.img -o $BUILD_IMAGES/ramdisk.img
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		sudo cp -r rootfs/boot/* $BOOT_DIR
-		sudo rm -rf rootfs/boot/*
+		sudo cp -r $ROOTFS/boot/* $BOOT_DIR
+		sudo rm -rf $ROOTFS/boot/*
 	fi
 
 	if [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" == "mainline" ] && [ "$UBUNTU_TYPE" == "mate" ] && [ "$UBUNTU_ARCH" == "arm64" ]; then
 		# Mali udev rule
-		sudo tee rootfs/etc/udev/rules.d/50-mali.rules <<-EOF
+		sudo tee $ROOTFS/etc/udev/rules.d/50-mali.rules <<-EOF
 		KERNEL=="mali", MODE="0660", GROUP="video"
 		EOF
 	fi
@@ -1248,21 +956,22 @@ build_rootfs() {
 	cp archives/logo/logo.img $BUILD_IMAGES
 
 	## Clean up
-	sudo rm -f rootfs/boot/initrd.img
+	sudo rm -f $ROOTFS/boot/initrd.img
 
 	## Unmount to get the rootfs.img
 	sudo sync
-	sudo umount rootfs/dev/pts
-	sudo umount rootfs/dev
-	sudo umount rootfs/proc
-	if mount | grep "rootfs/sys/kernel/security" > /dev/null; then
-		sudo umount rootfs/sys/kernel/security
+	sudo umount $ROOTFS/dev/pts
+	sudo umount $ROOTFS/dev
+	sudo umount $ROOTFS/proc
+	if mount | grep "$ROOTFS/sys/kernel/security" > /dev/null; then
+		sudo umount $ROOTFS/sys/kernel/security
 	fi
-	sudo umount rootfs/sys
-	sudo umount rootfs
+	sudo umount $ROOTFS/sys
+	sudo umount $ROOTFS
 
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		sudo umount boot
+		sudo umount $BOOT
+		sudo losetup -d "${IMAGE_LOOP_DEV}"
 	fi
 
 	trap - INT EXIT TERM
@@ -1270,40 +979,8 @@ build_rootfs() {
 	return $ret
 }
 
-## Pack the images
-pack_update_image() {
-	cd ${UBUNTU_WORKING_DIR}
-
-	if [ "$INSTALL_TYPE" == "EMMC" ]; then
-		if [ $AML_UPDATE_TOOL_CONFIG == "" ]; then
-			error_msg $CURRENT_FILE $LINENO "'AML_UPDATE_TOOL_CONFIG' is empty!"
-			return -1
-		fi
-
-		echo "Packing update image using config: $AML_UPDATE_TOOL_CONFIG"
-		$UTILS_DIR/aml_image_v2_packer -r $UPGRADE_DIR/$AML_UPDATE_TOOL_CONFIG $UPGRADE_DIR $BUILD_IMAGES/$IMAGE_FILE_NAME
-	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		if [ "$UBOOT" == "mainline" ]; then
-			UBOOT_SD_BIN="$BUILD_IMAGES/u-boot-mainline/u-boot.bin.sd.bin"
-		elif [ "$UBOOT" == "2015.01" ]; then
-			UBOOT_SD_BIN="u-boot/fip/u-boot.bin.sd.bin"
-		fi
-
-		sudo dd if=$UBOOT_SD_BIN of="${IMAGE_LOOP_DEV}" conv=fsync bs=1 count=442
-		sudo dd if=$UBOOT_SD_BIN of="${IMAGE_LOOP_DEV}" conv=fsync bs=512 skip=1 seek=1
-
-		sudo losetup -d "${IMAGE_LOOP_DEV}"
-	else
-		error_msg $CURRENT_FILE $LINENO "Unsupported install type: '$INSTALL_TYPE'"
-		return -1
-	fi
-
-	echo -e "\nIMAGE: $BUILD_IMAGES/$IMAGE_FILE_NAME"
-}
-
 ###########################################################
 start_time=`date +%s`
-check_parameters $@
 check_update
 prepare_toolchains
 prepare_packages

@@ -1,0 +1,52 @@
+##################################### Path ###########################################
+UBUNTU_WORKING_DIR="$(dirname "$(dirname "$(readlink -fm "$0")")")"
+
+## Download packages directory
+DOWNLOAD_PKG_DIR="$UBUNTU_WORKING_DIR/downloads"
+## Packages directory
+PKGS_DIR="$UBUNTU_WORKING_DIR/packages"
+## Packages build directory
+BUILD="$UBUNTU_WORKING_DIR/build"
+## Build images
+BUILD_IMAGES="$BUILD/images"
+## Rootfs mount point
+ROOTFS="$BUILD_IMAGES/rootfs"
+## Boot mount point
+BOOT="$BUILD_IMAGES/boot"
+## Toolchains
+TOOLCHAINS="$BUILD/toolchains"
+
+UTILS_DIR="$BUILD/utils-[0-9a-f]*"
+UPGRADE_DIR="$BUILD/images_upgrade-[0-9a-f]*"
+
+##################################### Configurations ##################################
+IMAGE_FILE_NAME="KHADAS_${KHADAS_BOARD}_${INSTALL_TYPE}.img"
+IMAGE_FILE_NAME=$(echo $IMAGE_FILE_NAME | tr "[A-Z]" "[a-z]")
+
+## Image size
+UBUNTU_SERVER_IMAGE_SIZE=800 # MB
+UBUNTU_MATE_IMAGE_SIZE=5000 # MB
+
+##
+ERROR="\033[31mError:\033[0m"
+WARNING="\033[35mWarning:\033[0m"
+
+## Define colors
+BLACK="\e[0;30m"
+BOLDBLACK="\e[1;30m"
+RED="\e[0;31m"
+BOLDRED="\e[1;31m"
+GREEN="\e[0;32m"
+BOLDGREEN="\e[1;32m"
+YELLOW="\e[0;33m"
+BOLDYELLOW="\e[1;33m"
+BLUE="\e[0;34m"
+BOLDBLUE="\e[1;34m"
+MAGENTA="\e[0;35m"
+BOLDMAGENTA="\e[1;35m"
+CYAN="\e[0;36m"
+BOLDCYAN="\e[1;36m"
+WHITE="\e[0;37m"
+BOLDWHITE="\e[1;37m"
+ENDCOLOR="\e[0m"
+

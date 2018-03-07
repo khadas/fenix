@@ -1,9 +1,7 @@
 #!/bin/bash
 
 ######################################################################
-
-UBUNTU_WORKING_DIR="$(dirname "$(dirname "$(readlink -fm "$0")")")"
-
+source config/config
 
 cd $UBUNTU_WORKING_DIR
 
