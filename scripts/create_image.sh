@@ -562,10 +562,10 @@ prepare_git_branch() {
 	ret=0
 	case "$KHADAS_BOARD" in
 		VIM)
-			UBOOT_GIT_BRANCH="ubuntu"
+			UBOOT_GIT_BRANCH="khadas-vim-v2015.01"
 			;;
 		VIM2)
-			UBOOT_GIT_BRANCH="ubuntu"
+			UBOOT_GIT_BRANCH="khadas-vim-v2015.01"
 			;;
 		*)
 			error_msg $CURRENT_FILE $LINENO "Unsupported board:$KHADAS_BOARD"
@@ -576,10 +576,10 @@ prepare_git_branch() {
 
 	case "$LINUX" in
 		3.14)
-			LINUX_GIT_BRANCH="ubuntu"
+			LINUX_GIT_BRANCH="khadas-vim-3.14.y"
 			;;
 		4.9)
-			LINUX_GIT_BRANCH="ubuntu-4.9"
+			LINUX_GIT_BRANCH="khadas-vim-4.9.y"
 			;;
 	mainline)
 			LINUX_GIT_BRANCH="master"
@@ -743,6 +743,12 @@ build_uboot() {
 	cd u-boot/
 
 	if ! git branch | grep "^* $UBOOT_GIT_BRANCH$" > /dev/null; then
+		if ! git branch | grep "^  $UBOOT_GIT_BRANCH$" > /dev/null; then
+			# New branch? Try to fetch it.
+			echo "Fetching '$UBOOT_GIT_BRANCH' from Khadas GitHub..."
+			git fetch origin $UBOOT_GIT_BRANCH:$UBOOT_GIT_BRANCH
+		fi
+
 		echo "U-boot: Switch to branch '$UBOOT_GIT_BRANCH'"
 		make distclean
 		git checkout $UBOOT_GIT_BRANCH
@@ -786,6 +792,12 @@ build_linux() {
 	touch .scmversion
 
 	if ! git branch | grep "^* $LINUX_GIT_BRANCH$" > /dev/null; then
+		if ! git branch | grep "^  $LINUX_GIT_BRANCH$" > /dev/null; then
+			# New branch? Try to fetch it.
+			echo "Fetching '$LINUX_GIT_BRANCH' from Khadas GitHub..."
+			git fetch origin $LINUX_GIT_BRANCH:$LINUX_GIT_BRANCH
+		fi
+
 		echo "Linux: Switch to branch '$LINUX_GIT_BRANCH'"
 		make ARCH=arm64 distclean
 		git checkout $LINUX_GIT_BRANCH
