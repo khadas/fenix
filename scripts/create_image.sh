@@ -96,6 +96,46 @@ check_parameters() {
 	return 0
 }
 
+## Update git repository
+## $1 git repository path
+## $2 git branch
+update_git_repo() {
+	if [ ! -f $UBUNTU_WORKING_DIR/.ignore-update ]; then
+		if [ "$1" == "" ] || [ "$2" == 0 ]; then
+			echo "Usage: $0 <repository_path> <git_branch>"
+			return -1
+		fi
+
+		cd $1
+		if [ ! -d .git ]; then
+			error_msg $CURRENT_FILE $LINENO "No Git repository found!"
+			cd -
+			return -1
+		fi
+
+		echo "Try to update `basename $1`:$2"
+		if ! git branch | grep "^* $2$" > /dev/null; then
+			git checkout $2
+		fi
+		git pull origin $2
+		CHANGED_FILES=$(git diff --name-only)
+		if [ -n "$CHANGED_FILES" ]; then
+			echo -e "$WARNING Can't update since you made changes to: \e[0;32m\n${CHANGED_FILES}\x1B[0m"
+			echo -e "Press \e[0;33m<Ctrl-C>\x1B[0m to abort compilation, \e[0;33m<Enter>\x1B[0m to ignore and continue"
+			read
+		fi
+
+		cd -
+	fi
+}
+
+## Try to update Fenix
+check_update() {
+	cd $UBUNTU_WORKING_DIR
+
+	update_git_repo "$PWD" "master"
+}
+
 ## Umount
 do_umount() {
 	if mount | grep $1 > /dev/null; then
@@ -755,6 +795,9 @@ build_uboot() {
 		echo "U-boot: Already on branch '$UBOOT_GIT_BRANCH'"
 	fi
 
+	# Update u-boot
+	update_git_repo "$PWD" "$UBOOT_GIT_BRANCH"
+
 	echo "Build u-boot..."
 	export PATH=$TOOLCHAINS/gcc-linaro-aarch64-none-elf/bin:$TOOLCHAINS/gcc-linaro-arm-none-eabi/bin:$PATH
 	make $UBOOT_DEFCONFIG
@@ -803,6 +846,9 @@ build_linux() {
 	else
 		echo "Linux: Already on branch '$LINUX_GIT_BRANCH'"
 	fi
+
+	# Update linux
+	update_git_repo "$PWD" "$LINUX_GIT_BRANCH"
 
 	echo "Build linux..."
 	export PATH=$TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/bin:$PATH
@@ -1258,6 +1304,7 @@ pack_update_image() {
 ###########################################################
 start_time=`date +%s`
 check_parameters $@
+check_update
 prepare_toolchains
 prepare_packages
 prepare_uboot_configuration
