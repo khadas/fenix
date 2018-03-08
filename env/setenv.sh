@@ -33,6 +33,8 @@ UBUNTU_ARCH=
 INSTALL_TYPE=
 UBUNTU_TYPE=
 UBUNTU_MATE_ROOTFS_TYPE=
+VENDER=
+CHIP=
 
 ###############################################################
 ## Export version
@@ -504,10 +506,24 @@ function choose_ubuntu_mate_rootfs_type() {
 }
 
 function lunch() {
+	if [ "$KHADAS_BOARD" == "VIM" ] || [ "$KHADAS_BOARD" == "VIM2" ]; then
+		export VENDER="Amlogic"
+		case "$KHADAS_BOARD" in
+			VIM)
+				export CHIP="S905X"
+				;;
+			VIM2)
+				export CHIP="S912"
+				;;
+		esac
+	fi
+
 	echo "==========================================="
 	echo "#VERSION: $VERSION"
 	echo
 	echo "#KHADAS_BOARD=${KHADAS_BOARD}"
+	echo "#VENDER=${VENDER}"
+	echo "#CHIP=${CHIP}"
 	echo "#LINUX=${LINUX}"
 	echo "#UBOOT=${UBOOT}"
 	echo "#UBUNTU_TYPE=${UBUNTU_TYPE}"
