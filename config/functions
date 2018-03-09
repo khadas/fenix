@@ -19,24 +19,43 @@ warning_msg() {
 ## Calculate time
 ## $1 - time in seconds
 time_cal() {
-    local days hours minutes seconds temp
+	local minutes
 
-    second=$(($1 % 60))
-    minute=$(($1 / 60))
-    temp=$minute
-    minute=$(($temp % 60))
-    hour=$(($temp / 60))
-    temp=$hour
-    hour=$(($temp % 24))
-    day=$(($temp / 24))
+	minutes=$(($1 / 60))
 
-    echo "Time elapsed: $day days $hour hours $minute minutes $second seconds."
+	echo "Time elapsed: $minutes minute(s)."
+}
+
+## Prepare host
+## Install essential packages
+prepare_host() {
+	local hostdeps="git build-essential libncurses5-dev libssl-dev wget qemu qemu-user-static binfmt-support \
+					lib32stdc++6 libstdc++6 libnewlib-arm-none-eabi python liblz4-tool libpython2.7-dev bc linux-base \
+					ca-certificates device-tree-compiler acl locales ncurses-base udev distcc \
+					libc6-i386 lib32ncurses5 lib32tinfo5 pv binfmt-support ccache debootstrap ntpdate uuid-dev zlib1g-dev \
+					unzip libusb-1.0-0-dev fakeroot parted pkg-config libncurses5-dev whiptail debian-keyring debian-archive-keyring \
+					f2fs-tools libfile-fcntllock-perl rsync btrfs-tools ncurses-term p7zip-full kmod dosfstools libc6-dev-armhf-cross \
+					curl patchutils"
+
+	local deps=()
+	local installed=$(dpkg-query -W -f '${db:Status-Abbrev}|${binary:Package}\n' '*' 2>/dev/null | grep '^ii' | awk -F '|' '{print $2}' | cut -d ':' -f 1)
+
+	for packet in $hostdeps; do
+		if ! grep -q -x -e "$packet" <<< "$installed"; then deps+=("$packet"); fi
+	done
+
+	if [[ ${#deps[@]} -gt 0 ]]; then
+		echo "Installing build dependencies"
+		sudo apt update
+		sudo apt -y --no-install-recommends install "${deps[@]}"
+		sudo update-ccache-symlinks
+	fi
 }
 
 ## Umount
 do_umount() {
-    if mount | grep $1 > /dev/null; then
-        sudo umount $1
+	if mount | grep $1 > /dev/null; then
+		sudo umount $1
     fi
 }
 
@@ -52,15 +71,42 @@ cleanup() {
         do_umount "$ROOTFS/proc"
         do_umount "$ROOTFS/sys/kernel/security"
         do_umount "$ROOTFS/sys"
-        do_umount "$ROOTFS"
+		if [ "$INSTALL_TYPE" == "SD-USB" ]; then
+			if mount | grep "$ROOTFS/boot" > /dev/null; then
+				do_umount "$ROOTFS/boot"
+				sudo losetup -d "${IMAGE_LOOP_DEV}"
+			fi
+		fi
+
+		do_umount "$ROOTFS"
+	fi
+}
+
+## Prepare toolhains
+prepare_toolchains() {
+
+    build_package "gcc-linaro-aarch64-linux-gnu:host"
+    build_package "gcc-linaro-aarch64-none-elf:host"
+    build_package "gcc-linaro-arm-none-eabi:host"
+    if [ "$UBOOT" == "mainline" ]; then
+        build_package "gcc-linaro-aarch64-elf:host"
     fi
 
-    if [ "$INSTALL_TYPE" == "SD-USB" ]; then
-        if mount | grep $BOOT > /dev/null; then
-            do_umount "$BOOT"
-            sudo losetup -d "${IMAGE_LOOP_DEV}"
-        fi
+    return 0
+}
+
+## Prepare packages
+prepare_packages() {
+    if [ "$UBOOT" == "mainline" ]; then
+        build_package "u-boot-mainline:target"
     fi
+
+    if [ "$LINUX" == "mainline" ]; then
+        build_package "linux-mainline:target"
+    fi
+
+    build_package "utils:host"
+    build_package "images_upgrade:host"
 }
 
 # Arguments:
@@ -273,4 +319,105 @@ pack_update_image() {
     fi
 
     echo -e "\nIMAGE: $BUILD_IMAGES/$IMAGE_FILE_NAME"
+}
+
+## Create board deb package
+create_board_package() {
+	local pkgname="linux-board-package-$(echo ${VENDER}-${CHIP} | tr '[A-Z]' '[a-z]')"
+	local DEST="$BUILD_IMAGES/.tmp/${pkgname}_${VERSION}_${UBUNTU_ARCH}"
+	rm -rf $DEST
+	mkdir -p $DEST/DEBIAN
+
+	cat <<-EOF > $DEST/DEBIAN/control
+	Package: $pkgname
+	Version: $VERSION
+	Architecture: $UBUNTU_ARCH
+	Maintainer: Khadas <hello@khadas.com>
+	Installed-Size: 1
+	Section: kernel
+	Priority: optional
+	Depends: bash, linux-base, u-boot-tools, initramfs-tools
+	Provides: linux-board-package
+	Conflicts: linux-board-package
+	Description: Fenix tweaks for Ubuntu-$UBUNTU on $KHADAS_BOARD
+	EOF
+
+	# Set up pre install script
+	cat <<-EOF > $DEST/DEBIAN/preinst
+	#!/bin/sh
+	exit 0
+	EOF
+
+	chmod 755 $DEST/DEBIAN/preinst
+
+	# Set up post remove script
+	cat <<-EOF > $DEST/DEBIAN/postrm
+	#!/bin/sh
+	exit 0
+	EOF
+
+	chmod 755 $DEST/DEBIAN/postrm
+
+	# Set up post install script
+	cat <<-EOF > $DEST/DEBIAN/postinst
+	#!/bin/sh
+	exit 0
+	EOF
+
+	chmod 755 $DEST/DEBIAN/postinst
+
+	# Copy premade rootfs files
+	rsync -a $UBUNTU_WORKING_DIR/archives/filesystem/* $DEST/
+
+	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
+		# Universal multi-boot
+		if [ "$LINUX" == "mainline" ]; then
+			$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S905 autoscript" -d $DEST/boot/s905_autoscript.cmd.mainline $DEST/boot/s905_autoscript
+		else
+			$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S905 autoscript" -d $DEST/boot/s905_autoscript.cmd $DEST/boot/s905_autoscript
+		fi
+		$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "AML autoscript" -d $DEST/boot/aml_autoscript.txt $DEST/boot/aml_autoscript
+		cd $DEST/boot
+		zip aml_autoscript.zip aml_autoscript aml_autoscript.txt
+		cd -
+	fi
+
+	# Remove fstab for EMMC image
+	if [ "$INSTALL_TYPE" == "EMMC" ]; then
+		rm $DEST/etc/fstab
+	fi
+
+	# Copy Wi-Fi firmware
+	mkdir -p $DEST/lib/firmware
+	cp -r $UBUNTU_WORKING_DIR/archives/hwpacks/wlan-firmware/brcm $DEST/lib/firmware/
+
+	# Copy Bluetooth firmware
+	mkdir -p $DEST/usr/local/bin
+	mkdir -p $DEST/lib/systemd/system
+	cp -r $UBUNTU_WORKING_DIR/archives/hwpacks/bluez/brcm_patchram_plus-$UBUNTU_ARCH $DEST/usr/local/bin/brcm_patchram_plus
+	cp -r $UBUNTU_WORKING_DIR/archives/hwpacks/bluez/bluetooth-khadas.service $DEST/lib/systemd/system/
+	cp -r $UBUNTU_WORKING_DIR/archives/hwpacks/bluez/bluetooth-khadas.sh $DEST/usr/local/bin/
+
+	# Trigger uInitrd creation after installation, to apply
+	# /etc/initramfs/post-update.d/99-uboot
+	cat <<-EOF > $DEST/DEBIAN/triggers
+	activate update-initramfs
+	EOF
+
+	# Config file
+	cat <<-EOF > $DEST/etc/fenix-release
+	# PLEASE DO NOT EDIT THIS FILE
+	BOARD=$KHADAS_BOARD
+	VENDER=$VENDER
+	VERSION=$VERSION
+	ARCH=$UBUNTU_ARCH
+	INITRD_ARCH=$UBUNTU_ARCH
+	EOF
+
+	# Create board deb file
+	echo "Building package: $pkgname"
+	fakeroot dpkg-deb -b $DEST ${DEST}.deb
+	sudo mv ${DEST}.deb $ROOTFS
+	# Cleanup
+	rm -rf $DEST
 }

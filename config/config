@@ -11,8 +11,6 @@ BUILD="$UBUNTU_WORKING_DIR/build"
 BUILD_IMAGES="$BUILD/images"
 ## Rootfs mount point
 ROOTFS="$BUILD_IMAGES/rootfs"
-## Boot mount point
-BOOT="$BUILD_IMAGES/boot"
 ## Toolchains
 TOOLCHAINS="$BUILD/toolchains"
 

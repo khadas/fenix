@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/.)" ]; then
+	echo "$0: Running in chroot, ignore it!"
+	exit 0
+fi
+
 #bpp=32
 bpp=24
 

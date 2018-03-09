@@ -408,33 +408,6 @@ build_package() {
 	fi
 }
 
-## Prepare toolhains
-prepare_toolchains() {
-
-	build_package "gcc-linaro-aarch64-linux-gnu:host"
-	build_package "gcc-linaro-aarch64-none-elf:host"
-	build_package "gcc-linaro-arm-none-eabi:host"
-	if [ "$UBOOT" == "mainline" ]; then
-		build_package "gcc-linaro-aarch64-elf:host"
-	fi
-
-	return 0
-}
-
-## Prepare packages
-prepare_packages() {
-	if [ "$UBOOT" == "mainline" ]; then
-		build_package "u-boot-mainline:target"
-	fi
-
-	if [ "$LINUX" == "mainline" ]; then
-		build_package "linux-mainline:target"
-	fi
-
-	build_package "utils:host"
-	build_package "images_upgrade:host"
-}
-
 ## Select ubuntu rootfs
 prepare_ubuntu_rootfs() {
 	ret=0
@@ -758,18 +731,15 @@ build_rootfs() {
 
 	IMAGE_LINUX_LOADADDR="0x1080000"
 	IMAGE_LINUX_VERSION=`head -n 1 $LINUX_DIR/include/config/kernel.release | xargs echo -n`
-	BOOT_DIR=
 
 	mkdir -p $BUILD_IMAGES
 
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
-		BOOT_DIR="$ROOTFS/boot"
 		dd if=/dev/zero of=$BUILD_IMAGES/rootfs.img bs=1M count=0 seek=$IMAGE_SIZE
 		sudo mkfs.ext4 -F -L ROOTFS $BUILD_IMAGES/rootfs.img
 		rm -rf $ROOTFS && install -d $ROOTFS
 		sudo mount -o loop $BUILD_IMAGES/rootfs.img $ROOTFS
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		BOOT_DIR="$BOOT"
 		IMAGE_SIZE=$((IMAGE_SIZE + 300)) # SD/USB image szie = BOOT(256MB) + ROOTFS
 		dd if=/dev/zero of=${BUILD_IMAGES}/${IMAGE_FILE_NAME} bs=1M count=0 seek=$IMAGE_SIZE
 		sudo fdisk "${BUILD_IMAGES}/${IMAGE_FILE_NAME}" <<-EOF
@@ -800,9 +770,10 @@ build_rootfs() {
 		sudo partprobe "${IMAGE_LOOP_DEV}"
 		sudo mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
 		sudo mkfs.ext4 -F -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}"
-		rm -rf $ROOTFS $BOOT && install -d $ROOTFS $BOOT
-		sudo mount -o loop "${IMAGE_LOOP_DEV_BOOT}" $BOOT
+		sudo rm -rf $ROOTFS && sudo mkdir -p $ROOTFS
 		sudo mount -o loop "${IMAGE_LOOP_DEV_ROOTFS}" $ROOTFS
+		sudo mkdir -p $ROOTFS/boot
+		sudo mount -o loop "${IMAGE_LOOP_DEV_BOOT}" $ROOTFS/boot
 	else
 		error_msg "Unsupported install type: '$INSTALL_TYPE'"
 		return -1
@@ -829,66 +800,25 @@ build_rootfs() {
 		sudo sed -i "s/http:\/\/ports.ubuntu.com\/ubuntu-ports\//http:\/\/mirrors.ustc.edu.cn\/ubuntu-ports\//g" $ROOTFS/etc/apt/sources.list
 	fi
 
-	# FIXME for Ubuntu 14.04, execute /sbin/installkernel failed, so try to install image manually
-#	sudo make -C linux/ -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- install INSTALL_PATH=${BOOT_DIR}
-	install_kernel $(grep "Linux/arm64" $LINUX_DIR/.config | awk  '{print $3}') $LINUX_DIR/arch/arm64/boot/Image $LINUX_DIR/System.map ${BOOT_DIR}
-	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		# Universal multi-boot
-		sudo cp archives/filesystem/boot/* $BOOT_DIR
-		if [ "$LINUX" == "mainline" ]; then
-			sudo $UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S905 autoscript" -d $BOOT_DIR/s905_autoscript.cmd.mainline $BOOT_DIR/s905_autoscript
-		else
-			sudo $UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S905 autoscript" -d $BOOT_DIR/s905_autoscript.cmd $BOOT_DIR/s905_autoscript
-		fi
-		sudo $UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "AML autoscript" -d $BOOT_DIR/aml_autoscript.txt $BOOT_DIR/aml_autoscript
-		cd $BOOT_DIR
-		sudo zip aml_autoscript.zip aml_autoscript aml_autoscript.txt
-		cd -
-	elif [ "$INSTALL_TYPE" == "EMMC" ]; then
-		sudo cp archives/filesystem/boot/hdmi.sh $BOOT_DIR
-	fi
+	# Hack for deb builder. To pack what's missing in headers pack.
+	cp archives/patches/misc/headers-debian-byteshift.patch /tmp
 
-	# linux modules
-	sudo make -C $LINUX_DIR -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules_install INSTALL_MOD_PATH=$ROOTFS/
-	sudo make -C $LINUX_DIR -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- headers_install INSTALL_HDR_PATH=$ROOTFS/usr/
-
-	# copy linux dtb Image to boot folder
-	# FIXME will use deb package in the future
-	if [ "$LINUX" == "4.9" -o "$LINUX" == "mainline" ];then
-		if [ "$INSTALL_TYPE" == "SD-USB" ]; then
-			sudo mkdir -p $BOOT_DIR/dtb
-			sudo cp $LINUX_DIR/arch/arm64/boot/dts/amlogic/*.dtb $BOOT_DIR/dtb
-		elif [ "$INSTALL_TYPE" == "EMMC" ]; then
-			sudo cp $LINUX_DIR/$LINUX_DTB $BOOT_DIR
-			## Bakup dtb
-			sudo cp $LINUX_DIR/$LINUX_DTB $BOOT_DIR/$(basename $LINUX_DTB).old
-		fi
-	elif [ "$LINUX" == "3.14" ];then
-		if [ "$INSTALL_TYPE" == "SD-USB" ];then
-			sudo mkdir -p $BOOT_DIR/dtb
-			sudo cp $LINUX_DIR/arch/arm64/boot/dts/*.dtb $BOOT_DIR/dtb
-		elif [ "$INSTALL_TYPE" == "EMMC" ]; then
-			sudo cp $LINUX_DIR/$LINUX_DTB $BOOT_DIR
-			## Backup dtb
-			sudo cp $LINUX_DIR/$LINUX_DTB $BOOT_DIR/$(basename $LINUX_DTB).old
-		fi
+	# Different packaging for 4.3+
+	if linux-version compare $IMAGE_LINUX_VERSION ge 4.3; then
+		KERNEL_PACKING="bindeb-pkg"
 	else
-		error_msg "Unsupported linux version:'$LINUX'"
-		ret=-1
+		KERNEL_PACKING="deb-pkg"
 	fi
-	sudo cp $LINUX_DIR/arch/arm64/boot/Image $BOOT_DIR
+
+	# Build linux debs
+	make -j1 -C $LINUX_DIR $KERNEL_PACKING KDEB_PKGVERSION="$VERSION" LOCAL_VERSION=$(echo "-${VENDER}-${CHIP}" | tr "[A-Z]" "[a-z]") KBUILD_DEBARCH="$UBUNTU_ARCH" ARCH=arm64 DEBFULLNAME="Khadas" DEBEMAIL="hello@khadas.com" CROSS_COMPILE="aarch64-linux-gnu-"
+
+	# Move debs to rootfs, will be installed in chroot
+	sudo mv *.deb $ROOTFS
+
 	# linux version
-	grep "Linux/arm64" $LINUX_DIR/.config | awk  '{print $3}' > $BUILD_IMAGES/linux-version
+	echo $IMAGE_LINUX_VERSION > $BUILD_IMAGES/linux-version
 	sudo cp -r $BUILD_IMAGES/linux-version $ROOTFS/
-	# initramfs
-	sudo cp -r archives/filesystem/etc/initramfs-tools/ $ROOTFS/etc/
-	# WIFI
-	sudo mkdir -p $ROOTFS/lib/firmware
-	sudo cp -r archives/hwpacks/wlan-firmware/brcm/ $ROOTFS/lib/firmware/
-	# Bluetooth
-	sudo cp -r archives/hwpacks/bluez/brcm_patchram_plus-$UBUNTU_ARCH $ROOTFS/usr/local/bin/brcm_patchram_plus
-	sudo cp -r archives/hwpacks/bluez/bluetooth-khadas.service $ROOTFS/lib/systemd/system/
-	sudo cp -r archives/hwpacks/bluez/bluetooth-khadas.sh $ROOTFS/usr/local/bin/
 
 	# Install Mali driver
 	install_mali_driver
@@ -896,23 +826,20 @@ build_rootfs() {
 	# Install Kodi
 	install_kodi
 
-	sudo cp -arf archives/filesystem/etc $ROOTFS/
-	sudo cp -r archives/filesystem/lib/systemd/system/* $ROOTFS/lib/systemd/system/
+	# Create board package
+	create_board_package
 
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
 		# firstboot initialization: for 'ROOTFS' partition resize
 		# just for EMMC image.
 		sudo touch $ROOTFS/etc/default/FIRSTBOOT
-
-		# Remove fstab for EMMC image
-		sudo rm $ROOTFS/etc/fstab
 	fi
 
 	# mkimage tool
 	sudo cp $UTILS_DIR/mkimage-$UBUNTU_ARCH $ROOTFS/usr/local/bin/mkimage
 
 	## script executing on chroot
-	sudo cp -r archives/filesystem/RUNME.sh $ROOTFS/
+	sudo cp -r archives/chroot-scripts/RUNME.sh $ROOTFS/
 
 	## Chroot
 	if [ "$UBUNTU_ARCH" == "arm64" ]; then
@@ -936,15 +863,6 @@ build_rootfs() {
 	sudo mount -o bind /dev/pts $ROOTFS/dev/pts
 	sudo chroot $ROOTFS/ bash "/RUNME.sh" $UBUNTU $UBUNTU_TYPE $UBUNTU_ARCH $INSTALL_TYPE ${UBUNTU_MATE_ROOTFS_TYPE:-NONE} $LINUX $KHADAS_BOARD
 
-	## Generate ramdisk.img
-	if [ "$INSTALL_TYPE" == "EMMC" ]; then
-		cp $ROOTFS/boot/initrd.img $BUILD_IMAGES/initrd.img
-		$UTILS_DIR/mkbootimg --kernel $LINUX_DIR/arch/arm64/boot/Image --ramdisk $BUILD_IMAGES/initrd.img -o $BUILD_IMAGES/ramdisk.img
-	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		sudo cp -r $ROOTFS/boot/* $BOOT_DIR
-		sudo rm -rf $ROOTFS/boot/*
-	fi
-
 	if [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" == "mainline" ] && [ "$UBUNTU_TYPE" == "mate" ] && [ "$UBUNTU_ARCH" == "arm64" ]; then
 		# Mali udev rule
 		sudo tee $ROOTFS/etc/udev/rules.d/50-mali.rules <<-EOF
@@ -955,9 +873,6 @@ build_rootfs() {
 	## Logo
 	cp archives/logo/logo.img $BUILD_IMAGES
 
-	## Clean up
-	sudo rm -f $ROOTFS/boot/initrd.img
-
 	## Unmount to get the rootfs.img
 	sudo sync
 	sudo umount $ROOTFS/dev/pts
@@ -967,12 +882,12 @@ build_rootfs() {
 		sudo umount $ROOTFS/sys/kernel/security
 	fi
 	sudo umount $ROOTFS/sys
-	sudo umount $ROOTFS
 
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		sudo umount $BOOT
+		sudo umount $ROOTFS/boot
 		sudo losetup -d "${IMAGE_LOOP_DEV}"
 	fi
+	sudo umount $ROOTFS
 
 	trap - INT EXIT TERM
 
@@ -981,6 +896,7 @@ build_rootfs() {
 
 ###########################################################
 start_time=`date +%s`
+prepare_host
 check_update
 prepare_toolchains
 prepare_packages

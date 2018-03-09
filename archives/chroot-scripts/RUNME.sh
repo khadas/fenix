@@ -215,27 +215,26 @@ fi
 
 cd /
 
-# Build the ramdisk
-mkinitramfs -o /boot/initrd.img `cat linux-version` 2>/dev/null
+#  Install board package
+dpkg -i linux-board-package-*.deb
 
-# Generate uInitrd
-mkimage -A arm64 -O linux -T ramdisk -a 0x0 -e 0x0 -n "initrd"  -d /boot/initrd.img  /boot/uInitrd
+# Install linux debs
+dpkg -i linux-image-*.deb
+dpkg -i linux-dtb-*.deb
+dpkg -i linux-firmware-image-*.deb
+dpkg -i linux-headers-*.deb
 
 if [ "$INSTALL_TYPE" == "EMMC" ]; then
 
 	# Create links
-	ln -s /boot/Image Image
+	ln -s /boot/zImage zImage
 	ln -s /boot/uInitrd uInitrd
-	ln -s /boot/kvim_linux.dtb kvim.dtb
-	ln -s /boot/kvim2_linux.dtb kvim2.dtb
 
-	# Backup
-	cp /boot/uInitrd /boot/uInitrd.old
-	cp /boot/Image /boot/Image.old
-	ln -s /boot/uInitrd.old uInitrd.old
-	ln -s /boot/Image.old Image.old
-	ln -s /boot/kvim_linux.dtb.old kvim.dtb.old
-	ln -s /boot/kvim2_linux.dtb.old kvim2.dtb.old
+	if [ "$KHADAS_BOARD" == "VIM" ]; then
+		ln -s /boot/dtb/kvim_linux.dtb dtb.img
+	elif [ "$KHADAS_BOARD" == "VIM2" ]; then
+		ln -s /boot/dtb/kvim2_linux.dtb dtb.img
+	fi
 fi
 
 if [ "$LINUX" == "3.14" ]; then
@@ -284,6 +283,7 @@ fi
 
 # Clean up
 rm /linux-version
+rm *.deb
 apt-get -y clean
 apt-get -y autoclean
 #history -c

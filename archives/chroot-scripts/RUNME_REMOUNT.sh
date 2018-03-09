@@ -28,17 +28,11 @@ apt-get update
 # Upgrade
 apt-get -y $APT_OPTIONS upgrade
 
-# Build the ramdisk
-mkinitramfs -o /boot/initrd.img `cat linux-version` 2>/dev/null
-
-# Generate uInitrd
-mkimage -A arm64 -O linux -T ramdisk -a 0x0 -e 0x0 -n "initrd"  -d /boot/initrd.img  /boot/uInitrd
-
-if [ "$INSTALL_TYPE" == "EMMC" ]; then
-	# Backup
-	cp /boot/uInitrd /boot/uInitrd.old
-	cp /boot/Image /boot/Image.old
-fi
+# Install linux debs
+dpkg -i linux-image-*.deb
+dpkg -i linux-dtb-*.deb
+dpkg -i linux-firmware-image-*.deb
+dpkg -i linux-headers-*.deb
 
 # Build time
 LC_ALL="C" date > /etc/build-time
@@ -54,6 +48,7 @@ mv /etc/resolv.conf.origin /etc/resolv.conf
 
 # Clean up
 rm linux-version
+rm *.deb
 apt clean
 #history -c
 
