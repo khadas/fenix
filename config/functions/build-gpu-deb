@@ -1,0 +1,113 @@
+# Functions:
+# build_gpu_deb
+
+build_gpu_deb() {
+
+	if [ -z "$GPU_MODEL" ]; then
+		return
+	fi
+
+	if [ "$KHADAS_BOARD" == "VIM" ]; then
+
+		cd $ROOT
+
+		local pkgname="linux-gpu-${VENDER,,}-${CHIP,,}-${GPU_MODEL,,}-${GPU_VER,,}"
+		local pkgdir="$BUILD_IMAGES/.tmp/${pkgname}_${VERSION}_${UBUNTU_ARCH}"
+		rm -rf $pkgdir
+		mkdir -p $pkgdir/DEBIAN
+
+		# set up control file
+		cat <<-END > $pkgdir/DEBIAN/control
+		Package: $pkgname
+		Version: $VERSION
+		Architecture: $UBUNTU_ARCH
+		Maintainer: Khadas <hello@khadas.com>
+		Installed-Size: 1
+		Provides: aml-mali-905
+		Conflicts: aml-mali-905
+		Section: kernel
+		Priority: optional
+		Description: lib mali S905
+		END
+
+		if [ "$GPU_PLATFORM" == "fbdev" ]; then
+			### fbdev
+			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/r7p0/lib/$UBUNTU_ARCH/$GPU_VER/m450"
+		elif [ "$GPU_PLATFORM" == "x11" ]; then
+			### x11
+			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/r7p0/lib/$UBUNTU_ARCH/$GPU_VER/m450-X"
+		elif [ "$GPU_PLATFORM" == "wayland" ]; then
+			### wayland
+			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/r7p0/lib/$UBUNTU_ARCH/$GPU_VER/m450/wayland"
+		fi
+
+		# GPU user space binary drivers
+		## Headers
+		mkdir -p $pkgdir/usr/include/
+		cp -arf archives/hwpacks/mali/r7p0/include/EGL $pkgdir/usr/include/
+		cp -arf archives/hwpacks/mali/r7p0/include/GLES $pkgdir/usr/include/
+		cp -arf archives/hwpacks/mali/r7p0/include/GLES2 $pkgdir/usr/include/
+		cp -arf archives/hwpacks/mali/r7p0/include/KHR $pkgdir/usr/include/
+
+		cp -arf archives/hwpacks/mali/r7p0/include/EGL_platform/platform_${GPU_PLATFORM}/*.h $pkgdir/usr/include/EGL/
+
+		## libMali.so
+		mkdir -p $pkgdir/usr/lib/
+		cp -arf $gpu_lib_dir/libMali.so $pkgdir/usr/lib/
+		if [ "$UBUNTU_ARCH" == "arm64" ]; then
+			mkdir -p $pkgdir/usr/lib/aarch64-linux-gnu
+			cp -arf $gpu_lib_dir $pkgdir/usr/lib/aarch64-linux-gnu
+		elif [ "$UBUNTU_ARCH" == "armhf" ]; then
+			mkdir -p $pkgdir/usr/lib/arm-linux-gnueabihf
+			cp -arf $gpu_lib_dir $pkgdir/usr/lib/arm-linux-gnueabihf
+		fi
+
+		### links
+		cp -arf archives/hwpacks/mali/r7p0/lib/*.so* $pkgdir/usr/lib/
+		if [ "$UBUNTU_ARCH" == "arm64" ]; then
+			cp -arf archives/hwpacks/mali/r7p0/lib/*.so* $pkgdir/usr/lib/aarch64-linux-gnu
+		elif [ "$UBUNTU_ARCH" == "armhf" ]; then
+			cp -arf archives/hwpacks/mali/r7p0/lib/*.so* $pkgdir/usr/lib/arm-linux-gnueabihf
+		fi
+			mkdir -p $pkgdir/usr/lib/pkgconfig/
+			cp -arf archives/hwpacks/mali/r7p0/lib/pkgconfig/*.pc $pkgdir/usr/lib/pkgconfig/
+		# Mali m450 framebuffer mode examples
+		if [ "$UBUNTU_ARCH" == "arm64" ]; then
+			mkdir -p $pkgdir/usr/share/arm/
+			cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/lib/* $pkgdir/usr/lib/
+			cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/opengles_20 $pkgdir/usr/share/arm/
+		fi
+
+		mkdir -p $pkgdir/usr/lib/udev/rules.d
+		cat <<-EOF > $pkgdir/usr/lib/udev/rules.d/99-mali.rules
+		KERNEL=="mali",SUBSYSTEM=="misc",MODE="0777"
+		KERNEL=="ump",SUBSYSTEM=="ump",MODE="0777"
+		EOF
+
+		# Create board deb file
+		echo "Building package: $pkgname"
+		fakeroot dpkg-deb -b $pkgdir ${pkgdir}.deb
+		mkdir -p $BUILD_DEBS
+		# Remove old debs
+		rm -rf $BUILD_DEBS/linux-gpu-*.deb
+		cp ${pkgdir}.deb $BUILD_DEBS
+		sudo mkdir -p $ROOTFS/tempdebs
+		sudo cp $BUILD_DEBS/${pkgname}_${VERSION}_${UBUNTU_ARCH}.deb $ROOTFS/tempdebs
+		# Cleanup
+		rm -rf $pkgdir
+	fi
+
+	if [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" == "mainline" ] && [ "$UBUNTU_TYPE" == "mate" ] && [ "$UBUNTU_ARCH" == "arm64" ]; then
+		# VIM mainline X11 mali driver
+		## install mali.ko
+		build_package "meson-gx-mali-450:target"
+		VER=$(ls $ROOTFS/lib/modules/)
+		sudo cp $BUILD/meson-gx-mali-450-*/mali.ko $ROOTFS/lib/modules/$VER/kernel/
+		sudo depmod -b $ROOTFS/ -a $VER
+
+		build_package "xf86-video-armsoc:target"
+		sudo cp -r $BUILD/xf86-video-armsoc-* $ROOTFS/xf86-video-armsoc
+
+		cd $ROOT
+	fi
+}

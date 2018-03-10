@@ -1,7 +1,7 @@
 #! /bin/sh
 ### BEGIN INIT INFO
 # Provides:          khadas-restart-nm
-# Required-Start:    
+# Required-Start:
 # Required-Stop:
 # Default-Start:     2 3 4 5
 # Default-Stop:

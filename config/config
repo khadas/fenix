@@ -1,14 +1,23 @@
 ##################################### Path ###########################################
-UBUNTU_WORKING_DIR="$(dirname "$(dirname "$(readlink -fm "$0")")")"
+## Root directory
+ROOT="$(dirname "$(dirname "$(readlink -fm "$0")")")"
 
+## Config directory
+CONFIG="$ROOT/config"
+## Board configuratios directory
+BOARD_CONFIG="$CONFIG/boards"
+## Boot scripts
+BOOT_SCRIPTS="$CONFIG/bootscripts"
 ## Download packages directory
-DOWNLOAD_PKG_DIR="$UBUNTU_WORKING_DIR/downloads"
+DOWNLOAD_PKG_DIR="$ROOT/downloads"
 ## Packages directory
-PKGS_DIR="$UBUNTU_WORKING_DIR/packages"
+PKGS_DIR="$ROOT/packages"
 ## Packages build directory
-BUILD="$UBUNTU_WORKING_DIR/build"
+BUILD="$ROOT/build"
 ## Build images
 BUILD_IMAGES="$BUILD/images"
+## Build debs
+BUILD_DEBS="$BUILD_IMAGES/debs/$VERSION/ubuntu-${UBUNTU}/$KHADAS_BOARD"
 ## Rootfs mount point
 ROOTFS="$BUILD_IMAGES/rootfs"
 ## Toolchains
@@ -18,8 +27,7 @@ UTILS_DIR="$BUILD/utils-[0-9a-f]*"
 UPGRADE_DIR="$BUILD/images_upgrade-[0-9a-f]*"
 
 ##################################### Configurations ##################################
-IMAGE_FILE_NAME="KHADAS_${KHADAS_BOARD}_${INSTALL_TYPE}.img"
-IMAGE_FILE_NAME=$(echo $IMAGE_FILE_NAME | tr "[A-Z]" "[a-z]")
+IMAGE_FILE_NAME="Fenix_${VERSION}_${KHADAS_BOARD}_Ubuntu-${UBUNTU}_Linux-${LINUX}_${UBUNTU_TYPE}_${INSTALL_TYPE}_$(date +%F).img"
 
 ## Image size
 UBUNTU_SERVER_IMAGE_SIZE=800 # MB

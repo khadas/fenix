@@ -3,7 +3,7 @@
 # Commands for ROM release
 #
 
-if [ "$1" == "16.04.2" ]; then
+if [ "$1" == "16.04" ]; then
 	APT_OPTIONS=
 elif [ "$1" == "17.04" ] || [ "$2" == "17.10" ]; then
 	APT_OPTIONS="--allow-unauthenticated"
@@ -29,10 +29,10 @@ apt-get update
 apt-get -y $APT_OPTIONS upgrade
 
 # Install linux debs
-dpkg -i linux-image-*.deb
-dpkg -i linux-dtb-*.deb
-dpkg -i linux-firmware-image-*.deb
-dpkg -i linux-headers-*.deb
+dpkg -i /tempdebs/linux-image-*.deb
+dpkg -i /tempdebs/linux-dtb-*.deb
+dpkg -i /tempdebs/linux-firmware-image-*.deb
+dpkg -i /tempdebs/linux-headers-*.deb
 
 # Build time
 LC_ALL="C" date > /etc/build-time
@@ -48,7 +48,7 @@ mv /etc/resolv.conf.origin /etc/resolv.conf
 
 # Clean up
 rm linux-version
-rm *.deb
+rm -rf /tempdebs
 apt clean
 #history -c
 

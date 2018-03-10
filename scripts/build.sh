@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e -o pipefail
+
 ## Parameters
 source config/config
 
@@ -10,7 +12,24 @@ source ${BOARD_CONFIG}/${KHADAS_BOARD}.conf
 source config/functions/functions
 
 ######################################################################################
-pack_image_platform
+TARGET="$1"
+
+if [ "$TARGET" != "linux" ] && [ "$TARGET" != "u-boot" ]; then
+	error_msg "Unsupported target: $TARGET"
+	exit -1
+fi
+
+prepare_toolchains
+prepare_packages
+
+case "$TARGET" in
+	linux)
+		build_linux
+		;;
+	u-boot)
+		build_uboot
+		;;
+esac
 
 echo -e "\nDone."
 echo -e "\n`date`"

@@ -3,7 +3,7 @@
 ######################################################################
 source config/config
 
-cd $UBUNTU_WORKING_DIR
+cd $ROOT
 
 ## images
 echo -e "\nCleaning: images..."

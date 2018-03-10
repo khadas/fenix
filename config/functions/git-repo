@@ -1,0 +1,36 @@
+# Functions:
+# update_git_repo
+
+## Update git repository
+## $1 git repository path
+## $2 git branch
+update_git_repo() {
+    if [ ! -f $ROOT/.ignore-update ]; then
+        if [ "$1" == "" ] || [ "$2" == 0 ]; then
+            echo "Usage: $0 <repository_path> <git_branch>"
+            return -1
+        fi
+
+        cd $1
+        if [ ! -d .git ]; then
+            error_msg "No Git repository found!"
+            cd -
+            return -1
+        fi
+
+        echo "Try to update `basename $1`:$2"
+        if ! git branch | grep "^* $2$" > /dev/null; then
+            git checkout $2
+        fi
+        git pull origin $2
+        CHANGED_FILES=$(git diff --name-only)
+        if [ -n "$CHANGED_FILES" ]; then
+            echo -e "$WARNING Can't update since you made changes to: \e[0;32m\n${CHANGED_FILES}\x1B[0m"
+            echo -e "Press \e[0;33m<Ctrl-C>\x1B[0m to abort compilation, \e[0;33m<Enter>\x1B[0m to ignore and continue"
+            read
+        fi
+
+        cd -
+    fi
+}
+

@@ -1,0 +1,182 @@
+# Functions:
+# error_msg
+# warning_msg
+# time_cal
+# prepare_host
+# prepare_chroot
+# mount_chroot
+# umount_chroot
+# install_deb_chroot
+# do_umount
+# cleanup
+# prepare_toolchains
+# prepare_packages
+
+
+## Print error message
+## $1 - message
+error_msg() {
+	local _FILE=${BASH_SOURCE[1]}
+	local _LINE=${BASH_LINENO[0]}
+
+	echo -e "$_FILE:$_LINE" $ERROR "$1"
+}
+
+## Print warning message
+## $1 - message
+warning_msg() {
+	local _FILE=${BASH_SOURCE[1]}
+	local _LINE=${BASH_LINENO[0]}
+
+    echo -e "$_FILE:$_LINE" $WARNING "$1"
+}
+
+## Calculate time
+## $1 - time in seconds
+time_cal() {
+	local minutes
+
+	minutes=$(($1 / 60))
+
+	echo "Time elapsed: $minutes minute(s)."
+}
+
+## Prepare host
+## Install essential packages
+prepare_host() {
+	local hostdeps="git build-essential libncurses5-dev libssl-dev wget qemu qemu-user-static binfmt-support \
+					lib32stdc++6 libstdc++6 libnewlib-arm-none-eabi python liblz4-tool libpython2.7-dev bc linux-base \
+					ca-certificates device-tree-compiler acl locales ncurses-base udev distcc \
+					libc6-i386 lib32ncurses5 lib32tinfo5 pv binfmt-support ccache debootstrap ntpdate uuid-dev zlib1g-dev \
+					unzip libusb-1.0-0-dev fakeroot parted pkg-config libncurses5-dev whiptail debian-keyring debian-archive-keyring \
+					f2fs-tools libfile-fcntllock-perl rsync btrfs-tools ncurses-term p7zip-full kmod dosfstools libc6-dev-armhf-cross \
+					curl patchutils"
+
+	local deps=()
+	local installed=$(dpkg-query -W -f '${db:Status-Abbrev}|${binary:Package}\n' '*' 2>/dev/null | grep '^ii' | awk -F '|' '{print $2}' | cut -d ':' -f 1)
+
+	for packet in $hostdeps; do
+		if ! grep -q -x -e "$packet" <<< "$installed"; then deps+=("$packet"); fi
+	done
+
+	if [[ ${#deps[@]} -gt 0 ]]; then
+		echo "Installing build dependencies"
+		sudo apt update
+		sudo apt -y --no-install-recommends install "${deps[@]}"
+		sudo update-ccache-symlinks
+	fi
+}
+
+## Prepare chroot
+prepare_chroot() {
+	## Chroot
+	if [ "$UBUNTU_ARCH" == "arm64" ]; then
+		sudo cp -a /usr/bin/qemu-aarch64-static $ROOTFS/usr/bin/
+	elif [ "$UBUNTU_ARCH" == "armhf" ]; then
+		sudo cp -a /usr/bin/qemu-arm-static $ROOTFS/usr/bin/
+	else
+		error_msg "Unsupported ubuntu architecture: '$UBUNTU_ARCH'"
+		sudo sync
+		sudo umount $ROOTFS
+		return -1
+	fi
+}
+
+## Mount chroot
+mount_chroot() {
+	local target=$1
+	if [ -z "$target" ]; then
+		echo "Usage: mount_chroot <target>"
+		return -1
+	fi
+	sudo mount -o bind /proc $target/proc
+	sudo mount -o bind /sys $target/sys
+	sudo mount -o bind /dev $target/dev
+	sudo mount -o bind /dev/pts $target/dev/pts
+}
+
+## Umount chroot
+umount_chroot() {
+	local target=$1
+	if [ -z "$target" ]; then
+		echo "Usage: umount_chroot <target>"
+		return -1
+	fi
+	sudo umount $target/dev/pts
+	sudo umount $target/dev
+	sudo umount $target/proc
+	if mount | grep "$target/sys/kernel/security" > /dev/null; then
+		sudo umount $target/sys/kernel/security
+	fi
+	sudo umount $target/sys
+}
+
+## Install debs in chroot
+install_deb_chroot()
+{
+	local package=$1
+	local name=$(basename $package)
+	sudo cp $package $ROOTFS/root/$name
+	echo "Installing $name in chroot..."
+	mount_chroot "$ROOTFS"
+	sudo chroot $ROOTFS /bin/bash -c "dpkg -i /root/$name"
+	umount_chroot "$ROOTFS"
+	sudo rm -f $ROOTFS/root/$name
+}
+
+## Umount
+do_umount() {
+	if mount | grep $1 > /dev/null; then
+		sudo umount $1
+    fi
+}
+
+## Cleanup
+cleanup() {
+    cd $ROOT
+    echo "Cleanup..."
+    sync
+
+    if mount | grep $ROOTFS > /dev/null; then
+        do_umount "$ROOTFS/dev/pts"
+        do_umount "$ROOTFS/dev"
+        do_umount "$ROOTFS/proc"
+        do_umount "$ROOTFS/sys/kernel/security"
+        do_umount "$ROOTFS/sys"
+		if [ "$INSTALL_TYPE" == "SD-USB" ]; then
+			if mount | grep "$ROOTFS/boot" > /dev/null; then
+				do_umount "$ROOTFS/boot"
+				sudo losetup -d "${IMAGE_LOOP_DEV}"
+			fi
+		fi
+
+		do_umount "$ROOTFS"
+	fi
+}
+
+## Prepare toolhains
+prepare_toolchains() {
+
+    build_package "gcc-linaro-aarch64-linux-gnu:host"
+    build_package "gcc-linaro-aarch64-none-elf:host"
+    build_package "gcc-linaro-arm-none-eabi:host"
+    if [ "$UBOOT" == "mainline" ]; then
+        build_package "gcc-linaro-aarch64-elf:host"
+    fi
+
+    return 0
+}
+
+## Prepare packages
+prepare_packages() {
+    if [ "$UBOOT" == "mainline" ]; then
+        build_package "u-boot-mainline:target"
+    fi
+
+    if [ "$LINUX" == "mainline" ]; then
+        build_package "linux-mainline:target"
+    fi
+
+    build_package "utils:host"
+    build_package "images_upgrade:host"
+}

@@ -17,7 +17,7 @@ iface eth0 inet dhcp
 # and hassles consider using 'sudo nmtui' instead of configuring Wi-Fi settings
 # manually. The below lines are only meant as an example how configuration could
 # be done in an anachronistic way:
-# 
+#
 #allow-hotplug wlan0
 #iface wlan0 inet dhcp
 #address 192.168.0.100

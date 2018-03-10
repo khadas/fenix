@@ -7,15 +7,21 @@ UBOOT_GIT_BRANCH_VIM2="khadas-vim-v2015.01"
 LINUX_GIT_BRANCH_3_14="khadas-vim-3.14.y"
 LINUX_GIT_BRANCH_4_9="khadas-vim-4.9.y"
 
+## Parameters
 source config/config
 
-############################## Functions #################################
-source config/functions
+## Board configuraions
+source ${BOARD_CONFIG}/${KHADAS_BOARD}.conf
+
+## Functions
+source config/functions/functions
+
+######################################################################################
 
 ## Pull latest repository from Kkadas GitHub
 update_github_repository() {
-	install -d ${UBUNTU_WORKING_DIR}/archives/{ubuntu-base,ubuntu-mate}
-	cd ${UBUNTU_WORKING_DIR}
+	install -d ${ROOT}/archives/{ubuntu-base,ubuntu-mate}
+	cd ${ROOT}
 
 	## Update fenix repository
 	echo "Updating 'fenix/master' repository..."
@@ -24,7 +30,7 @@ update_github_repository() {
 	echo "Updating 'fenix/master' repository OK."
 
 	## Update u-boot repository
-	cd ${UBUNTU_WORKING_DIR}
+	cd ${ROOT}
 	if [ ! -d u-boot/.git ]; then
 		echo "U-boot repository does not exist, clone u-boot repository('$UBOOT_GIT_BRANCH_VIM') form Khadas GitHub..."
 		## Clone u-boot from Khadas GitHub
@@ -58,7 +64,7 @@ update_github_repository() {
 	cd -
 
 	## Update linux repository
-	cd ${UBUNTU_WORKING_DIR}
+	cd ${ROOT}
 	if [ ! -d linux/.git ]; then
 		echo "Linux repository does not exist, clone linux repository('$LINUX_GIT_BRANCH_3_14') form Khadas GitHub..."
 		## Clone linux from Khadas GitHub

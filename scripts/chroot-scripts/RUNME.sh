@@ -5,7 +5,7 @@
 
 #set -e -o pipefail
 
-if [ "$1" == "16.04.2" ]; then
+if [ "$1" == "16.04" ]; then
 	APT_OPTIONS=
 elif [ "$1" == "17.04" ] || [ "$1" == "17.10" ]; then
 	APT_OPTIONS="--allow-unauthenticated"
@@ -23,10 +23,10 @@ LINUX=$6
 KHADAS_BOARD=$7
 
 PACKAGE_LIST_BASIC="ifupdown net-tools udev fbset vim sudo initramfs-tools bluez rfkill libbluetooth-dev mc \
-	iputils-ping parted u-boot-tools"
+	iputils-ping parted u-boot-tools linux-base"
 
 PACKAGE_LIST_ESSENTIAL="bc bridge-utils build-essential cpufrequtils device-tree-compiler \
-	figlet fbset fping iw fake-hwclock wpasupplicant psmisc ntp parted rsync sudo curl linux-base dialog crda \
+	figlet fbset fping iw fake-hwclock wpasupplicant psmisc ntp parted rsync sudo curl dialog crda \
 	wireless-regdb ncurses-term python3-apt sysfsutils toilet u-boot-tools unattended-upgrades \
 	usbutils wireless-tools console-setup unicode-data openssh-server \
 	ca-certificates resolvconf expect rcconf iptables mc abootimg man-db wget"
@@ -188,9 +188,9 @@ fi
 
 if [ "$UBUNTU_TYPE" == "mate" ] && [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" == "3.14" ]; then
 	# Install amremote
-	if [ -f /pkg-aml-amremote_*.deb ]; then
-		dpkg -i /pkg-aml-amremote_*.deb
-		rm -rf /pkg-aml-amremote_*.deb
+	if [ -f /tempdebs/pkg-aml-amremote_*.deb ]; then
+		dpkg -i /tempdebs/pkg-aml-amremote_*.deb
+		rm -rf /tempdebs/pkg-aml-amremote_*.deb
 
 		# Enable khadas remote
 		cp /boot/remote.conf.vim /boot/remote.conf
@@ -199,15 +199,15 @@ if [ "$UBUNTU_TYPE" == "mate" ] && [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" ==
 	fi
 
 	# Install libamcodec
-	if [ -f /pkg-aml-codec_*.deb ]; then
-		dpkg -i /pkg-aml-codec_*.deb
-		rm -rf /pkg-aml-codec_*.deb
+	if [ -f /tempdebs/pkg-aml-codec_*.deb ]; then
+		dpkg -i /tempdebs/pkg-aml-codec_*.deb
+		rm -rf /tempdebs/pkg-aml-codec_*.deb
 	fi
 
 	# Install kodi
-	if [ -f /pkg-aml-kodi_*.deb ]; then
-		dpkg -i /pkg-aml-kodi_*.deb
-		rm -rf /pkg-aml-kodi_*.deb
+	if [ -f /tempdebs/pkg-aml-kodi_*.deb ]; then
+		dpkg -i /tempdebs/pkg-aml-kodi_*.deb
+		rm -rf /tempdebs/pkg-aml-kodi_*.deb
 	fi
 
 	usermod -a -G audio,video,disk,input,tty,root,users,games khadas
@@ -215,14 +215,19 @@ fi
 
 cd /
 
-#  Install board package
-dpkg -i linux-board-package-*.deb
+# Install GPU deb
+if [ -f /tempdebs/linux-gpu-*.deb ]; then
+	dpkg -i /tempdebs/linux-gpu-*.deb
+fi
+
+# Install board package
+dpkg -i /tempdebs/linux-board-package-*.deb
 
 # Install linux debs
-dpkg -i linux-image-*.deb
-dpkg -i linux-dtb-*.deb
-dpkg -i linux-firmware-image-*.deb
-dpkg -i linux-headers-*.deb
+dpkg -i /tempdebs/linux-image-*.deb
+dpkg -i /tempdebs/linux-dtb-*.deb
+dpkg -i /tempdebs/linux-firmware-image-*.deb
+dpkg -i /tempdebs/linux-headers-*.deb
 
 if [ "$INSTALL_TYPE" == "EMMC" ]; then
 
@@ -283,7 +288,7 @@ fi
 
 # Clean up
 rm /linux-version
-rm *.deb
+rm -rf /tempdebs
 apt-get -y clean
 apt-get -y autoclean
 #history -c

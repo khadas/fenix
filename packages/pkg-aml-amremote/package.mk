@@ -36,7 +36,6 @@ make_target() {
 }
 
 makeinstall_target() {
-	mkdir -p $BUILD_IMAGES/$PKG_NAME
-	rm -rf $BUILD_IMAGES/$PKG_NAME/*.deb
-	mv ${PKG_NAME}_${VERSION}_${UBUNTU_ARCH}.deb $BUILD_IMAGES/$PKG_NAME
+	mkdir -p $BUILD_DEBS
+	mv ${PKG_NAME}_${VERSION}_${UBUNTU_ARCH}.deb $BUILD_DEBS
 }

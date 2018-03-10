@@ -4,7 +4,7 @@ all:
 ifeq ($(and $(UBUNTU_TYPE),$(KHADAS_BOARD),$(UBUNTU),$(LINUX),$(UBUNTU_ARCH),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/create_image.sh $(UBUNTU_TYPE) $(KHADAS_BOARD) $(UBUNTU) $(LINUX) $(UBUNTU_ARCH) $(INSTALL_TYPE)
+	./scripts/create_image.sh
 endif
 
 
@@ -20,7 +20,7 @@ image:
 ifeq ($(and $(KHADAS_BOARD),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/make_image.sh $(KHADAS_BOARD) $(INSTALL_TYPE)
+	./scripts/make_image.sh
 endif
 
 github:
@@ -30,7 +30,7 @@ remount:
 ifeq ($(and $(KHADAS_BOARD),$(LINUX),$(UBUNTU_ARCH),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/remount_rootfs.sh $(KHADAS_BOARD) $(LINUX) $(UBUNTU_ARCH) $(INSTALL_TYPE)
+	./scripts/remount_rootfs.sh
 endif
 
 info:

@@ -2,14 +2,19 @@
 
 set -e -o pipefail
 
-########################### Parameters ###################################
+## Parameters
 source config/config
 
-############################## Functions #################################
-source config/functions
+## Board configuraions
+source ${BOARD_CONFIG}/${KHADAS_BOARD}.conf
+
+## Functions
+source config/functions/functions
+
+########################################################################
 
 remount_rootfs() {
-	cd ${UBUNTU_WORKING_DIR}
+	cd ${ROOT}
 
 	trap cleanup INT EXIT TERM
 
@@ -66,11 +71,7 @@ remount_rootfs() {
 	fi
 
 	# Build linux debs
-	export PATH=$TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/bin:$PATH
-	make -j8 -C $LINUX_DIR $KERNEL_PACKING KDEB_PKGVERSION="$VERSION" LOCAL_VERSION=$(echo "-${VENDER}-${CHIP}" | tr "[A-Z]" "[a-z]") KBUILD_DEBARCH="$UBUNTU_ARCH" ARCH=arm64 DEBFULLNAME="Khadas" DEBEMAIL="hello@khadas.com" CROSS_COMPILE="aarch64-linux-gnu-"
-
-	# Move debs to rootfs, will be installed in chroot
-	sudo mv *.deb $ROOTFS
+	build_linux_debs
 
 	# linux version
 	echo $IMAGE_LINUX_VERSION > $BUILD_IMAGES/linux-version
@@ -82,19 +83,12 @@ remount_rootfs() {
 	fi
 
 	## script executing on chroot
-	sudo cp -r archives/chroot-scripts/RUNME_REMOUNT.sh $ROOTFS/
+	sudo cp -r scripts/chroot-scripts/RUNME_REMOUNT.sh $ROOTFS/
 
-	## Chroot
-	if [ "$UBUNTU_ARCH" == "arm64" ]; then
-		sudo cp -a /usr/bin/qemu-aarch64-static $ROOTFS/usr/bin/
-	elif [ "$UBUNTU_ARCH" == "armhf" ]; then
-		sudo cp -a /usr/bin/qemu-arm-static $ROOTFS/usr/bin/
-	fi
+	## Prepare chroot
+	prepare_chroot
 
-	sudo mount -o bind /proc $ROOTFS/proc
-	sudo mount -o bind /sys $ROOTFS/sys
-	sudo mount -o bind /dev $ROOTFS/dev
-	sudo mount -o bind /dev/pts $ROOTFS/dev/pts
+	mount_chroot "$ROOTFS"
 
 	while true; do
 		read -n1 -p $'\n(A)utorun script, (M)anual chroot or (Q)uit? [a/m/q]' answer
@@ -118,10 +112,7 @@ remount_rootfs() {
 
 	## Unmount to get the rootfs.img
 	sudo sync
-	sudo umount $ROOTFS/dev/pts
-	sudo umount $ROOTFS/dev
-	sudo umount $ROOTFS/proc
-	sudo umount $ROOTFS/sys
+	umount_chroot "$ROOTFS"
 
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		sudo umount $ROOTFS/boot
@@ -136,8 +127,6 @@ remount_rootfs() {
 
 
 ########################################################
-prepare_linux_dtb
-prepare_linux_dir
 remount_rootfs
 
 echo -e "\nDone."

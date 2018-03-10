@@ -1,14 +1,14 @@
 #!/bin/bash
 
 ################################################################
-UBUNTU_WORKING_DIR="$(pwd)"
+ROOT="$(pwd)"
 
 KHADAS_BOARD_ARRAY=("VIM" "VIM2")
 VIM_SUPPORTED_LINUX_VERSION_ARRAY=("3.14" "4.9" "mainline")
 VIM2_SUPPORTED_LINUX_VERSION_ARRAY=("3.14" "4.9")
 VIM_SUPPORTED_UBOOT_VERSION_ARRAY=("2015.01" "mainline")
 VIM2_SUPPORTED_UBOOT_VERSION_ARRAY=("2015.01")
-UBUNTU_VERSION_ARRAY=("16.04.2" "17.04" "17.10")
+UBUNTU_VERSION_ARRAY=("16.04" "17.04" "17.10")
 UBUNTU_ARCH_ARRAY=("arm64" "armhf")
 INSTALL_TYPE_ARRAY=("EMMC" "SD-USB")
 UBUNTU_TYPE_ARRAY=("server" "mate")
@@ -39,7 +39,7 @@ CHIP=
 ###############################################################
 ## Export version
 function export_version() {
-	if [ ! -d "$UBUNTU_WORKING_DIR/env" ]; then
+	if [ ! -d "$ROOT/env" ]; then
 		echo -e "\033[31mError:\033[0m You should execute the script in Fenix root directory.Please enter Fenix root directory and execute it again."
 		echo "Ctrl+C to abort."
 		# Hang
@@ -48,7 +48,7 @@ function export_version() {
 		done
 	fi
 
-	source $UBUNTU_WORKING_DIR/config/version
+	source $ROOT/config/version
 	export VERSION
 }
 

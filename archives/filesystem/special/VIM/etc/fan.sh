@@ -35,20 +35,20 @@ echo out > /sys/class/gpio/gpio$PIN2/direction
 
 #test fan
 # enable min
-echo 1 > /sys/class/gpio/gpio$PIN1/value 
-echo 0 > /sys/class/gpio/gpio$PIN2/value 
+echo 1 > /sys/class/gpio/gpio$PIN1/value
+echo 0 > /sys/class/gpio/gpio$PIN2/value
 sleep 2
 # enable midi
-echo 0 > /sys/class/gpio/gpio$PIN1/value 
-echo 1 > /sys/class/gpio/gpio$PIN2/value 
+echo 0 > /sys/class/gpio/gpio$PIN1/value
+echo 1 > /sys/class/gpio/gpio$PIN2/value
 sleep 2
 # enable max
-echo 1 > /sys/class/gpio/gpio$PIN1/value 
-echo 1 > /sys/class/gpio/gpio$PIN2/value 
+echo 1 > /sys/class/gpio/gpio$PIN1/value
+echo 1 > /sys/class/gpio/gpio$PIN2/value
 sleep 2
 # stop
-echo 0 > /sys/class/gpio/gpio$PIN1/value 
-echo 0 > /sys/class/gpio/gpio$PIN2/value 
+echo 0 > /sys/class/gpio/gpio$PIN1/value
+echo 0 > /sys/class/gpio/gpio$PIN2/value
 sleep 2
 
 if [ $T_AUTO = true ]; then
@@ -64,23 +64,23 @@ do
 
     if [ $K_TEMPER_NEW != $K_TEMPER ]; then
 	if [ $K_TEMPER_NEW -ge $T_MAX ]; then
-	    echo 1 > /sys/class/gpio/gpio$PIN1/value 
-	    echo 1 > /sys/class/gpio/gpio$PIN2/value 
+	    echo 1 > /sys/class/gpio/gpio$PIN1/value
+	    echo 1 > /sys/class/gpio/gpio$PIN2/value
 	    K_TEMPER=$K_TEMPER_NEW
 	    sleep $TIMER_W
 	elif [ $K_TEMPER_NEW -ge $T_MIDI ]; then
-	    echo 0 > /sys/class/gpio/gpio$PIN1/value 
-	    echo 1 > /sys/class/gpio/gpio$PIN2/value 
+	    echo 0 > /sys/class/gpio/gpio$PIN1/value
+	    echo 1 > /sys/class/gpio/gpio$PIN2/value
 	    K_TEMPER=$K_TEMPER_NEW
 	    sleep $TIMER_W
 	elif [ $K_TEMPER_NEW -ge $T_MIN ]; then
-	    echo 1 > /sys/class/gpio/gpio$PIN1/value 
-	    echo 0 > /sys/class/gpio/gpio$PIN2/value 
+	    echo 1 > /sys/class/gpio/gpio$PIN1/value
+	    echo 0 > /sys/class/gpio/gpio$PIN2/value
 	    K_TEMPER=$K_TEMPER_NEW
 	    sleep $TIMER_W
 	else
-	    echo 0 > /sys/class/gpio/gpio$PIN1/value 
-	    echo 0 > /sys/class/gpio/gpio$PIN2/value 
+	    echo 0 > /sys/class/gpio/gpio$PIN1/value
+	    echo 0 > /sys/class/gpio/gpio$PIN2/value
 	    K_TEMPER=$K_TEMPER_NEW
 	    sleep $TIMER_W
 	fi
