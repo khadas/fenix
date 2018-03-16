@@ -179,4 +179,8 @@ prepare_packages() {
 
     build_package "utils:host"
     build_package "images_upgrade:host"
+
+	if [ "$VENDER" == "Rockchip" ]; then
+		build_package "rkbin:host"
+	fi
 }

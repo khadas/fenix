@@ -20,7 +20,8 @@ Log=/var/log/armhwinfo.log
 if [ -f /etc/default/FIRSTBOOT ]; then
 	# Resize EMMC partitions
 	echo "Firstboot: resize rootfs."
-	resize2fs /dev/rootfs
+	rootpart=$(findmnt -n -o SOURCE /) # i.e. /dev/mmcblk0p1
+	resize2fs $rootpart
 
 	rm -f /etc/default/FIRSTBOOT
 

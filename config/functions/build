@@ -48,7 +48,10 @@ build_uboot() {
     export PATH=$TOOLCHAINS/gcc-linaro-aarch64-none-elf/bin:$TOOLCHAINS/gcc-linaro-arm-none-eabi/bin:$PATH
     make $UBOOT_DEFCONFIG
     make -j8 CROSS_COMPILE=aarch64-none-elf-
-    ret=$?
+
+	[[ $(type -t uboot_custom_postprocess) == function ]] && uboot_custom_postprocess
+
+	ret=$?
 
     return $ret
 }

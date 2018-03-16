@@ -239,6 +239,10 @@ if [ "$INSTALL_TYPE" == "EMMC" ]; then
 		ln -s /boot/dtb/kvim_linux.dtb dtb.img
 	elif [ "$KHADAS_BOARD" == "VIM2" ]; then
 		ln -s /boot/dtb/kvim2_linux.dtb dtb.img
+	elif [ "$KHADAS_BOARD" == "Edge" ]; then
+		ln -s /boot/dtb/rk3399-kedge-linux.dtb dtb.img
+	elif [ "$KHADAS_BOARD" == "Firefly_RK3399" ]; then
+		ln -s /boot/dtb/rk3399-firefly-linux.dtb dtb.img
 	fi
 fi
 
