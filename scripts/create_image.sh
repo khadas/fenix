@@ -13,6 +13,8 @@ source config/functions/functions
 
 ######################################################################################
 
+UBUNTU_VER=
+
 ## Try to update Fenix
 check_update() {
 	cd $ROOT
@@ -29,11 +31,18 @@ prepare_ubuntu_rootfs() {
 		return -1
 	fi
 
+	# FIXME
+	if [ "$UBUNTU" == "16.04" ]; then
+		UBUNTU_VER="16.04.2"
+	else
+		UBUNTU_VER=$UBUNTU
+	fi
+
 	if [ "$UBUNTU_TYPE" == "server" ] || [ "$UBUNTU_MATE_ROOTFS_TYPE" == "chroot-install" ]; then
-		UBUNTU_ROOTFS="ubuntu-base-${UBUNTU}.2-base-$UBUNTU_ARCH.tar.gz"
+		UBUNTU_ROOTFS="ubuntu-base-${UBUNTU_VER}-base-$UBUNTU_ARCH.tar.gz"
 	elif [ "$UBUNTU_TYPE" == "mate" ]; then
 		if [ "$UBUNTU" == "16.04" ]; then
-			UBUNTU_ROOTFS="ubuntu-mate-${UBUNTU}.2-$UBUNTU_ARCH.tar.gz"
+			UBUNTU_ROOTFS="ubuntu-mate-${UBUNTU_VER}-$UBUNTU_ARCH.tar.gz"
 		else
 			error_msg "Unsupported ubuntu version:$UBUNTU_TYPE $UBUNTU for $UBUNTU_MATE_ROOTFS_TYPE"
 			UBUNTU_ROOTFS=
