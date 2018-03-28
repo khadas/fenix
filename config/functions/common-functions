@@ -1,6 +1,7 @@
 # Functions:
 # error_msg
 # warning_msg
+# info_msg
 # time_cal
 # prepare_host
 # prepare_chroot
@@ -29,6 +30,12 @@ warning_msg() {
 	local _LINE=${BASH_LINENO[0]}
 
     echo -e "$_FILE:$_LINE" $WARNING "$1"
+}
+
+## Print information message
+## $1 - message
+info_msg() {
+	echo -e $INFO "$1"
 }
 
 ## Calculate time
