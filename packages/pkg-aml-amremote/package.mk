@@ -17,7 +17,7 @@ make_target() {
 	cat <<-END > DEBIAN/control
 	Package: aml-amremote-905
 	Version: $VERSION
-	Architecture: $UBUNTU_ARCH
+	Architecture: $DISTRIB_ARCH
 	Maintainer: Khadas <hello@khadas.com>
 	Installed-Size: 1
 	Provides: aml-amremote-905
@@ -29,13 +29,15 @@ make_target() {
 
 	# pack
 	cd ..
-	cp -r ${PKG_NAME}-${PKG_VERSION} ${PKG_NAME}_${VERSION}_${UBUNTU_ARCH}
-	rm -rf ${PKG_NAME}_${VERSION}_${UBUNTU_ARCH}/.fenix-unpack
-	dpkg -b ${PKG_NAME}_${VERSION}_${UBUNTU_ARCH}
-	rm -rf ${PKG_NAME}_${VERSION}_${UBUNTU_ARCH}
+	cp -r ${PKG_NAME}-${PKG_VERSION} ${PKG_NAME}_${VERSION}_${DISTRIB_ARCH}
+	rm -rf ${PKG_NAME}_${VERSION}_${DISTRIB_ARCH}/.fenix-unpack
+	dpkg -b ${PKG_NAME}_${VERSION}_${DISTRIB_ARCH}
+	rm -rf ${PKG_NAME}_${VERSION}_${DISTRIB_ARCH}
 }
 
 makeinstall_target() {
 	mkdir -p $BUILD_DEBS
-	mv ${PKG_NAME}_${VERSION}_${UBUNTU_ARCH}.deb $BUILD_DEBS
+	# Remove old debs
+	rm -rf $BUILD_DEBS/${PKG_NAME}_*.deb
+	mv ${PKG_NAME}_${VERSION}_${DISTRIB_ARCH}.deb $BUILD_DEBS
 }

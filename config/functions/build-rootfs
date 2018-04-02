@@ -1,0 +1,396 @@
+# Functions:
+# install_common
+# install_distribution_specific
+# create_rootfs_cache
+# prepare_partitions
+# prepare_rootfs
+# build_rootfs
+
+install_common()
+{
+	info_msg "Applying common tweaks..."
+
+	# change time zone data
+	info_msg "Setup timezone to '$TZDATA'"
+	echo $TZDATA > $ROOTFS_TEMP/etc/timezone
+	chroot $ROOTFS_TEMP /bin/bash -c "ln -sf /usr/share/zoneinfo/$TZDATA  /etc/localtime"
+	chroot $ROOTFS_TEMP /bin/bash -c "dpkg-reconfigure -f noninteractive tzdata"
+
+	# initial date for fake-hwclock
+	date -u '+%Y-%m-%d %H:%M:%S' > $ROOTFS_TEMP/etc/fake-hwclock.data
+
+	# Install linux image deb in chroot
+	if [ -f $BUILD_DEBS/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
+		install_deb_chroot $BUILD_DEBS/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
+	fi
+
+	# Install linux dtb deb in chroot
+	if [ -f $BUILD_DEBS/${LINUX_IMAGE_DEB/image/dtb}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
+		install_deb_chroot $BUILD_DEBS/${LINUX_IMAGE_DEB/image/dtb}_${VERSION}_${DISTRIB_ARCH}.deb
+	fi
+
+	# Install linux headers deb in chroot
+	if [ -f $BUILD_DEBS/${LINUX_IMAGE_DEB/image/headers}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
+		install_deb_chroot $BUILD_DEBS/${LINUX_IMAGE_DEB/image/headers}_${VERSION}_${DISTRIB_ARCH}.deb
+	fi
+
+	# Install linux firmware in chroot
+	if [ -f $BUILD_DEBS/${LINUX_FIRMWARE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
+		install_deb_chroot $BUILD_DEBS/${LINUX_FIRMWARE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
+	fi
+
+	# Install GPU deb in chroot
+	install_deb_chroot $BUILD_DEBS/linux-gpu-${VENDER,,}-${CHIP,,}-${GPU_MODEL,,}-${GPU_VER,,}_${VERSION}_${DISTRIB_ARCH}.deb
+
+	# Install board deb in chroot
+	install_deb_chroot $BUILD_DEBS/${LINUX_BOARD_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
+
+	# Install packages platform
+	if [[ $(type -t install_packages_platform) == function ]]; then
+		install_packages_platform
+	fi
+
+	# disable repeated messages due to xconsole not being installed.
+	[[ -f $ROOTFS_TEMP/etc/rsyslog.d/50-default.conf ]] && sed '/daemon\.\*\;mail.*/,/xconsole/ s/.*/#&/' -i $ROOTFS_TEMP/etc/rsyslog.d/50-default.conf
+	# disable deprecated parameter
+	sed '/.*$KLogPermitNonKernelFacility.*/,// s/.*/#&/' -i $ROOTFS_TEMP/etc/rsyslog.conf
+
+	# premit root login via SSH for the first boot
+	sed -i 's/#\?PermitRootLogin .*/PermitRootLogin yes/' $ROOTFS_TEMP/etc/ssh/sshd_config
+}
+
+install_distribution_specific()
+{
+	info_msg "Applying distribution specific tweaks for $DISTRIB_RELEASE"
+
+	case $DISTRIB_RELEASE in
+	xenial)
+		# remove legal info from Ubuntu
+		[[ -f $ROOTFS_TEMP/etc/legal ]] && rm $ROOTFS_TEMP/etc/legal
+
+		# disable not working on unneeded services
+		# ureadahead needs kernel tracing options that AFAIK are present only in mainline
+		chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload mask ondemand.service ureadahead.service setserial.service etc-setserial.service"
+		;;
+
+	stretch)
+		# remove doubled uname from motd
+		[[ -f $ROOTFS_TEMP/etc/update-motd.d/10-uname ]] && rm $ROOTFS_TEMP/etc/update-motd.d/10-uname
+		# rc.local is not existing in stretch but we might need it
+		cat <<-EOF > $ROOTFS_TEMP/etc/rc.local
+		#!/bin/sh -e
+		#
+		# rc.local
+		#
+		# This script is executed at the end of each multiuser runlevel.
+		# Make sure that the script will "exit 0" on success or any other
+		# value on error.
+		#
+		# In order to enable or disable this script just change the execution
+		# bits.
+		#
+		# By default this script does nothing.
+
+		exit 0
+		EOF
+		chmod +x $ROOTFS_TEMP/etc/rc.local
+		;;
+	esac
+}
+
+## unpacks cached rootfs for $DISTRIB_RELEASE or creates one
+create_rootfs_cache()
+{
+	local packages_hash=$(get_package_list_hash)
+	local cache_fname=$BUILD_IMAGES/cache/rootfs/${DISTRIB_RELEASE}-${DISTRIB_TYPE}-${DISTRIB_ARCH}.$packages_hash.tar.lz4
+	local display_name=${DISTRIB_RELEASE}-${DISTRIB_TYPE}-${DISTRIB_ARCH}.${packages_hash:0:3}...${packages_hash:29}.tar.lz4
+	if [[ -f $cache_fname ]]; then
+		local date_diff=$(( ($(date +%s) - $(stat -c %Y $cache_fname)) / 86400 ))
+		info_msg "Extracting $display_name $date_diff days old"
+		pv -p -b -r -c -N "$display_name" "$cache_fname" | lz4 -dc | tar xp --xattrs -C $ROOTFS_TEMP/
+	else
+		info_msg "Creating new rootfs for $DISTRIB_RELEASE"
+
+		# stage: debootstrap base system
+#		if [[ $NO_APT_CACHER != yes ]]; then
+#			# apt-cacher-ng apt-get proxy parameter
+#			local apt_extra="-o Acquire::http::Proxy=\"http://${APT_PROXY_ADDR:-localhost:3142}\""
+#			local apt_mirror="http://${APT_PROXY_ADDR:-localhost:3142}/$APT_MIRROR"
+#		else
+			local apt_mirror="http://$APT_MIRROR"
+#		fi
+
+		# fancy progress bars
+		local apt_extra_progress="--show-progress -o DPKG::Progress-Fancy=1"
+
+		info_msg "Installing base system - Stage 1/2"
+		eval 'debootstrap --include=locales ${PACKAGE_LIST_EXCLUDE:+ --exclude=${PACKAGE_LIST_EXCLUDE// /,}} \
+			--arch=$DISTRIB_ARCH --foreign $DISTRIB_RELEASE $ROOTFS_TEMP/ $apt_mirror'
+
+		[[ ${PIPESTATUS[0]} -ne 0 || ! -f $ROOTFS_TEMP/debootstrap/debootstrap ]] && error_msg "Debootstrap base system first stage failed" && return -1
+
+		cp /usr/bin/$QEMU_BINARY $ROOTFS_TEMP/usr/bin/
+
+		mkdir -p $ROOTFS_TEMP/usr/share/keyrings/
+		cp /usr/share/keyrings/debian-archive-keyring.gpg $ROOTFS_TEMP/usr/share/keyrings/
+
+		info_msg "Installing base system - Stage 2/2"
+		eval 'chroot $ROOTFS_TEMP /bin/bash -c "/debootstrap/debootstrap --second-stage"'
+
+		[[ ${PIPESTATUS[0]} -ne 0 || ! -f $ROOTFS_TEMP/bin/bash ]] && error_msg "Debootstrap base system second stage failed" && return -1
+
+		mount_chroot "$ROOTFS_TEMP"
+
+		# policy-rc.d script prevents starting or reloading services during image creation
+		printf '#!/bin/sh\nexit 101' > $ROOTFS_TEMP/usr/sbin/policy-rc.d
+		chroot $ROOTFS_TEMP /bin/bash -c "dpkg-divert --quiet --local --rename --add /sbin/initctl"
+		chroot $ROOTFS_TEMP /bin/bash -c "dpkg-divert --quiet --local --rename --add /sbin/start-stop-daemon"
+		printf '#!/bin/sh\necho "Warning: Fake start-stop-daemon called, doing nothing"' > $ROOTFS_TEMP/sbin/start-stop-daemon
+		printf '#!/bin/sh\necho "Warning: Fake initctl called, doing nothing"' > $ROOTFS_TEMP/sbin/initctl
+		chmod 755 $ROOTFS_TEMP/usr/sbin/policy-rc.d
+		chmod 755 $ROOTFS_TEMP/sbin/initctl
+		chmod 755 $ROOTFS_TEMP/sbin/start-stop-daemon
+
+		# stage: configure language and locales
+		info_msg "Configuring locales $DEST_LANG"
+
+		[[ -f $ROOTFS_TEMP/etc/locale.gen ]] && sed -i "s/^# $DEST_LANG/$DEST_LANG/" $ROOTFS_TEMP/etc/locale.gen
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "locale-gen $DEST_LANG"' ${OUTPUT_VERYSILENT:+' >/dev/null 2>/dev/null'}
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "update-locale LANG=$DEST_LANG LANGUAGE=$DEST_LANG LC_MESSAGES=$DEST_LANG"' \
+			${OUTPUT_VERYSILENT:+' >/dev/null 2>/dev/null'}
+
+		if [[ -f $ROOTFS_TEMP/etc/default/console-setup ]]; then
+			sed -e 's/CHARMAP=.*/CHARMAP="UTF-8"/' -e 's/FONTSIZE=.*/FONTSIZE="8x16"/' \
+				-e 's/CODESET=.*/CODESET="guess"/' -i $ROOTFS_TEMP/etc/default/console-setup
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "setupcon --save"'
+		fi
+
+		# stage: create apt sources list
+		create_sources_list "$DISTRIB_RELEASE" "$ROOTFS_TEMP/"
+
+		# compressing packages list to gain some space
+		echo "Acquire::GzipIndexes "true"; Acquire::CompressionTypes::Order:: "gz";" > $ROOTFS_TEMP/etc/apt/apt.conf.d/02compress-indexes
+		echo "Acquire::Languages "none";" > $ROOTFS_TEMP/etc/apt/apt.conf.d/no-languages
+
+		# add armhf arhitecture to arm64
+		if [[ $DISTRIB_ARCH == arm64 ]]; then
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "dpkg --add-architecture armhf"'
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "apt-get update"'
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "apt-get -y install libc6:armhf"'
+		fi
+
+		# stage: update packages list
+		info_msg "Updating package list $DISTRIB_RELEASE"
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "apt-get -y $apt_extra update"'
+
+		# stage: upgrade base packages from xxx-updates and xxx-backports repository branches
+		info_msg "Upgrading base packages"
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "DEBIAN_FRONTEND=noninteractive apt-get -y \
+			$apt_extra $apt_extra_progress upgrade"'
+
+		# stage: install additional packages
+		info_msg "Installing packages"
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "DEBIAN_FRONTEND=noninteractive apt-get -y \
+			$apt_extra $apt_extra_progress --no-install-recommends install $PACKAGE_LIST"' \
+
+		if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
+			error_msg "Installation of packages failed"
+			return -1
+		fi
+
+		# DEBUG: print free space
+		echo -e "\nFree space:"
+		eval 'df -h'
+
+		# stage: remove downloaded packages
+		chroot $ROOTFS_TEMP /bin/bash -c "apt-get clean"
+
+		# this is needed for the build process later since resolvconf generated file in /run is not saved
+		rm $ROOTFS_TEMP/etc/resolv.conf
+		echo 'nameserver 8.8.8.8' >> $ROOTFS_TEMP/etc/resolv.conf
+
+		# stage: make rootfs cache archive
+		info_msg "Ending debootstrap process and preparing cache $DISTRIB_RELEASE"
+		sync
+		# the only reason to unmount here is compression progress display
+		# based on rootfs size calculation
+		umount_chroot "$ROOTFS_TEMP"
+
+		tar cp --xattrs --directory=$ROOTFS_TEMP/ --exclude='./dev/*' --exclude='./proc/*' --exclude='./run/*' --exclude='./tmp/*' \
+			--exclude='./sys/*' . | pv -p -b -r -s $(du -sb $ROOTFS_TEMP/ | cut -f1) -N "$display_name" | lz4 -c > $cache_fname
+	fi
+}
+
+## creates image file, partitions and fs
+prepare_partitions()
+{
+	info_msg "Preparing image file for rootfs..."
+
+	# calculate rootfs size
+	local rootfs_size=$(du -sm $ROOTFS_TEMP/ | cut -f1) # MiB
+	info_msg "Current rootfs cache size: $rootfs_size MiB"
+	if [[ -n $FIXED_IMAGE_SIZE && $FIXED_IMAGE_SIZE =~ ^[0-9]+$ ]]; then
+		info "Using user-defined image size" "$FIXED_IMAGE_SIZE MiB"
+		local rootfs_image_size=$FIXED_IMAGE_SIZE
+		# basic sanity check
+		if [[ $ROOTFS_TYPE != nfs && $rootfs_image_size -lt $rootfs_size ]]; then
+			error_msg "User defined image size is too small - $rootfs_image_size <= $rootfs_size" && return -1
+		fi
+	else
+		# Hardcoded overhead +40% and +128MB for ext4 is needed for desktop images,
+		# for CLI it could be lower. Also add extra 128 MiB for the emergency swap
+		# file creation and align the size up to 4MiB
+		if [[ $DISTRIB_TRPE != server ]]; then
+			# Desktop image size
+			local rootfs_image_size=$(bc -l <<< "scale=0; ((($rootfs_size * 1.4) / 1 + 128) / 4 + 1) * 4")
+		else
+			# Server image size
+			local rootfs_image_size=$(bc -l <<< "scale=0; ((($rootfs_size * 1.2) / 1 + 128) / 4 + 1) * 4")
+		fi
+	fi
+
+	if [ "$INSTALL_TYPE" == "EMMC" ]; then
+		info_msg "Creating eMMC rootfs image..."
+		dd if=/dev/zero of=$BUILD_IMAGES/rootfs.img bs=1M count=0 seek=$rootfs_image_size
+		mkfs.ext4 -F -L ROOTFS $BUILD_IMAGES/rootfs.img
+		rm -rf $ROOTFS && install -d $ROOTFS
+		mount -o loop $BUILD_IMAGES/rootfs.img $ROOTFS
+	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
+		IMAGE_SIZE=$((rootfs_image_size + 300)) # SD/USB image szie = BOOT(256MB) + ROOTFS
+		info_msg "Create SD/USB image..."
+		dd if=/dev/zero of=${BUILD_IMAGES}/${IMAGE_FILE_NAME} bs=1M count=0 seek=$IMAGE_SIZE
+		fdisk "${BUILD_IMAGES}/${IMAGE_FILE_NAME}" <<-EOF
+		o
+		n
+		p
+		1
+		2048
+		524287
+		a
+		1
+		t
+		b
+		n
+		p
+		2
+		524288
+
+		p
+		w
+
+		EOF
+
+		IMAGE_LOOP_DEV="$(losetup --show -f ${BUILD_IMAGES}/${IMAGE_FILE_NAME})"
+		export IMAGE_LOOP_DEV
+		IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
+		IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
+		partprobe "${IMAGE_LOOP_DEV}"
+		mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
+		mkfs.ext4 -F -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}"
+		rm -rf $ROOTFS && mkdir -p $ROOTFS
+		mount -o loop "${IMAGE_LOOP_DEV_ROOTFS}" $ROOTFS
+		mkdir -p $ROOTFS/boot
+		mount -o loop "${IMAGE_LOOP_DEV_BOOT}" $ROOTFS/boot
+	fi
+
+	rm -rf $ROOTFS/lost+found
+
+	info_msg "Copying files to root directory..."
+
+	rsync -aHWXh --exclude="/boot/*" --exclude="/dev/*" --exclude="/proc/*" --exclude="/run/*" --exclude="/tmp/*" \
+			--exclude="/sys/*" --info=progress2,stats1 $ROOTFS_TEMP/ $ROOTFS/
+
+	# rsync /boot
+	info_msg "Copying files to /boot directory..."
+	if [[ $(findmnt --target $ROOTFS/boot -o FSTYPE -n) == vfat ]]; then
+		# fat32
+		rsync -rLtWh --info=progress2,stats1 $ROOTFS_TEMP/boot $ROOTFS
+	else
+		# ext4
+		rsync -aHWXh --info=progress2,stats1 $ROOTFS_TEMP/boot $ROOTFS
+	fi
+
+	# DEBUG: print free space
+	info_msg "Free space:"
+	eval 'df -h'
+
+	sync
+
+	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
+		umount $ROOTFS/boot
+		losetup -d "${IMAGE_LOOP_DEV}"
+	fi
+	umount $ROOTFS
+}
+
+## Prepare rootfs
+prepare_rootfs() {
+	info_msg "Preparing rootfs for ${KHADAS_BOARD}-${DISTRIB_RELEASE}"
+
+	rm -rf $ROOTFS_TEMP
+	mkdir -p $ROOTFS_TEMP $BUILD_IMAGES/cache/rootfs
+
+	trap cleanup INT EXIT TERM
+
+	create_rootfs_cache
+
+	install_distribution_specific
+
+	install_common
+
+	# remove service start blockers
+	rm -f $ROOTFS_TEMP/sbin/initctl $ROOTFS_TEMP/sbin/start-stop-daemon
+	chroot $ROOTFS_TEMP /bin/bash -c "dpkg-divert --quiet --local --rename --remove /sbin/initctl"
+	chroot $ROOTFS_TEMP /bin/bash -c "dpkg-divert --quiet --local --rename --remove /sbin/start-stop-daemon"
+	rm -f $ROOTFS_TEMP/usr/sbin/policy-rc.d
+
+	# reenable resolvconf managed resolv.conf
+	ln -sf /run/resolvconf/resolv.conf $ROOTFS_TEMP/etc/resolv.conf
+}
+
+## Rootfs
+build_rootfs() {
+
+	info_msg "Building rootfs for ${KHADAS_BOARD}-${DISTRIB_RELEASE}"
+
+	ret=0
+	cd ${ROOT}
+
+	if [ "$INSTALL_TYPE" == "EMMC" ]; then
+		# firstboot initialization: for 'ROOTFS' partition resize
+		# just for EMMC image.
+		touch $ROOTFS_TEMP/etc/default/FIRSTBOOT
+	fi
+
+	# mkimage tool
+	cp $UTILS_DIR/mkimage-$DISTRIB_ARCH $ROOTFS_TEMP/usr/local/bin/mkimage
+
+	## script executing on chroot
+	cp -r scripts/chroot-scripts/RUNME.sh $ROOTFS_TEMP/
+
+	echo
+	echo "NOTE: YOU ARE NOW IN THE VIRTUAL TARGET, SETUP ANYTHING YOU WANT."
+	echo "      TYPE 'exit' TO CONTINUE IF FINISHED."
+	echo
+	mount_chroot "$ROOTFS_TEMP"
+	chroot $ROOTFS_TEMP/ bash "/RUNME.sh" $DISTRIBUTION $DISTRIB_RELEASE $DISTRIB_TYPE $DISTRIB_ARCH $KHADAS_BOARD $LINUX $UBOOT $INSTALL_TYPE $VENDER
+
+	if [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" == "mainline" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_ARCH" == "arm64" ]; then
+		# Mali udev rule
+		tee $ROOTFS_TEMP/etc/udev/rules.d/50-mali.rules <<-EOF
+		KERNEL=="mali", MODE="0660", GROUP="video"
+		EOF
+	fi
+
+	## Logo
+	cp archives/logo/logo.img $BUILD_IMAGES
+
+	## Unmount to get the rootfs.img
+	sync
+	umount_chroot "$ROOTFS_TEMP"
+
+	prepare_partitions
+
+	return $ret
+}
+

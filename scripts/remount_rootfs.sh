@@ -12,6 +12,11 @@ source ${BOARD_CONFIG}/${KHADAS_BOARD}.conf
 source config/functions/functions
 
 ########################################################################
+if [[ $EUID != 0 ]]; then
+	warning_msg "This script requires root privileges, trying to use sudo, please enter your passowrd!"
+	sudo -E "$0" "$@"
+	exit $?
+fi
 
 remount_rootfs() {
 	cd ${ROOT}
@@ -22,30 +27,30 @@ remount_rootfs() {
 	IMAGE_LINUX_VERSION=`head -n 1 $LINUX_DIR/include/config/kernel.release | xargs echo -n`
 
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		IMAGE_LOOP_DEV="$(sudo losetup --show -f ${BUILD_IMAGES}/${IMAGE_FILE_NAME})"
+		IMAGE_LOOP_DEV="$(losetup --show -f ${BUILD_IMAGES}/${IMAGE_FILE_NAME})"
 		IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
 		IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
-		sudo partprobe "${IMAGE_LOOP_DEV}"
+		partprobe "${IMAGE_LOOP_DEV}"
 		echo "Mountng ${IMAGE_LOOP_DEV_ROOTFS}..."
-		sudo mount -o loop "${IMAGE_LOOP_DEV_ROOTFS}" $ROOTFS || {
-			sudo sync
+		mount -o loop "${IMAGE_LOOP_DEV_ROOTFS}" $ROOTFS || {
+			sync
 			error_msg "Failed to mount $IMAGE_LOOP_DEV_ROOTFS!"
 
 			return -1
 		}
 		echo "Mount ${IMAGE_LOOP_DEV_ROOTFS} on $ROOTFS OK."
 		echo "Mounting ${IMAGE_LOOP_DEV_BOOT}..."
-		sudo mount -o loop "${IMAGE_LOOP_DEV_BOOT}" $ROOTFS/boot || {
+		mount -o loop "${IMAGE_LOOP_DEV_BOOT}" $ROOTFS/boot || {
 			error_msg "Failed to mount $IMAGE_LOOP_DEV_BOOT!"
-			sudo sync
-			sudo umount $ROOTFS
+			sync
+			umount $ROOTFS
 
 			return -1
 		}
 		echo "Mount ${IMAGE_LOOP_DEV_BOOT} on $ROOTFS/boot OK."
 	elif [ "$INSTALL_TYPE" == "EMMC" ]; then
 		echo "Mounting rootfs.img..."
-		sudo mount -o loop ${BUILD_IMAGES}/rootfs.img $ROOTFS || {
+		mount -o loop ${BUILD_IMAGES}/rootfs.img $ROOTFS || {
 			error_msg "Failed to mount rootfs.img!"
 
 			return -1
@@ -56,8 +61,8 @@ remount_rootfs() {
 	## [Optional] Mirrors for ubuntu-ports
 	if [ -f .khadas-build ]; then
 		echo "Using ustc mirrors..."
-		sudo cp -a $ROOTFS/etc/apt/sources.list $ROOTFS/etc/apt/sources.list.orig
-		sudo sed -i "s/http:\/\/ports.ubuntu.com\/ubuntu-ports\//http:\/\/mirrors.ustc.edu.cn\/ubuntu-ports\//g" $ROOTFS/etc/apt/sources.list
+		cp -a $ROOTFS/etc/apt/sources.list $ROOTFS/etc/apt/sources.list.orig
+		sed -i "s/http:\/\/ports.ubuntu.com\/ubuntu-ports\//http:\/\/mirrors.ustc.edu.cn\/ubuntu-ports\//g" $ROOTFS/etc/apt/sources.list
 	fi
 
 	# Hack for deb builder. To pack what's missing in headers pack.
@@ -75,15 +80,15 @@ remount_rootfs() {
 
 	# linux version
 	echo $IMAGE_LINUX_VERSION > $BUILD_IMAGES/linux-version
-	sudo cp -r $BUILD_IMAGES/linux-version $ROOTFS/
+	cp -r $BUILD_IMAGES/linux-version $ROOTFS/
 
 	## firstboot initialization: for 'ROOTFS' partition resize
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
-		sudo touch $ROOTFS/etc/default/FIRSTBOOT
+		touch $ROOTFS/etc/default/FIRSTBOOT
 	fi
 
 	## script executing on chroot
-	sudo cp -r scripts/chroot-scripts/RUNME_REMOUNT.sh $ROOTFS/
+	cp -r scripts/chroot-scripts/RUNME_REMOUNT.sh $ROOTFS/
 
 	## Prepare chroot
 	prepare_chroot
@@ -95,12 +100,12 @@ remount_rootfs() {
 		case $answer in
 			[Aa]* )
 				echo -e "\nAutorun script."
-				sudo chroot $ROOTFS/ bash "/RUNME_REMOUNT.sh" $UBUNTU $INSTALL_TYPE
+				chroot $ROOTFS/ bash "/RUNME_REMOUNT.sh" $UBUNTU $INSTALL_TYPE
 				break;;
 			[Mm]* )
 				echo -e "\n\nNOTE: YOU ARE NOW IN THE VIRTUAL TARGET, SETUP ANYTHING YOU WANT."
 				echo -e "      TYPE 'exit' TO CONTINUE IF FINISHED.\n"
-				sudo chroot $ROOTFS/
+				chroot $ROOTFS/
 				break;;
 			[Qq]* )
 				echo -e "\nQuit."
@@ -111,14 +116,14 @@ remount_rootfs() {
 	done
 
 	## Unmount to get the rootfs.img
-	sudo sync
+	sync
 	umount_chroot "$ROOTFS"
 
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		sudo umount $ROOTFS/boot
-		sudo losetup -d "${IMAGE_LOOP_DEV}"
+		umount $ROOTFS/boot
+		losetup -d "${IMAGE_LOOP_DEV}"
 	fi
-	sudo umount $ROOTFS
+	umount $ROOTFS
 
 	trap - INT EXIT TERM
 

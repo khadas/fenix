@@ -17,9 +17,11 @@ BUILD="$ROOT/build"
 ## Build images
 BUILD_IMAGES="$BUILD/images"
 ## Build debs
-BUILD_DEBS="$BUILD_IMAGES/debs/$VERSION/ubuntu-${UBUNTU}/$KHADAS_BOARD"
+BUILD_DEBS="$BUILD_IMAGES/debs/$VERSION/${DISTRIBUTION}-${DISTRIB_RELEASE}/$KHADAS_BOARD"
 ## Rootfs mount point
 ROOTFS="$BUILD_IMAGES/rootfs"
+## Rootfs temp file directory
+ROOTFS_TEMP="$BUILD_IMAGES/.tmp/rootfs-${KHADAS_BOARD}-${DISTRIB_RELEASE}-${DISTRIB_TYPE}"
 ## Toolchains
 TOOLCHAINS="$BUILD/toolchains"
 
@@ -27,11 +29,29 @@ UTILS_DIR="$BUILD/utils-[0-9a-f]*"
 UPGRADE_DIR="$BUILD/images_upgrade-[0-9a-f]*"
 
 ##################################### Configurations ##################################
-IMAGE_FILE_NAME="Fenix_${VERSION}_${KHADAS_BOARD}_Ubuntu-${UBUNTU}_Linux-${LINUX}_${UBUNTU_TYPE}_${INSTALL_TYPE}_$(date +%F).img"
+IMAGE_FILE_NAME="Fenix_${VERSION}_${KHADAS_BOARD}_${DISTRIBUTION}-${DISTRIB_RELEASE}_Linux-${LINUX}_${DISTRIB_TYPE}_${DISTRIB_ARCH}_${INSTALL_TYPE}_$(date +%F).img"
+LINUX_IMAGE_DEB="linux-image-${VENDER,,}-${CHIP,,}"
+LINUX_FIRMWARE_DEB="linux-firmware-image-${VENDER,,}-${CHIP,,}"
+LINUX_BOARD_DEB="linux-board-package-${VENDER,,}-${CHIP,,}"
 
-## Image size
-UBUNTU_SERVER_IMAGE_SIZE=800 # MB
-UBUNTU_MATE_IMAGE_SIZE=5000 # MB
+case $DISTRIB_ARCH in
+	arm64)
+	INITRD_ARCH=arm64
+	QEMU_BINARY="qemu-aarch64-static"
+	;;
+	armhf)
+	INITRD_ARCH=arm
+	QEMU_BINARY="qemu-arm-static"
+	;;
+esac
+
+DEST_LANG="en_US.UTF-8"
+CONSOLE_CHAR="UTF-8"
+
+ROOTFS_TYPE="ext4"
+BOOTFS_TYPE="fat"
+
+TZDATA=`cat /etc/timezone` # Timezone for target is taken from host or defined here.
 
 ## Define colors
 BLACK="\e[0;30m"
@@ -56,4 +76,81 @@ ENDCOLOR="\e[0m"
 ERROR="${RED}Error:${ENDCOLOR}"
 WARNING="${MAGENTA}Warning:${ENDCOLOR}"
 INFO="${GREEN}Info:${ENDCOLOR}"
+
+################################### Packages ############################################
+# Essential packages
+PACKAGE_LIST="bc bridge-utils build-essential cpufrequtils device-tree-compiler figlet fbset fping \
+	iw fake-hwclock wpasupplicant psmisc ntp parted rsync sudo curl linux-base dialog crda \
+	wireless-regdb ncurses-term python3-apt sysfsutils toilet u-boot-tools unattended-upgrades \
+	usbutils wireless-tools console-setup unicode-data openssh-server initramfs-tools \
+	ca-certificates resolvconf expect rcconf iptables mc abootimg wget udev libc6 libdrm2 libgcc1 libstdc++6 libx11-6 \
+	libx11-xcb1 libxcb-dri2-0 libxcb1"
+
+# development related packages. remove when they are not needed for building packages in chroot
+PACKAGE_LIST="$PACKAGE_LIST automake libwrap0-dev libssl-dev libnl-3-dev libnl-genl-3-dev"
+
+# Non-essential packages
+PACKAGE_LIST_ADDITIONAL="alsa-utils btrfs-tools dosfstools hddtemp iotop iozone3 stress sysbench screen ntfs-3g vim pciutils \
+	evtest htop pv lsof apt-transport-https libfuse2 libdigest-sha-perl libproc-processtable-perl aptitude dnsutils f3 haveged \
+	hdparm rfkill vlan sysstat bash-completion hostapd git ethtool network-manager unzip ifenslave command-not-found lirc \
+	libpam-systemd iperf3 software-properties-common libnss-myhostname f2fs-tools avahi-autoipd iputils-arping"
+
+PACKAGE_LIST_DESKTOP="xserver-xorg xserver-xorg-video-fbdev gvfs-backends gvfs-fuse xfonts-base xinit x11-xserver-utils xterm thunar-volman \
+	gksu bluetooth \
+	network-manager-gnome network-manager-openvpn-gnome gnome-keyring gcr libgck-1-0 libgcr-3-common p11-kit pasystray pavucontrol pulseaudio \
+	paman pavumeter pulseaudio-module-gconf bluez bluez-tools pulseaudio-module-bluetooth blueman libgl1-mesa-dri gparted synaptic \
+	policykit-1 mesa-utils"
+
+PACKAGE_LIST_OFFICE="lxtask mirage galculator hexchat mpv \
+	gtk2-engines gtk2-engines-murrine gtk2-engines-pixbuf libgtk2.0-bin gcj-jre-headless libgnome2-perl \
+	network-manager-gnome network-manager-openvpn-gnome gnome-keyring gcr libgck-1-0 libgcr-3-common p11-kit pasystray pavucontrol pulseaudio \
+	libpam-gnome-keyring thunderbird system-config-printer-common numix-gtk-theme paprefs tango-icon-theme \
+	libreoffice-writer libreoffice-style-tango libreoffice-gtk fbi cups-pk-helper cups"
+
+PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
+
+case $DISTRIB_TYPE in
+	xfce)
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_OFFICE"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP xfce4 xfce4-screenshooter xfce4-notifyd xfce4-terminal desktop-base"
+	;;
+	lxde)
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_OFFICE"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP lxde lxlauncher lxmusic lxsession-default-apps lxsession-logout lxshortcut lxtask obconf \
+		xfce4-power-manager-plugins lxde-common desktop-base"
+	;;
+	mate)
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_OFFICE"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP mate-desktop-environment-extras mate-media mate-screensaver mate-utils mate-power-manager mate-applets mozo"
+	;;
+esac
+
+case $DISTRIB_RELEASE in
+	xenial)
+	PACKAGE_LIST_RELEASE="man-db nano linux-firmware zram-config"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP thunderbird chromium-browser"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP language-selector-gnome paprefs numix-gtk-theme system-config-printer-common system-config-printer-gnome ubuntu-mate-lightdm-theme"
+	[[ $DISTRIB_ARCH == armhf ]] && PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP mate-utils ubuntu-mate-welcome mate-settings-daemon"
+	;;
+	stretch)
+	PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP thunderbird chromium dbus-x11"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP paprefs numix-gtk-theme system-config-printer-common system-config-printer"
+	;;
+esac
+
+DEBIAN_MIRROR='httpredir.debian.org/debian'
+UBUNTU_MIRROR='ports.ubuntu.com/'
+
+# apt-cacher-ng mirror configurarion
+if [[ $DISTRIBUTION == Ubuntu ]]; then
+	APT_MIRROR=$UBUNTU_MIRROR
+else
+	APT_MIRROR=$DEBIAN_MIRROR
+fi
+
+PACKAGE_LIST="$PACKAGE_LIST $PACKAGE_LIST_RELEASE $PACKAGE_LIST_ADDITIONAL"
+if [[ $DISTRIB_TYPE != server ]]; then
+	PACKAGE_LIST="$PACKAGE_LIST $PACKAGE_LIST_DESKTOP"
+fi
 

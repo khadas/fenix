@@ -3,29 +3,33 @@
 
 ## Build board deb package
 build_board_deb() {
-	local pkgname="linux-board-package-${VENDER,,}-${CHIP,,}"
-	local pkgdir="$BUILD_IMAGES/.tmp/${pkgname}_${VERSION}_${UBUNTU_ARCH}"
+	local pkgname="${LINUX_BOARD_DEB}"
+	local pkgdir="$BUILD_IMAGES/.tmp/${pkgname}_${VERSION}_${DISTRIB_ARCH}"
 	rm -rf $pkgdir
 	mkdir -p $pkgdir/DEBIAN
+
+	info_msg "Build board deb..."
 
 	cat <<-EOF > $pkgdir/DEBIAN/control
 	Package: $pkgname
 	Version: $VERSION
-	Architecture: $UBUNTU_ARCH
+	Architecture: $DISTRIB_ARCH
 	Maintainer: Khadas <hello@khadas.com>
 	Installed-Size: 1
-	Replaces: linux-firmware
+	Replaces: linux-firmware, chromium-browser, chromium
 	Section: kernel
 	Priority: optional
 	Depends: bash, linux-base, u-boot-tools, initramfs-tools
 	Provides: linux-board-package
 	Conflicts: linux-board-package
-	Description: Fenix tweaks for Ubuntu-$UBUNTU on $KHADAS_BOARD
+	Description: Fenix tweaks for ${DISTRIBUTION}-${DISTRIB_RELEASE} on $KHADAS_BOARD
 	EOF
 
 	# Set up pre install script
 	cat <<-EOF > $pkgdir/DEBIAN/preinst
 	#!/bin/sh
+	rm -rf /etc/chromium.d/default-flags
+
 	exit 0
 	EOF
 
@@ -81,7 +85,7 @@ build_board_deb() {
 		# Copy Bluetooth firmware
 		mkdir -p $pkgdir/usr/local/bin
 		mkdir -p $pkgdir/lib/systemd/system
-		cp -r $ROOT/archives/hwpacks/bluez/brcm_patchram_plus-$UBUNTU_ARCH $pkgdir/usr/local/bin/brcm_patchram_plus
+		cp -r $ROOT/archives/hwpacks/bluez/brcm_patchram_plus-$DISTRIB_ARCH $pkgdir/usr/local/bin/brcm_patchram_plus
 		cp -r $ROOT/archives/hwpacks/bluez/bluetooth-khadas.service $pkgdir/lib/systemd/system/
 		cp -r $ROOT/archives/hwpacks/bluez/bluetooth-khadas.sh $pkgdir/usr/local/bin/
 	fi
@@ -98,8 +102,8 @@ build_board_deb() {
 	BOARD=$KHADAS_BOARD
 	VENDER=$VENDER
 	VERSION=$VERSION
-	ARCH=$UBUNTU_ARCH
-	INITRD_ARCH=${UBUNTU_ARCH/armhf/arm}
+	ARCH=$DISTRIB_ARCH
+	INITRD_ARCH=${DISTRIB_ARCH/armhf/arm}
 	EOF
 
 	# Create board deb file
@@ -107,8 +111,7 @@ build_board_deb() {
 	fakeroot dpkg-deb -b $pkgdir ${pkgdir}.deb
 	mkdir -p $BUILD_DEBS
 	cp ${pkgdir}.deb $BUILD_DEBS
-	sudo mkdir -p $ROOTFS/tempdebs
-	sudo cp $BUILD_DEBS/${pkgname}_${VERSION}_${UBUNTU_ARCH}.deb $ROOTFS/tempdebs
 	# Cleanup
+	rm -rf ${pkgdir}.deb
 	rm -rf $pkgdir
 }

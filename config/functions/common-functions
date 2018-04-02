@@ -4,7 +4,6 @@
 # info_msg
 # time_cal
 # prepare_host
-# prepare_chroot
 # mount_chroot
 # umount_chroot
 # install_deb_chroot
@@ -12,6 +11,8 @@
 # cleanup
 # prepare_toolchains
 # prepare_packages
+# get_package_list_hash
+# create_sources_list
 
 
 ## Print error message
@@ -68,24 +69,9 @@ prepare_host() {
 
 	if [[ ${#deps[@]} -gt 0 ]]; then
 		echo "Installing build dependencies"
-		sudo apt update
-		sudo apt -y --no-install-recommends install "${deps[@]}"
-		sudo update-ccache-symlinks
-	fi
-}
-
-## Prepare chroot
-prepare_chroot() {
-	## Chroot
-	if [ "$UBUNTU_ARCH" == "arm64" ]; then
-		sudo cp -a /usr/bin/qemu-aarch64-static $ROOTFS/usr/bin/
-	elif [ "$UBUNTU_ARCH" == "armhf" ]; then
-		sudo cp -a /usr/bin/qemu-arm-static $ROOTFS/usr/bin/
-	else
-		error_msg "Unsupported ubuntu architecture: '$UBUNTU_ARCH'"
-		sudo sync
-		sudo umount $ROOTFS
-		return -1
+		apt update
+		apt -y --no-install-recommends install "${deps[@]}"
+		update-ccache-symlinks
 	fi
 }
 
@@ -96,10 +82,10 @@ mount_chroot() {
 		echo "Usage: mount_chroot <target>"
 		return -1
 	fi
-	sudo mount -o bind /proc $target/proc
-	sudo mount -o bind /sys $target/sys
-	sudo mount -o bind /dev $target/dev
-	sudo mount -o bind /dev/pts $target/dev/pts
+	mount -o bind /proc $target/proc
+	mount -o bind /sys $target/sys
+	mount -o bind /dev $target/dev
+	mount -o bind /dev/pts $target/dev/pts
 }
 
 ## Umount chroot
@@ -109,13 +95,13 @@ umount_chroot() {
 		echo "Usage: umount_chroot <target>"
 		return -1
 	fi
-	sudo umount $target/dev/pts
-	sudo umount $target/dev
-	sudo umount $target/proc
+	umount $target/dev/pts
+	umount $target/dev
+	umount $target/proc
 	if mount | grep "$target/sys/kernel/security" > /dev/null; then
-		sudo umount $target/sys/kernel/security
+		umount $target/sys/kernel/security
 	fi
-	sudo umount $target/sys
+	umount $target/sys
 }
 
 ## Install debs in chroot
@@ -123,18 +109,18 @@ install_deb_chroot()
 {
 	local package=$1
 	local name=$(basename $package)
-	sudo cp $package $ROOTFS/root/$name
-	echo "Installing $name in chroot..."
-	mount_chroot "$ROOTFS"
-	sudo chroot $ROOTFS /bin/bash -c "dpkg -i /root/$name"
-	umount_chroot "$ROOTFS"
-	sudo rm -f $ROOTFS/root/$name
+	cp $package $ROOTFS_TEMP/root/$name
+	info_msg "Installing $name in chroot..."
+	mount_chroot "$ROOTFS_TEMP"
+	chroot $ROOTFS_TEMP /bin/bash -c "dpkg -i /root/$name"
+	umount_chroot "$ROOTFS_TEMP"
+	rm -f $ROOTFS_TEMP/root/$name
 }
 
 ## Umount
 do_umount() {
 	if mount | grep $1 > /dev/null; then
-		sudo umount $1
+		umount $1
     fi
 }
 
@@ -144,16 +130,23 @@ cleanup() {
     echo "Cleanup..."
     sync
 
-    if mount | grep $ROOTFS > /dev/null; then
-        do_umount "$ROOTFS/dev/pts"
-        do_umount "$ROOTFS/dev"
-        do_umount "$ROOTFS/proc"
-        do_umount "$ROOTFS/sys/kernel/security"
-        do_umount "$ROOTFS/sys"
+	trap - INT TERM EXIT
+
+    if mount | grep $ROOTFS_TEMP > /dev/null; then
+        do_umount "$ROOTFS_TEMP/dev/pts"
+        do_umount "$ROOTFS_TEMP/dev"
+        do_umount "$ROOTFS_TEMP/proc"
+        do_umount "$ROOTFS_TEMP/sys/kernel/security"
+        do_umount "$ROOTFS_TEMP/sys"
+
+		do_umount "$ROOTFS_TEMP"
+	fi
+
+	if mount | grep $ROOTFS > /dev/null; then
 		if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 			if mount | grep "$ROOTFS/boot" > /dev/null; then
 				do_umount "$ROOTFS/boot"
-				sudo losetup -d "${IMAGE_LOOP_DEV}"
+				losetup -d "${IMAGE_LOOP_DEV}"
 			fi
 		fi
 
@@ -190,4 +183,55 @@ prepare_packages() {
 	if [ "$VENDER" == "Rockchip" ]; then
 		build_package "rkbin:host"
 	fi
+}
+
+## returns md5 hash for current package list
+get_package_list_hash()
+{
+	( printf '%s\n' $PACKAGE_LIST | sort -u; printf '%s\n' $PACKAGE_LIST_EXCLUDE | sort -u) | md5sum | cut -d' ' -f 1
+}
+
+## create_sources_list <release> <basedir>
+##
+## <release>: jessie|stretch|xenial
+## <basedir>: path to root directory
+create_sources_list()
+{
+local release=$1
+local basedir=$2
+[[ -z $basedir ]] && error_msg "No basedir passed to create_sources_list" && return -1
+
+	case $release in
+	stretch)
+	cat <<-EOF > $basedir/etc/apt/sources.list
+	deb http://${DEBIAN_MIRROR} $release main contrib non-free
+	deb-src http://${DEBIAN_MIRROR} $release main contrib non-free
+
+	deb http://${DEBIAN_MIRROR} ${release}-updates main contrib non-free
+	deb-src http://${DEBIAN_MIRROR} ${release}-updates main contrib non-free
+
+	deb http://${DEBIAN_MIRROR} ${release}-backports main contrib non-free
+	deb-src http://${DEBIAN_MIRROR} ${release}-backports main contrib non-free
+
+	deb http://security.debian.org/ ${release}/updates main contrib non-free
+	deb-src http://security.debian.org/ ${release}/updates main contrib non-free
+	EOF
+	;;
+
+	xenial)
+	cat <<-EOF > $basedir/etc/apt/sources.list
+	deb http://${UBUNTU_MIRROR} $release main restricted universe multiverse
+	deb-src http://${UBUNTU_MIRROR} $release main restricted universe multiverse
+
+	deb http://${UBUNTU_MIRROR} ${release}-security main restricted universe multiverse
+	deb-src http://${UBUNTU_MIRROR} ${release}-security main restricted universe multiverse
+
+	deb http://${UBUNTU_MIRROR} ${release}-updates main restricted universe multiverse
+	deb-src http://${UBUNTU_MIRROR} ${release}-updates main restricted universe multiverse
+
+	deb http://${UBUNTU_MIRROR} ${release}-backports main restricted universe multiverse
+	deb-src http://${UBUNTU_MIRROR} ${release}-backports main restricted universe multiverse
+	EOF
+	;;
+	esac
 }

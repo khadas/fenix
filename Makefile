@@ -1,12 +1,12 @@
 IMAGES_DIR=images
 
 all:
-ifeq ($(and $(UBUNTU_TYPE),$(KHADAS_BOARD),$(UBUNTU),$(LINUX),$(UBUNTU_ARCH),$(INSTALL_TYPE)),)
+ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/create_image.sh
+	@echo "This script requires root privileges, trying to use sudo, please enter your passowrd!"
+	sudo -E ./scripts/create_image.sh
 endif
-
 
 define help_message
 	@echo "You should setup environment first."
@@ -17,7 +17,7 @@ release:
 	./scripts/image release
 
 image:
-ifeq ($(and $(KHADAS_BOARD),$(INSTALL_TYPE)),)
+ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
 	./scripts/make_image.sh
@@ -26,11 +26,36 @@ endif
 github:
 	./scripts/github.sh
 
-remount:
-ifeq ($(and $(KHADAS_BOARD),$(LINUX),$(UBUNTU_ARCH),$(INSTALL_TYPE)),)
+kernel:
+ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/remount_rootfs.sh
+	@echo "This script requires root privileges, trying to use sudo, please enter your passowrd!"
+	sudo -E ./scripts/build.sh linux
+endif
+
+uboot:
+ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
+	$(call help_message)
+else
+	@echo "This script requires root privileges, trying to use sudo, please enter your passowrd!"
+	sudo -E ./scripts/build.sh u-boot
+endif
+
+debs:
+ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
+	$(call help_message)
+else
+	@echo "This script requires root privileges, trying to use sudo, please enter your passowrd!"
+	sudo -E ./scripts/build.sh linux-deb
+endif
+
+remount:
+ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
+	$(call help_message)
+else
+	@echo "This script requires root privileges, trying to use sudo, please enter your passowrd!"
+	sudo -E ./scripts/remount_rootfs.sh
 endif
 
 info:
@@ -44,12 +69,10 @@ info:
 	@echo "#CHIP=${CHIP}"
 	@echo "#LINUX=${LINUX}"
 	@echo "#UBOOT=${UBOOT}"
-	@echo "#UBUNTU_TYPE=${UBUNTU_TYPE}"
-ifeq ($(UBUNTU_TYPE),mate)
-	@echo "#UBUNTU_MATE_ROOTFS_TYPE=${UBUNTU_MATE_ROOTFS_TYPE}"
-endif
-	@echo "#UBUNTU=${UBUNTU}"
-	@echo "#UBUNTU_ARCH=${UBUNTU_ARCH}"
+	@echo "#DISTRIBUTION=${DISTRIBUTION}"
+	@echo "#DISTRIB_RELEASE=${DISTRIB_RELEASE}"
+	@echo "#DISTRIB_TYPE=${DISTRIB_TYPE}"
+	@echo "#DISTRIB_ARCH=${DISTRIB_ARCH}"
 	@echo "#INSTALL_TYPE=${INSTALL_TYPE}"
 	@echo
 	@echo "==========================================="
@@ -59,6 +82,9 @@ help:
 	@echo "Fenix scripts help messages:"
 	@echo "  all           - Create image according to environment."
 	@echo "  remount       - Remount rootfs and recreate initrd."
+	@echo "  kernel        - Build linux kernel."
+	@echo "  uboot         - Build u-boot."
+	@echo "  debs          - Build linux debs."
 	@echo "  github        - Update repositories from Khadas GitHub."
 	@echo "  image         - Pack update image."
 	@echo "  clean         - Cleanup."

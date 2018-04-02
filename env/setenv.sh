@@ -10,11 +10,13 @@ Edge_SUPPORTED_LINUX_VERSION_ARRAY=("4.4")
 VIM_SUPPORTED_UBOOT_VERSION_ARRAY=("2015.01" "mainline")
 VIM2_SUPPORTED_UBOOT_VERSION_ARRAY=("2015.01")
 Edge_SUPPORTED_UBOOT_VERSION_ARRAY=("2017.09")
-UBUNTU_VERSION_ARRAY=("16.04")
-UBUNTU_ARCH_ARRAY=("arm64" "armhf")
+DISTRIBUTION_ARRAY=("Ubuntu" "Debian")
+Ubuntu_RELEASE_ARRAY=("xenial")
+Debian_RELEASE_ARRAY=("stretch")
+DISTRIB_ARCH_ARRAY=("arm64" "armhf")
+Ubuntu_TYPE_ARRAY=("server" "mate")
+Debian_TYPE_ARRAY=("server" "lxde" "xfce")
 INSTALL_TYPE_ARRAY=("EMMC" "SD-USB")
-UBUNTU_TYPE_ARRAY=("server" "mate")
-UBUNTU_MATE_ROOTFS_TYPE_ARRAY=("chroot-install" "mate-rootfs")
 
 KHADAS_BOARD_ARRAY_LEN=${#KHADAS_BOARD_ARRAY[@]}
 VIM_SUPPORTED_LINUX_VERSION_ARRAY_LEN=${#VIM_SUPPORTED_LINUX_VERSION_ARRAY[@]}
@@ -23,20 +25,22 @@ Edge_SUPPORTED_LINUX_VERSION_ARRAY_LEN=${#Edge_SUPPORTED_LINUX_VERSION_ARRAY[@]}
 VIM_SUPPORTED_UBOOT_VERSION_ARRAY_LEN=${#VIM_SUPPORTED_UBOOT_VERSION_ARRAY[@]}
 VIM2_SUPPORTED_UBOOT_VERSION_ARRAY_LEN=${#VIM2_SUPPORTED_UBOOT_VERSION_ARRAY[@]}
 Edge_SUPPORTED_UBOOT_VERSION_ARRAY_LEN=${#Edge_SUPPORTED_UBOOT_VERSION_ARRAY[@]}
-UBUNTU_VERSION_ARRAY_LEN=${#UBUNTU_VERSION_ARRAY[@]}
-UBUNTU_ARCH_ARRAY_LEN=${#UBUNTU_ARCH_ARRAY[@]}
+DISTRIBUTION_ARRAY_LEN=${#DISTRIBUTION_ARRAY[@]}
+Ubuntu_RELEASE_ARRAY_LEN=${#Ubuntu_RELEASE_ARRAY[@]}
+Debian_RELEASE_ARRAY_LEN=${#Debian_RELEASE_ARRAY[@]}
+DISTRIB_ARCH_ARRAY_LEN=${#DISTRIB_ARCH_ARRAY[@]}
+Ubuntu_TYPE_ARRAY_LEN=${#Ubuntu_TYPE_ARRAY[@]}
+Debian_TYPE_ARRAY_LEN=${#Debian_TYPE_ARRAY[@]}
 INSTALL_TYPE_ARRAY_LEN=${#INSTALL_TYPE_ARRAY[@]}
-UBUNTU_TYPE_ARRAY_LEN=${#UBUNTU_TYPE_ARRAY[@]}
-UBUNTU_MATE_ROOTFS_TYPE_ARRAY_LEN=${#UBUNTU_MATE_ROOTFS_TYPE_ARRAY[@]}
 
 KHADAS_BOARD=
 LINUX=
 UBOOT=
-UBUNTU=
-UBUNTU_ARCH=
+DISTRIBUTION=
+DISTRIB_RELEASE=
+DISTRIB_ARCH=
 INSTALL_TYPE=
-UBUNTU_TYPE=
-UBUNTU_MATE_ROOTFS_TYPE=
+DISTRIB_TYPE=
 VENDER=
 CHIP=
 
@@ -237,14 +241,14 @@ function choose_uboot_version() {
 }
 
 
-## Choose ubuntu version
-function choose_ubuntu_version() {
+## Choose distribution
+function choose_distribution() {
 	echo ""
-	echo "Choose ubuntu version:"
+	echo "Choose distribution:"
 	i=0
-	while [[ $i -lt $UBUNTU_VERSION_ARRAY_LEN ]]
+	while [[ $i -lt $DISTRIBUTION_ARRAY_LEN ]]
 	do
-		echo "$((${i}+1)). ubuntu-${UBUNTU_VERSION_ARRAY[$i]}"
+		echo "$((${i}+1)). ${DISTRIBUTION_ARRAY[$i]}"
 		let i++
 	done
 
@@ -253,11 +257,11 @@ function choose_ubuntu_version() {
 	local DEFAULT_NUM
 	DEFAULT_NUM=1
 
-	export UBUNTU=
+	export DISTRIBUTION
 	local ANSWER
-	while [ -z $UBUNTU ]
+	while [ -z $DISTRIBUTION ]
 	do
-		echo -n "Which ubuntu version would you like? ["$DEFAULT_NUM"] "
+		echo -n "Which distribution would you like? ["$DEFAULT_NUM"] "
 		if [ -z "$1" ]; then
 			read ANSWER
 		else
@@ -270,9 +274,9 @@ function choose_ubuntu_version() {
 		fi
 
 		if [ -n "`echo $ANSWER | sed -n '/^[0-9][0-9]*$/p'`" ]; then
-			if [ $ANSWER -le $UBUNTU_VERSION_ARRAY_LEN ] && [ $ANSWER -gt 0 ]; then
+			if [ $ANSWER -le $DISTRIBUTION_ARRAY_LEN ] && [ $ANSWER -gt 0 ]; then
 				index=$((${ANSWER}-1))
-				UBUNTU="${UBUNTU_VERSION_ARRAY[$index]}"
+				DISTRIBUTION="${DISTRIBUTION_ARRAY[$index]}"
 			else
 				echo
 				echo "number not in range. Please try again."
@@ -289,14 +293,14 @@ function choose_ubuntu_version() {
 	done
 }
 
-## Choose ubuntu arch
-function choose_ubuntu_architecture() {
+## Choose distribution arch
+function choose_distribution_architecture() {
 	echo ""
-	echo "Choose ubuntu architecture:"
+	echo "Choose ${DISTRIBUTION} architecture:"
 	i=0
-	while [[ $i -lt $UBUNTU_ARCH_ARRAY_LEN ]]
+	while [[ $i -lt $DISTRIB_ARCH_ARRAY_LEN ]]
 	do
-		echo "$((${i}+1)). ubuntu-${UBUNTU_ARCH_ARRAY[$i]}"
+		echo "$((${i}+1)). ${DISTRIB_ARCH_ARRAY[$i]}"
 		let i++
 	done
 
@@ -305,11 +309,11 @@ function choose_ubuntu_architecture() {
 	local DEFAULT_NUM
 	DEFAULT_NUM=1
 
-	export UBUNTU_ARCH=
+	export DISTRIB_ARCH=
 	local ANSWER
-	while [ -z $UBUNTU_ARCH ]
+	while [ -z $DISTRIB_ARCH ]
 	do
-		echo -n "Which ubuntu architecture would you like? ["$DEFAULT_NUM"] "
+		echo -n "Which ${DISTRIBUTION} architecture would you like? ["$DEFAULT_NUM"] "
 		if [ -z "$1" ]; then
 			read ANSWER
 		else
@@ -322,9 +326,9 @@ function choose_ubuntu_architecture() {
 		fi
 
 		if [ -n "`echo $ANSWER | sed -n '/^[0-9][0-9]*$/p'`" ]; then
-			if [ $ANSWER -le $UBUNTU_ARCH_ARRAY_LEN ] && [ $ANSWER -gt 0 ]; then
+			if [ $ANSWER -le $DISTRIB_ARCH_ARRAY_LEN ] && [ $ANSWER -gt 0 ]; then
 				index=$((${ANSWER}-1))
-				UBUNTU_ARCH="${UBUNTU_ARCH_ARRAY[$index]}"
+				DISTRIB_ARCH="${DISTRIB_ARCH_ARRAY[$index]}"
 			else
 				echo
 				echo "number not in range. Please try again."
@@ -354,7 +358,7 @@ function choose_install_type() {
 		i=0
 		while [[ $i -lt $INSTALL_TYPE_ARRAY_LEN ]]
 		do
-			echo "$((${i}+1)). install-${INSTALL_TYPE_ARRAY[$i]}"
+			echo "$((${i}+1)). ${INSTALL_TYPE_ARRAY[$i]}"
 			let i++
 		done
 	fi
@@ -401,13 +405,22 @@ function choose_install_type() {
 	done
 }
 
-function choose_ubuntu_type() {
+## Choose distribution release
+function choose_distribution_release() {
 	echo ""
-	echo "Choose ubuntu type:"
+	echo "Choose ${DISTRIBUTION} release:"
+
 	i=0
-	while [[ $i -lt $UBUNTU_TYPE_ARRAY_LEN ]]
+	local DISTRIBUTION_RELEASE_ARRAY_LEN
+	local DISTRIBUTION_RELEASE_ELEMENT
+	local DISTRIBUTION_RELEASE
+
+	DISTRIBUTION_RELEASE_ARRAY_LEN=${DISTRIBUTION}_RELEASE_ARRAY_LEN
+	while [[ $i -lt ${!DISTRIBUTION_RELEASE_ARRAY_LEN} ]]
 	do
-		echo "$((${i}+1)). ubuntu-${UBUNTU_TYPE_ARRAY[$i]}"
+		DISTRIBUTION_RELEASE_ARRAY_ELEMENT=${DISTRIBUTION}_RELEASE_ARRAY[$i]
+		DISTRIBUTION_RELEASE=${!DISTRIBUTION_RELEASE_ARRAY_ELEMENT}
+		echo "$((${i}+1)). ${DISTRIBUTION_RELEASE}"
 		let i++
 	done
 
@@ -416,11 +429,11 @@ function choose_ubuntu_type() {
 	local DEFAULT_NUM
 	DEFAULT_NUM=1
 
-	export UBUNTU_TYPE=
+	export DISTRIB_RELEASE=
 	local ANSWER
-	while [ -z $UBUNTU_TYPE ]
+	while [ -z $DISTRIB_RELEASE ]
 	do
-		echo -n "Which ubuntu type would you like? ["$DEFAULT_NUM"] "
+		echo -n "Which ${DISTRIBUTION} release would you like? ["$DEFAULT_NUM"] "
 		if [ -z "$1" ]; then
 			read ANSWER
 		else
@@ -433,9 +446,10 @@ function choose_ubuntu_type() {
 		fi
 
 		if [ -n "`echo $ANSWER | sed -n '/^[0-9][0-9]*$/p'`" ]; then
-			if [ $ANSWER -le $UBUNTU_TYPE_ARRAY_LEN ] && [ $ANSWER -gt 0 ]; then
+			if [ $ANSWER -le ${!DISTRIBUTION_RELEASE_ARRAY_LEN} ] && [ $ANSWER -gt 0 ]; then
 				index=$((${ANSWER}-1))
-				UBUNTU_TYPE="${UBUNTU_TYPE_ARRAY[$index]}"
+				DISTRIBUTION_RELEASE_ARRAY_ELEMENT=${DISTRIBUTION}_RELEASE_ARRAY[$index]
+				DISTRIB_RELEASE="${!DISTRIBUTION_RELEASE_ARRAY_ELEMENT}"
 			else
 				echo
 				echo "number not in range. Please try again."
@@ -444,26 +458,31 @@ function choose_ubuntu_type() {
 		else
 			echo
 			echo "I didn't understand your response.  Please try again."
+
 			echo
 		fi
-
 		if [ -n "$1" ]; then
 			break
 		fi
 	done
 }
 
-function choose_ubuntu_mate_rootfs_type() {
-	if [ "$UBUNTU_TYPE" != "mate" ]; then
-		return
-	fi
-
+## Choose distribution type
+function choose_distribution_type() {
 	echo ""
-	echo "Choose ubuntu mate rootfs type:"
+	echo "Choose ${DISTRIBUTION} type:"
+
 	i=0
-	while [[ $i -lt $UBUNTU_MATE_ROOTFS_TYPE_ARRAY_LEN ]]
+	local DISTRIBUTION_TYPE_ARRAY_LEN
+	local DISTRIBUTION_TYPE_ELEMENT
+	local DISTRIBUTION_TYPE
+
+	DISTRIBUTION_TYPE_ARRAY_LEN=${DISTRIBUTION}_TYPE_ARRAY_LEN
+	while [[ $i -lt ${!DISTRIBUTION_TYPE_ARRAY_LEN} ]]
 	do
-		echo "$((${i}+1)). ${UBUNTU_MATE_ROOTFS_TYPE_ARRAY[$i]}"
+		DISTRIBUTION_TYPE_ARRAY_ELEMENT=${DISTRIBUTION}_TYPE_ARRAY[$i]
+		DISTRIBUTION_TYPE=${!DISTRIBUTION_TYPE_ARRAY_ELEMENT}
+		echo "$((${i}+1)). ${DISTRIBUTION_TYPE}"
 		let i++
 	done
 
@@ -472,11 +491,11 @@ function choose_ubuntu_mate_rootfs_type() {
 	local DEFAULT_NUM
 	DEFAULT_NUM=1
 
-	export UBUNTU_MATE_ROOTFS_TYPE=
+	export DISTRIB_TYPE=
 	local ANSWER
-	while [ -z $UBUNTU_MATE_ROOTFS_TYPE ]
+	while [ -z $DISTRIB_TYPE ]
 	do
-		echo -n "Which ubuntu mate rootfs type would you like? ["$DEFAULT_NUM"] "
+		echo -n "Which ${DISTRIBUTION} type would you like? ["$DEFAULT_NUM"] "
 		if [ -z "$1" ]; then
 			read ANSWER
 		else
@@ -489,9 +508,10 @@ function choose_ubuntu_mate_rootfs_type() {
 		fi
 
 		if [ -n "`echo $ANSWER | sed -n '/^[0-9][0-9]*$/p'`" ]; then
-			if [ $ANSWER -le $UBUNTU_MATE_ROOTFS_TYPE_ARRAY_LEN ] && [ $ANSWER -gt 0 ]; then
+			if [ $ANSWER -le ${!DISTRIBUTION_TYPE_ARRAY_LEN} ] && [ $ANSWER -gt 0 ]; then
 				index=$((${ANSWER}-1))
-				UBUNTU_MATE_ROOTFS_TYPE="${UBUNTU_MATE_ROOTFS_TYPE_ARRAY[$index]}"
+				DISTRIBUTION_TYPE_ARRAY_ELEMENT=${DISTRIBUTION}_TYPE_ARRAY[$index]
+				DISTRIB_TYPE="${!DISTRIBUTION_TYPE_ARRAY_ELEMENT}"
 			else
 				echo
 				echo "number not in range. Please try again."
@@ -500,9 +520,9 @@ function choose_ubuntu_mate_rootfs_type() {
 		else
 			echo
 			echo "I didn't understand your response.  Please try again."
+
 			echo
 		fi
-
 		if [ -n "$1" ]; then
 			break
 		fi
@@ -537,12 +557,10 @@ function lunch() {
 	echo "#CHIP=${CHIP}"
 	echo "#LINUX=${LINUX}"
 	echo "#UBOOT=${UBOOT}"
-	echo "#UBUNTU_TYPE=${UBUNTU_TYPE}"
-	if [ "$UBUNTU_TYPE" == "mate" ]; then
-		echo "#UBUNTU_MATE_ROOTFS_TYPE=${UBUNTU_MATE_ROOTFS_TYPE}"
-	fi
-	echo "#UBUNTU=${UBUNTU}"
-	echo "#UBUNTU_ARCH=${UBUNTU_ARCH}"
+	echo "#DISTRIBUTION=${DISTRIBUTION}"
+	echo "#DISTRIB_RELEASE=${DISTRIB_RELEASE}"
+	echo "#DISTRIB_TYPE=${DISTRIB_TYPE}"
+	echo "#DISTRIB_ARCH=${DISTRIB_ARCH}"
 	echo "#INSTALL_TYPE=${INSTALL_TYPE}"
 	echo
 	echo "==========================================="
@@ -557,10 +575,10 @@ export_version
 choose_khadas_board
 choose_uboot_version
 choose_linux_version
-choose_ubuntu_version
-choose_ubuntu_architecture
-choose_ubuntu_type
-choose_ubuntu_mate_rootfs_type
+choose_distribution
+choose_distribution_release
+choose_distribution_type
+choose_distribution_architecture
 choose_install_type
 lunch
 

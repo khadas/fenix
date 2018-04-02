@@ -44,7 +44,7 @@ build_uboot() {
     # Update u-boot
     update_git_repo "$PWD" "$UBOOT_GIT_BRANCH"
 
-    echo "Build u-boot..."
+    info_msg "Build u-boot..."
     export PATH=$TOOLCHAINS/gcc-linaro-aarch64-none-elf/bin:$TOOLCHAINS/gcc-linaro-arm-none-eabi/bin:$PATH
     make $UBOOT_DEFCONFIG
     make -j8 CROSS_COMPILE=aarch64-none-elf-
@@ -99,7 +99,7 @@ build_linux() {
     # Update linux
     update_git_repo "$PWD" "$LINUX_GIT_BRANCH"
 
-    echo "Build linux..."
+    info_msg "Build linux..."
     export PATH=$TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/bin:$PATH
     make ARCH=arm64 $LINUX_DEFCONFIG
     make -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image dtbs  modules
@@ -108,30 +108,25 @@ build_linux() {
 ## Build linux debs
 build_linux_debs() {
 	# Build linux debs
+	info_msg "Build linux debs..."
+
+	IMAGE_LINUX_VERSION=`head -n 1 $LINUX_DIR/include/config/kernel.release | xargs echo -n`
+
+	cd $ROOT
+
+	# Hack for deb builder. To pack what's missing in headers pack.
+	cp archives/patches/misc/headers-debian-byteshift.patch /tmp
+
+	# Different packaging for 4.3+
+	if linux-version compare $IMAGE_LINUX_VERSION ge 4.3; then
+		KERNEL_PACKING="bindeb-pkg"
+	else
+		KERNEL_PACKING="deb-pkg"
+	fi
+
 	export PATH=$TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/bin:$PATH
-	make -j8 -C $LINUX_DIR $KERNEL_PACKING KDEB_PKGVERSION="$VERSION" LOCAL_VERSION="-${VENDER,,}-${CHIP,,}" KBUILD_DEBARCH="$UBUNTU_ARCH" ARCH=arm64 DEBFULLNAME="Khadas" DEBEMAIL="hello@khadas.com" CROSS_COMPILE="aarch64-linux-gnu-"
+	make -j8 -C $LINUX_DIR $KERNEL_PACKING KDEB_PKGVERSION="$VERSION" LOCAL_VERSION="-${VENDER,,}-${CHIP,,}" KBUILD_DEBARCH="$DISTRIB_ARCH" ARCH=arm64 DEBFULLNAME="Khadas" DEBEMAIL="hello@khadas.com" CROSS_COMPILE="aarch64-linux-gnu-"
 
 	mkdir -p $BUILD_DEBS
 	mv $ROOT/*.deb $BUILD_DEBS
-
-	sudo mkdir -p $ROOTFS/tempdebs
-	# Copy linux image deb to rootfs
-	if [ -f $BUILD_DEBS/linux-image-${VENDER,,}-${CHIP,,}_${VERSION}_${UBUNTU_ARCH}.deb ]; then
-		sudo cp $BUILD_DEBS/linux-image-${VENDER,,}-${CHIP,,}_${VERSION}_${UBUNTU_ARCH}.deb $ROOTFS/tempdebs
-	fi
-
-	# Copy linux dtb to rootfs
-	if [ -f $BUILD_DEBS/linux-dtb-${VENDER,,}-${CHIP,,}_${VERSION}_${UBUNTU_ARCH}.deb ]; then
-		sudo cp $BUILD_DEBS/linux-dtb-${VENDER,,}-${CHIP,,}_${VERSION}_${UBUNTU_ARCH}.deb $ROOTFS/tempdebs
-	fi
-
-	# Copy linux headers to rootfs
-	if [ -f $BUILD_DEBS/linux-headers-${VENDER,,}-${CHIP,,}_${VERSION}_${UBUNTU_ARCH}.deb ]; then
-		sudo cp $BUILD_DEBS/linux-headers-${VENDER,,}-${CHIP,,}_${VERSION}_${UBUNTU_ARCH}.deb $ROOTFS/tempdebs
-	fi
-
-	# Copy linux firmware to rootfs
-	if [ -f $BUILD_DEBS/linux-firmware-image-${VENDER,,}-${CHIP,,}_${VERSION}_${UBUNTU_ARCH}.deb ]; then
-		sudo cp $BUILD_DEBS/linux-firmware-image-${VENDER,,}-${CHIP,,}_${VERSION}_${UBUNTU_ARCH}.deb $ROOTFS/tempdebs
-	fi
 }

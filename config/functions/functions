@@ -2,6 +2,7 @@
 source config/functions/common-functions
 
 ## Functions
+source config/functions/build-rootfs
 source config/functions/git-repo
 source config/functions/build-package
 source config/functions/build-board-deb
