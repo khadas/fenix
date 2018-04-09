@@ -165,6 +165,9 @@ build_gpu_deb() {
 
 		cp -arf $gpu_lib $gpu_lib_install_dir/libMali.so
 
+		## pkgconfig
+		cp -r archives/hwpacks/mali/${VENDER}/lib/pkgconfig_${DISTRIB_ARCH} $gpu_lib_install_dir/pkgconfig
+
 		### links
 		cp -arf archives/hwpacks/mali/${VENDER}/lib/*.so* $gpu_lib_install_dir
 
