@@ -109,6 +109,20 @@ PACKAGE_LIST_OFFICE="lxtask mirage galculator hexchat mpv \
 
 PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
 
+PACKAGE_LIST_XSERVER="libunwind8 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xf86dri0 libxcb-xkb1 libxcb-xv0 \
+	libpixman-1-dev x11proto-core-dev x11proto-input-dev x11proto-xext-dev x11proto-video-dev x11proto-randr-dev x11proto-render-dev x11proto-dri2-dev \
+	x11proto-gl-dev x11proto-fonts-dev x11proto-xinerama-dev x11proto-kb-dev x11proto-xf86dri-dev x11proto-resource-dev x11proto-scrnsaver-dev \
+	x11proto-xf86bigfont-dev x11proto-dri3-dev x11proto-present-dev libxfont-dev libxkbfile-dev libpciaccess-dev mesa-common-dev"
+
+PACKAGE_LIST_GSTREAMER="gstreamer1.0-libav gstreamer1.0-plugins-bad gstreamer1.0-tools gstreamer1.0-plugins-base gstreamer1.0-alsa \
+	gstreamer1.0-plugins-good"
+
+PACKAGE_LIST_QT="libqt5opengl5 libqt5qml5 libqt5quick5 libqt5widgets5 libqt5gui5 libqt5core5a qml-module-qtquick2 \
+	libqt5multimedia5 libqt5multimedia5-plugins libqt5multimediaquick-p5 qml-module-qt-labs-folderlistmodel qml-module-qtmultimedia \
+	libqgsttools-p1 libqt5multimediawidgets5 qtbase5-dev"
+
+PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_XSERVER"
+
 case $DISTRIB_TYPE in
 	xfce)
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_OFFICE"
@@ -134,6 +148,7 @@ case $DISTRIB_RELEASE in
 	;;
 	stretch)
 	PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_QT"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP thunderbird chromium dbus-x11"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP paprefs numix-gtk-theme system-config-printer-common system-config-printer"
 	;;

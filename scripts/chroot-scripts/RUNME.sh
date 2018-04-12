@@ -22,7 +22,7 @@ echo root:khadas | chpasswd
 # Admin user khadas
 useradd -m -p "pal8k5d7/m9GY" -s /bin/bash khadas
 usermod -aG sudo,adm khadas
-usermod -a -G audio,video,disk,input,tty,root,users,games khadas
+usermod -a -G audio,video,disk,input,tty,root,users,games,dialout,cdrom,dip,plugdev,bluetooth,pulse-access,systemd-journal,netdev,staff khadas
 
 adduser khadas audio
 adduser khadas dialout
