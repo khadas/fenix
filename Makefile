@@ -20,7 +20,7 @@ image:
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/make_image.sh
+	sudo -E ./scripts/make_image.sh
 endif
 
 github:
