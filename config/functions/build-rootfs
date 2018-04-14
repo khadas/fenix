@@ -45,7 +45,7 @@ install_common()
 	fi
 
 	# Install GPU deb in chroot
-	install_deb_chroot $BUILD_DEBS/linux-gpu-${VENDER,,}-${CHIP,,}-${GPU_MODEL,,}-${GPU_VER,,}_${VERSION}_${DISTRIB_ARCH}.deb
+	install_deb_chroot $BUILD_DEBS/linux-gpu-${VENDER,,}-${CHIP,,}-${GPU_MODEL,,}-${GPU_VER,,}-${GPU_PLATFORM}_${VERSION}_${DISTRIB_ARCH}.deb
 
 	# Install board deb in chroot
 	install_deb_chroot $BUILD_DEBS/${LINUX_BOARD_DEB}_${VERSION}_${DISTRIB_ARCH}.deb

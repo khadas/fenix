@@ -9,7 +9,7 @@ build_gpu_deb() {
 
 	info_msg "Build gpu deb..."
 
-	local pkgname="linux-gpu-${VENDER,,}-${CHIP,,}-${GPU_MODEL,,}-${GPU_VER,,}"
+	local pkgname="linux-gpu-${VENDER,,}-${CHIP,,}-${GPU_MODEL,,}-${GPU_VER,,}-${GPU_PLATFORM}"
 	local pkgdir="$BUILD_IMAGES/.tmp/${pkgname}_${VERSION}_${DISTRIB_ARCH}"
 
 	if [ "$KHADAS_BOARD" == "VIM" ]; then
