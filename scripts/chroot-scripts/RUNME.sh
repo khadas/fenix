@@ -15,6 +15,8 @@ UBOOT=$7
 INSTALL_TYPE=$8
 VENDER=$9
 
+export LC_ALL=C
+export LANG=C
 
 # Setup password for root user
 echo root:khadas | chpasswd
@@ -22,11 +24,23 @@ echo root:khadas | chpasswd
 # Admin user khadas
 useradd -m -p "pal8k5d7/m9GY" -s /bin/bash khadas
 usermod -aG sudo,adm khadas
-usermod -a -G audio,video,disk,input,tty,root,users,games,dialout,cdrom,dip,plugdev,bluetooth,pulse-access,systemd-journal,netdev,staff khadas
 
-adduser khadas audio
-adduser khadas dialout
-adduser khadas video
+# Add group
+DEFGROUPS="audio,video,disk,input,tty,root,users,games,dialout,cdrom,dip,plugdev,bluetooth,pulse-access,systemd-journal,netdev,staff"
+IFS=','
+for group in $DEFGROUPS; do
+	/bin/egrep  -i "^$group" /etc/group > /dev/null
+	if [ $? -eq 0 ]; then
+		echo "Group '$group' exists in /etc/group"
+	else
+		echo "Group '$group' does not exists in /etc/group, creating"
+		groupadd $group
+	fi
+done
+unset IFS
+
+echo "Add khadas to ($DEFGROUPS) groups."
+usermod -a -G $DEFGROUPS khadas
 
 # Setup host
 echo Khadas > /etc/hostname
@@ -39,12 +53,6 @@ ff00::0     ip6-mcastprefix
 ff02::1     ip6-allnodes
 ff02::2     ip6-allrouters
 EOF
-
-# Locale
-locale-gen "en_US.UTF-8"
-export LC_ALL="en_US.UTF-8"
-update-locale LC_ALL="en_US.UTF-8" LANG="en_US.UTF-8" LC_MESSAGES=POSIX
-dpkg-reconfigure -f noninteractive locales
 
 if [ "$DISTRIB_TYPE" != "server" ]; then
 	# Enable network manager
