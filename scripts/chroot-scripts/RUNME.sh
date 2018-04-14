@@ -112,27 +112,6 @@ if [ "$INSTALL_TYPE" == "EMMC" ]; then
 	fi
 fi
 
-if [ "$LINUX" == "3.14" ]; then
-	echo dwc3 >> /etc/modules
-	echo dwc_otg >> /etc/modules
-fi
-
-if [ "$KHADAS_BOARD" == "VIM" ]; then
-	# Load mali module
-	echo mali >> /etc/modules
-fi
-
-if [ "$LINUX" == "mainline" ]; then
-	# Load WIFI - for mainline
-	echo brcmfmac >> /etc/modules
-else
-	# Load WIFI at boot time(MUST HERE)
-	echo dhd >> /etc/modules
-fi
-
-# Load AUFS module
-echo aufs >> /etc/modules
-
 # Bluetooth
 systemctl enable bluetooth-khadas
 

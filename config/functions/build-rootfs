@@ -10,6 +10,11 @@ install_common()
 {
 	info_msg "Applying common tweaks..."
 
+	# create modules file
+	if [[ -n $MODULES ]]; then
+		tr ' ' '\n' <<< "$MODULES" > $ROOTFS_TEMP/etc/modules
+	fi
+
 	# change time zone data
 	info_msg "Setup timezone to '$TZDATA'"
 	echo $TZDATA > $ROOTFS_TEMP/etc/timezone
