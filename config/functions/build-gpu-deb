@@ -137,6 +137,9 @@ build_gpu_deb() {
 		if [ "$GPU_PLATFORM" == "fbdev" ]; then
 			### fbdev
 			local gpu_lib="$ROOT/archives/hwpacks/mali/${VENDER}/lib/$DISTRIB_ARCH/libmali-midgard-t86x-${GPU_VER}-fbdev.so"
+		elif [ "$GPU_PLATFORM" == "gbm" ]; then
+			### gbm
+			local gpu_lib="$ROOT/archives/hwpacks/mali/${VENDER}/lib/$DISTRIB_ARCH/libmali-midgard-t86x-${GPU_VER}-gbm.so"
 		elif [ "$GPU_PLATFORM" == "x11" ]; then
 			### x11
 			local gpu_lib="$ROOT/archives/hwpacks/mali/${VENDER}/lib/$DISTRIB_ARCH/libmali-midgard-t86x-${GPU_VER}.so"
