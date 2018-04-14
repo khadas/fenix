@@ -55,12 +55,20 @@ install_common()
 		install_deb_packages_platform
 	fi
 
-	# disable repeated messages due to xconsole not being installed.
+	# Tweaks for platform
+	if [[ $(type -t tweaks_platform) == function ]]; then
+		tweaks_platform
+	fi
+
+	# Enable additional services
+	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable resize2fs.service"'
+
+	# Disable repeated messages due to xconsole not being installed.
 	[[ -f $ROOTFS_TEMP/etc/rsyslog.d/50-default.conf ]] && sed '/daemon\.\*\;mail.*/,/xconsole/ s/.*/#&/' -i $ROOTFS_TEMP/etc/rsyslog.d/50-default.conf
-	# disable deprecated parameter
+	# Disable deprecated parameter
 	sed '/.*$KLogPermitNonKernelFacility.*/,// s/.*/#&/' -i $ROOTFS_TEMP/etc/rsyslog.conf
 
-	# premit root login via SSH for the first boot
+	# Premit root login via SSH for the first boot
 	sed -i 's/#\?PermitRootLogin .*/PermitRootLogin yes/' $ROOTFS_TEMP/etc/ssh/sshd_config
 }
 

@@ -95,32 +95,6 @@ fi
 
 cd /
 
-if [ "$INSTALL_TYPE" == "EMMC" ]; then
-
-	# Create links
-	ln -s /boot/zImage zImage
-	ln -s /boot/uInitrd uInitrd
-
-	if [ "$KHADAS_BOARD" == "VIM" ]; then
-		ln -s /boot/dtb/kvim_linux.dtb dtb.img
-	elif [ "$KHADAS_BOARD" == "VIM2" ]; then
-		ln -s /boot/dtb/kvim2_linux.dtb dtb.img
-	elif [ "$KHADAS_BOARD" == "Edge" ]; then
-		ln -s /boot/dtb/rk3399-kedge-linux.dtb dtb.img
-	elif [ "$KHADAS_BOARD" == "Firefly_RK3399" ]; then
-		ln -s /boot/dtb/rk3399-firefly-linux.dtb dtb.img
-	fi
-fi
-
-# Bluetooth
-systemctl enable bluetooth-khadas
-
-# Resize service
-systemctl enable resize2fs
-
-# HDMI service
-systemctl enable 0hdmi
-
 # Build time
 LC_ALL="C" date > /etc/build-time
 
