@@ -49,7 +49,9 @@ build_uboot() {
 	make $UBOOT_DEFCONFIG
     make -j8 CROSS_COMPILE=${UBOOT_COMPILER}
 
-	[[ $(type -t uboot_custom_postprocess) == function ]] && uboot_custom_postprocess
+	if [[ $(type -t uboot_custom_postprocess) == function ]]; then
+		uboot_custom_postprocess
+	fi
 
 	ret=$?
 
