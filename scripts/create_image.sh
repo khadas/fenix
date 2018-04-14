@@ -12,13 +12,6 @@ source ${BOARD_CONFIG}/${KHADAS_BOARD}.conf
 source config/functions/functions
 
 ######################################################################################
-
-if [[ $EUID != 0 ]]; then
-	warning_msg "This script requires root privileges, trying to use sudo, please enter your passowrd!"
-	sudo -E "$0" "$@"
-	exit $?
-fi
-
 ## Try to update Fenix
 check_update() {
 	cd $ROOT
@@ -67,6 +60,11 @@ build_debs() {
 
 	# Build board deb
 	build_board_deb
+
+	# Build deb packages platform
+	if [[ $(type -t build_deb_packages_platform) == function ]]; then
+		build_deb_packages_platform
+	fi
 }
 
 ###########################################################
@@ -78,9 +76,12 @@ prepare_toolchains
 prepare_packages
 build_uboot
 build_debs
-prepare_rootfs
-build_rootfs
-pack_image_platform
+
+cd $ROOT
+
+## Rootfs stage requires root privileges
+warning_msg "This script requires root privileges, trying to use sudo, please enter your passowrd!"
+sudo -E $ROOT/scripts/rootfs_stage.sh
 
 echo -e "\nDone."
 echo -e "\n`date`"

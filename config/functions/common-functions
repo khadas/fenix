@@ -68,10 +68,11 @@ prepare_host() {
 	done
 
 	if [[ ${#deps[@]} -gt 0 ]]; then
-		echo "Installing build dependencies"
-		apt update
-		apt -y --no-install-recommends install "${deps[@]}"
-		update-ccache-symlinks
+		info_msg "Installing build dependencies"
+		info_msg "Requires root privileges, please enter your passowrd!"
+		sudo apt update
+		sudo apt -y --no-install-recommends install "${deps[@]}"
+		sudo update-ccache-symlinks
 	fi
 }
 

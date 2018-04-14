@@ -4,8 +4,7 @@ all:
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	@echo "This script requires root privileges, trying to use sudo, please enter your passowrd!"
-	sudo -E ./scripts/create_image.sh
+	./scripts/create_image.sh
 endif
 
 define help_message
@@ -20,6 +19,7 @@ image:
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
+	@echo "This script requires root privileges, trying to use sudo, please enter your passowrd!"
 	sudo -E ./scripts/make_image.sh
 endif
 
@@ -30,32 +30,21 @@ kernel:
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	@echo "This script requires root privileges, trying to use sudo, please enter your passowrd!"
-	sudo -E ./scripts/build.sh linux
+	./scripts/build.sh linux
 endif
 
 uboot:
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	@echo "This script requires root privileges, trying to use sudo, please enter your passowrd!"
-	sudo -E ./scripts/build.sh u-boot
+	./scripts/build.sh u-boot
 endif
 
 debs:
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	@echo "This script requires root privileges, trying to use sudo, please enter your passowrd!"
-	sudo -E ./scripts/build.sh linux-deb
-endif
-
-remount:
-ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
-	$(call help_message)
-else
-	@echo "This script requires root privileges, trying to use sudo, please enter your passowrd!"
-	sudo -E ./scripts/remount_rootfs.sh
+	./scripts/build.sh linux-deb
 endif
 
 info:
@@ -81,7 +70,6 @@ info:
 help:
 	@echo "Fenix scripts help messages:"
 	@echo "  all           - Create image according to environment."
-	@echo "  remount       - Remount rootfs and recreate initrd."
 	@echo "  kernel        - Build linux kernel."
 	@echo "  uboot         - Build u-boot."
 	@echo "  debs          - Build linux debs."

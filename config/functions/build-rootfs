@@ -46,8 +46,8 @@ install_common()
 	install_deb_chroot $BUILD_DEBS/${LINUX_BOARD_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
 
 	# Install packages platform
-	if [[ $(type -t install_packages_platform) == function ]]; then
-		install_packages_platform
+	if [[ $(type -t install_deb_packages_platform) == function ]]; then
+		install_deb_packages_platform
 	fi
 
 	# disable repeated messages due to xconsole not being installed.
