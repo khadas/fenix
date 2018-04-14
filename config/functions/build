@@ -25,6 +25,7 @@ build_uboot() {
     fi
 
     cd u-boot/
+	touch .scmversion
 
     if ! git branch | grep "^* $UBOOT_GIT_BRANCH$" > /dev/null; then
         if ! git branch | grep "^  $UBOOT_GIT_BRANCH$" > /dev/null; then
