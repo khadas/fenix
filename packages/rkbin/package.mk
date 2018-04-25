@@ -1,5 +1,5 @@
 PKG_NAME="rkbin"
-PKG_VERSION="8ba01f4"
+PKG_VERSION="85cb8de"
 PKG_SOURCE_DIR="rkbin-${PKG_VERSION}*"
 PKG_SITE="https://github.com/rockchip-linux/rkbin"
 PKG_URL="https://github.com/rockchip-linux/rkbin/archive/$PKG_VERSION.tar.gz"
