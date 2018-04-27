@@ -88,6 +88,14 @@ build_board_deb() {
 		cp -r $ROOT/archives/hwpacks/bluez/brcm_patchram_plus-$DISTRIB_ARCH $pkgdir/usr/local/bin/brcm_patchram_plus
 		cp -r $ROOT/archives/hwpacks/bluez/bluetooth-khadas.service $pkgdir/lib/systemd/system/
 		cp -r $ROOT/archives/hwpacks/bluez/bluetooth-khadas.sh $pkgdir/usr/local/bin/
+
+		# FIXME AP6359SA and AP6398S use the same chipid and rev, so can't identify in DHD driver.
+		# But AP6359SA only on VIM2, and AP6398S only on Edge, so modify firmware here.
+		if [ "$KHADAS_BOARD" == "Edge" ]; then
+			mv $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag_apsta_ap6398s.bin $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag_apsta.bin
+			mv $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag_ap6398s.bin $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag.bin
+			mv $pkgdir/lib/firmware/brcm/nvram_ap6398sr3.txt $pkgdir/lib/firmware/brcm/nvram_ap6359sa.txt
+		fi
 	fi
 
 	# Trigger uInitrd creation after installation, to apply
