@@ -14,18 +14,35 @@ version_compare() {
 	fi
 }
 
+if cat /proc/device-tree/compatible | grep rockchip > /dev/null; then
+	vender="Rockchip"
+elif cat /proc/device-tree/compatible | grep amlogic > /dev/null; then
+	vender="Amlogic"
+else
+	echo "Error: Unsupported vender!"
+	exit -1
+fi
+
+echo "VENDER: $vender"
+
 linux_ver=`uname -a | awk '{print $3}'`
 
-ret=`version_compare $linux_ver "4.12"`
+if [ "$vender" == "Amlogic" ]; then
+	ret=`version_compare $linux_ver "4.12"`
 
-# version >= 4.12
-if [ $ret == 1 ] || [ $ret == 0 ];then
-	## Supported mainline
+	# version >= 4.12
+	if [ $ret == 1 ] || [ $ret == 0 ];then
+		## Supported mainline
+		model=`cat /sys/bus/mmc/devices/mmc2\:0001/mmc2\:0001\:1/device`
+		bt_tty="ttyAML1"
+	else
+		model=`cat /sys/bus/mmc/devices/sdio:0001/sdio:0001:1/device`
+		bt_tty="ttyS1"
+	fi
+
+elif [ "$vender" == "Rockchip" ]; then
 	model=`cat /sys/bus/mmc/devices/mmc2\:0001/mmc2\:0001\:1/device`
-	bt_tty="ttyAML1"
-else
-	model=`cat /sys/bus/mmc/devices/sdio:0001/sdio:0001:1/device`
-	bt_tty="ttyS1"
+	bt_tty="ttyS0"
 fi
 
 /bin/echo 0 > /sys/class/rfkill/rfkill0/state
@@ -43,7 +60,7 @@ elif [ "$model" = "0x4356" ]; then
 	# VIM2
 	/usr/local/bin/brcm_patchram_plus  --patchram /lib/firmware/brcm/bcm4356a2.hcd --no2bytes --tosleep 1000 /dev/$bt_tty
 elif [ "$model" = "0x4359" ]; then
-    # VIM2 Pro
+	# VIM2 Pro & Edge AP6398S
 	/usr/local/bin/brcm_patchram_plus  --patchram /lib/firmware/brcm/BCM4359C0.hcd --no2bytes --tosleep 1000 /dev/$bt_tty
 fi
 
