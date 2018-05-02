@@ -95,7 +95,7 @@ build_board_deb() {
 			## Wi-Fi firmware
 			mv $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag_apsta_ap6398s.bin $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag_apsta.bin
 			mv $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag_ap6398s.bin $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag.bin
-			mv $pkgdir/lib/firmware/brcm/nvram_ap6398sr3.txt $pkgdir/lib/firmware/brcm/nvram_ap6359sa.txt
+			mv $pkgdir/lib/firmware/brcm/nvram_ap6398s.txt $pkgdir/lib/firmware/brcm/nvram_ap6359sa.txt
 
 			## Bluetooth firmware
 			mv $pkgdir/lib/firmware/brcm/BCM4359C0_ap6398s.hcd $pkgdir/lib/firmware/brcm/BCM4359C0.hcd
