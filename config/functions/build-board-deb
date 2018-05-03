@@ -118,6 +118,19 @@ build_board_deb() {
 	INITRD_ARCH=${DISTRIB_ARCH/armhf/arm}
 	EOF
 
+	mkdir -p $pkgdir/usr/lib/NetworkManager/conf.d/
+	cat <<-EOF > $pkgdir/usr/lib/NetworkManager/conf.d/zz-override-wifi-powersave-off.conf
+	[connection]
+	wifi.powersave = 2
+	EOF
+
+	if [ "$DISTRIB_RELEASE" == "stretch" ]; then
+		cat <<-EOF > $pkgdir/usr/lib/NetworkManager/conf.d/10-override-random-mac.conf
+		[device]
+		wifi.scan-rand-mac-address=no
+		EOF
+	fi
+
 	# Create board deb file
 	echo "Building package: $pkgname"
 	fakeroot dpkg-deb -b $pkgdir ${pkgdir}.deb

@@ -58,8 +58,8 @@ if [ "$DISTRIB_TYPE" != "server" ]; then
 	# Enable network manager
 	if [ -f /etc/NetworkManager/NetworkManager.conf ]; then
 		sed "s/managed=\(.*\)/managed=true/g" -i /etc/NetworkManager/NetworkManager.conf
-		# Disable dns management withing NM
-		sed "s/\[main\]/\[main\]\ndns=none/g" -i /etc/NetworkManager/NetworkManager.conf
+		# Disable DNS management withing NM for !Stretch
+		[[ $DISTRIB_RELEASE != stretch ]] && sed "s/\[main\]/\[main\]\ndns=none/g" -i /etc/NetworkManager/NetworkManager.conf
 		printf '[keyfile]\nunmanaged-devices=interface-name:p2p0\n' >> /etc/NetworkManager/NetworkManager.conf
 	fi
 fi
