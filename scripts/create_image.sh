@@ -143,6 +143,17 @@ install_kodi() {
 	fi
 }
 
+## Install xserver
+install_xserver() {
+	if [ "$VENDER" == "Rockchip" ] && [ "$UBUNTU_TYPE" == "mate" ]; then
+		echo "Install xserver..."
+		build_package "xserver_rk3399:target"
+		cd $ROOT
+		sudo mkdir -p $ROOTFS/tempdebs
+		sudo cp $BUILD_DEBS/xserver-*.deb $ROOTFS/tempdebs
+	fi
+}
+
 ## Rootfs
 build_rootfs() {
 	ret=0
@@ -247,6 +258,9 @@ build_rootfs() {
 	# Build board deb
 	build_board_deb
 
+	# Install xserver
+	install_xserver
+
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
 		# firstboot initialization: for 'ROOTFS' partition resize
 		# just for EMMC image.
@@ -267,7 +281,7 @@ build_rootfs() {
 	echo "      TYPE 'exit' TO CONTINUE IF FINISHED."
 	echo
 	mount_chroot "$ROOTFS"
-	sudo chroot $ROOTFS/ bash "/RUNME.sh" $UBUNTU $UBUNTU_TYPE $UBUNTU_ARCH $INSTALL_TYPE ${UBUNTU_MATE_ROOTFS_TYPE:-NONE} $LINUX $KHADAS_BOARD
+	sudo chroot $ROOTFS/ bash "/RUNME.sh" $UBUNTU $UBUNTU_TYPE $UBUNTU_ARCH $INSTALL_TYPE ${UBUNTU_MATE_ROOTFS_TYPE:-NONE} $LINUX $KHADAS_BOARD $VENDER
 
 	if [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" == "mainline" ] && [ "$UBUNTU_TYPE" == "mate" ] && [ "$UBUNTU_ARCH" == "arm64" ]; then
 		# Mali udev rule

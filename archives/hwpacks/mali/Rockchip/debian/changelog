@@ -1,0 +1,100 @@
+libmali-rk (1.6-1) testing; urgency=medium
+
+  * mali: utgard: update to r7p0
+  * debian: update utgard to r7p0
+
+ -- Jacob Chen <jacob2.chen@rock-chips.com>  Fri, 15 Dec 2017 11:06:46 +0800
+
+libmali-rk (1.5-6) testing; urgency=medium
+
+  * upgrade to r14p0 for midgard
+
+ -- Jacob Chen <jacob2.chen@rock-chips.com>  Wed, 18 Oct 2017 15:29:07 +0000
+
+libmali-rk (1.5-5) testing; urgency=medium
+
+  * mali: clean and renamed
+
+ -- Jacob Chen <jacob2.chen@rock-chips.com>  Wed, 29 Sep 2017 15:29:07 +0000
+
+libmali-rk (1.5-4) testing; urgency=medium
+
+  * mali: add midgard r13p0 for rk3399 32bit
+
+ -- yuyz <yuyz@rock-chips.com>  Mon, 16 Jan 2017 09:59:02 +0000
+
+libmali-rk (1.5-3) testing; urgency=medium
+
+  * mali: update the r13p0 mali library for rk3288
+
+ -- Jacob Chen <jacob2.chen@rock-chips.com>  Thu, 12 Jan 2017 09:29:07 +0000
+
+libmali-rk (1.5-2) testing; urgency=medium
+
+  [ Randy Li ]
+  * Revert "mali: upgrade Mali midgard library to t76x-r12p0"
+
+  [ rk ]
+  * mali: add rk3399 arm64 mali
+  * debian: correct depend for dev
+  * mali: add midgard r1p0
+
+  [ Jacob Chen ]
+  * debian: add conflicts for r1p0
+  * mali: add version info
+
+  [ Randy Li ]
+  * .gitignore: ignore more debian build files
+  * build: debian: install all mali version libraries
+
+ -- Randy Li <randy.li@rock-chips.com>  Thu, 22 Dec 2016 03:40:25 +0000
+
+libmali-rk (1.5-1) testing; urgency=medium
+
+  * mali: update the mali library for rk3399
+
+ -- Randy Li <randy.li@rock-chips.com>  Wed, 12 Oct 2016 01:29:07 +0000
+
+libmali-rk (1.4-7) unstable; urgency=medium
+
+  * mali: add mali library used for the Mali midgard 4th gen
+
+ -- Randy Li <randy.li@rock-chips.com>  Wed, 31 Aug 2016 09:08:16 +0000
+
+libmali-rk (1.4-6) unstable; urgency=medium
+
+  * mali: upgrade Mali midgard library to t76x-r12p0
+  * debian: install link for opencl support in mali midgrade
+
+ -- Randy Li <randy.li@rock-chips.com>  Mon, 15 Aug 2016 09:30:11 +0000
+
+libmali-rk (1.4-5) unstable; urgency=medium
+
+  * header: add opencl header
+  * mali: update library with OpenCL support for Mali midgard
+  * build: install OpenCL information
+  * debian: install OpenCL
+
+ -- Randy Li <randy.li@rock-chips.com>  Tue, 09 Aug 2016 01:33:59 +0000
+
+libmali-rk (1.4-4) unstable; urgency=low
+  * Support All Mali GPU used in Rockchip RK29 serial and future.
+
+ -- Randy Li <randy.li@rock-chips.com>  Tue, 26 Jul 2016 13:51:25 +0800
+
+libmali-rk (1.4-3) unstable; urgency=low
+  * Use the header files from graphics team
+
+ -- Randy Li <randy.li@rock-chips.com>  Mon, 18 Jul 2016 11:41:25 +0800
+
+libmali-rk (1.4-2) unstable; urgency=low
+  * New build system and multiarch support in pkgconfig file
+   + The new pkgconfig would like the program directly link
+     to mali against those symbol links.
+
+ -- Randy Li <randy.li@rock-chips.com>  Mon, 18 Jul 2016 09:31:25 +0800
+libmali-rk (1.4-1) unstable; urgency=low
+
+  * The binary files comes from graphics department.
+
+ -- Randy Li <randy.li@rock-chips.com>  Thu, 14 Jul 2016 08:01:25 +0000

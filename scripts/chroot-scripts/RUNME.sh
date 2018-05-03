@@ -21,6 +21,7 @@ INSTALL_TYPE=$4
 UBUNTU_MATE_ROOTFS_TYPE=$5
 LINUX=$6
 KHADAS_BOARD=$7
+VENDER=$8
 
 PACKAGE_LIST_BASIC="ifupdown net-tools udev fbset vim sudo initramfs-tools bluez rfkill libbluetooth-dev mc \
 	iputils-ping parted u-boot-tools linux-base"
@@ -218,6 +219,14 @@ cd /
 # Install GPU deb
 if [ -f /tempdebs/linux-gpu-*.deb ]; then
 	dpkg -i /tempdebs/linux-gpu-*.deb
+	apt-get install -f -y
+fi
+
+# Install xserver
+if [ "$VENDER" == "Rockchip" ] && [ "$UBUNTU_TYPE" == "mate" ]; then
+	apt-get build-dep xserver-xorg-core -y
+	dpkg -i /tempdebs/xserver-*.deb
+	apt-get install -f -y
 fi
 
 # Install board package

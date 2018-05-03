@@ -32,24 +32,24 @@ build_gpu_deb() {
 
 		if [ "$GPU_PLATFORM" == "fbdev" ]; then
 			### fbdev
-			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/r7p0/lib/$UBUNTU_ARCH/$GPU_VER/m450"
+			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDER}/r7p0/lib/$UBUNTU_ARCH/$GPU_VER/m450"
 		elif [ "$GPU_PLATFORM" == "x11" ]; then
 			### x11
-			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/r7p0/lib/$UBUNTU_ARCH/$GPU_VER/m450-X"
+			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDER}/r7p0/lib/$UBUNTU_ARCH/$GPU_VER/m450-X"
 		elif [ "$GPU_PLATFORM" == "wayland" ]; then
 			### wayland
-			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/r7p0/lib/$UBUNTU_ARCH/$GPU_VER/m450/wayland"
+			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDER}/r7p0/lib/$UBUNTU_ARCH/$GPU_VER/m450/wayland"
 		fi
 
 		# GPU user space binary drivers
 		## Headers
 		mkdir -p $pkgdir/usr/include/
-		cp -arf archives/hwpacks/mali/r7p0/include/EGL $pkgdir/usr/include/
-		cp -arf archives/hwpacks/mali/r7p0/include/GLES $pkgdir/usr/include/
-		cp -arf archives/hwpacks/mali/r7p0/include/GLES2 $pkgdir/usr/include/
-		cp -arf archives/hwpacks/mali/r7p0/include/KHR $pkgdir/usr/include/
+		cp -arf archives/hwpacks/mali/${VENDER}/r7p0/include/EGL $pkgdir/usr/include/
+		cp -arf archives/hwpacks/mali/${VENDER}/r7p0/include/GLES $pkgdir/usr/include/
+		cp -arf archives/hwpacks/mali/${VENDER}/r7p0/include/GLES2 $pkgdir/usr/include/
+		cp -arf archives/hwpacks/mali/${VENDER}/r7p0/include/KHR $pkgdir/usr/include/
 
-		cp -arf archives/hwpacks/mali/r7p0/include/EGL_platform/platform_${GPU_PLATFORM}/*.h $pkgdir/usr/include/EGL/
+		cp -arf archives/hwpacks/mali/${VENDER}/r7p0/include/EGL_platform/platform_${GPU_PLATFORM}/*.h $pkgdir/usr/include/EGL/
 
 		## libMali.so
 		mkdir -p $pkgdir/usr/lib/
@@ -63,25 +63,115 @@ build_gpu_deb() {
 		fi
 
 		### links
-		cp -arf archives/hwpacks/mali/r7p0/lib/*.so* $pkgdir/usr/lib/
+		cp -arf archives/hwpacks/mali/${VENDER}/r7p0/lib/*.so* $pkgdir/usr/lib/
 		if [ "$UBUNTU_ARCH" == "arm64" ]; then
-			cp -arf archives/hwpacks/mali/r7p0/lib/*.so* $pkgdir/usr/lib/aarch64-linux-gnu
+			cp -arf archives/hwpacks/mali/${VENDER}/r7p0/lib/*.so* $pkgdir/usr/lib/aarch64-linux-gnu
 		elif [ "$UBUNTU_ARCH" == "armhf" ]; then
-			cp -arf archives/hwpacks/mali/r7p0/lib/*.so* $pkgdir/usr/lib/arm-linux-gnueabihf
+			cp -arf archives/hwpacks/mali/${VENDER}/r7p0/lib/*.so* $pkgdir/usr/lib/arm-linux-gnueabihf
 		fi
 			mkdir -p $pkgdir/usr/lib/pkgconfig/
-			cp -arf archives/hwpacks/mali/r7p0/lib/pkgconfig/*.pc $pkgdir/usr/lib/pkgconfig/
+			cp -arf archives/hwpacks/mali/${VENDER}/r7p0/lib/pkgconfig/*.pc $pkgdir/usr/lib/pkgconfig/
 		# Mali m450 framebuffer mode examples
 		if [ "$UBUNTU_ARCH" == "arm64" ]; then
 			mkdir -p $pkgdir/usr/share/arm/
-			cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/lib/* $pkgdir/usr/lib/
-			cp -arf archives/hwpacks/mali/fbdev_examples/$LINUX/opengles_20 $pkgdir/usr/share/arm/
+			cp -arf archives/hwpacks/mali/${VENDER}/fbdev_examples/$LINUX/lib/* $pkgdir/usr/lib/
+			cp -arf archives/hwpacks/mali/${VENDER}/fbdev_examples/$LINUX/opengles_20 $pkgdir/usr/share/arm/
 		fi
 
 		mkdir -p $pkgdir/usr/lib/udev/rules.d
 		cat <<-EOF > $pkgdir/usr/lib/udev/rules.d/99-mali.rules
 		KERNEL=="mali",SUBSYSTEM=="misc",MODE="0777"
 		KERNEL=="ump",SUBSYSTEM=="ump",MODE="0777"
+		EOF
+
+		# Create board deb file
+		echo "Building package: $pkgname"
+		fakeroot dpkg-deb -b $pkgdir ${pkgdir}.deb
+		mkdir -p $BUILD_DEBS
+		# Remove old debs
+		rm -rf $BUILD_DEBS/linux-gpu-*.deb
+		cp ${pkgdir}.deb $BUILD_DEBS
+		sudo mkdir -p $ROOTFS/tempdebs
+		sudo cp $BUILD_DEBS/${pkgname}_${VERSION}_${UBUNTU_ARCH}.deb $ROOTFS/tempdebs
+		# Cleanup
+		rm -rf $pkgdir
+	elif [ "$KHADAS_BOARD" == "Edge" ] || [ "$KHADAS_BOARD" == "Firefly_RK3399" ]; then
+
+		cd $ROOT
+
+		local pkgname="linux-gpu-${VENDER,,}-${CHIP,,}-${GPU_MODEL,,}-${GPU_VER,,}"
+		local pkgdir="$BUILD_IMAGES/.tmp/${pkgname}_${VERSION}_${UBUNTU_ARCH}"
+		rm -rf $pkgdir
+		mkdir -p $pkgdir/DEBIAN
+
+		# set up control file
+		cat <<-EOF > $pkgdir/DEBIAN/control
+		Package: $pkgname
+		Source: libmali-rk
+		Version: $VERSION
+		Architecture: $UBUNTU_ARCH
+		Maintainer: Khadas <hello@khadas.com>
+		Installed-Size: 17199
+		Depends: libc6 (>= 2.15), libdrm2 (>= 2.3.1), libgcc1 (>= 1:3.5), libstdc++6 (>= 4.8), libx11-6, libx11-xcb1, libxcb-dri2-0 (>= 1.8), libxcb1
+		Replaces: libegl1-mesa, libegl1-x11, libgbm1, libgles2-mesa, libegl1-mesa-dev, libgbm-dev, libgles2-mesa-dev, opencl-c-headers
+		Provides: libegl1, libegl1-mesa, libgbm1, libgles2-mesa, libwayland-egl1-mesa, libegl1-mesa-dev, libgbm-dev, libgles2-mesa-dev, opencl-c-headers
+		Section: libs
+		Priority: optional
+		Multi-Arch: same
+		Homepage: http://www.rock-chips.com/
+		Description: The mali library for Rockchip RK3399 (64bit).
+		EOF
+
+		cat <<-EOF > $pkgdir/DEBIAN/conffiles
+		/etc/OpenCL/vendors/mali.icd
+		EOF
+
+		cat <<-EOF > $pkgdir/DEBIAN/preinst
+		#!/bin/sh
+
+		rm -rf /usr/lib/arm-linux-gnueabihf/mesa-egl
+		rm -rf /usr/lib/aarch64-linux-gnu/mesa-egl
+		EOF
+
+		chmod 755 "$pkgdir/DEBIAN/preinst"
+
+		if [ "$GPU_PLATFORM" == "fbdev" ]; then
+			### fbdev
+			local gpu_lib="$ROOT/archives/hwpacks/mali/${VENDER}/lib/$UBUNTU_ARCH/libmali-midgard-t86x-${GPU_VER}-fbdev.so"
+		elif [ "$GPU_PLATFORM" == "x11" ]; then
+			### x11
+			local gpu_lib="$ROOT/archives/hwpacks/mali/${VENDER}/lib/$UBUNTU_ARCH/libmali-midgard-t86x-${GPU_VER}.so"
+		elif [ "$GPU_PLATFORM" == "wayland" ]; then
+			### wayland
+			local gpu_lib="$ROOT/archives/hwpacks/mali/${VENDER}/lib/$UBUNTU_ARCH/libmali-midgard-t86x-${GPU_VER}-wayland.so"
+		fi
+
+		# GPU user space binary drivers
+		## Headers
+		mkdir -p $pkgdir/usr/include/
+		cp -arf archives/hwpacks/mali/${VENDER}/include/* $pkgdir/usr/include/
+		rm $pkgdir/usr/include/mali.icd
+
+		mkdir -p $pkgdir/etc/OpenCL/vendors/
+		cp archives/hwpacks/mali/${VENDER}/include/mali.icd $pkgdir/etc/OpenCL/vendors/
+
+		## libMali.so
+		if [ "$UBUNTU_ARCH" == "arm64" ]; then
+			local gpu_lib_install_dir="$pkgdir/usr/lib/aarch64-linux-gnu"
+		elif [ "$UBUNTU_ARCH" == "armhf" ]; then
+			local gpu_lib_install_dir="$pkgdir/usr/lib/arm-linux-gnueabihf"
+		fi
+
+		mkdir -p $gpu_lib_install_dir
+
+		cp -arf $gpu_lib $gpu_lib_install_dir/libMali.so
+
+		### links
+		cp -arf archives/hwpacks/mali/${VENDER}/lib/*.so* $gpu_lib_install_dir
+
+		mkdir -p $pkgdir/usr/lib/udev/rules.d
+		cat <<-EOF > $pkgdir/usr/lib/udev/rules.d/50-mail.rules
+		KERNEL=="mali0", MODE="0666", GROUP="video"
 		EOF
 
 		# Create board deb file
