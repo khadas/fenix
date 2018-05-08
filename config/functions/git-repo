@@ -6,7 +6,7 @@
 ## $2 git branch
 update_git_repo() {
     if [ ! -f $ROOT/.ignore-update ]; then
-        if [ "$1" == "" ] || [ "$2" == 0 ]; then
+        if [ "$1" == "" ] || [ "$2" == "" ]; then
             echo "Usage: $0 <repository_path> <git_branch>"
             return -1
         fi
