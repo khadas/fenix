@@ -1,19 +1,19 @@
-# Fenix scripts for building ubuntu image
+# Fenix script set to build Ubuntu/Debian image
 
 ## How to use?
 - Clone Fenix repository
 ```
 # mkdir -p ~/project/khadas
 # cd ~/project/khadas
-# git clone https://github.com/khadas/fenix ubuntu
-# cd ubuntu
+# git clone https://github.com/khadas/fenix
+# cd fenix
 ```
 
 - Setup build environment
 ```
 # source env/setenv.sh
 ```
-- Build ubuntu image
+- Build image
 ```
 # make
 ```
