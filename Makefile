@@ -23,9 +23,6 @@ else
 	sudo -E ./scripts/make_image.sh
 endif
 
-github:
-	./scripts/github.sh
-
 kernel:
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
@@ -73,7 +70,6 @@ help:
 	@echo "  kernel        - Build linux kernel."
 	@echo "  uboot         - Build u-boot."
 	@echo "  debs          - Build linux debs."
-	@echo "  github        - Update repositories from Khadas GitHub."
 	@echo "  image         - Pack update image."
 	@echo "  clean         - Cleanup."
 	@echo "  info          - Display current environment."
