@@ -410,7 +410,7 @@ build_rootfs() {
 	mount_chroot "$ROOTFS_TEMP"
 	chroot $ROOTFS_TEMP/ bash "/RUNME.sh" $DISTRIBUTION $DISTRIB_RELEASE $DISTRIB_TYPE $DISTRIB_ARCH $KHADAS_BOARD $LINUX $UBOOT $INSTALL_TYPE $VENDER
 
-	if [ "$KHADAS_BOARD" == "VIM" ] && [ "$LINUX" == "mainline" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_ARCH" == "arm64" ]; then
+	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$LINUX" == "mainline" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_ARCH" == "arm64" ]; then
 		# Mali udev rule
 		tee $ROOTFS_TEMP/etc/udev/rules.d/50-mali.rules <<-EOF
 		KERNEL=="mali", MODE="0660", GROUP="video"
