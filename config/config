@@ -29,7 +29,7 @@ UTILS_DIR="$BUILD/utils-[0-9a-f]*"
 UPGRADE_DIR="$BUILD/images_upgrade-[0-9a-f]*"
 
 ##################################### Configurations ##################################
-IMAGE_FILE_NAME="Fenix_${VERSION}_${KHADAS_BOARD}_${DISTRIBUTION}-${DISTRIB_RELEASE}_Linux-${LINUX}_${DISTRIB_TYPE}_${DISTRIB_ARCH}_${INSTALL_TYPE}_$(date +%F).img"
+IMAGE_FILE_NAME="${KHADAS_BOARD}_${DISTRIBUTION}-${DISTRIB_RELEASE}_Linux-${LINUX}_${DISTRIB_TYPE}_${DISTRIB_ARCH}_${INSTALL_TYPE}_$(date +%F).img"
 LINUX_IMAGE_DEB="linux-image-${VENDER,,}-${CHIP,,}"
 LINUX_FIRMWARE_DEB="linux-firmware-image-${VENDER,,}-${CHIP,,}"
 LINUX_BOARD_DEB="linux-board-package-${VENDER,,}-${CHIP,,}"
