@@ -50,10 +50,7 @@ build_debs() {
 	mkdir -p $BUILD_IMAGES
 
 	# Build linux debs
-	if [[ ! -f $BUILD_DEBS/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb ]]; then
-		build_linux
-		build_linux_debs
-	fi
+	build_linux_debs
 
 	# Build GPU deb
 	build_gpu_deb
@@ -75,6 +72,7 @@ check_update
 prepare_toolchains
 prepare_packages
 build_uboot
+build_linux
 build_debs
 
 cd $ROOT
