@@ -142,13 +142,15 @@ esac
 case $DISTRIB_RELEASE in
 	xenial)
 	PACKAGE_LIST_RELEASE="man-db nano linux-firmware zram-config"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP thunderbird chromium-browser"
+	PACKAGE_LIST_KODI="libglu1-mesa libglu1 libmicrohttpd10 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libva-drm1 libcurl3"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_KODI thunderbird chromium-browser"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP language-selector-gnome paprefs numix-gtk-theme system-config-printer-common system-config-printer-gnome ubuntu-mate-lightdm-theme"
 	[[ $DISTRIB_ARCH == armhf ]] && PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP mate-utils ubuntu-mate-welcome mate-settings-daemon"
 	;;
 	stretch)
 	PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_QT"
+	PACKAGE_LIST_KODI="libglu1-mesa libglu1 libmicrohttpd12 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libva-drm1 libcurl3"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_QT $PACKAGE_LIST_KODI"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP thunderbird chromium dbus-x11"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP paprefs numix-gtk-theme system-config-printer-common system-config-printer"
 	;;
