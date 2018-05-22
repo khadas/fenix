@@ -95,6 +95,7 @@ build_gpu_deb() {
 		rm -rf $BUILD_DEBS/linux-gpu-*.deb
 		cp ${pkgdir}.deb $BUILD_DEBS
 		# Cleanup
+		rm -rf ${pkgdir}.deb
 		rm -rf $pkgdir
 	elif [ "$KHADAS_BOARD" == "Edge" ] || [ "$KHADAS_BOARD" == "Firefly_RK3399" ]; then
 
