@@ -24,6 +24,9 @@ if [ -f /etc/default/FIRSTBOOT ]; then
 	resize2fs $rootpart
 
 	rm -f /etc/default/FIRSTBOOT
+	# Cleanup firstboot mark after first boot to system
+	fw_setenv firstboot 0
+
 
 	systemctl disable resize2fs
 	exit 0
