@@ -24,3 +24,7 @@
 /downloads
 /boot
 /archives/ubuntu-mate
+
+*.changes
+/archives/epbox/
+/easy_setup_target/
