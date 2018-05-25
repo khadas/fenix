@@ -3,13 +3,9 @@
 ################################################################
 ROOT="$(pwd)"
 
-KHADAS_BOARD_ARRAY=("VIM1" "VIM2" "Edge")
-VIM1_SUPPORTED_LINUX_VERSION_ARRAY=("3.14" "4.9" "mainline")
-VIM2_SUPPORTED_LINUX_VERSION_ARRAY=("3.14" "4.9")
-Edge_SUPPORTED_LINUX_VERSION_ARRAY=("4.4")
-VIM1_SUPPORTED_UBOOT_VERSION_ARRAY=("2015.01" "mainline")
-VIM2_SUPPORTED_UBOOT_VERSION_ARRAY=("2015.01")
-Edge_SUPPORTED_UBOOT_VERSION_ARRAY=("2017.09")
+unset SUPPORTED_UBOOT
+unset SUPPORTED_LINUX
+
 DISTRIBUTION_ARRAY=("Ubuntu" "Debian")
 Ubuntu_RELEASE_ARRAY=("xenial")
 Debian_RELEASE_ARRAY=("stretch")
@@ -18,13 +14,6 @@ Ubuntu_TYPE_ARRAY=("server" "mate")
 Debian_TYPE_ARRAY=("server" "lxde" "xfce")
 INSTALL_TYPE_ARRAY=("EMMC" "SD-USB")
 
-KHADAS_BOARD_ARRAY_LEN=${#KHADAS_BOARD_ARRAY[@]}
-VIM1_SUPPORTED_LINUX_VERSION_ARRAY_LEN=${#VIM1_SUPPORTED_LINUX_VERSION_ARRAY[@]}
-VIM2_SUPPORTED_LINUX_VERSION_ARRAY_LEN=${#VIM2_SUPPORTED_LINUX_VERSION_ARRAY[@]}
-Edge_SUPPORTED_LINUX_VERSION_ARRAY_LEN=${#Edge_SUPPORTED_LINUX_VERSION_ARRAY[@]}
-VIM1_SUPPORTED_UBOOT_VERSION_ARRAY_LEN=${#VIM1_SUPPORTED_UBOOT_VERSION_ARRAY[@]}
-VIM2_SUPPORTED_UBOOT_VERSION_ARRAY_LEN=${#VIM2_SUPPORTED_UBOOT_VERSION_ARRAY[@]}
-Edge_SUPPORTED_UBOOT_VERSION_ARRAY_LEN=${#Edge_SUPPORTED_UBOOT_VERSION_ARRAY[@]}
 DISTRIBUTION_ARRAY_LEN=${#DISTRIBUTION_ARRAY[@]}
 Ubuntu_RELEASE_ARRAY_LEN=${#Ubuntu_RELEASE_ARRAY[@]}
 Debian_RELEASE_ARRAY_LEN=${#Debian_RELEASE_ARRAY[@]}
@@ -45,15 +34,20 @@ VENDER=
 CHIP=
 
 ###############################################################
+## Hangup
+hangup() {
+	while true; do
+		sleep 10
+	done
+}
+
 ## Export version
 function export_version() {
 	if [ ! -d "$ROOT/env" ]; then
 		echo -e "\033[31mError:\033[0m You should execute the script in Fenix root directory.Please enter Fenix root directory and execute it again."
 		echo "Ctrl+C to abort."
 		# Hang
-		while true; do
-			sleep 1
-		done
+		hangup
 	fi
 
 	source $ROOT/config/version
@@ -65,6 +59,14 @@ function choose_khadas_board() {
 	echo ""
 	echo "Choose Khadas board:"
 	i=0
+
+	KHADAS_BOARD_ARRAY=()
+	for board in $ROOT/config/boards/*.conf; do
+		KHADAS_BOARD_ARRAY+=("$(basename $board | cut -d'.' -f1)")
+	done
+
+	KHADAS_BOARD_ARRAY_LEN=${#KHADAS_BOARD_ARRAY[@]}
+
 	while [[ $i -lt $KHADAS_BOARD_ARRAY_LEN ]]
 	do
 		echo "$((${i}+1)). ${KHADAS_BOARD_ARRAY[$i]}"
@@ -74,7 +76,7 @@ function choose_khadas_board() {
 	echo ""
 
 	local DEFAULT_NUM
-	DEFAULT_NUM=1
+	DEFAULT_NUM=2
 
 	export KHADAS_BOARD=
 	local ANSWER
@@ -110,6 +112,69 @@ function choose_khadas_board() {
 			break
 		fi
 	done
+
+	source $ROOT/config/boards/${KHADAS_BOARD}.conf
+}
+
+## Choose uboot version
+function choose_uboot_version() {
+    echo ""
+    echo "Choose uboot version:"
+    i=0
+
+    UBOOT_VERSION_ARRAY_LEN=${#SUPPORTED_UBOOT[@]}
+
+	if [ $UBOOT_VERSION_ARRAY_LEN == 0 ]; then
+		echo -e "\033[31mError:\033[0m Missing 'SUPPORTED_UBOOT' in board configuration file '$ROOT/config/boards/${KHADAS_BOARD}.conf'? Please add it!"
+		echo -e "Hangup here! \e[0;32mCtrl+C\e[0m to abort."
+		hangup
+	fi
+
+    while [[ $i -lt ${UBOOT_VERSION_ARRAY_LEN} ]]
+    do
+        echo "$((${i}+1)). uboot-${SUPPORTED_UBOOT[$i]}"
+        let i++
+    done
+
+    echo ""
+
+    local DEFAULT_NUM
+    DEFAULT_NUM=1
+    export UBOOT=
+    local ANSWER
+    while [ -z $UBOOT ]
+    do
+        echo -n "Which uboot version would you like? ["$DEFAULT_NUM"] "
+        if [ -z "$1" ]; then
+            read ANSWER
+        else
+            echo $1
+            ANSWER=$1
+        fi
+
+        if [ -z "$ANSWER" ]; then
+            ANSWER="$DEFAULT_NUM"
+        fi
+
+        if [ -n "`echo $ANSWER | sed -n '/^[0-9][0-9]*$/p'`" ]; then
+            if [ $ANSWER -le ${UBOOT_VERSION_ARRAY_LEN} ] && [ $ANSWER -gt 0 ]; then
+                index=$((${ANSWER}-1))
+                UBOOT="${SUPPORTED_UBOOT[$index]}"
+            else
+                echo
+                echo "number not in range. Please try again."
+                echo
+            fi
+        else
+            echo
+            echo "I didn't understand your response.  Please try again."
+
+            echo
+        fi
+        if [ -n "$1" ]; then
+            break
+        fi
+    done
 }
 
 ## Choose linux version
@@ -124,16 +189,17 @@ function choose_linux_version() {
 	fi
 
 	i=0
-	local LINUX_VERSION_ARRAY_LEN
-	local LINUX_VERSION_ARRAY_ELEMENT
-	local LINUX_VERSION
 
-	LINUX_VERSION_ARRAY_LEN=${KHADAS_BOARD}_SUPPORTED_LINUX_VERSION_ARRAY_LEN
-	while [[ $i -lt ${!LINUX_VERSION_ARRAY_LEN} ]]
+	LINUX_VERSION_ARRAY_LEN=${#SUPPORTED_LINUX[@]}
+	if [ $LINUX_VERSION_ARRAY_LEN == 0 ]; then
+		echo -e "\033[31mError:\033[0m Missing 'SUPPORTED_LINUX' in board configuration file '$ROOT/config/boards/${KHADAS_BOARD}.conf'? Please add it!"
+		echo -e "Hangup here! \e[0;32mCtrl+C\e[0m to abort."
+		hangup
+	fi
+
+	while [[ $i -lt ${LINUX_VERSION_ARRAY_LEN} ]]
 	do
-		LINUX_VERSION_ARRAY_ELEMENT=${KHADAS_BOARD}_SUPPORTED_LINUX_VERSION_ARRAY[$i]
-		LINUX_VERSION=${!LINUX_VERSION_ARRAY_ELEMENT}
-		echo "$((${i}+1)). linux-${LINUX_VERSION}"
+		echo "$((${i}+1)). linux-${SUPPORTED_LINUX[$i]}"
 		let i++
 	done
 
@@ -159,10 +225,9 @@ function choose_linux_version() {
 		fi
 
 		if [ -n "`echo $ANSWER | sed -n '/^[0-9][0-9]*$/p'`" ]; then
-			if [ $ANSWER -le ${!LINUX_VERSION_ARRAY_LEN} ] && [ $ANSWER -gt 0 ]; then
+			if [ $ANSWER -le ${LINUX_VERSION_ARRAY_LEN} ] && [ $ANSWER -gt 0 ]; then
 				index=$((${ANSWER}-1))
-				LINUX_VERSION_ARRAY_ELEMENT=${KHADAS_BOARD}_SUPPORTED_LINUX_VERSION_ARRAY[$index]
-				LINUX="${!LINUX_VERSION_ARRAY_ELEMENT}"
+				LINUX="${SUPPORTED_LINUX[$index]}"
 			else
 				echo
 				echo "number not in range. Please try again."
@@ -179,67 +244,6 @@ function choose_linux_version() {
 		fi
 	done
 }
-
-## Choose uboot version
-function choose_uboot_version() {
-    echo ""
-    echo "Choose uboot version:"
-    i=0
-    local UBOOT_VERSION_ARRAY_LEN
-    local UBOOT_VERSION_ARRAY_ELEMENT
-    local UBOOT_VERSION
-
-    UBOOT_VERSION_ARRAY_LEN=${KHADAS_BOARD}_SUPPORTED_UBOOT_VERSION_ARRAY_LEN
-    while [[ $i -lt ${!UBOOT_VERSION_ARRAY_LEN} ]]
-    do
-        UBOOT_VERSION_ARRAY_ELEMENT=${KHADAS_BOARD}_SUPPORTED_UBOOT_VERSION_ARRAY[$i]
-        UBOOT_VERSION=${!UBOOT_VERSION_ARRAY_ELEMENT}
-        echo "$((${i}+1)). uboot-${UBOOT_VERSION}"
-        let i++
-    done
-
-    echo ""
-
-    local DEFAULT_NUM
-    DEFAULT_NUM=1
-    export UBOOT=
-    local ANSWER
-    while [ -z $UBOOT ]
-    do
-        echo -n "Which uboot version would you like? ["$DEFAULT_NUM"] "
-        if [ -z "$1" ]; then
-            read ANSWER
-        else
-            echo $1
-            ANSWER=$1
-        fi
-
-        if [ -z "$ANSWER" ]; then
-            ANSWER="$DEFAULT_NUM"
-        fi
-
-        if [ -n "`echo $ANSWER | sed -n '/^[0-9][0-9]*$/p'`" ]; then
-            if [ $ANSWER -le ${!UBOOT_VERSION_ARRAY_LEN} ] && [ $ANSWER -gt 0 ]; then
-                index=$((${ANSWER}-1))
-                UBOOT_VERSION_ARRAY_ELEMENT=${KHADAS_BOARD}_SUPPORTED_UBOOT_VERSION_ARRAY[$index]
-                UBOOT="${!UBOOT_VERSION_ARRAY_ELEMENT}"
-            else
-                echo
-                echo "number not in range. Please try again."
-                echo
-            fi
-        else
-            echo
-            echo "I didn't understand your response.  Please try again."
-
-            echo
-        fi
-        if [ -n "$1" ]; then
-            break
-        fi
-    done
-}
-
 
 ## Choose distribution
 function choose_distribution() {
@@ -287,118 +291,6 @@ function choose_distribution() {
 			echo "I didn't understand your response.  Please try again."
 			echo
 		fi
-		if [ -n "$1" ]; then
-			break
-		fi
-	done
-}
-
-## Choose distribution arch
-function choose_distribution_architecture() {
-	echo ""
-	echo "Choose ${DISTRIBUTION} architecture:"
-	i=0
-	while [[ $i -lt $DISTRIB_ARCH_ARRAY_LEN ]]
-	do
-		echo "$((${i}+1)). ${DISTRIB_ARCH_ARRAY[$i]}"
-		let i++
-	done
-
-	echo ""
-
-	local DEFAULT_NUM
-	DEFAULT_NUM=1
-
-	export DISTRIB_ARCH=
-	local ANSWER
-	while [ -z $DISTRIB_ARCH ]
-	do
-		echo -n "Which ${DISTRIBUTION} architecture would you like? ["$DEFAULT_NUM"] "
-		if [ -z "$1" ]; then
-			read ANSWER
-		else
-			echo $1
-			ANSWER=$1
-		fi
-
-		if [ -z "$ANSWER" ]; then
-			ANSWER="$DEFAULT_NUM"
-		fi
-
-		if [ -n "`echo $ANSWER | sed -n '/^[0-9][0-9]*$/p'`" ]; then
-			if [ $ANSWER -le $DISTRIB_ARCH_ARRAY_LEN ] && [ $ANSWER -gt 0 ]; then
-				index=$((${ANSWER}-1))
-				DISTRIB_ARCH="${DISTRIB_ARCH_ARRAY[$index]}"
-			else
-				echo
-				echo "number not in range. Please try again."
-				echo
-			fi
-		else
-			echo
-			echo "I didn't understand your response.  Please try again."
-			echo
-		fi
-
-		if [ -n "$1" ]; then
-			break
-		fi
-	done
-}
-
-function choose_install_type() {
-	echo ""
-	echo "Choose install type:"
-	# FIXME
-	if [ "$UBOOT" == "mainline" ] || [ "$LINUX" == "mainline" ]; then
-		echo "Force set to install-${INSTALL_TYPE_ARRAY[1]}"
-		export INSTALL_TYPE="${INSTALL_TYPE_ARRAY[1]}"
-		return
-	else
-		i=0
-		while [[ $i -lt $INSTALL_TYPE_ARRAY_LEN ]]
-		do
-			echo "$((${i}+1)). ${INSTALL_TYPE_ARRAY[$i]}"
-			let i++
-		done
-	fi
-
-	echo ""
-
-	local DEFAULT_NUM
-	DEFAULT_NUM=1
-
-	export INSTALL_TYPE=
-	local ANSWER
-	while [ -z $INSTALL_TYPE ]
-	do
-		echo -n "Which install type would you like? ["$DEFAULT_NUM"] "
-		if [ -z "$1" ]; then
-			read ANSWER
-		else
-			echo $1
-			ANSWER=$1
-		fi
-
-		if [ -z "$ANSWER" ]; then
-			ANSWER="$DEFAULT_NUM"
-		fi
-
-		if [ -n "`echo $ANSWER | sed -n '/^[0-9][0-9]*$/p'`" ]; then
-			if [ $ANSWER -le $INSTALL_TYPE_ARRAY_LEN ] && [ $ANSWER -gt 0 ]; then
-				index=$((${ANSWER}-1))
-				INSTALL_TYPE="${INSTALL_TYPE_ARRAY[$index]}"
-			else
-				echo
-				echo "number not in range. Please try again."
-				echo
-			fi
-		else
-			echo
-			echo "I didn't understand your response.  Please try again."
-			echo
-		fi
-
 		if [ -n "$1" ]; then
 			break
 		fi
@@ -523,6 +415,118 @@ function choose_distribution_type() {
 
 			echo
 		fi
+		if [ -n "$1" ]; then
+			break
+		fi
+	done
+}
+
+## Choose distribution arch
+function choose_distribution_architecture() {
+	echo ""
+	echo "Choose ${DISTRIBUTION} architecture:"
+	i=0
+	while [[ $i -lt $DISTRIB_ARCH_ARRAY_LEN ]]
+	do
+		echo "$((${i}+1)). ${DISTRIB_ARCH_ARRAY[$i]}"
+		let i++
+	done
+
+	echo ""
+
+	local DEFAULT_NUM
+	DEFAULT_NUM=1
+
+	export DISTRIB_ARCH=
+	local ANSWER
+	while [ -z $DISTRIB_ARCH ]
+	do
+		echo -n "Which ${DISTRIBUTION} architecture would you like? ["$DEFAULT_NUM"] "
+		if [ -z "$1" ]; then
+			read ANSWER
+		else
+			echo $1
+			ANSWER=$1
+		fi
+
+		if [ -z "$ANSWER" ]; then
+			ANSWER="$DEFAULT_NUM"
+		fi
+
+		if [ -n "`echo $ANSWER | sed -n '/^[0-9][0-9]*$/p'`" ]; then
+			if [ $ANSWER -le $DISTRIB_ARCH_ARRAY_LEN ] && [ $ANSWER -gt 0 ]; then
+				index=$((${ANSWER}-1))
+				DISTRIB_ARCH="${DISTRIB_ARCH_ARRAY[$index]}"
+			else
+				echo
+				echo "number not in range. Please try again."
+				echo
+			fi
+		else
+			echo
+			echo "I didn't understand your response.  Please try again."
+			echo
+		fi
+
+		if [ -n "$1" ]; then
+			break
+		fi
+	done
+}
+
+function choose_install_type() {
+	echo ""
+	echo "Choose install type:"
+	# FIXME
+	if [ "$UBOOT" == "mainline" ] || [ "$LINUX" == "mainline" ]; then
+		echo "Force set to install-${INSTALL_TYPE_ARRAY[1]}"
+		export INSTALL_TYPE="${INSTALL_TYPE_ARRAY[1]}"
+		return
+	else
+		i=0
+		while [[ $i -lt $INSTALL_TYPE_ARRAY_LEN ]]
+		do
+			echo "$((${i}+1)). ${INSTALL_TYPE_ARRAY[$i]}"
+			let i++
+		done
+	fi
+
+	echo ""
+
+	local DEFAULT_NUM
+	DEFAULT_NUM=1
+
+	export INSTALL_TYPE=
+	local ANSWER
+	while [ -z $INSTALL_TYPE ]
+	do
+		echo -n "Which install type would you like? ["$DEFAULT_NUM"] "
+		if [ -z "$1" ]; then
+			read ANSWER
+		else
+			echo $1
+			ANSWER=$1
+		fi
+
+		if [ -z "$ANSWER" ]; then
+			ANSWER="$DEFAULT_NUM"
+		fi
+
+		if [ -n "`echo $ANSWER | sed -n '/^[0-9][0-9]*$/p'`" ]; then
+			if [ $ANSWER -le $INSTALL_TYPE_ARRAY_LEN ] && [ $ANSWER -gt 0 ]; then
+				index=$((${ANSWER}-1))
+				INSTALL_TYPE="${INSTALL_TYPE_ARRAY[$index]}"
+			else
+				echo
+				echo "number not in range. Please try again."
+				echo
+			fi
+		else
+			echo
+			echo "I didn't understand your response.  Please try again."
+			echo
+		fi
+
 		if [ -n "$1" ]; then
 			break
 		fi
