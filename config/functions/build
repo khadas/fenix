@@ -47,6 +47,7 @@ build_uboot() {
 
     info_msg "Build u-boot..."
 	export PATH=$UBOOT_COMPILER_PATH:$PATH
+	make distclean
 	make $UBOOT_DEFCONFIG
     make -j8 CROSS_COMPILE=${UBOOT_COMPILER}
 
