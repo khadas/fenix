@@ -15,11 +15,11 @@ PKG_NEED_BUILD="YES"
 make_target() {
 
 	export PATH=$TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/bin/:$PATH
-	
-	make ARCH=arm64 distclean
+
+#	make ARCH=arm64 distclean
 	make ARCH=arm64 defconfig
-	
-	make -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image modules amlogic/meson-gxl-s905x-khadas-vim.dtb 
+
+	make -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image modules dtbs
 }
 
 makeinstall_target() {

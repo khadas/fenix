@@ -75,7 +75,7 @@ build_gpu_deb() {
 			mkdir -p $pkgdir/usr/lib/pkgconfig/
 			cp -arf archives/hwpacks/mali/${VENDER}/r7p0/lib/pkgconfig/*.pc $pkgdir/usr/lib/pkgconfig/
 		# Mali m450 framebuffer mode examples
-		if [ "$DISTRIB_ARCH" == "arm64" ]; then
+		if [ "$DISTRIB_ARCH" == "arm64" ] && [ "$LINUX" != "mainline" ]; then
 			mkdir -p $pkgdir/usr/share/arm/
 			cp -arf archives/hwpacks/mali/${VENDER}/fbdev_examples/$LINUX/lib/* $pkgdir/usr/lib/
 			cp -arf archives/hwpacks/mali/${VENDER}/fbdev_examples/$LINUX/opengles_20 $pkgdir/usr/share/arm/
