@@ -64,7 +64,7 @@ build_board_deb() {
 		cp $BOOT_SCRIPTS/$BOOT_SCRIPT_BOARD $pkgdir/boot
 		cp $BOOT_SCRIPTS/$BOOT_INI $pkgdir/boot
 
-		$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$CHIP autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_BOARD $pkgdir/boot/${BOOT_SCRIPT_BOARD%.cmd.mainline}
+		$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$CHIP autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_BOARD $pkgdir/boot/${BOOT_SCRIPT_BOARD%.cmd*}
 		$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$VENDER autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_VENDER $pkgdir/boot/${BOOT_SCRIPT_VENDER%.txt}
 		cd $pkgdir/boot
 		zip ${BOOT_SCRIPT_VENDER%.txt}.zip ${BOOT_SCRIPT_VENDER%.txt} ${BOOT_SCRIPT_VENDER}
