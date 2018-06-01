@@ -1,0 +1,6 @@
+#!/bin/bash
+
+/usr/bin/fw_setenv bls android
+sleep 1
+reboot
+

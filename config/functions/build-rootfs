@@ -409,6 +409,15 @@ build_rootfs() {
 	# mkimage tool
 	cp $UTILS_DIR/mkimage-$DISTRIB_ARCH $ROOTFS_TEMP/usr/local/bin/mkimage
 
+	if [ "$MULTI_OS_BUILD" == "yes" ]; then
+		# MultiOS menu
+		touch $ROOTFS_TEMP/.multi-os
+		cp $ROOT/archives/filesystem/blobs/mate_menu/*.menu $ROOTFS_TEMP
+		cp $ROOT/archives/filesystem/blobs/mate_menu/mozo-made.desktop $ROOTFS_TEMP
+		# Icons
+		cp $ROOT/archives/filesystem/blobs/mate_menu/icons/* $ROOTFS_TEMP
+	fi
+
 	## script executing on chroot
 	cp -r scripts/chroot-scripts/RUNME.sh $ROOTFS_TEMP/
 

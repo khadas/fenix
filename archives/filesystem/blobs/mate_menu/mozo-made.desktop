@@ -1,0 +1,13 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Icon[en_US]=/usr/share/multios/android_icon.png
+Name[en_US]=Reboot to Android
+Exec=reboot_to_android
+Comment[en_US]=Reboot to Android
+Name=Reboot to Android
+Comment=Reboot to Android
+Icon=/usr/share/multios/android_icon.png
+
