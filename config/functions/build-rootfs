@@ -418,6 +418,21 @@ build_rootfs() {
 		cp $ROOT/archives/filesystem/blobs/mate_menu/icons/* $ROOTFS_TEMP
 	fi
 
+	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$LINUX" == "mainline" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_ARCH" == "arm64" ]; then
+		# install mali KO
+		VER=$(ls $ROOTFS_TEMP/lib/modules/)
+		cp $BUILD_IMAGES/meson-gx-mali-450/mali.ko $ROOTFS_TEMP/lib/modules/$VER/kernel/
+		depmod -b $ROOTFS_TEMP/ -a $VER
+
+		# Will build in chroot
+		cp -r $BUILD/xf86-video-armsoc-* $ROOTFS_TEMP/xf86-video-armsoc
+
+		# Mali udev rule
+		tee $ROOTFS_TEMP/etc/udev/rules.d/50-mali.rules <<-EOF
+		KERNEL=="mali", MODE="0660", GROUP="video"
+		EOF
+	fi
+
 	## script executing on chroot
 	cp -r scripts/chroot-scripts/RUNME.sh $ROOTFS_TEMP/
 
@@ -427,13 +442,6 @@ build_rootfs() {
 	echo
 	mount_chroot "$ROOTFS_TEMP"
 	chroot $ROOTFS_TEMP/ bash "/RUNME.sh" $DISTRIBUTION $DISTRIB_RELEASE $DISTRIB_TYPE $DISTRIB_ARCH $KHADAS_BOARD $LINUX $UBOOT $INSTALL_TYPE $VENDER
-
-	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$LINUX" == "mainline" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_ARCH" == "arm64" ]; then
-		# Mali udev rule
-		tee $ROOTFS_TEMP/etc/udev/rules.d/50-mali.rules <<-EOF
-		KERNEL=="mali", MODE="0660", GROUP="video"
-		EOF
-	fi
 
 	## Logo
 	cp archives/logo/logo.img $BUILD_IMAGES

@@ -1,5 +1,5 @@
 PKG_NAME="meson-gx-mali-450"
-PKG_VERSION="9301aa8"
+PKG_VERSION="ce0e04f"
 PKG_SOURCE_DIR="meson_gx_mali_450-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/meson_gx_mali_450"
 PKG_URL="https://github.com/numbqq/meson_gx_mali_450/archive/$PKG_VERSION.tar.gz"
@@ -18,5 +18,7 @@ make_target() {
 }
 
 makeinstall_target() {
-	:
+	mkdir -p $BUILD_IMAGES/$PKG_NAME
+	rm -rf $BUILD_IMAGES/$PKG_NAME/*
+	cp mali.ko $BUILD_IMAGES/$PKG_NAME
 }
