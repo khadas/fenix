@@ -1,5 +1,5 @@
 PKG_NAME="linux-mainline"
-PKG_VERSION="4.16.5"
+PKG_VERSION="4.16.13"
 PKG_VERSION_SHORT="v4.x"
 PKG_SOURCE_DIR="linux-${PKG_VERSION}"
 PKG_SITE="https://cdn.kernel.org/"
