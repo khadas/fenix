@@ -26,7 +26,8 @@ if [ -f /etc/default/FIRSTBOOT ]; then
 	rm -f /etc/default/FIRSTBOOT
 	# Cleanup firstboot mark after first boot to system
 	fw_setenv firstboot 0
-
+	# Delete lock
+	rm -rf /var/lock/fw_printenv.lock
 
 	systemctl disable resize2fs
 	exit 0
