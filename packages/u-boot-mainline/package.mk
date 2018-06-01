@@ -1,5 +1,5 @@
 PKG_NAME="u-boot-mainline"
-PKG_VERSION="7d22c8e"
+PKG_VERSION="680a52c"
 PKG_SOURCE_DIR="u-boot-${PKG_VERSION}*"
 PKG_SITE="https://github.com/u-boot/u-boot"
 PKG_URL="https://github.com/u-boot/u-boot/archive/$PKG_VERSION.tar.gz"
