@@ -102,8 +102,9 @@ install_distribution_specific()
 		fi
 
 		# Enable watchdog service(dur to a debian bug for xenial).
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -s /lib/systemd/system/watchdog.service /etc/systemd/system/multi-user.target.wants/watchdog.service"'
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl enable watchdog.service"'
+		# eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -s /lib/systemd/system/watchdog.service /etc/systemd/system/multi-user.target.wants/watchdog.service"'
+		# eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl enable watchdog.service"'
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable watchdog.service"'
 		;;
 
 	stretch)
@@ -127,6 +128,9 @@ install_distribution_specific()
 		exit 0
 		EOF
 		chmod +x $ROOTFS_TEMP/etc/rc.local
+
+		# disable watchdog
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable watchdog.service"'
 
 		if [ "$DISTRIB_TYPE" != "server" ]; then
 			# Get accelerated back for chromium
