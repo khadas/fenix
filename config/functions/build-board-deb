@@ -57,6 +57,14 @@ build_board_deb() {
 	# Copy board special rootfs files
 	rsync -a $ROOT/archives/filesystem/special/$KHADAS_BOARD/* $pkgdir/
 
+	# Mainline linux don't use such scripts now
+	if [ "$LINUX" == "mainline" ]; then
+		echo "#!/bin/bash" >  $pkgdir/etc/initramfs-tools/scripts/local-top/khadas_init.sh
+		echo "exit 0" >> $pkgdir/etc/initramfs-tools/scripts/local-top/khadas_init.sh
+		echo "#!/bin/bash" >  $pkgdir/boot/hdmi.sh
+		echo "exit 0" >> $pkgdir/boot/hdmi.sh
+	fi
+
 	# Copy boot scripts
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		mkdir -p $pkgdir/boot
