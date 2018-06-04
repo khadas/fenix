@@ -52,6 +52,20 @@ time_cal() {
 ## Prepare host
 ## Install essential packages
 prepare_host() {
+
+	if [[ $(dpkg --print-architecture) != "amd64" ]]; then
+		error_msg "Your build host architecture is not supported,please use a 'x86-x64' build host."
+		return -1
+	fi
+
+	local build_host=$(lsb_release -sc)
+	info_msg "Build host: $build_host"
+
+	if [[ -z "$build_host" || "xenial artful bionic" != *"$build_host"* ]]; then
+		error_msg "Your build host is not supported! Please use 'Ubuntu xenial/artful/bionic' as your build host."
+		return -1
+	fi
+
 	local hostdeps="wget ca-certificates device-tree-compiler pv bc lzop zip binfmt-support build-essential ccache debootstrap ntpdate \
 			gawk gcc-arm-linux-gnueabihf qemu-user-static u-boot-tools uuid-dev zlib1g-dev unzip libusb-1.0-0-dev fakeroot \
 			parted pkg-config libncurses5-dev whiptail debian-keyring debian-archive-keyring f2fs-tools libfile-fcntllock-perl rsync libssl-dev \
