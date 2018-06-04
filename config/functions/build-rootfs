@@ -274,6 +274,12 @@ prepare_partitions()
 {
 	info_msg "Preparing image file for rootfs..."
 
+	if [ $(lsb_release -sc) == "bionic" ]; then
+		EXT4_MKOPTS="-q -F -L ROOTFS -m 2 -O ^64bit,^metadata_csum"
+	elif [ $(lsb_release -sc) == "xenial" ]; then
+		EXT4_MKOPTS="-q -F -L ROOTFS -m 2"
+	fi
+
 	# calculate rootfs size
 	local rootfs_size=$(du -sm $ROOTFS_TEMP/ | cut -f1) # MiB
 	info_msg "Current rootfs cache size: $rootfs_size MiB"
@@ -300,7 +306,7 @@ prepare_partitions()
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
 		info_msg "Creating eMMC rootfs image..."
 		dd if=/dev/zero of=$BUILD_IMAGES/rootfs.img bs=1M count=0 seek=$rootfs_image_size
-		mkfs.ext4 -F -L ROOTFS $BUILD_IMAGES/rootfs.img
+		mkfs.ext4 $EXT4_MKOPTS $BUILD_IMAGES/rootfs.img
 		rm -rf $ROOTFS && install -d $ROOTFS
 		mount -o loop $BUILD_IMAGES/rootfs.img $ROOTFS
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
@@ -334,7 +340,7 @@ prepare_partitions()
 		IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
 		partprobe "${IMAGE_LOOP_DEV}"
 		mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
-		mkfs.ext4 -F -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}"
+		mkfs.ext4 $EXT4_MKOPTS "${IMAGE_LOOP_DEV_ROOTFS}"
 		rm -rf $ROOTFS && mkdir -p $ROOTFS
 		mount -o loop "${IMAGE_LOOP_DEV_ROOTFS}" $ROOTFS
 		mkdir -p $ROOTFS/boot
