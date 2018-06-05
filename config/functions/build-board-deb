@@ -123,7 +123,7 @@ build_board_deb() {
 	VENDER=$VENDER
 	VERSION=$VERSION
 	ARCH=$DISTRIB_ARCH
-	INITRD_ARCH=${DISTRIB_ARCH/armhf/arm}
+	INITRD_ARCH=arm64
 	EOF
 
 	mkdir -p $pkgdir/usr/lib/NetworkManager/conf.d/
