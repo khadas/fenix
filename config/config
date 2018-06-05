@@ -34,8 +34,8 @@ if [ "$LINUX" == "mainline" ]; then
 fi
 
 IMAGE_FILE_NAME="${KHADAS_BOARD}_${DISTRIBUTION}-${DISTRIB_RELEASE}_Linux-${LINUX/mainline/$MAINLINE_LINUX_VER}_${DISTRIB_TYPE}_${DISTRIB_ARCH}_${INSTALL_TYPE}_$(date +%F).img"
-LINUX_IMAGE_DEB="linux-image-${VENDER,,}-${CHIP,,}-linux-${LINUX/mainline/$MAINLINE_LINUX_VER}"
-LINUX_FIRMWARE_DEB="linux-firmware-image-${VENDER,,}-${CHIP,,}-linux-${LINUX/mainline/$MAINLINE_LINUX_VER}"
+LINUX_IMAGE_DEB="linux-image-${VENDER,,}-${CHIP,,}-${LINUX/mainline/$MAINLINE_LINUX_VER}"
+LINUX_FIRMWARE_DEB="linux-firmware-image-${VENDER,,}-${CHIP,,}-${LINUX/mainline/$MAINLINE_LINUX_VER}"
 
 LINUX_BOARD_DEB="linux-board-package-${VENDER,,}-${CHIP,,}"
 
