@@ -321,7 +321,6 @@ prepare_partitions()
 		2048
 		524287
 		a
-		1
 		t
 		b
 		n
