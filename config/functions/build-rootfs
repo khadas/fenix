@@ -274,7 +274,7 @@ prepare_partitions()
 {
 	info_msg "Preparing image file for rootfs..."
 
-	if [ $(lsb_release -sc) == "bionic" ]; then
+	if [ $(lsb_release -sc) == "artful" -o $(lsb_release -sc) == "bionic" ]; then
 		EXT4_MKOPTS="-q -F -L ROOTFS -m 2 -O ^64bit,^metadata_csum"
 	elif [ $(lsb_release -sc) == "xenial" ]; then
 		EXT4_MKOPTS="-q -F -L ROOTFS -m 2"
