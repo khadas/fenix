@@ -1,5 +1,6 @@
 PKG_NAME="xserver_rk3399"
 PKG_VERSION="a7afdd0"
+PKG_SHA256="7927dd658a066e5b8a2b9c5a7ac3df8cc2e3f864abf02905b55619ab75085477"
 PKG_SOURCE_DIR="xserver_rk3399-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/xserver_rk3399"
 PKG_URL="https://github.com/numbqq/xserver_rk3399/archive/$PKG_VERSION.tar.gz"

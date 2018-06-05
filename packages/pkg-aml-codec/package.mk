@@ -1,5 +1,6 @@
 PKG_NAME="pkg-aml-codec"
 PKG_VERSION="a361170"
+PKG_SHA256="e2e5518678bbe988be2321198dc799068a7812c719de960ccecd21e755bb5554"
 PKG_SOURCE_DIR="pkg-aml-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/pkg-aml"
 PKG_URL="https://github.com/numbqq/pkg-aml/archive/$PKG_VERSION.tar.gz"

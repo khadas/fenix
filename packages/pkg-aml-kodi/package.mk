@@ -1,5 +1,6 @@
 PKG_NAME="pkg-aml-kodi"
 PKG_VERSION="1a86ba4"
+PKG_SHA256="7998c8e3fe0ae315241961069f8fa645b06c768a66e731f1bc3fa9ba3a856128"
 PKG_SOURCE_DIR="pkg-aml-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/pkg-aml"
 PKG_URL="https://github.com/numbqq/pkg-aml/archive/$PKG_VERSION.tar.gz"

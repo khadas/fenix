@@ -1,5 +1,6 @@
 PKG_NAME="mpp_rk3399"
 PKG_VERSION="9fdb566"
+PKG_SHA256="42d67cba9c5256602bbb737b4c692804e8aa8c44dd95893fd32bbd42b8401151"
 PKG_SOURCE_DIR="mpp_rk3399-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/mpp_rk3399"
 PKG_URL="https://github.com/numbqq/mpp_rk3399/archive/$PKG_VERSION.tar.gz"

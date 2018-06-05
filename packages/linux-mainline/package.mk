@@ -1,6 +1,7 @@
 PKG_NAME="linux-mainline"
 PKG_VERSION="4.16.13"
 PKG_VERSION_SHORT="v4.x"
+PKG_SHA256="6f0a7b3abd48eca3df5e29bfbcfc1c06dd2792f86d23cdb9ad37cf3e572df2e3"
 PKG_SOURCE_DIR="linux-${PKG_VERSION}"
 PKG_SITE="https://cdn.kernel.org/"
 PKG_URL="https://cdn.kernel.org/pub/linux/kernel/${PKG_VERSION_SHORT}/linux-${PKG_VERSION}.tar.xz"

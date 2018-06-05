@@ -1,5 +1,6 @@
 PKG_NAME="pkg-aml-amremote"
 PKG_VERSION="7d064e8"
+PKG_SHA256="2cd62b8d3d6c5087aee4f317f9691751786d9d74ce7d06edb56bb2def4255ee7"
 PKG_SOURCE_DIR="pkg-aml-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/pkg-aml"
 PKG_URL="https://github.com/numbqq/pkg-aml/archive/$PKG_VERSION.tar.gz"
