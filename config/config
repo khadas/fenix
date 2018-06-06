@@ -88,7 +88,7 @@ PACKAGE_LIST="bc bridge-utils build-essential cpufrequtils device-tree-compiler 
 	iw fake-hwclock wpasupplicant psmisc ntp parted rsync sudo curl linux-base dialog crda \
 	wireless-regdb ncurses-term python3-apt sysfsutils toilet u-boot-tools unattended-upgrades \
 	usbutils wireless-tools console-setup unicode-data openssh-server initramfs-tools \
-	ca-certificates resolvconf expect rcconf iptables mc abootimg wget udev libc6 libdrm2 libgcc1 libstdc++6 libx11-6 \
+	ca-certificates resolvconf expect iptables mc abootimg wget udev libc6 libdrm2 libgcc1 libstdc++6 libx11-6 \
 	libx11-xcb1 libxcb-dri2-0 libxcb1"
 
 # development related packages. remove when they are not needed for building packages in chroot
@@ -98,19 +98,17 @@ PACKAGE_LIST="$PACKAGE_LIST automake libwrap0-dev libssl-dev libnl-3-dev libnl-g
 PACKAGE_LIST_ADDITIONAL="alsa-utils btrfs-tools dosfstools hddtemp iotop iozone3 stress sysbench screen ntfs-3g vim pciutils \
 	evtest htop pv lsof apt-transport-https libfuse2 libdigest-sha-perl libproc-processtable-perl aptitude dnsutils f3 haveged \
 	hdparm rfkill vlan sysstat bash-completion hostapd git ethtool network-manager unzip ifenslave command-not-found lirc \
-	libpam-systemd iperf3 software-properties-common libnss-myhostname f2fs-tools avahi-autoipd iputils-arping bluez bluez-tools watchdog \
-	i2c-tools"
+	libpam-systemd iperf3 software-properties-common libnss-myhostname f2fs-tools avahi-autoipd iputils-arping bluetooth bluez bluez-tools watchdog \
+	i2c-tools qrencode"
 
 PACKAGE_LIST_DESKTOP="xserver-xorg xserver-xorg-video-fbdev gvfs-backends gvfs-fuse xfonts-base xinit x11-xserver-utils xterm thunar-volman \
-	gksu bluetooth \
-	network-manager-gnome network-manager-openvpn-gnome gnome-keyring gcr libgck-1-0 libgcr-3-common p11-kit pasystray pavucontrol pulseaudio \
-	paman pavumeter pulseaudio-module-gconf pulseaudio-module-bluetooth blueman libgl1-mesa-dri gparted synaptic \
-	policykit-1 mesa-utils"
+	network-manager-gnome network-manager-openvpn-gnome gnome-keyring gcr libgck-1-0 p11-kit pasystray pavucontrol pulseaudio \
+	pavumeter pulseaudio-module-gconf pulseaudio-module-bluetooth blueman libgl1-mesa-dri gparted synaptic \
+	policykit-1 mesa-utils gnome-orca numix-gtk-theme"
 
 PACKAGE_LIST_OFFICE="lxtask mirage galculator hexchat mpv \
-	gtk2-engines gtk2-engines-murrine gtk2-engines-pixbuf libgtk2.0-bin gcj-jre-headless libgnome2-perl \
-	network-manager-gnome network-manager-openvpn-gnome gnome-keyring gcr libgck-1-0 libgcr-3-common p11-kit pasystray pavucontrol pulseaudio \
-	libpam-gnome-keyring thunderbird system-config-printer-common numix-gtk-theme paprefs tango-icon-theme \
+	gtk2-engines gtk2-engines-murrine gtk2-engines-pixbuf libgtk2.0-bin libgnome2-perl \
+	libpam-gnome-keyring thunderbird system-config-printer-common paprefs tango-icon-theme \
 	libreoffice-writer libreoffice-style-tango libreoffice-gtk fbi cups-pk-helper cups"
 
 PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
@@ -149,16 +147,24 @@ case $DISTRIB_RELEASE in
 	xenial)
 	PACKAGE_LIST_RELEASE="man-db nano linux-firmware zram-config"
 	PACKAGE_LIST_KODI="libglu1-mesa libglu1 libmicrohttpd10 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libva-drm1 libcurl3"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_KODI thunderbird chromium-browser"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP language-selector-gnome paprefs numix-gtk-theme system-config-printer-common system-config-printer-gnome ubuntu-mate-lightdm-theme"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_KODI chromium-browser gksu"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP paman libgcr-3-common gcj-jre-headless"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP language-selector-gnome system-config-printer-gnome ubuntu-mate-lightdm-theme"
 	[[ $DISTRIB_ARCH == armhf ]] && PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP mate-utils ubuntu-mate-welcome mate-settings-daemon"
 	;;
 	stretch)
 	PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr"
 	PACKAGE_LIST_KODI="libglu1-mesa libglu1 libmicrohttpd12 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libva-drm1 libcurl3"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_QT $PACKAGE_LIST_KODI"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP thunderbird chromium dbus-x11"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP paprefs numix-gtk-theme system-config-printer-common system-config-printer"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP chromium dbus-x11 gksu profile-sync-daemon"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP paman libgcr-3-common gcj-jre-headless"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP system-config-printer"
+	;;
+	bionic)
+	PACKAGE_LIST_RELEASE="man-db zram-config less kbd net-tools netcat-openbsd gnupg2 dirmngr nano wget"
+	PACKAGE_LIST_KODI=""
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_KODI chromium-browser xserver-xorg-input-all dbus-x11 profile-sync-daemon"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP system-config-printer system-config-printer-gnome language-selector-gnome"
 	;;
 esac
 

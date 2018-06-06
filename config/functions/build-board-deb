@@ -138,7 +138,15 @@ build_board_deb() {
 	wifi.powersave = 2
 	EOF
 
-	if [ "$DISTRIB_RELEASE" == "stretch" ]; then
+	if [ "$LINUX" == "3.14" ]; then
+		mkdir -p $pkgdir/lib/systemd/system/haveged.service.d/
+		cat <<-EOF > $pkgdir/lib/systemd/system/haveged.service.d/10-no-new-privileges.conf
+		[Service]
+		NoNewPrivileges=false
+		EOF
+	fi
+
+	if [ "$DISTRIB_RELEASE" == "stretch" -o "$DISTRIB_RELEASE" == "bionic" ]; then
 		cat <<-EOF > $pkgdir/usr/lib/NetworkManager/conf.d/10-override-random-mac.conf
 		[device]
 		wifi.scan-rand-mac-address=no

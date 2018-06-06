@@ -143,6 +143,20 @@ install_distribution_specific()
 			fi
 		fi
 		;;
+	bionic)
+		# remove doubled uname from motd
+		[[ -f $$ROOTFS_TEMP/etc/update-motd.d/10-uname ]] && rm $ROOTFS_TEMP/etc/update-motd.d/10-uname
+		# remove motd news from motd.ubuntu.com
+		[[ -f $ROOTFS_TEMP/etc/default/motd-news ]] && sed -i "s/^ENABLED=.*/ENABLED=0/" $ROOTFS_TEMP/etc/default/motd-news
+		# Basic Netplan config. Let NetworkManager manage all devices on this system
+		cat <<-EOF > $ROOTFS_TEMP/etc/netplan/fenix-default.yaml
+		network:
+		  version: 2
+		  renderer: NetworkManager
+		EOF
+		# DNS fix
+		sed -i "s/#DNS=.*/DNS=1.1.1.1/g" $ROOTFS_TEMP/etc/systemd/resolved.conf
+		;;
 	esac
 }
 

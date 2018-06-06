@@ -66,6 +66,11 @@ prepare_host() {
 		return -1
 	fi
 
+	if [[ "$DISTRIB_RELEASE" == "bionic" && "$build_host" != "bionic" ]]; then
+		error_msg "Building Ubuntu Bionic images requires a Bionic build host, please upgrade your build host."
+		return -1
+	fi
+
 	local hostdeps="wget ca-certificates device-tree-compiler pv bc lzop zip binfmt-support build-essential ccache debootstrap ntpdate \
 			gawk gcc-arm-linux-gnueabihf qemu-user-static u-boot-tools uuid-dev zlib1g-dev unzip libusb-1.0-0-dev fakeroot \
 			parted pkg-config libncurses5-dev whiptail debian-keyring debian-archive-keyring f2fs-tools libfile-fcntllock-perl rsync libssl-dev \
@@ -212,9 +217,9 @@ get_package_list_hash()
 ## <basedir>: path to root directory
 create_sources_list()
 {
-local release=$1
-local basedir=$2
-[[ -z $basedir ]] && error_msg "No basedir passed to create_sources_list" && return -1
+	local release=$1
+	local basedir=$2
+	[[ -z $basedir ]] && error_msg "No basedir passed to create_sources_list" && return -1
 
 	case $release in
 	stretch)
@@ -233,7 +238,7 @@ local basedir=$2
 	EOF
 	;;
 
-	xenial)
+	xenial|bionic)
 	cat <<-EOF > $basedir/etc/apt/sources.list
 	deb http://${UBUNTU_MIRROR} $release main restricted universe multiverse
 	deb-src http://${UBUNTU_MIRROR} $release main restricted universe multiverse

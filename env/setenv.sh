@@ -7,7 +7,7 @@ unset SUPPORTED_UBOOT
 unset SUPPORTED_LINUX
 
 DISTRIBUTION_ARRAY=("Ubuntu" "Debian")
-Ubuntu_RELEASE_ARRAY=("xenial")
+Ubuntu_RELEASE_ARRAY=("xenial" "bionic")
 Debian_RELEASE_ARRAY=("stretch")
 DISTRIB_ARCH_ARRAY=("arm64" "armhf")
 Ubuntu_TYPE_ARRAY=("server" "mate")

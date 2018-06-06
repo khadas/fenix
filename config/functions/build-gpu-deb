@@ -26,6 +26,7 @@ build_gpu_deb() {
 		Architecture: $DISTRIB_ARCH
 		Maintainer: Khadas <hello@khadas.com>
 		Installed-Size: 1
+		Replaces: libegl1-mesa, libegl1, libgles2
 		Provides: aml-mali-905
 		Conflicts: aml-mali-905
 		Section: kernel
