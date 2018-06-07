@@ -9,7 +9,6 @@ PKG_ARCH="arm aarch64"
 PKG_LICENSE="GPL"
 PKG_SHORTDESC="Mainline linux"
 PKG_SOURCE_NAME="linux-${PKG_VERSION}.tar.xz"
-PKG_SHA256=""
 PKG_NEED_BUILD="YES"
 
 

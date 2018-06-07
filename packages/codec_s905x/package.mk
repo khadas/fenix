@@ -8,7 +8,6 @@ PKG_ARCH="arm aarch64"
 PKG_LICENSE="GPL"
 PKG_SHORTDESC="libamcodec: Interface library for Amlogic media codecs"
 PKG_SOURCE_NAME="codec_s905x-${PKG_VERSION}.tar.gz"
-PKG_SHA256=""
 PKG_NEED_BUILD="YES"
 
 

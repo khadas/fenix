@@ -8,7 +8,6 @@ PKG_ARCH="arm aarch64"
 PKG_LICENSE="GPL"
 PKG_SHORTDESC="u-boot: Universal Bootloader project"
 PKG_SOURCE_NAME="u-boot-${PKG_VERSION}.tar.gz"
-PKG_SHA256=""
 PKG_NEED_BUILD="YES"
 
 

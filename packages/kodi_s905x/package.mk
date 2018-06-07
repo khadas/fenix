@@ -8,7 +8,6 @@ PKG_ARCH="arm aarch64"
 PKG_LICENSE="GPL"
 PKG_SHORTDESC="Amlogic S905X Kodi package"
 PKG_SOURCE_NAME="kodi_s905x-${PKG_VERSION}.tar.gz"
-PKG_SHA256=""
 PKG_NEED_BUILD="YES"
 
 
