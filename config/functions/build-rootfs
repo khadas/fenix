@@ -441,14 +441,14 @@ build_rootfs() {
 		cp $ROOT/archives/filesystem/blobs/mate_menu/icons/* $ROOTFS_TEMP
 	fi
 
-	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$LINUX" == "mainline" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_ARCH" == "arm64" ]; then
+	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" == "xenial" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_ARCH" == "arm64" ]; then
 		# install mali KO
 		VER=$(ls $ROOTFS_TEMP/lib/modules/)
 		cp $BUILD_IMAGES/meson-gx-mali-450/mali.ko $ROOTFS_TEMP/lib/modules/$VER/kernel/
 		depmod -b $ROOTFS_TEMP/ -a $VER
 
-		# Will build in chroot
-		cp -r $BUILD/xf86-video-armsoc-* $ROOTFS_TEMP/xf86-video-armsoc
+		# install xf86-video-armsoc
+		install_deb_chroot $BUILD_DEBS/xf86-video-armsoc_s905x/*.deb
 
 		# Mali udev rule
 		tee $ROOTFS_TEMP/etc/udev/rules.d/50-mali.rules <<-EOF

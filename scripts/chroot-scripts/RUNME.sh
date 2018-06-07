@@ -64,35 +64,6 @@ if [ "$DISTRIB_TYPE" != "server" ]; then
 	fi
 fi
 
-if [ "$DISTRIB_TYPE" != "server" ] && [ "$LINUX" == "mainline" ] && [ "$DISTRIB_ARCH" == "arm64" ]; then
-
-	# OpenGL ES
-	apt-get install -y mesa-utils-extra
-
-	# disable mesa EGL libs
-	rm /etc/ld.so.conf.d/*_EGL.conf
-	ldconfig
-
-	apt-get install -y build-essential libtool automake autoconf xutils-dev xserver-xorg-dev xorg-dev libudev-dev
-
-	cd xf86-video-armsoc
-	./autogen.sh
-	./configure --prefix=/usr
-	make install
-	mkdir -p /etc/X11
-	cp xorg.conf /etc/X11/
-	cd -
-	rm -rf xf86-video-armsoc
-
-	# Clean up dev packages
-	apt-get purge -y build-essential libtool automake autoconf xutils-dev xserver-xorg-dev xorg-dev libudev-dev
-	apt-get -y autoremove
-
-	# Clean up packages
-	apt-get -y clean
-	apt-get -y autoclean
-fi
-
 cd /
 
 # MultiOS
