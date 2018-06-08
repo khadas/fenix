@@ -60,6 +60,11 @@ build_debs() {
 	# Build board deb
 	build_board_deb
 
+	# Build desktop deb
+	if [ "$DISTRIB_TYPE" != "server" ]; then
+		build_desktop_deb
+	fi
+
 	# Build deb packages platform
 	if [[ $(type -t build_deb_packages_platform) == function ]]; then
 		build_deb_packages_platform

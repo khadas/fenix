@@ -52,6 +52,11 @@ install_common()
 	# Install board deb in chroot
 	install_deb_chroot $BUILD_DEBS/${LINUX_BOARD_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
 
+	if [ "$DISTRIB_TYPE" != "server" ]; then
+		install_deb_chroot $BUILD_DEBS/${FENIX_DESKTOP_DEB}_${VERSION}_all.deb
+		desktop_postinstall
+	fi
+
 	# Install packages platform
 	if [[ $(type -t install_deb_packages_platform) == function ]]; then
 		install_deb_packages_platform

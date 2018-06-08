@@ -39,6 +39,10 @@ LINUX_FIRMWARE_DEB="linux-firmware-image-${VENDER,,}-${CHIP,,}-${LINUX/mainline/
 
 LINUX_BOARD_DEB="linux-board-package-${VENDER,,}-${CHIP,,}"
 
+if [ "$DISTRIB_TYPE" != "server" ]; then
+	FENIX_DESKTOP_DEB="fenix-${DISTRIBUTION}-${DISTRIB_RELEASE}-${DISTRIB_TYPE}-desktop"
+fi
+
 case $DISTRIB_ARCH in
 	arm64)
 	INITRD_ARCH=arm64

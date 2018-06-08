@@ -1,0 +1,91 @@
+# Funcions:
+# build_desktop_deb
+# desktop_postinstall
+
+## Build desktop deb package
+build_desktop_deb() {
+
+	if [ "$DISTRIB_TYPE" == "server" ]; then
+		info_msg "Ignore desktop package for server."
+		return 0
+	fi
+
+	PACKAGE_LIST_DESKTOP=$(echo $PACKAGE_LIST_DESKTOP)
+	PACKAGE_LIST_DESKTOP=${PACKAGE_LIST_DESKTOP// /,}
+
+	local pkgname="${FENIX_DESKTOP_DEB}"
+	local pkgdir="$BUILD_IMAGES/.tmp/${pkgname}_${VERSION}_all"
+	rm -rf $pkgdir
+	mkdir -p $pkgdir/DEBIAN
+
+	info_msg "Build desktop deb..."
+
+	cat <<-EOF > $pkgdir/DEBIAN/control
+	Package: $pkgname
+	Version: $VERSION
+	Architecture: all
+	Maintainer: Khadas <hello@khadas.com>
+	Installed-Size: 1
+	Section: xorg
+	Priority: optional
+	Depends: ${PACKAGE_LIST_DESKTOP}
+	Provides: fenix-desktop-package
+	Description: Fenix desktop for ${DISTRIBUTION}-${DISTRIB_RELEASE} on $KHADAS_BOARD
+	EOF
+
+	# Set up pre install script
+	cat <<-EOF > $pkgdir/DEBIAN/preinst
+	#!/bin/sh
+
+	exit 0
+	EOF
+
+	chmod 755 $pkgdir/DEBIAN/preinst
+
+	# Set up post remove script
+	cat <<-EOF > $pkgdir/DEBIAN/postrm
+	#!/bin/sh
+	exit 0
+	EOF
+
+	chmod 755 $pkgdir/DEBIAN/postrm
+
+	# Set up post install script
+	cat <<-EOF > $pkgdir/DEBIAN/postinst
+	#!/bin/sh
+	exit 0
+	EOF
+
+	chmod 755 $pkgdir/DEBIAN/postinst
+
+	# install default desktop settings
+	if [ -d $ROOT/archives/filesystem/blobs/desktop/${DISTRIB_TYPE} ]; then
+		mkdir -p $pkgdir/etc/skel
+		cp -R $ROOT/archives/filesystem/blobs/desktop/${DISTRIB_TYPE}/skel/. $pkgdir/etc/skel
+	fi
+
+	# Create desktop deb file
+	echo "Building package: $pkgname"
+	fakeroot dpkg-deb -b $pkgdir ${pkgdir}.deb
+	mkdir -p $BUILD_DEBS
+	cp ${pkgdir}.deb $BUILD_DEBS
+	# Cleanup
+	rm -rf ${pkgdir}.deb
+	rm -rf $pkgdir
+}
+
+desktop_postinstall() {
+	if [ "$DISTRIB_RELEASE" == "bionic" ] && [ "$DISTRIB_TYPE" == "xfce" ]; then
+		if [ -f $ROOTFS_TEMP/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]; then
+			if [ "$LINUX" == "mainline" ]; then
+				sed -i 's/<property name="box_move" type="bool" value=".*/<property name="box_move" type="bool" value="false"\/>/g' \
+					$ROOTFS_TEMP/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
+				sed -i 's/<property name="box_resize" type="bool" value=".*/<property name="box_resize" type="bool" value="false"\/>/g' \
+					$ROOTFS_TEMP/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
+			else
+				sed 's/name="use_compositing" type="bool" value="true"/name="use_compositing" type="bool" value="false"/' -i \
+					$ROOTFS_TEMP/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
+			fi
+		fi
+	fi
+}
