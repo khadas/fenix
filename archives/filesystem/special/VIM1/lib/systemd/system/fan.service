@@ -1,12 +1,9 @@
 [Unit]
 Description=FAN control
 DefaultDependencies=no
-Wants=rsyslog.service systemd-journald.service
-Before=syslog.target sysinit.target
 After=local-fs.target
 
 [Service]
-Type=oneshot
 ExecStart=/boot/fan.sh
 RemainAfterExit=no
 
