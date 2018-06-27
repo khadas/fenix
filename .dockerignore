@@ -1,0 +1,19 @@
+# Git repos
+linux/
+u-boot/
+
+# Legacy Git repos
+utils/
+easy_setup_target/
+
+# Generated folders
+build/
+downloads/
+images/
+rootfs/
+
+# Legacy folders
+archives/debs/
+archives/ubuntu-base/
+archives/ubuntu-mate/
+archives/epbox/

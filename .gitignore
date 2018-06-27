@@ -6,6 +6,7 @@
 *~
 \#*#
 
+!.dockerignore
 
 # Git repos
 /linux
