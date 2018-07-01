@@ -18,6 +18,6 @@ makeinstall_target() {
 	mkdir -p $BUILD_DEBS/qt
 	# Remove old debs
 	rm -rf $BUILD_DEBS/qt/*
-	cp ${DISTRIB_RELEASE}/${DISTRIB_ARCH}/*.deb $BUILD_DEBS/qt
+	cp xenial/arm64/*.deb $BUILD_DEBS/qt
 }
 

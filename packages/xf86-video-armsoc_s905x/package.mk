@@ -19,5 +19,5 @@ makeinstall_target() {
 	mkdir -p $BUILD_DEBS/xf86-video-armsoc_s905x
 	# Remove old debs
 	rm -rf $BUILD_DEBS/xf86-video-armsoc_s905x/*
-	cp ${DISTRIB_RELEASE}/${DISTRIB_ARCH}/*.deb $BUILD_DEBS/xf86-video-armsoc_s905x
+	cp xenial/arm64/*.deb $BUILD_DEBS/xf86-video-armsoc_s905x
 }
