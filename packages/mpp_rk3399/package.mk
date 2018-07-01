@@ -18,6 +18,6 @@ makeinstall_target() {
 	mkdir -p $BUILD_DEBS/mpp
 	# Remove old debs
 	rm -rf $BUILD_DEBS/mpp/*
-	cp ${DISTRIB_RELEASE}/${DISTRIB_ARCH}/*.deb $BUILD_DEBS/mpp
+	cp xenial/arm64/*.deb $BUILD_DEBS/mpp
 }
 

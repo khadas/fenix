@@ -18,6 +18,6 @@ makeinstall_target() {
 	mkdir -p $BUILD_DEBS/gstreamer
 	# Remove old debs
 	rm -rf $BUILD_DEBS/gstreamer/*
-	cp ${DISTRIB_RELEASE}/${DISTRIB_ARCH}/*.deb $BUILD_DEBS/gstreamer
+	cp xenial/arm64/*.deb $BUILD_DEBS/gstreamer
 }
 
