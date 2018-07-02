@@ -5,7 +5,7 @@
 
 ## Build U-Boot
 NR_CPUS=$(grep -c processor /proc/cpuinfo)
-if [ ${NR_CPUS} -le 8]; then
+if [ ${NR_CPUS} -le 8 ]; then
     NR_JOBS=${NR_CPUS}
 else
     NR_JOBS=8
