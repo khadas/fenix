@@ -16,7 +16,7 @@ source config/functions/functions
 check_update() {
 	cd $ROOT
 
-	update_git_repo "$PWD" "master"
+	update_git_repo "$PWD" ${FENIX_BRANCH:- master}
 }
 
 ## Display parameters

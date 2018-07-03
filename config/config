@@ -29,6 +29,8 @@ UTILS_DIR="$BUILD/utils-[0-9a-f]*"
 UPGRADE_DIR="$BUILD/images_upgrade-[0-9a-f]*"
 
 ##################################### Configurations ##################################
+FENIX_BRANCH="master"
+
 if [ "$LINUX" == "mainline" ]; then
 	MAINLINE_LINUX_VER=$(grep "PKG_VERSION=" $PKGS_DIR/linux-mainline/package.mk | awk -F '"' '{print $2}')
 fi
