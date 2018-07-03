@@ -1,5 +1,17 @@
 # Functions:
+# check_modifications
 # update_git_repo
+
+check_modifications() {
+	# Check modifications
+	CHANGED_FILES=$(git diff --name-only)
+	if [ -n "$CHANGED_FILES" ]; then
+		echo -e "$WARNING: Repo[$(pwd)] You made some modifications to file(s): \n[ \e[0;32m\n${CHANGED_FILES}\x1B[0m \n]"
+		return -1
+	fi
+
+	return 0
+}
 
 ## Update git repository
 ## $1 git repository path
@@ -18,17 +30,29 @@ update_git_repo() {
             return -1
         fi
 
-        echo "Try to update `basename $1`:$2"
+		if check_modifications; then
+			HAVE_MODIFYCATIONS=0
+		else
+			HAVE_MODIFYCATIONS=1
+		fi
+
+        info_msg "Try to update `basename $1`:$2"
+
         if ! git branch | grep "^* $2$" > /dev/null; then
-            git checkout $2
+			if [ $HAVE_MODIFYCATIONS -ne 0 ]; then
+				# Found modifications
+				error_msg "$1: can't checkout to branch '$2', please commit your modifications and try again!"
+				return -1
+			fi
+
+			git checkout $2
         fi
+
         git pull origin $2
-        CHANGED_FILES=$(git diff --name-only)
-        if [ -n "$CHANGED_FILES" ]; then
-            echo -e "$WARNING Can't update since you made changes to: \e[0;32m\n${CHANGED_FILES}\x1B[0m"
-            echo -e "Press \e[0;33m<Ctrl-C>\x1B[0m to abort compilation, \e[0;33m<Enter>\x1B[0m to ignore and continue"
-            read
-        fi
+		if [ $HAVE_MODIFYCATIONS -ne 0 ]; then
+			echo -e "Press \e[0;33m<Ctrl-C>\x1B[0m to abort compilation, \e[0;33m<Enter>\x1B[0m to ignore and continue"
+			read
+		fi
 
         cd -
     fi

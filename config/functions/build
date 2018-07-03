@@ -42,6 +42,12 @@ build_uboot() {
 
         echo "U-boot: Switch to branch '$UBOOT_GIT_BRANCH'"
         make distclean
+		# Check modifications
+		check_modifications || {
+			error_msg "U-boot: can't checkout to branch '$UBOOT_GIT_BRANCH', please commit your modifications and try again!"
+			return -1
+		}
+
         git checkout $UBOOT_GIT_BRANCH
         [ $? != 0 ] && error_msg "U-boot: Switch to branch '$UBOOT_GIT_BRANCH' failed." && return -1
     else
@@ -100,6 +106,14 @@ build_linux() {
 
         echo "Linux: Switch to branch '$LINUX_GIT_BRANCH'"
         make ARCH=arm64 distclean
+
+		# Check modifications
+		check_modifications || {
+			error_msg "Linux: can't checkout to branch '$LINUX_GIT_BRANCH', please commit your modifications and try again!"
+
+			return -1
+		}
+
         git checkout $LINUX_GIT_BRANCH
         [ $? != 0 ] && error_msg "Linux: Switch to branch '$LINUX_GIT_BRANCH' failed." && return -1
     else
