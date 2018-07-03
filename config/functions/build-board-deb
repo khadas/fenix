@@ -71,10 +71,14 @@ build_board_deb() {
 
 	# Mainline linux don't use such scripts now
 	if [ "$LINUX" == "mainline" ]; then
-		echo "#!/bin/bash" >  $pkgdir/etc/initramfs-tools/scripts/local-top/khadas_init.sh
-		echo "exit 0" >> $pkgdir/etc/initramfs-tools/scripts/local-top/khadas_init.sh
-		echo "#!/bin/bash" >  $pkgdir/boot/hdmi.sh
-		echo "exit 0" >> $pkgdir/boot/hdmi.sh
+		if [[ "$KHADAS_BOARD" =~ VIM[12] ]]; then
+			echo "#!/bin/bash" >  $pkgdir/etc/initramfs-tools/scripts/local-top/khadas_init.sh
+			echo "exit 0" >> $pkgdir/etc/initramfs-tools/scripts/local-top/khadas_init.sh
+			echo "#!/bin/bash" >  $pkgdir/boot/hdmi.sh
+			echo "exit 0" >> $pkgdir/boot/hdmi.sh
+			echo "#!/bin/sh -e" > $pkgdir/etc/rc.local
+			echo "exit 0" >> $pkgdir/etc/rc.local
+		fi
 	fi
 
 	# Copy extlinux configuration file
