@@ -449,7 +449,7 @@ build_rootfs() {
 	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" == "xenial" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_ARCH" == "arm64" ]; then
 		# install mali KO
 		VER=$(ls $ROOTFS_TEMP/lib/modules/)
-		cp $BUILD_IMAGES/meson-gx-mali-450/mali.ko $ROOTFS_TEMP/lib/modules/$VER/kernel/
+		cp $BUILD_IMAGES/meson-gx-mali-450/mali-${VER}.ko $ROOTFS_TEMP/lib/modules/$VER/kernel/mali.ko
 		depmod -b $ROOTFS_TEMP/ -a $VER
 
 		# install xf86-video-armsoc

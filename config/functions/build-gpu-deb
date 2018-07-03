@@ -196,6 +196,10 @@ build_gpu_deb() {
 	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" == "xenial" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_ARCH" == "arm64" ]; then
 		# VIM1 mainline X11 mali driver
 		## install mali.ko
+		# FIXME When kernel updated, force to rebuild meson-gx-mali-450
+		if [ ! -f $BUILD_IMAGES/meson-gx-mali-450/mali-${MAINLINE_LINUX_VER}.ko ]; then
+			rm -rf $BUILD/.stamps/meson-gx-mali-450
+		fi
 		build_package "meson-gx-mali-450:target"
 
 		build_package "xf86-video-armsoc_s905x:target"

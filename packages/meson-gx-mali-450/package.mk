@@ -20,5 +20,5 @@ make_target() {
 makeinstall_target() {
 	mkdir -p $BUILD_IMAGES/$PKG_NAME
 	rm -rf $BUILD_IMAGES/$PKG_NAME/*
-	cp mali.ko $BUILD_IMAGES/$PKG_NAME
+	cp mali.ko $BUILD_IMAGES/$PKG_NAME/mali-${MAINLINE_LINUX_VER}.ko
 }
