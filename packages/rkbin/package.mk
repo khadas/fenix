@@ -12,6 +12,9 @@ PKG_NEED_BUILD="NO"
 
 
 make_host() {
-	:
+	chmod +x firmware_merger
+	# Fixup links
+	ln -fs bin/rk33/rk3399_ddr_800MHz_v1.12.bin rk3399_ddr.bin
+	ln -fs bin/rk33/rk3399_miniloader_spinor_v1.14.bin rk3399miniloaderall.bin
 }
 
