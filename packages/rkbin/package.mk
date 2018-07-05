@@ -1,6 +1,6 @@
 PKG_NAME="rkbin"
-PKG_VERSION="ffb36c0"
-PKG_SHA256="1ff610c1fb2e3387691da21645066a381f6a81cba0642d86d6134a693d6f64bf"
+PKG_VERSION="296c605"
+PKG_SHA256="2ddc0e658a11545bc1cf23c317ff0bbd2daf8879422cd837ab95a85bc4dec88c"
 PKG_SOURCE_DIR="rkbin-${PKG_VERSION}*"
 PKG_SITE="https://github.com/rockchip-linux/rkbin"
 PKG_URL="https://github.com/rockchip-linux/rkbin/archive/$PKG_VERSION.tar.gz"
