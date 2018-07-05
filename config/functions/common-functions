@@ -202,7 +202,6 @@ prepare_packages() {
 
 	if [ "$VENDER" == "Rockchip" ]; then
 		build_package "rkbin:host"
-		build_package "spi_uboot_packer_rk3399:host"
 	fi
 }
 
