@@ -1,6 +1,8 @@
 # Fenix script set to build Ubuntu/Debian image
 
-Usage [documentation](https://docs.khadas.com/vim1/FenixScript.html).
+| **Documentation** |
+|-----------------|
+| [![Documentation](https://img.shields.io/badge/Documentation-Reference-blue.svg)](https://docs.khadas.com/vim1/FenixScript.html) |
 
 Supported build host:
 * `Ubuntu Xenial 16.04 x64` - Recommend & Fully tested.
