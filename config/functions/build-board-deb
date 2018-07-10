@@ -69,15 +69,18 @@ build_board_deb() {
 	# Copy board special rootfs files
 	rsync -a $ROOT/archives/filesystem/special/$KHADAS_BOARD/* $pkgdir/
 
-	# Mainline linux don't use such scripts now
 	if [ "$LINUX" == "mainline" ]; then
 		if [[ "$KHADAS_BOARD" =~ VIM[12] ]]; then
+			# Mainline linux don't use such scripts now
 			echo "#!/bin/bash" >  $pkgdir/etc/initramfs-tools/scripts/local-top/khadas_init.sh
 			echo "exit 0" >> $pkgdir/etc/initramfs-tools/scripts/local-top/khadas_init.sh
 			echo "#!/bin/bash" >  $pkgdir/boot/hdmi.sh
 			echo "exit 0" >> $pkgdir/boot/hdmi.sh
 			echo "#!/bin/sh -e" > $pkgdir/etc/rc.local
 			echo "exit 0" >> $pkgdir/etc/rc.local
+
+			# Update fw_env.config for mainline linux
+			echo "/dev/mmcblk1    0x27400000      0x10000" > $pkgdir/etc/fw_env.config
 		fi
 	fi
 
