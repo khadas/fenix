@@ -67,7 +67,7 @@ prepare_host() {
 	fi
 
 	if [[ "$DISTRIB_RELEASE" == "bionic" && "$build_host" != "bionic" ]]; then
-		error_msg "Building Ubuntu Bionic images requires a Bionic build host, please upgrade your build host."
+		error_msg "Building Ubuntu Bionic images requires a Bionic build host, please upgrade your build host or try to build in Docker."
 		return -1
 	fi
 
