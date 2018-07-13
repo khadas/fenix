@@ -41,7 +41,7 @@ debs:
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/build.sh linux-deb
+	./scripts/build.sh debs
 endif
 
 info:
@@ -69,7 +69,7 @@ help:
 	@echo "  all           - Create image according to environment."
 	@echo "  kernel        - Build linux kernel."
 	@echo "  uboot         - Build u-boot."
-	@echo "  debs          - Build linux debs."
+	@echo "  debs          - Build debs."
 	@echo "  image         - Pack update image."
 	@echo "  clean         - Cleanup."
 	@echo "  info          - Display current environment."
