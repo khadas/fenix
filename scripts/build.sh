@@ -28,6 +28,9 @@ case "$TARGET" in
 		;;
 	linux-deb)
 		build_linux_debs
+		build_board_deb
+		build_desktop_deb
+		build_gpu_deb
 		;;
 	u-boot)
 		build_uboot
