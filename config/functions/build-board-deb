@@ -27,20 +27,40 @@ build_board_deb() {
 
 	# Set up pre install script
 	cat <<-EOF > $pkgdir/DEBIAN/preinst
-	#!/bin/sh
+	#!/bin/bash
 	rm -rf /etc/chromium.d/default-flags
 
 	# Workaround for FAT32 /boot partition
-	rm -rf /boot/aml_boot.ini
-	rm -rf /boot/fan.sh
-	rm -rf /boot/s905_autoscript
-	rm -rf /boot/aml_autoscript
-	rm -rf /boot/aml_autoscript.zip
-	rm -rf /boot/s905_autoscript.cmd.mainline
-	rm -rf /boot/hdmi.sh
-	rm -rf /boot/aml_autoscript.txt
+	# exit if we are running chroot
+	if [ "\$(stat -c %d:%i /)" != "\$(stat -c %d:%i /proc/1/root/.)" ]; then exit 0; fi
 
-	rm -rf /boot/initrd.img-$(ls $ROOTFS_TEMP/lib/modules)
+	check_fs() {
+		boot_device=\$(mountpoint -d /boot)
+
+		for file in /dev/* ; do
+			CURRENT_DEVICE=\$(printf "%d:%d" \$(stat --printf="0x%t 0x%T" \$file))
+			if [[ "\$CURRENT_DEVICE" = "\$boot_device" ]]; then
+				boot_partition=\$file
+				break
+			fi
+		done
+
+		bootfstype=\$(blkid -s TYPE -o value \$boot_partition)
+		if [ "\$bootfstype" = "vfat" ]; then
+			rm -rf /boot/aml_boot.ini
+			rm -rf /boot/fan.sh
+			rm -rf /boot/s905_autoscript
+			rm -rf /boot/aml_autoscript
+			rm -rf /boot/aml_autoscript.zip
+			rm -rf /boot/s905_autoscript.cmd.mainline
+			rm -rf /boot/hdmi.sh
+			rm -rf /boot/aml_autoscript.txt
+
+			rm -rf /boot/initrd.img-$(ls $ROOTFS_TEMP/lib/modules)
+		fi
+	}
+
+	mountpoint -q /boot && check_fs
 
 	exit 0
 	EOF
