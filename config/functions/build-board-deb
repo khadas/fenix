@@ -59,7 +59,7 @@ build_board_deb() {
 			rm -rf /boot/hdmi.sh
 			rm -rf /boot/aml_autoscript.txt
 
-			rm -rf /boot/initrd.img-$(ls $ROOTFS_TEMP/lib/modules)
+			rm -rf /boot/initrd.img-*
 		fi
 	}
 
