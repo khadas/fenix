@@ -1,6 +1,6 @@
 PKG_NAME="kodi_s905x"
-PKG_VERSION="071c26a"
-PKG_SHA256="8c0376113023829153ed183775d656aa840cab171382275d66e0fdc9e944f907"
+PKG_VERSION="fdb75b0"
+PKG_SHA256="13afaafa293a79461041a3fb89cf427fbd486380c977f0309e48bbd65bc3c12a"
 PKG_SOURCE_DIR="kodi_s905x-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/kodi_s905x"
 PKG_URL="https://github.com/numbqq/kodi_s905x/archive/$PKG_VERSION.tar.gz"
