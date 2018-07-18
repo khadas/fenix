@@ -168,7 +168,7 @@ case $DISTRIB_RELEASE in
 	;;
 	bionic)
 	PACKAGE_LIST_RELEASE="man-db zram-config less kbd net-tools netcat-openbsd gnupg2 dirmngr nano wget"
-	PACKAGE_LIST_KODI=""
+	PACKAGE_LIST_KODI="libglu1-mesa libglu1 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libcurl4 libcrossguid0 libmariadbclient18 libmicrohttpd12"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_KODI chromium-browser xserver-xorg-input-all dbus-x11 profile-sync-daemon"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP system-config-printer system-config-printer-gnome language-selector-gnome"
 	;;
