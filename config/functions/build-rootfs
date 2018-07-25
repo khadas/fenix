@@ -132,7 +132,7 @@ install_distribution_specific()
 
 		exit 0
 		EOF
-		chmod +x $ROOTFS_TEMP/etc/rc.local
+		chmod 755 $ROOTFS_TEMP/etc/rc.local
 
 		# disable watchdog
 		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable watchdog.service"'

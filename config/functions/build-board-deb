@@ -107,6 +107,9 @@ build_board_deb() {
 		fi
 	fi
 
+	# Fixup rc.local permission
+	chmod 755 $pkgdir/etc/rc.local
+
 	# Copy extlinux configuration file
 	if [ -f $BOOT_SCRIPTS/extlinux/${KHADAS_BOARD}-${LINUX}.conf ]; then
 		mkdir -p $pkgdir/boot/extlinux
