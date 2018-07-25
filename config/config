@@ -30,6 +30,7 @@ UPGRADE_DIR="$BUILD/images_upgrade-[0-9a-f]*"
 
 ##################################### Configurations ##################################
 FENIX_BRANCH="master"
+ROOTFSCACHE_VERSION=1
 
 if [ "$LINUX" == "mainline" ]; then
 	MAINLINE_LINUX_VER=$(grep "PKG_VERSION=" $PKGS_DIR/linux-mainline/package.mk | awk -F '"' '{print $2}')
