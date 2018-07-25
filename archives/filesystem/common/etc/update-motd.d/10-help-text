@@ -3,5 +3,5 @@
 printf "\n"
 printf " * Website:        https://www.khadas.com\n"
 printf " * Documentation:  https://docs.khadas.com\n"
-printf " * Forum:          http://forum.khadas.com\n"
+printf " * Forum:          https://forum.khadas.com\n"
 printf "\n"
