@@ -225,32 +225,32 @@ create_sources_list()
 	stretch)
 	cat <<-EOF > $basedir/etc/apt/sources.list
 	deb http://${DEBIAN_MIRROR} $release main contrib non-free
-	deb-src http://${DEBIAN_MIRROR} $release main contrib non-free
+	#deb-src http://${DEBIAN_MIRROR} $release main contrib non-free
 
 	deb http://${DEBIAN_MIRROR} ${release}-updates main contrib non-free
-	deb-src http://${DEBIAN_MIRROR} ${release}-updates main contrib non-free
+	#deb-src http://${DEBIAN_MIRROR} ${release}-updates main contrib non-free
 
 	deb http://${DEBIAN_MIRROR} ${release}-backports main contrib non-free
-	deb-src http://${DEBIAN_MIRROR} ${release}-backports main contrib non-free
+	#deb-src http://${DEBIAN_MIRROR} ${release}-backports main contrib non-free
 
 	deb http://security.debian.org/ ${release}/updates main contrib non-free
-	deb-src http://security.debian.org/ ${release}/updates main contrib non-free
+	#deb-src http://security.debian.org/ ${release}/updates main contrib non-free
 	EOF
 	;;
 
 	xenial|bionic)
 	cat <<-EOF > $basedir/etc/apt/sources.list
 	deb http://${UBUNTU_MIRROR} $release main restricted universe multiverse
-	deb-src http://${UBUNTU_MIRROR} $release main restricted universe multiverse
+	#deb-src http://${UBUNTU_MIRROR} $release main restricted universe multiverse
 
 	deb http://${UBUNTU_MIRROR} ${release}-security main restricted universe multiverse
-	deb-src http://${UBUNTU_MIRROR} ${release}-security main restricted universe multiverse
+	#deb-src http://${UBUNTU_MIRROR} ${release}-security main restricted universe multiverse
 
 	deb http://${UBUNTU_MIRROR} ${release}-updates main restricted universe multiverse
-	deb-src http://${UBUNTU_MIRROR} ${release}-updates main restricted universe multiverse
+	#deb-src http://${UBUNTU_MIRROR} ${release}-updates main restricted universe multiverse
 
 	deb http://${UBUNTU_MIRROR} ${release}-backports main restricted universe multiverse
-	deb-src http://${UBUNTU_MIRROR} ${release}-backports main restricted universe multiverse
+	#deb-src http://${UBUNTU_MIRROR} ${release}-backports main restricted universe multiverse
 	EOF
 	;;
 	esac
