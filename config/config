@@ -63,7 +63,11 @@ CONSOLE_CHAR="UTF-8"
 ROOTFS_TYPE="ext4"
 BOOTFS_TYPE="fat"
 
-TZDATA=`cat /etc/timezone` # Timezone for target is taken from host or defined here.
+if [ "$BUILD_TYPE" == "release" ]; then
+	TZDATA="Etc/UTC" # Use 'Etc/UTC' when release images.
+else
+	TZDATA=`cat /etc/timezone` # Timezone for target is taken from host or defined here.
+fi
 
 ## Define colors
 BLACK="\e[0;30m"
