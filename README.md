@@ -46,7 +46,7 @@ $ docker build -t fenix .
  Run fenix in docker.
 
 ```
-$ docker run -it -v $(pwd):/home/khadas/fenix --privileged fenix
+$ docker run -it -v $(pwd):/home/khadas/fenix -v /etc/localtime:/etc/localtime:ro --privileged fenix
 ```
 
  We are in Docker container now, start to build.
