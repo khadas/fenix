@@ -8,7 +8,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade && 
 	ncurses-term p7zip-full kmod dosfstools libc6-dev-armhf-cross fakeroot \
 	curl patchutils python liblz4-tool libpython2.7-dev linux-base swig libpython-dev aptly acl\
 	systemd-container udev g++-5-arm-linux-gnueabihf lib32stdc++6 \
-	libc6-i386 lib32ncurses5 lib32tinfo5 locales ncurses-base zlib1g:i386 pixz bison libbison-dev flex libfl-dev lib32z1 tzdata
+	libc6-i386 lib32ncurses5 lib32tinfo5 locales ncurses-base zlib1g:i386 pixz bison libbison-dev flex libfl-dev lib32z1 tzdata cpio
 RUN locale-gen en_US.UTF-8
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8' TERM=screen
 
