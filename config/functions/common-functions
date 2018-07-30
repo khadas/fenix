@@ -166,7 +166,8 @@ cleanup() {
 		if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 			if mount | grep "$ROOTFS/boot" > /dev/null; then
 				do_umount "$ROOTFS/boot"
-				losetup -d "${IMAGE_LOOP_DEV}"
+				# detach all used devices
+				losetup -D
 			fi
 		fi
 
