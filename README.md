@@ -14,7 +14,7 @@ Supported build host:
 ## How to use?
 - Install essential packages
 ```
-$ sudo apt-get install git make lsb-release
+$ sudo apt-get install git make lsb-release qemu-user-static
 ```
 
 - Clone Fenix repository
