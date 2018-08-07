@@ -177,6 +177,11 @@ build_board_deb() {
 	INITRD_ARCH=arm64
 	EOF
 
+	# Set SD/USB installation board name to VIMs for VIM1 & VIM2 because they use the same image.
+	if [[ "$INSTALL_TYPE" == "SD-USB" ]] && [[ "$KHADAS_BOARD" =~ "VIM" ]]; then
+		sed -i 's/BOARD=.*/BOARD=VIMs/' $pkgdir/etc/fenix-release
+	fi
+
 	mkdir -p $pkgdir/usr/lib/NetworkManager/conf.d/
 	cat <<-EOF > $pkgdir/usr/lib/NetworkManager/conf.d/zz-override-wifi-powersave-off.conf
 	[connection]
