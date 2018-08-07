@@ -15,9 +15,9 @@ make_target() {
 }
 
 makeinstall_target() {
-	mkdir -p $BUILD_DEBS/xserver
+	mkdir -p $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/xserver
 	# Remove old debs
-	rm -rf $BUILD_DEBS/xserver/*
-	cp ${DISTRIB_RELEASE}/${DISTRIB_ARCH}/*.deb $BUILD_DEBS/xserver
+	rm -rf $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/xserver/*
+	cp ${DISTRIB_RELEASE}/${DISTRIB_ARCH}/*.deb $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/xserver
 }
 

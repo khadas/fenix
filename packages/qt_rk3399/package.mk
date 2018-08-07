@@ -15,9 +15,9 @@ make_target() {
 }
 
 makeinstall_target() {
-	mkdir -p $BUILD_DEBS/qt
+	mkdir -p $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/qt
 	# Remove old debs
-	rm -rf $BUILD_DEBS/qt/*
-	cp ${DISTRIB_RELEASE}/${DISTRIB_ARCH}/*.deb $BUILD_DEBS/qt
+	rm -rf $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/qt/*
+	cp ${DISTRIB_RELEASE}/${DISTRIB_ARCH}/*.deb $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/qt
 }
 

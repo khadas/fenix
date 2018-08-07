@@ -25,35 +25,35 @@ install_common()
 	date -u '+%Y-%m-%d %H:%M:%S' > $ROOTFS_TEMP/etc/fake-hwclock.data
 
 	# Install linux image deb in chroot
-	if [ -f $BUILD_DEBS/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
-		install_deb_chroot $BUILD_DEBS/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
+	if [ -f $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
+		install_deb_chroot $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
 	fi
 
 	# Install linux dtb deb in chroot
-	if [ -f $BUILD_DEBS/${LINUX_IMAGE_DEB/image/dtb}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
-		install_deb_chroot $BUILD_DEBS/${LINUX_IMAGE_DEB/image/dtb}_${VERSION}_${DISTRIB_ARCH}.deb
+	if [ -f $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB/image/dtb}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
+		install_deb_chroot $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB/image/dtb}_${VERSION}_${DISTRIB_ARCH}.deb
 	fi
 
 	# Install linux headers deb in chroot
-	if [ -f $BUILD_DEBS/${LINUX_IMAGE_DEB/image/headers}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
-		install_deb_chroot $BUILD_DEBS/${LINUX_IMAGE_DEB/image/headers}_${VERSION}_${DISTRIB_ARCH}.deb
+	if [ -f $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB/image/headers}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
+		install_deb_chroot $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB/image/headers}_${VERSION}_${DISTRIB_ARCH}.deb
 	fi
 
 	# Install linux firmware in chroot
-	if [ -f $BUILD_DEBS/${LINUX_FIRMWARE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
-		install_deb_chroot $BUILD_DEBS/${LINUX_FIRMWARE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
+	if [ -f $BUILD_DEBS/$VERSION/${LINUX_FIRMWARE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
+		install_deb_chroot $BUILD_DEBS/$VERSION/${LINUX_FIRMWARE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
 	fi
 
 	# Install GPU deb in chroot
-	if [ -f $BUILD_DEBS/linux-gpu-${VENDER,,}-${CHIP,,}-${GPU_MODEL,,}-${GPU_VER,,}-${GPU_PLATFORM}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
-		install_deb_chroot $BUILD_DEBS/linux-gpu-${VENDER,,}-${CHIP,,}-${GPU_MODEL,,}-${GPU_VER,,}-${GPU_PLATFORM}_${VERSION}_${DISTRIB_ARCH}.deb
+	if [ -f $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-${VENDER,,}-${CHIP,,}-${GPU_MODEL,,}-${GPU_VER,,}-${GPU_PLATFORM}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-${VENDER,,}-${CHIP,,}-${GPU_MODEL,,}-${GPU_VER,,}-${GPU_PLATFORM}_${VERSION}_${DISTRIB_ARCH}.deb
 	fi
 
 	# Install board deb in chroot
-	install_deb_chroot $BUILD_DEBS/${LINUX_BOARD_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
+	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/${LINUX_BOARD_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
 
 	if [ "$DISTRIB_TYPE" != "server" ]; then
-		install_deb_chroot $BUILD_DEBS/${FENIX_DESKTOP_DEB}_${VERSION}_all.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/${FENIX_DESKTOP_DEB}_${VERSION}_all.deb
 		desktop_postinstall
 	fi
 
@@ -453,7 +453,7 @@ build_rootfs() {
 		depmod -b $ROOTFS_TEMP/ -a $VER
 
 		# install xf86-video-armsoc
-		install_deb_chroot $BUILD_DEBS/xf86-video-armsoc_s905x/*.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/xf86-video-armsoc_s905x/*.deb
 
 		# Mali udev rule
 		tee $ROOTFS_TEMP/etc/udev/rules.d/50-mali.rules <<-EOF

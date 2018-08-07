@@ -50,7 +50,7 @@ build_debs() {
 	mkdir -p $BUILD_IMAGES
 
 	# Build linux debs
-	if [[ ! -f $BUILD_DEBS/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb ]]; then
+	if [[ ! -f $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb ]]; then
 		build_linux_debs
 	fi
 

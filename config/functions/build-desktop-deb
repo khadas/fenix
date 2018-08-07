@@ -67,8 +67,8 @@ build_desktop_deb() {
 	# Create desktop deb file
 	echo "Building package: $pkgname"
 	fakeroot dpkg-deb -b $pkgdir ${pkgdir}.deb
-	mkdir -p $BUILD_DEBS
-	cp ${pkgdir}.deb $BUILD_DEBS
+	mkdir -p $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}
+	cp ${pkgdir}.deb $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}
 	# Cleanup
 	rm -rf ${pkgdir}.deb
 	rm -rf $pkgdir
