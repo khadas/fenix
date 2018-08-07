@@ -94,7 +94,7 @@ extract_package() {
 	[ -z "$PKG_URL" -o -z "$PKG_SOURCE_NAME" ] && return -1
 	[ ! -d "$DOWNLOAD_PKG_DIR/$1" -o ! -d "$2" ] && return -1
 
-	echo "Extracting '$PKG_SOURCE_NAME' to '$2'..."
+	printf "${GREEN}Extracting '$PKG_SOURCE_NAME' to '$2'...${ENDCOLOR}\n" ' '
 
 	for pattern in .tar.gz .tar.xz .tar.bz2 .tgz .txz .tbz .7z .zip; do
 		if [[ $PKG_SOURCE_NAME =~ ${pattern//./\\.}$ ]]; then
@@ -149,12 +149,12 @@ clean_package() {
 		if [ -d $i -a -f "$i/.fenix-unpack" ] ; then
 			. "$i/.fenix-unpack"
 			if [ "$STAMP_PKG_NAME" = "$1" ]; then
-				printf "%${BUILD_INDENT}c ${boldred}*${endcolor} ${red}Removing $i ...${endcolor}\n" ' '
+				printf "${BOLDRED}*${ENDCOLOR} ${RED}Removing $i ...${ENDCOLOR}\n" ' '
 				rm -rf $i
 			fi
 		else
 			# force clean if no stamp found (previous unpack failed)
-			printf "%${BUILD_INDENT}c * Removing $i ...\n" ' '
+			printf "${BOLDRED}*${ENDCOLOR} ${RED}Removing $i ...${ENDCOLOR}\n" ' '
 			rm -rf $i
 		fi
 	done
