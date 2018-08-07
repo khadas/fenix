@@ -90,7 +90,7 @@ ENDCOLOR="\e[0m"
 
 ##
 ERROR="${RED}Error:${ENDCOLOR}"
-WARNING="${MAGENTA}Warning:${ENDCOLOR}"
+WARNING="${YELLOW}Warning:${ENDCOLOR}"
 INFO="${GREEN}Info:${ENDCOLOR}"
 
 ################################### Packages ############################################
