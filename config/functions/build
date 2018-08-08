@@ -16,6 +16,9 @@ build_uboot() {
     ret=0
 
     if [ "$UBOOT" == "mainline" ]; then
+		rm -rf $BUILD/.stamps/u-boot-mainline/
+		build_package "u-boot-mainline:target"
+
         return 0
     fi
 
@@ -79,6 +82,9 @@ build_linux() {
     ret=0
 
     if [ "$LINUX" == "mainline" ]; then
+		rm -rf $BUILD/.stamps/linux-mainline/
+		build_package "linux-mainline:target"
+
         return 0
     fi
 
