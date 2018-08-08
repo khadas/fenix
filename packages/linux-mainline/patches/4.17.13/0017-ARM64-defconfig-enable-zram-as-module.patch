@@ -1,0 +1,33 @@
+From 6dec029371b80ac88d53ec3fd0c15a95b2a4e8e9 Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Wed, 8 Aug 2018 12:17:03 +0800
+Subject: [PATCH 17/19] ARM64: defconfig: enable zram as module
+
+---
+ arch/arm64/configs/defconfig | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index f9397df..eecca3d 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -91,6 +91,7 @@ CONFIG_KSM=y
+ CONFIG_MEMORY_FAILURE=y
+ CONFIG_TRANSPARENT_HUGEPAGE=y
+ CONFIG_CMA=y
++CONFIG_ZSMALLOC=y
+ CONFIG_SECCOMP=y
+ CONFIG_KEXEC=y
+ CONFIG_CRASH_DUMP=y
+@@ -174,6 +175,8 @@ CONFIG_MTD_NAND=y
+ CONFIG_MTD_NAND_DENALI_DT=y
+ CONFIG_MTD_NAND_MARVELL=y
+ CONFIG_MTD_SPI_NOR=y
++CONFIG_ZRAM=m
++CONFIG_ZRAM_WRITEBACK=y
+ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_VIRTIO_BLK=y
+-- 
+1.9.1
+

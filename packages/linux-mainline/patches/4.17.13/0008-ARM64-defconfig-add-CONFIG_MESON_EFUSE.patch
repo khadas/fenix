@@ -1,0 +1,28 @@
+From 6730efdc04517f09ff9e7a01d15c2d85719b6939 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Mon, 13 Nov 2017 12:02:59 +0100
+Subject: [PATCH 08/19] ARM64: defconfig: add CONFIG_MESON_EFUSE
+
+Turn on CONFIG_MESON_EFUSE as module
+
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+---
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 13ec881..b4fc12f 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -600,6 +600,7 @@ CONFIG_QCOM_L3_PMU=y
+ CONFIG_MESON_EFUSE=m
+ CONFIG_QCOM_QFPROM=y
+ CONFIG_UNIPHIER_EFUSE=y
++CONFIG_MESON_EFUSE=m
+ CONFIG_TEE=y
+ CONFIG_OPTEE=y
+ CONFIG_ARM_SCPI_PROTOCOL=y
+-- 
+1.9.1
+
