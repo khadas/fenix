@@ -44,8 +44,8 @@ hangup() {
 ## Export version
 function export_version() {
 	if [ ! -d "$ROOT/env" ]; then
-		echo -e "\033[31mError:\033[0m You should execute the script in Fenix root directory.Please enter Fenix root directory and execute it again."
-		echo "Ctrl+C to abort."
+		echo -e "\e[31mError:\e[0m You should execute the script in Fenix root directory by executing \e[0;32msource env/setenv.sh\e[0m.Please enter Fenix root directory and try again."
+		echo -e "\e[0;32mCtrl+C\e[0m to abort."
 		# Hang
 		hangup
 	fi
