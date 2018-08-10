@@ -1,0 +1,11 @@
+[Unit]
+Description=ADB setup.
+DefaultDependencies=no
+After=systemd-update-utmp-runlevel.service
+
+[Service]
+ExecStart=/usr/local/bin/adb-setup
+RemainAfterExit=no
+
+[Install]
+WantedBy=sysinit.target
