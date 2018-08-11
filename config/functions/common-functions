@@ -190,13 +190,6 @@ prepare_toolchains() {
 
 ## Prepare packages
 prepare_packages() {
-    if [ "$UBOOT" == "mainline" ]; then
-        build_package "u-boot-mainline:target"
-    fi
-
-    if [ "$LINUX" == "mainline" ]; then
-        build_package "linux-mainline:target"
-    fi
 
     build_package "utils:host"
     build_package "images_upgrade:host"
