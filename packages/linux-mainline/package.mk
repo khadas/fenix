@@ -23,7 +23,5 @@ make_target() {
 }
 
 makeinstall_target() {
-	mkdir -p $BUILD_IMAGES/$PKG_NAME
-	cp arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dtb $BUILD_IMAGES/$PKG_NAME
-	cp arch/arm64/boot/Image $BUILD_IMAGES/$PKG_NAME
+	:
 }
