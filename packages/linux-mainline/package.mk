@@ -14,12 +14,12 @@ PKG_NEED_BUILD="YES"
 
 make_target() {
 
-	export PATH=$TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/bin/:$PATH
+	export PATH=$KERNEL_COMPILER_PATH:$PATH
 
 #	make ARCH=arm64 distclean
-	make ARCH=arm64 defconfig
+	make ARCH=arm64 ${LINUX_DEFCONFIG}
 
-	make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image modules dtbs
+	make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} Image modules dtbs
 }
 
 makeinstall_target() {

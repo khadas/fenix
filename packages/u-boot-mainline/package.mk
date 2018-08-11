@@ -13,10 +13,10 @@ PKG_NEED_BUILD="YES"
 
 make_target() {
 
-	export PATH=$TOOLCHAINS/gcc-linaro-aarch64-elf/bin/:$PATH
+	export PATH=$UBOOT_COMPILER_PATH:$PATH
 	make distclean
-	make khadas-vim_defconfig
-	make -j${NR_JOBS} CROSS_COMPILE=aarch64-elf-
+	make ${UBOOT_DEFCONFIG}
+	make -j${NR_JOBS} CROSS_COMPILE=${UBOOT_COMPILER}
 }
 
 post_make_target() {
