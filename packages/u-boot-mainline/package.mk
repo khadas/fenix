@@ -16,7 +16,7 @@ make_target() {
 	export PATH=$TOOLCHAINS/gcc-linaro-aarch64-elf/bin/:$PATH
 	make distclean
 	make khadas-vim_defconfig
-	make -j8 CROSS_COMPILE=aarch64-elf-
+	make -j${NR_JOBS} CROSS_COMPILE=aarch64-elf-
 }
 
 post_make_target() {

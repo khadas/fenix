@@ -19,7 +19,7 @@ make_target() {
 #	make ARCH=arm64 distclean
 	make ARCH=arm64 defconfig
 
-	make -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image modules dtbs
+	make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image modules dtbs
 }
 
 makeinstall_target() {

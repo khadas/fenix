@@ -4,14 +4,6 @@
 # build_linux_debs
 
 ## Build U-Boot
-NR_JOBS_MAX=12
-NR_CPUS=$(grep -c processor /proc/cpuinfo)
-if [ ${NR_CPUS} -le ${NR_JOBS_MAX} ]; then
-    NR_JOBS=${NR_CPUS}
-else
-    NR_JOBS=${NR_JOBS_MAX}
-fi
-
 build_uboot() {
     ret=0
 

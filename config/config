@@ -32,6 +32,14 @@ UPGRADE_DIR="$BUILD/images_upgrade-[0-9a-f]*"
 FENIX_BRANCH="master"
 ROOTFSCACHE_VERSION=2
 
+NR_JOBS_MAX=12
+NR_CPUS=$(grep -c processor /proc/cpuinfo)
+if [ ${NR_CPUS} -le ${NR_JOBS_MAX} ]; then
+	NR_JOBS=${NR_CPUS}
+else
+	NR_JOBS=${NR_JOBS_MAX}
+fi
+
 if [ "$LINUX" == "mainline" ]; then
 	MAINLINE_LINUX_VER=$(grep "PKG_VERSION=" $PKGS_DIR/linux-mainline/package.mk | awk -F '"' '{print $2}')
 fi
