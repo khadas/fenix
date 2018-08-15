@@ -176,6 +176,7 @@ build_board_deb() {
 	ARCH=$DISTRIB_ARCH
 	INITRD_ARCH=arm64
 	INSTALL_TYPE=$INSTALL_TYPE
+	IMAGE_RELEASE_VERSION=$IMAGE_RELEASE_VERSION
 	EOF
 
 	# Set SD/USB installation board name to VIMs for VIM1 & VIM2 because they use the same image.

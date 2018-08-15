@@ -79,9 +79,6 @@ if [ -f /.multi-os ]; then
 	rm -rf /.multi-os
 fi
 
-# Build time
-LC_ALL="C" date > /etc/build-time
-
 # Clean up
 apt-get -y clean
 apt-get -y autoclean
