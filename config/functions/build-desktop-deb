@@ -53,10 +53,45 @@ build_desktop_deb() {
 	# Set up post install script
 	cat <<-EOF > $pkgdir/DEBIAN/postinst
 	#!/bin/sh
+
+	# Overwrite Chromium default configuration
+	if [ -d /etc/chromium-browser/ ]; then ln -sf /etc/fenix/chromium.conf /etc/chromium-browser/default; fi
+	if [ -d /etc/chromium.d/ ]; then ln -sf /etc/fenix/chromium.conf /etc/chromium.d/default-flags; fi
+
+	# Get accelerated back for chromium
+	# Ubuntu
+	if [ -d /usr/lib/chromium-browser/ ]; then
+		if [ -d /usr/lib/aarch64-linux-gnu/ ]; then
+			# arm64
+			ln -fs /usr/lib/aarch64-linux-gnu/libGLESv2.so /usr/lib/chromium-browser/libGLESv2.so
+			ln -fs /usr/lib/aarch64-linux-gnu/libEGL.so /usr/lib/chromium-browser/libEGL.so
+		else
+			# armhf
+			ln -fs /usr/lib/arm-linux-gnueabihf/libGLESv2.so /usr/lib/chromium-browser/libGLESv2.so
+			ln -fs /usr/lib/arm-linux-gnueabihf/libEGL.so /usr/lib/chromium-browser/libEGL.so
+		fi
+	fi
+	# Debian
+	if [ -d /usr/lib/chromium/ ]; then
+		if [ -d /usr/lib/aarch64-linux-gnu/ ]; then
+			# arm64
+			ln -fs /usr/lib/aarch64-linux-gnu/libGLESv2.so /usr/lib/chromium/libGLESv2.so
+			ln -fs /usr/lib/aarch64-linux-gnu/libEGL.so /usr/lib/chromium/libEGL.so
+		else
+			# armhf
+			ln -fs /usr/lib/arm-linux-gnueabihf/libGLESv2.so /usr/lib/chromium/libGLESv2.so
+			ln -fs /usr/lib/arm-linux-gnueabihf/libEGL.so /usr/lib/chromium/libEGL.so
+		fi
+	fi
+
 	exit 0
 	EOF
 
 	chmod 755 $pkgdir/DEBIAN/postinst
+
+	# Install default configuration for Chromium
+	mkdir -p $pkgdir/etc/fenix
+	cp $ROOT/archives/filesystem/blobs/desktop/chromium.conf $pkgdir/etc/fenix
 
 	# install default desktop settings
 	if [ -d $ROOT/archives/filesystem/blobs/desktop/${DISTRIB_TYPE} ]; then

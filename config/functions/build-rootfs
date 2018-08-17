@@ -95,17 +95,6 @@ install_distribution_specific()
 		# ureadahead needs kernel tracing options that AFAIK are present only in mainline
 		chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload mask ondemand.service ureadahead.service setserial.service etc-setserial.service"
 
-		if [ "$DISTRIB_TYPE" != "server" ]; then
-			# Get accelerated back for chromium
-			if [ "$DISTRIB_ARCH" == "arm64" ]; then
-				eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -s /usr/lib/aarch64-linux-gnu/libGLESv2.so /usr/lib/chromium-browser/libGLESv2.so"'
-				eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -s /usr/lib/aarch64-linux-gnu/libEGL.so /usr/lib/chromium-browser/libEGL.so"'
-			elif [ "$DISTRIB_ARCH" == "armhf" ]; then
-				eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -s /usr/lib/arm-linux-gnueabihf/libGLESv2.so /usr/lib/chromium-browser/libGLESv2.so"'
-				eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -s /usr/lib/arm-linux-gnueabihf/libEGL.so /usr/lib/chromium-browser/libEGL.so"'
-			fi
-		fi
-
 		# Enable watchdog service(dur to a debian bug for xenial).
 		# eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -s /lib/systemd/system/watchdog.service /etc/systemd/system/multi-user.target.wants/watchdog.service"'
 		# eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl enable watchdog.service"'
@@ -136,17 +125,6 @@ install_distribution_specific()
 
 		# disable watchdog
 		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable watchdog.service"'
-
-		if [ "$DISTRIB_TYPE" != "server" ]; then
-			# Get accelerated back for chromium
-			if [ "$DISTRIB_ARCH" == "arm64" ]; then
-				eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -s /usr/lib/aarch64-linux-gnu/libGLESv2.so /usr/lib/chromium/libGLESv2.so"'
-				eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -s /usr/lib/aarch64-linux-gnu/libEGL.so /usr/lib/chromium/libEGL.so"'
-			elif [ "$DISTRIB_ARCH" == "armhf" ]; then
-				eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -s /usr/lib/arm-linux-gnueabihf/libGLESv2.so /usr/lib/chromium/libGLESv2.so"'
-				eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -s /usr/lib/arm-linux-gnueabihf/libEGL.so /usr/lib/chromium/libEGL.so"'
-			fi
-		fi
 		;;
 	bionic)
 		# remove doubled uname from motd

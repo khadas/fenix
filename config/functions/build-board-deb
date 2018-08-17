@@ -16,7 +16,7 @@ build_board_deb() {
 	Architecture: $DISTRIB_ARCH
 	Maintainer: Khadas <hello@khadas.com>
 	Installed-Size: 1
-	Replaces: linux-firmware, chromium-browser, chromium, watchdog, base-files
+	Replaces: linux-firmware, watchdog, base-files
 	Section: kernel
 	Priority: optional
 	Depends: bash, linux-base, u-boot-tools, initramfs-tools
@@ -28,7 +28,6 @@ build_board_deb() {
 	# Set up pre install script
 	cat <<-EOF > $pkgdir/DEBIAN/preinst
 	#!/bin/bash
-	rm -rf /etc/chromium.d/default-flags
 
 	rm -rf /etc/motd
 	rm -rf /etc/update-motd.d/*
