@@ -449,7 +449,7 @@ build_rootfs() {
 	chroot $ROOTFS_TEMP/ bash "/RUNME.sh" $DISTRIBUTION $DISTRIB_RELEASE $DISTRIB_TYPE $DISTRIB_ARCH $KHADAS_BOARD $LINUX $UBOOT $INSTALL_TYPE $VENDOR
 
 	## Logo
-	cp archives/logo/logo.img $BUILD_IMAGES
+	cp archives/logo/${VENDOR}/logo.img $BUILD_IMAGES
 
 	## Unmount to get the rootfs.img
 	sync
