@@ -9,7 +9,7 @@ build_gpu_deb() {
 
 	info_msg "Build gpu deb..."
 
-	local pkgname="linux-gpu-${VENDER,,}-${CHIP,,}-${GPU_MODEL,,}-${GPU_VER,,}-${GPU_PLATFORM}"
+	local pkgname="linux-gpu-${VENDOR,,}-${CHIP,,}-${GPU_MODEL,,}-${GPU_VER,,}-${GPU_PLATFORM}"
 	local pkgdir="$BUILD_IMAGES/.tmp/${pkgname}_${VERSION}_${DISTRIB_ARCH}"
 
 	if [ "$KHADAS_BOARD" == "VIM1" ]; then
@@ -36,24 +36,24 @@ build_gpu_deb() {
 
 		if [ "$GPU_PLATFORM" == "fbdev" ]; then
 			### fbdev
-			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDER}/r7p0/lib/$DISTRIB_ARCH/$GPU_VER/m450"
+			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDOR}/r7p0/lib/$DISTRIB_ARCH/$GPU_VER/m450"
 		elif [ "$GPU_PLATFORM" == "x11" ]; then
 			### x11
-			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDER}/r7p0/lib/$DISTRIB_ARCH/$GPU_VER/m450-X"
+			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDOR}/r7p0/lib/$DISTRIB_ARCH/$GPU_VER/m450-X"
 		elif [ "$GPU_PLATFORM" == "wayland" ]; then
 			### wayland
-			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDER}/r7p0/lib/$DISTRIB_ARCH/$GPU_VER/m450/wayland"
+			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDOR}/r7p0/lib/$DISTRIB_ARCH/$GPU_VER/m450/wayland"
 		fi
 
 		# GPU user space binary drivers
 		## Headers
 		mkdir -p $pkgdir/usr/include/
-		cp -arf archives/hwpacks/mali/${VENDER}/r7p0/include/EGL $pkgdir/usr/include/
-		cp -arf archives/hwpacks/mali/${VENDER}/r7p0/include/GLES $pkgdir/usr/include/
-		cp -arf archives/hwpacks/mali/${VENDER}/r7p0/include/GLES2 $pkgdir/usr/include/
-		cp -arf archives/hwpacks/mali/${VENDER}/r7p0/include/KHR $pkgdir/usr/include/
+		cp -arf archives/hwpacks/mali/${VENDOR}/r7p0/include/EGL $pkgdir/usr/include/
+		cp -arf archives/hwpacks/mali/${VENDOR}/r7p0/include/GLES $pkgdir/usr/include/
+		cp -arf archives/hwpacks/mali/${VENDOR}/r7p0/include/GLES2 $pkgdir/usr/include/
+		cp -arf archives/hwpacks/mali/${VENDOR}/r7p0/include/KHR $pkgdir/usr/include/
 
-		cp -arf archives/hwpacks/mali/${VENDER}/r7p0/include/EGL_platform/platform_${GPU_PLATFORM}/*.h $pkgdir/usr/include/EGL/
+		cp -arf archives/hwpacks/mali/${VENDOR}/r7p0/include/EGL_platform/platform_${GPU_PLATFORM}/*.h $pkgdir/usr/include/EGL/
 
 		## libMali.so
 		mkdir -p $pkgdir/usr/lib/
@@ -67,19 +67,19 @@ build_gpu_deb() {
 		fi
 
 		### links
-		cp -arf archives/hwpacks/mali/${VENDER}/r7p0/lib/*.so* $pkgdir/usr/lib/
+		cp -arf archives/hwpacks/mali/${VENDOR}/r7p0/lib/*.so* $pkgdir/usr/lib/
 		if [ "$DISTRIB_ARCH" == "arm64" ]; then
-			cp -arf archives/hwpacks/mali/${VENDER}/r7p0/lib/*.so* $pkgdir/usr/lib/aarch64-linux-gnu
+			cp -arf archives/hwpacks/mali/${VENDOR}/r7p0/lib/*.so* $pkgdir/usr/lib/aarch64-linux-gnu
 		elif [ "$DISTRIB_ARCH" == "armhf" ]; then
-			cp -arf archives/hwpacks/mali/${VENDER}/r7p0/lib/*.so* $pkgdir/usr/lib/arm-linux-gnueabihf
+			cp -arf archives/hwpacks/mali/${VENDOR}/r7p0/lib/*.so* $pkgdir/usr/lib/arm-linux-gnueabihf
 		fi
 			mkdir -p $pkgdir/usr/lib/pkgconfig/
-			cp -arf archives/hwpacks/mali/${VENDER}/r7p0/lib/pkgconfig/*.pc $pkgdir/usr/lib/pkgconfig/
+			cp -arf archives/hwpacks/mali/${VENDOR}/r7p0/lib/pkgconfig/*.pc $pkgdir/usr/lib/pkgconfig/
 		# Mali m450 framebuffer mode examples
 		if [ "$DISTRIB_ARCH" == "arm64" ] && [ "$LINUX" != "mainline" ]; then
 			mkdir -p $pkgdir/usr/share/arm/
-			cp -arf archives/hwpacks/mali/${VENDER}/fbdev_examples/$LINUX/lib/* $pkgdir/usr/lib/
-			cp -arf archives/hwpacks/mali/${VENDER}/fbdev_examples/$LINUX/opengles_20 $pkgdir/usr/share/arm/
+			cp -arf archives/hwpacks/mali/${VENDOR}/fbdev_examples/$LINUX/lib/* $pkgdir/usr/lib/
+			cp -arf archives/hwpacks/mali/${VENDOR}/fbdev_examples/$LINUX/opengles_20 $pkgdir/usr/share/arm/
 		fi
 
 		mkdir -p $pkgdir/usr/lib/udev/rules.d
@@ -138,26 +138,26 @@ build_gpu_deb() {
 
 		if [ "$GPU_PLATFORM" == "fbdev" ]; then
 			### fbdev
-			local gpu_lib="$ROOT/archives/hwpacks/mali/${VENDER}/lib/$DISTRIB_ARCH/libmali-midgard-t86x-${GPU_VER}-fbdev.so"
+			local gpu_lib="$ROOT/archives/hwpacks/mali/${VENDOR}/lib/$DISTRIB_ARCH/libmali-midgard-t86x-${GPU_VER}-fbdev.so"
 		elif [ "$GPU_PLATFORM" == "gbm" ]; then
 			### gbm
-			local gpu_lib="$ROOT/archives/hwpacks/mali/${VENDER}/lib/$DISTRIB_ARCH/libmali-midgard-t86x-${GPU_VER}-gbm.so"
+			local gpu_lib="$ROOT/archives/hwpacks/mali/${VENDOR}/lib/$DISTRIB_ARCH/libmali-midgard-t86x-${GPU_VER}-gbm.so"
 		elif [ "$GPU_PLATFORM" == "x11" ]; then
 			### x11
-			local gpu_lib="$ROOT/archives/hwpacks/mali/${VENDER}/lib/$DISTRIB_ARCH/libmali-midgard-t86x-${GPU_VER}.so"
+			local gpu_lib="$ROOT/archives/hwpacks/mali/${VENDOR}/lib/$DISTRIB_ARCH/libmali-midgard-t86x-${GPU_VER}.so"
 		elif [ "$GPU_PLATFORM" == "wayland" ]; then
 			### wayland
-			local gpu_lib="$ROOT/archives/hwpacks/mali/${VENDER}/lib/$DISTRIB_ARCH/libmali-midgard-t86x-${GPU_VER}-wayland.so"
+			local gpu_lib="$ROOT/archives/hwpacks/mali/${VENDOR}/lib/$DISTRIB_ARCH/libmali-midgard-t86x-${GPU_VER}-wayland.so"
 		fi
 
 		# GPU user space binary drivers
 		## Headers
 		mkdir -p $pkgdir/usr/include/
-		cp -arf archives/hwpacks/mali/${VENDER}/include/* $pkgdir/usr/include/
+		cp -arf archives/hwpacks/mali/${VENDOR}/include/* $pkgdir/usr/include/
 		rm $pkgdir/usr/include/mali.icd
 
 		mkdir -p $pkgdir/etc/OpenCL/vendors/
-		cp archives/hwpacks/mali/${VENDER}/include/mali.icd $pkgdir/etc/OpenCL/vendors/
+		cp archives/hwpacks/mali/${VENDOR}/include/mali.icd $pkgdir/etc/OpenCL/vendors/
 
 		## libMali.so
 		if [ "$DISTRIB_ARCH" == "arm64" ]; then
@@ -171,10 +171,10 @@ build_gpu_deb() {
 		cp -arf $gpu_lib $gpu_lib_install_dir/libMali.so
 
 		## pkgconfig
-		cp -r archives/hwpacks/mali/${VENDER}/lib/pkgconfig_${DISTRIB_ARCH} $gpu_lib_install_dir/pkgconfig
+		cp -r archives/hwpacks/mali/${VENDOR}/lib/pkgconfig_${DISTRIB_ARCH} $gpu_lib_install_dir/pkgconfig
 
 		### links
-		cp -arf archives/hwpacks/mali/${VENDER}/lib/*.so* $gpu_lib_install_dir
+		cp -arf archives/hwpacks/mali/${VENDOR}/lib/*.so* $gpu_lib_install_dir
 
 		mkdir -p $pkgdir/usr/lib/udev/rules.d
 		cat <<-EOF > $pkgdir/usr/lib/udev/rules.d/50-mail.rules

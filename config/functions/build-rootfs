@@ -45,8 +45,8 @@ install_common()
 	fi
 
 	# Install GPU deb in chroot
-	if [ -f $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-${VENDER,,}-${CHIP,,}-${GPU_MODEL,,}-${GPU_VER,,}-${GPU_PLATFORM}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
-		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-${VENDER,,}-${CHIP,,}-${GPU_MODEL,,}-${GPU_VER,,}-${GPU_PLATFORM}_${VERSION}_${DISTRIB_ARCH}.deb
+	if [ -f $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-${VENDOR,,}-${CHIP,,}-${GPU_MODEL,,}-${GPU_VER,,}-${GPU_PLATFORM}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-${VENDOR,,}-${CHIP,,}-${GPU_MODEL,,}-${GPU_VER,,}-${GPU_PLATFORM}_${VERSION}_${DISTRIB_ARCH}.deb
 	fi
 
 	# Install board deb in chroot
@@ -446,7 +446,7 @@ build_rootfs() {
 	echo "NOTE: ENTER CHROOT AND EXECUTE SCRIPT 'RUNME.sh'."
 	echo
 	mount_chroot "$ROOTFS_TEMP"
-	chroot $ROOTFS_TEMP/ bash "/RUNME.sh" $DISTRIBUTION $DISTRIB_RELEASE $DISTRIB_TYPE $DISTRIB_ARCH $KHADAS_BOARD $LINUX $UBOOT $INSTALL_TYPE $VENDER
+	chroot $ROOTFS_TEMP/ bash "/RUNME.sh" $DISTRIBUTION $DISTRIB_RELEASE $DISTRIB_TYPE $DISTRIB_ARCH $KHADAS_BOARD $LINUX $UBOOT $INSTALL_TYPE $VENDOR
 
 	## Logo
 	cp archives/logo/logo.img $BUILD_IMAGES

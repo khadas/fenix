@@ -51,7 +51,7 @@ info:
 	@echo "==========================================="
 	@echo
 	@echo "#KHADAS_BOARD=${KHADAS_BOARD}"
-	@echo "#VENDER=${VENDER}"
+	@echo "#VENDOR=${VENDOR}"
 	@echo "#CHIP=${CHIP}"
 	@echo "#LINUX=${LINUX}"
 	@echo "#UBOOT=${UBOOT}"

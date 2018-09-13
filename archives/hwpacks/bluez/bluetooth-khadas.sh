@@ -15,19 +15,19 @@ version_compare() {
 }
 
 if cat /proc/device-tree/compatible | grep rockchip > /dev/null; then
-	vender="Rockchip"
+	vendor="Rockchip"
 elif cat /proc/device-tree/compatible | grep amlogic > /dev/null; then
-	vender="Amlogic"
+	vendor="Amlogic"
 else
-	echo "Error: Unsupported vender!"
+	echo "Error: Unsupported vendor!"
 	exit -1
 fi
 
-echo "VENDER: $vender"
+echo "VENDOR: $vendor"
 
 linux_ver=`uname -a | awk '{print $3}'`
 
-if [ "$vender" == "Amlogic" ]; then
+if [ "$vendor" == "Amlogic" ]; then
 	ret=`version_compare $linux_ver "4.12"`
 
 	# version >= 4.12
@@ -40,7 +40,7 @@ if [ "$vender" == "Amlogic" ]; then
 		bt_tty="ttyS1"
 	fi
 
-elif [ "$vender" == "Rockchip" ]; then
+elif [ "$vendor" == "Rockchip" ]; then
 	model=`cat /sys/bus/mmc/devices/mmc2\:0001/mmc2\:0001\:1/device`
 	bt_tty="ttyS0"
 fi

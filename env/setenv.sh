@@ -30,7 +30,7 @@ DISTRIB_RELEASE=
 DISTRIB_ARCH=
 INSTALL_TYPE=
 DISTRIB_TYPE=
-VENDER=
+VENDOR=
 CHIP=
 
 ###############################################################
@@ -535,7 +535,7 @@ function choose_install_type() {
 
 function lunch() {
 	if [ "$KHADAS_BOARD" == "VIM1" ] || [ "$KHADAS_BOARD" == "VIM2" ]; then
-		export VENDER="Amlogic"
+		export VENDOR="Amlogic"
 		case "$KHADAS_BOARD" in
 			VIM1)
 				export CHIP="S905X"
@@ -545,7 +545,7 @@ function lunch() {
 				;;
 		esac
 	elif [ "$KHADAS_BOARD" == "Edge" ]; then
-		export VENDER="Rockchip"
+		export VENDOR="Rockchip"
 		case "$KHADAS_BOARD" in
 			Edge)
 				export CHIP="RK3399"
@@ -557,7 +557,7 @@ function lunch() {
 	echo "#VERSION: $VERSION"
 	echo
 	echo "#KHADAS_BOARD=${KHADAS_BOARD}"
-	echo "#VENDER=${VENDER}"
+	echo "#VENDOR=${VENDOR}"
 	echo "#CHIP=${CHIP}"
 	echo "#LINUX=${LINUX}"
 	echo "#UBOOT=${UBOOT}"
