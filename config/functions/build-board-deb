@@ -129,6 +129,13 @@ build_board_deb() {
 		cd -
 	fi
 
+	# Copy boot script for Rockchip platform
+	if [ "$VENDOR" == "Rockchip" ]; then
+		mkdir -p $pkgdir/boot
+		cp $BOOT_SCRIPTS/$BOOT_SCRIPT_BOARD $pkgdir/boot
+		$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$CHIP autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_BOARD $pkgdir/boot/boot.scr
+	fi
+
 	# Remove fstab for EMMC image
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
 		rm $pkgdir/etc/fstab
