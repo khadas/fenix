@@ -1,6 +1,6 @@
 PKG_NAME="xf86-video-armsoc_s905x"
-PKG_VERSION="d5442f1"
-PKG_SHA256="a382c2f3055e9be756d3f6218f2680268575828988a996e0d8485dc86c17aa6d"
+PKG_VERSION="d5442f1781014a6650919eef97536f1de288bd5d"
+PKG_SHA256="5410398f04fa5c93d6839ccda22f327affad7070d8e97baeec3dc72ae0872a47"
 PKG_SOURCE_DIR="xf86-video-armsoc_s905x-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/xf86-video-armsoc_s905x"
 PKG_URL="https://github.com/numbqq/xf86-video-armsoc_s905x/archive/$PKG_VERSION.tar.gz"
