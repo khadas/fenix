@@ -15,6 +15,11 @@ install_common()
 		tr ' ' '\n' <<< "$MODULES" > $ROOTFS_TEMP/etc/modules
 	fi
 
+	# Copy boot environment
+	if [[ -n $BOOT_ENV_FILE && -f $BOOT_ENV/$BOOT_ENV_FILE ]]; then
+		cp $BOOT_ENV/$BOOT_ENV_FILE $ROOTFS_TEMP/boot/env.txt
+	fi
+
 	# change time zone data
 	info_msg "Setup timezone to '$TZDATA'"
 	echo $TZDATA > $ROOTFS_TEMP/etc/timezone
@@ -306,6 +311,7 @@ prepare_partitions()
 		mkfs.ext4 $EXT4_MKOPTS $BUILD_IMAGES/rootfs.img
 		rm -rf $ROOTFS && install -d $ROOTFS
 		mount -o loop $BUILD_IMAGES/rootfs.img $ROOTFS
+		local rootfs_uuid="UUID=$(blkid -s UUID -o value $BUILD_IMAGES/rootfs.img)"
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		IMAGE_SIZE=$((rootfs_image_size + 300)) # SD/USB image szie = BOOT(256MB) + ROOTFS
 		info_msg "Create SD/USB image..."
@@ -341,6 +347,7 @@ prepare_partitions()
 		mount -o loop "${IMAGE_LOOP_DEV_ROOTFS}" $ROOTFS
 		mkdir -p $ROOTFS/boot
 		mount -o loop "${IMAGE_LOOP_DEV_BOOT}" $ROOTFS/boot
+		local rootfs_uuid="UUID=$(blkid -s UUID -o value $IMAGE_LOOP_DEV_ROOTFS)"
 	fi
 
 	rm -rf $ROOTFS/lost+found
@@ -358,6 +365,10 @@ prepare_partitions()
 	else
 		# ext4
 		rsync -aHWXh --info=progress2,stats1 $ROOTFS_TEMP/boot $ROOTFS
+	fi
+
+	if [[ -f $ROOTFS_TEMP/boot/env.txt ]]; then
+		echo "rootdev=$rootfs_uuid" >> $ROOTFS/boot/env.txt
 	fi
 
 	# DEBUG: print free space

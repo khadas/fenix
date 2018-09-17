@@ -1,0 +1,1 @@
+bootdelay=1

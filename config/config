@@ -8,6 +8,8 @@ CONFIG="$ROOT/config"
 BOARD_CONFIG="$CONFIG/boards"
 ## Boot scripts
 BOOT_SCRIPTS="$CONFIG/bootscripts"
+## Boot environment
+BOOT_ENV="$CONFIG/bootenv"
 ## Download packages directory
 DOWNLOAD_PKG_DIR="$ROOT/downloads"
 ## Packages directory
