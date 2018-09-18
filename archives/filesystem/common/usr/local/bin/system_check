@@ -1,0 +1,21 @@
+#!/bin/bash
+
+. /etc/fenix-release
+
+for arg in $(cat /proc/cmdline); do
+	case $arg in
+		board_type=*)
+			board_type="${arg#*=}"
+			;;
+		board_type_name=*)
+			board_type_name="${arg#*=}"
+			;;
+	esac
+done
+
+if [[ -n $board_type_name && $BOARD != $board_type_name ]]; then
+	echo "update fenix-release..."
+	sed -i "s/BOARD=.*/BOARD=$board_type_name/" /etc/fenix-release
+fi
+
+exit 0

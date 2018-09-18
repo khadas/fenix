@@ -1,0 +1,11 @@
+[Unit]
+Description=System check
+DefaultDependencies=no
+After=local-fs.target
+
+[Service]
+ExecStart=/usr/local/bin/system_check
+RemainAfterExit=no
+
+[Install]
+WantedBy=sysinit.target
