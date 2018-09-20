@@ -123,4 +123,9 @@ desktop_postinstall() {
 			fi
 		fi
 	fi
+
+	# Fixup Ubuntu Lxde lightdm background
+	if [ "$DISTRIBUTION" == "Ubuntu" ] && [ "$DISTRIB_TYPE" == "lxde" ]; then
+		sed -i 's/#background=/background=\/etc\/alternatives\/desktop-background/g' $ROOTFS_TEMP/etc/lightdm/lightdm-gtk-greeter.conf
+	fi
 }
