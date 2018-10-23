@@ -321,7 +321,7 @@ prepare_partitions()
 		n
 		p
 		1
-		2048
+		32768
 		524287
 		a
 		t

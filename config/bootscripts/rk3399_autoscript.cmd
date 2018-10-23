@@ -27,7 +27,7 @@ if test ${devnum} = 0; then
 else if test ${devnum} = 1; then
 	echo "Uboot loaded from SD.";
 	setenv boot_dtb "/dtb/${boot_dtb}";
-	setrenv boot_env_part ${sd_boot_part};
+	setenv boot_env_part ${sd_boot_part};
 fi;fi;
 
 echo boot_dtb: ${boot_dtb}
