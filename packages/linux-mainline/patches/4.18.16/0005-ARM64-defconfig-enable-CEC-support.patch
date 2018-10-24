@@ -1,7 +1,7 @@
-From 426a425bd366dd7db82a80fe2304b48faaa9af8e Mon Sep 17 00:00:00 2001
+From 9aa746c2e5cee4cfee1138453920c7ea1a8c0f87 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Mon, 13 Nov 2017 12:09:40 +0100
-Subject: [PATCH 09/19] ARM64: defconfig: enable CEC support
+Subject: [PATCH 05/36] ARM64: defconfig: enable CEC support
 
 Turn on CONFIG_CEC_SUPPORT and CONFIG_CEC_PLATFORM_DRIVERS
 Turn on CONFIG_VIDEO_MESON_AO_CEC as module
@@ -14,18 +14,18 @@ Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
  1 file changed, 4 insertions(+)
 
 diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index b4fc12f..6ea8674 100644
+index f9a186f..2584605 100644
 --- a/arch/arm64/configs/defconfig
 +++ b/arch/arm64/configs/defconfig
-@@ -387,6 +387,7 @@ CONFIG_MEDIA_SUPPORT=m
+@@ -402,6 +402,7 @@ CONFIG_MEDIA_SUPPORT=m
  CONFIG_MEDIA_CAMERA_SUPPORT=y
  CONFIG_MEDIA_ANALOG_TV_SUPPORT=y
  CONFIG_MEDIA_DIGITAL_TV_SUPPORT=y
 +CONFIG_MEDIA_CEC_SUPPORT=y
  CONFIG_MEDIA_CONTROLLER=y
- CONFIG_MEDIA_RC_SUPPORT=y
- CONFIG_RC_CORE=m
-@@ -401,6 +402,8 @@ CONFIG_VIDEO_SAMSUNG_S5P_MFC=m
+ CONFIG_VIDEO_V4L2_SUBDEV_API=y
+ # CONFIG_DVB_NET is not set
+@@ -411,6 +412,8 @@ CONFIG_VIDEO_SAMSUNG_S5P_MFC=m
  CONFIG_VIDEO_SAMSUNG_EXYNOS_GSC=m
  CONFIG_VIDEO_RENESAS_FCP=m
  CONFIG_VIDEO_RENESAS_VSP1=m
@@ -34,7 +34,7 @@ index b4fc12f..6ea8674 100644
  CONFIG_DRM=m
  CONFIG_DRM_NOUVEAU=m
  CONFIG_DRM_EXYNOS=m
-@@ -422,6 +425,7 @@ CONFIG_DRM_RCAR_VSP=y
+@@ -431,6 +434,7 @@ CONFIG_DRM_RCAR_LVDS=m
  CONFIG_DRM_TEGRA=m
  CONFIG_DRM_PANEL_SIMPLE=m
  CONFIG_DRM_I2C_ADV7511=m

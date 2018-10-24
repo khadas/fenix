@@ -1,12 +1,11 @@
-From e9430425d2507f672ad773f36b1419a33b5d5375 Mon Sep 17 00:00:00 2001
+From cce86d5067f93f9b164b09bdabab8b0820791fea Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Thu, 30 Mar 2017 12:00:10 +0200
-Subject: [PATCH 04/19] ASoC: meson: add register definitions
+Subject: [PATCH 09/36] ASoC: meson: add register definitions
 
 Add the register definition for the AIU and AUDIN blocks
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
 ---
  sound/soc/meson/aiu-regs.h   | 182 +++++++++++++++++++++++++++++++++++++++++++
  sound/soc/meson/audin-regs.h | 148 +++++++++++++++++++++++++++++++++++

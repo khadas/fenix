@@ -1,7 +1,7 @@
-From 9c13225afa64f05bb1ffa2bf0df52ef34179250a Mon Sep 17 00:00:00 2001
+From c491043948fe493343e719e0accfb89867ebb952 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Tue, 3 Jul 2018 11:25:04 +0800
-Subject: [PATCH 15/19] packaging 4.17 with postinstall scripts
+Subject: [PATCH 31/36] packaging 4.18 with postinstall scripts
 
 ---
  arch/arm64/Makefile      |   2 +-
@@ -10,10 +10,10 @@ Subject: [PATCH 15/19] packaging 4.17 with postinstall scripts
  3 files changed, 110 insertions(+), 10 deletions(-)
 
 diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index 87f7d2f..77d9626 100644
+index e7101b1..2e2b6ff 100644
 --- a/arch/arm64/Makefile
 +++ b/arch/arm64/Makefile
-@@ -117,7 +117,7 @@ core-$(CONFIG_EFI_STUB) += $(objtree)/drivers/firmware/efi/libstub/lib.a
+@@ -111,7 +111,7 @@ core-$(CONFIG_EFI_STUB) += $(objtree)/drivers/firmware/efi/libstub/lib.a
  
  # Default target when executing plain make
  boot		:= arch/arm64/boot
@@ -208,7 +208,7 @@ index 90c9a8a..dd2ec47 100755
  
  create_package "$packagename" "$tmpdir"
 diff --git a/scripts/package/mkdebian b/scripts/package/mkdebian
-index 6adb3a1..4a62856 100755
+index 985d72d..d3dae92 100755
 --- a/scripts/package/mkdebian
 +++ b/scripts/package/mkdebian
 @@ -61,10 +61,12 @@ else
@@ -226,7 +226,7 @@ index 6adb3a1..4a62856 100755
  set_debarch
  
  if [ "$ARCH" = "um" ] ; then
-@@ -168,6 +170,11 @@ Architecture: $debarch
+@@ -167,6 +169,11 @@ Architecture: $debarch
  Description: Linux kernel debugging symbols for $version
   This package will come in handy if you need to debug the kernel. It provides
   all the necessary debug symbols for the kernel and its modules.

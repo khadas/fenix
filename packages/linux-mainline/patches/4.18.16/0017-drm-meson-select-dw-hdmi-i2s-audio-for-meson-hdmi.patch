@@ -1,10 +1,9 @@
-From 812e5ebbf1036d008a906a66ac777919d89bcaf6 Mon Sep 17 00:00:00 2001
+From 83d760ba2477f8720e78252f8e98834e45044fea Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Tue, 14 Feb 2017 19:18:04 +0100
-Subject: [PATCH 02/19] drm/meson: select dw-hdmi i2s audio for meson hdmi
+Subject: [PATCH 17/36] drm/meson: select dw-hdmi i2s audio for meson hdmi
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
 ---
  drivers/gpu/drm/meson/Kconfig | 1 +
  1 file changed, 1 insertion(+)

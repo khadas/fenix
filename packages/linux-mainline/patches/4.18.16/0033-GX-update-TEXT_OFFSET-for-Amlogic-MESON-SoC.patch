@@ -1,7 +1,7 @@
-From b42e57bd1beacb72d409c1b3cffc571238db16c9 Mon Sep 17 00:00:00 2001
+From c2622f58bb9d4bac48023727c54cb54e8efd6b73 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Tue, 3 Jul 2018 15:00:10 +0800
-Subject: [PATCH 18/19] GX: update TEXT_OFFSET for Amlogic MESON SoC
+Subject: [PATCH 33/36] GX: update TEXT_OFFSET for Amlogic MESON SoC
 
 this allow Amlogic vender u-boot v2015.01 to bootup mainline linux well
 ---
@@ -10,10 +10,10 @@ this allow Amlogic vender u-boot v2015.01 to bootup mainline linux well
  2 files changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index 77d9626..7ceb96f 100644
+index 2e2b6ff..ef7a45b 100644
 --- a/arch/arm64/Makefile
 +++ b/arch/arm64/Makefile
-@@ -93,8 +93,12 @@ TEXT_OFFSET := $(shell awk "BEGIN {srand(); printf \"0x%06x\n\", \
+@@ -87,8 +87,12 @@ TEXT_OFFSET := $(shell awk "BEGIN {srand(); printf \"0x%06x\n\", \
  		 int(2 * 1024 * 1024 / (2 ^ $(CONFIG_ARM64_PAGE_SHIFT)) * \
  		 rand()) * (2 ^ $(CONFIG_ARM64_PAGE_SHIFT))}")
  else

@@ -1,14 +1,13 @@
-From a5342790bd9e09857c8bc51e0812310001f7532f Mon Sep 17 00:00:00 2001
+From 302c77999b66085dfe8db7066a80e2cc0cc645fb Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Thu, 30 Mar 2017 12:17:27 +0200
-Subject: [PATCH 06/19] ASoC: meson: add initial i2s dai support
+Subject: [PATCH 11/36] ASoC: meson: add initial i2s dai support
 
 Add support for the i2s dai found on Amlogic Meson SoC family.
 With this initial implementation, only playback is supported.
 Capture will be part of furture work.
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
 ---
  sound/soc/meson/Kconfig   |   2 +-
  sound/soc/meson/Makefile  |   2 +
@@ -17,7 +16,7 @@ Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
  create mode 100644 sound/soc/meson/i2s-dai.c
 
 diff --git a/sound/soc/meson/Kconfig b/sound/soc/meson/Kconfig
-index ad31a11..604c9e2 100644
+index 88fbfc2..478f29a 100644
 --- a/sound/soc/meson/Kconfig
 +++ b/sound/soc/meson/Kconfig
 @@ -12,5 +12,5 @@ config SND_SOC_MESON_I2S

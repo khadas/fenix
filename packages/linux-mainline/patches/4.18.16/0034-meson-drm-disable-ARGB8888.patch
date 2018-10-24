@@ -1,17 +1,17 @@
-From 25a194be7c91a2478ef56bad240735e520c1845a Mon Sep 17 00:00:00 2001
+From 4ee17b853c23301ec0d6b2d76498c2e88b3058c2 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Thu, 4 Jan 2018 19:52:37 +0800
-Subject: [PATCH 19/19] meson drm disable ARGB8888
+Subject: [PATCH 34/36] meson drm disable ARGB8888
 
 ---
  drivers/gpu/drm/meson/meson_plane.c | 8 +-------
  1 file changed, 1 insertion(+), 7 deletions(-)
 
 diff --git a/drivers/gpu/drm/meson/meson_plane.c b/drivers/gpu/drm/meson/meson_plane.c
-index 12c80df..41ef4c9 100644
+index 8745f92..227a72a 100644
 --- a/drivers/gpu/drm/meson/meson_plane.c
 +++ b/drivers/gpu/drm/meson/meson_plane.c
-@@ -114,19 +114,13 @@ static void meson_plane_atomic_update(struct drm_plane *plane,
+@@ -113,19 +113,13 @@ static void meson_plane_atomic_update(struct drm_plane *plane,
  
  	switch (fb->format->format) {
  	case DRM_FORMAT_XRGB8888:
