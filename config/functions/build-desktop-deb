@@ -93,6 +93,12 @@ build_desktop_deb() {
 	mkdir -p $pkgdir/etc/fenix
 	cp $ROOT/archives/filesystem/blobs/desktop/chromium.conf $pkgdir/etc/fenix
 
+	# Remove Chromium configuration gl for Amlogic platform
+	if [ "$VENDOR" == "Amlogic" ]; then
+		sed -i 's/export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=egl --enable-remote-extensions"/#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=egl --enable-remote-extensions"/g' \
+			$pkgdir/etc/fenix/chromium.conf
+	fi
+
 	# install default desktop settings
 	if [ -d $ROOT/archives/filesystem/blobs/desktop/${DISTRIB_TYPE} ]; then
 		mkdir -p $pkgdir/etc/skel
