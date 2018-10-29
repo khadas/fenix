@@ -13,6 +13,14 @@ for arg in $(cat /proc/cmdline); do
 	esac
 done
 
+# For VIMs
+model=`cat /proc/device-tree/model`
+if [ "$model" == "Khadas VIM" ]; then
+	board_type_name="VIM1"
+elif [ "$model" == "Khadas VIM2" ]; then
+	board_type_name="VIM2"
+fi
+
 if [[ -n $board_type_name && $BOARD != $board_type_name ]]; then
 	echo "update fenix-release..."
 	sed -i "s/BOARD=.*/BOARD=$board_type_name/" /etc/fenix-release
