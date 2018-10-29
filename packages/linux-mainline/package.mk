@@ -17,7 +17,7 @@ make_target() {
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
 
 #	make ARCH=arm64 distclean
-	make ARCH=arm64 ${LINUX_DEFCONFIG}
+	make ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} ${LINUX_DEFCONFIG}
 
 	make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} Image modules dtbs
 }
