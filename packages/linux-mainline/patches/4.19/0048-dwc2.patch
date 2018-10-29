@@ -1,0 +1,24 @@
+From 6ead6e0331fe4998a540969e8a95f2bdf8222d38 Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Mon, 29 Oct 2018 22:32:31 +0800
+Subject: [PATCH 48/66] dwc2
+
+---
+ drivers/usb/dwc2/params.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
+index bf7052e..93561a2 100644
+--- a/drivers/usb/dwc2/params.c
++++ b/drivers/usb/dwc2/params.c
+@@ -110,6 +110,7 @@ static void dwc2_set_amlogic_params(struct dwc2_hsotg *hsotg)
+ 	p->phy_type = DWC2_PHY_TYPE_PARAM_UTMI;
+ 	p->ahbcfg = GAHBCFG_HBSTLEN_INCR8 <<
+ 		GAHBCFG_HBSTLEN_SHIFT;
++	p->power_down = false;
+ }
+ 
+ static void dwc2_set_amcc_params(struct dwc2_hsotg *hsotg)
+-- 
+1.9.1
+

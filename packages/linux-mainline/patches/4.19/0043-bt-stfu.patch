@@ -1,0 +1,26 @@
+From 99ec033ed43554f30f7fc55ab914b67d3e3ba70c Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Mon, 29 Oct 2018 22:29:31 +0800
+Subject: [PATCH 43/66] bt stfu
+
+---
+ net/bluetooth/hci_event.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index f12555f..9162ac5 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -5669,8 +5669,7 @@ static bool hci_get_cmd_complete(struct hci_dev *hdev, u16 opcode,
+ 	}
+ 
+ 	if (hdr->evt != HCI_EV_CMD_COMPLETE) {
+-		bt_dev_err(hdev, "last event is not cmd complete (0x%2.2x)",
+-			   hdr->evt);
++		BT_DBG("last event is not cmd complete (0x%2.2x)", hdr->evt);
+ 		return false;
+ 	}
+ 
+-- 
+1.9.1
+

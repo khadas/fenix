@@ -1,0 +1,24 @@
+From 34b6af03d8a37a19506604d05cee37058dc3d56c Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Mon, 29 Oct 2018 22:30:04 +0800
+Subject: [PATCH 44/66] clk critical
+
+---
+ drivers/clk/meson/gxbb.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/clk/meson/gxbb.c b/drivers/clk/meson/gxbb.c
+index 86d3ae5..a4ecfe9 100644
+--- a/drivers/clk/meson/gxbb.c
++++ b/drivers/clk/meson/gxbb.c
+@@ -522,6 +522,7 @@
+ 		.ops = &clk_regmap_gate_ops,
+ 		.parent_names = (const char *[]){ "fclk_div3_div" },
+ 		.num_parents = 1,
++		.flags = CLK_IS_CRITICAL,
+ 	},
+ };
+ 
+-- 
+1.9.1
+

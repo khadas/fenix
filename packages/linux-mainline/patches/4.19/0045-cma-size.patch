@@ -1,0 +1,25 @@
+From 1e659e324228f7970aa24f514c827b4850296208 Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Mon, 29 Oct 2018 22:30:24 +0800
+Subject: [PATCH 45/66] cma size
+
+---
+ arch/arm64/boot/dts/amlogic/meson-gx.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
+index f6252d3..9b6c0f9 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
+@@ -44,7 +44,7 @@
+ 		linux,cma {
+ 			compatible = "shared-dma-pool";
+ 			reusable;
+-			size = <0x0 0xbc00000>;
++			size = <0x0 0x10000000>;
+ 			alignment = <0x0 0x400000>;
+ 			linux,cma-default;
+ 		};
+-- 
+1.9.1
+

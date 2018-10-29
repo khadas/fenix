@@ -1,0 +1,100 @@
+From 258d49a3264bf926a13b89d6fa39eec86092d1df Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Mon, 29 Oct 2018 22:33:49 +0800
+Subject: [PATCH 50/66] gxm mal
+
+---
+ arch/arm64/boot/dts/amlogic/meson-gxm-mali.dtsi | 68 +++++++++++++++++++++++++
+ arch/arm64/boot/dts/amlogic/meson-gxm.dtsi      |  1 +
+ 2 files changed, 69 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/amlogic/meson-gxm-mali.dtsi
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-mali.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxm-mali.dtsi
+new file mode 100644
+index 0000000..c772d26
+--- /dev/null
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-mali.dtsi
+@@ -0,0 +1,68 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Author: Christian Hewitt <christianshewitt@gmail.com>
++ */
++
++&apb {
++	mali: gpu@c0000 {
++		compatible = "amlogic,meson-gxm-mali", "arm,mali-t820", "arm,mali-midgard";
++		reg = <0x0 0xc0000 0x0 0x40000>;
++		interrupt-parent = <&gic>;
++		interrupts = <0 160 4>, <0 161 4>, <0 162 4>;
++		interrupt-names = "gpu", "mmu", "job";
++		operating-points-v2 = <&gpu_opp_table>;
++		clocks = <&clkc CLKID_CLK81>, <&clkc CLKID_MALI>;
++		clock-names = "bus", "core";
++
++		/*
++		 * Mali clocking is provided by two identical clock paths
++		 * MALI_0 and MALI_1 muxed to a single clock by a glitch
++		 * free mux to safely change frequency while running.
++		 */
++		assigned-clocks = <&clkc CLKID_GP0_PLL>,
++				  <&clkc CLKID_MALI_0_SEL>,
++				  <&clkc CLKID_MALI_0>,
++				  <&clkc CLKID_MALI>; /* Glitch free mux */
++		assigned-clock-parents = <0>, /* Do Nothing */
++					 <&clkc CLKID_GP0_PLL>,
++					 <0>, /* Do Nothing */
++					 <&clkc CLKID_MALI_0>;
++		assigned-clock-rates = <744000000>,
++				       <0>, /* Do Nothing */
++				       <744000000>,
++				       <0>; /* Do Nothing */
++	};
++
++	gpu_opp_table: opp_table0 {
++		compatible = "operating-points-v2";
++
++		opp@744000000 {
++			opp-hz = /bits/ 64 <744000000>;
++			opp-microvolt = <1000000>;
++		};
++		opp@666666000 {
++			opp-hz = /bits/ 64 <666666000>;
++			opp-microvolt = <1000000>;
++		};
++		opp@500000000 {
++			opp-hz = /bits/ 64 <500000000>;
++			opp-microvolt = <1000000>;
++		};
++		opp@400000000 {
++			opp-hz = /bits/ 64 <400000000>;
++			opp-microvolt = <1000000>;
++		};
++		opp@285714000 {
++			opp-hz = /bits/ 64 <285714000>;
++			opp-microvolt = <1000000>;
++		};
++		opp@250000000 {
++			opp-hz = /bits/ 64 <250000000>;
++			opp-microvolt = <1000000>;
++		};
++		opp@125000000 {
++			opp-hz = /bits/ 64 <125000000>;
++			opp-microvolt = <1000000>;
++		};
++	};
++};
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxm.dtsi
+index 2f35649..90e7646 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm.dtsi
+@@ -5,6 +5,7 @@
+  */
+ 
+ #include "meson-gxl.dtsi"
++#include "meson-gxm-mali.dtsi"
+ 
+ / {
+ 	compatible = "amlogic,meson-gxm";
+-- 
+1.9.1
+
