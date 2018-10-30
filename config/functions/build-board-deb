@@ -16,7 +16,7 @@ build_board_deb() {
 	Architecture: $DISTRIB_ARCH
 	Maintainer: Khadas <hello@khadas.com>
 	Installed-Size: 1
-	Replaces: linux-firmware, watchdog, base-files
+	Replaces: linux-firmware, watchdog, base-files, mpv
 	Section: kernel
 	Priority: optional
 	Depends: bash, linux-base, u-boot-tools, initramfs-tools
