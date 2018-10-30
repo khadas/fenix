@@ -57,6 +57,7 @@ build_uboot() {
     info_msg "Build u-boot..."
 	export PATH=$UBOOT_COMPILER_PATH:$PATH
 	make distclean
+	rm -rf .config *.bin *.img
 	make $UBOOT_DEFCONFIG
     make -j${NR_JOBS} CROSS_COMPILE=${UBOOT_COMPILER}
 
