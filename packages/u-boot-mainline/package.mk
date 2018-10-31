@@ -21,7 +21,8 @@ make_target() {
 
 post_make_target() {
 	# Add firmware
-	cp -r $PKGS_DIR/$PKG_NAME/fip $BUILD/$PKG_NAME-$PKG_VERSION/
+	rm -rf $BUILD/$PKG_NAME-$PKG_VERSION/fip
+	cp -r $PKGS_DIR/$PKG_NAME/fip/$KHADAS_BOARD $BUILD/$PKG_NAME-$PKG_VERSION/fip
 	cp u-boot.bin fip/bl33.bin
 	fip/blx_fix.sh fip/bl30.bin fip/zero_tmp fip/bl30_zero.bin fip/bl301.bin fip/bl301_zero.bin fip/bl30_new.bin bl30
 	fip/acs_tool.pyc fip/bl2.bin fip/bl2_acs.bin fip/acs.bin 0
