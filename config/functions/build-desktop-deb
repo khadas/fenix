@@ -133,5 +133,8 @@ desktop_postinstall() {
 	# Fixup Ubuntu Lxde lightdm background
 	if [ "$DISTRIBUTION" == "Ubuntu" ] && [ "$DISTRIB_TYPE" == "lxde" ]; then
 		sed -i 's/#background=/background=\/etc\/alternatives\/desktop-background/g' $ROOTFS_TEMP/etc/lightdm/lightdm-gtk-greeter.conf
+		if [ "$VENDOR" == "Rockchip" ]; then
+			echo "@xrandr --output DP-1 --auto --output HDMI-1 --auto --same-as DP-1" >> $ROOTFS_TEMP/etc/xdg/lxsession/LXDE/autostart
+		fi
 	fi
 }

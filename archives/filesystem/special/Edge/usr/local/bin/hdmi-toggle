@@ -22,23 +22,24 @@ EXTERNAL_DISPLAY=""
 
 # Check to see if the external display is connected
 if [ "${DP_STATUS}" = connected ]; then
-	EXTERNAL_DISPLAY=$DP
-fi
-if [ "${VGA_STATUS}" = connected ]; then
-	EXTERNAL_DISPLAY=$VGA
-fi
-if [ "${HDMI_STATUS}" = connected ]; then
-	EXTERNAL_DISPLAY=$HDMI
+	xrandr
+	xrandr  --output $DP --auto
+else
+	xrandr --output $DP --off
 fi
 
-# The external display is connected
-if [ "$EXTERNAL_DISPLAY" != "" ]; then
-	# Set the display settings
+if [ "${VGA_STATUS}" = connected ]; then
 	xrandr
-	xrandr  --output HDMI-1 --auto
+	xrandr  --output $VGA --auto
 else
-	# Restore to single display
-	xrandr --output HDMI-1 --off
+	xrandr  --output $VGA --off
+fi
+
+if [ "${HDMI_STATUS}" = connected ]; then
+	xrandr
+	xrandr  --output $HDMI --auto
+else
+	xrandr  --output $HDMI --off
 fi
 
 exit 0
