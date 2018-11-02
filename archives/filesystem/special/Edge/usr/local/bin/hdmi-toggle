@@ -4,6 +4,14 @@ USER="$(who | grep :0\) | cut -f 1 -d ' ')"
 export XAUTHORITY=/home/$USER/.Xauthority
 export DISPLAY=:0
 
+if [ -z "$USER" ]; then
+	if dpkg -l | grep lightdm > /dev/null; then
+		systemctl restart lightdm
+	fi
+
+	exit 0
+fi
+
 ########### Settings ###########
 
 # Use 'xrandr' to find these
