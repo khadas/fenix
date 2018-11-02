@@ -6,7 +6,7 @@ diff -Nuar rkbin-b789f81.orig/RKBOOT/RK3399MINIALL_SPINOR.ini rkbin-b789f81/RKBO
  [CODE471_OPTION]
  NUM=1
 -Path1=tools/rk_tools/bin/rk33/rk3399_ddr_800MHz_v1.12.bin
-+Path1=tools/rk_tools/bin/rk33/rk3399_ddr_800MHz_v1.14.bin
++Path1=tools/rk_tools/bin/rk33/rk3399_ddr_800MHz_v1.15.bin
  Sleep=1
  [CODE472_OPTION]
  NUM=1
@@ -15,8 +15,8 @@ diff -Nuar rkbin-b789f81.orig/RKBOOT/RK3399MINIALL_SPINOR.ini rkbin-b789f81/RKBO
  LOADER1=FlashData
  LOADER2=FlashBoot
 -FlashData=tools/rk_tools/bin/rk33/rk3399_ddr_800MHz_v1.12.bin
-+FlashData=tools/rk_tools/bin/rk33/rk3399_ddr_800MHz_v1.14.bin
++FlashData=tools/rk_tools/bin/rk33/rk3399_ddr_800MHz_v1.15.bin
  FlashBoot=tools/rk_tools/bin/rk33/rk3399_miniloader_spinor_v1.14.bin
  [OUTPUT]
 -PATH=rk3399_loader_spinor_v1.12.114.bin
-+PATH=rk3399_loader_spinor_v1.14.114.bin
++PATH=rk3399_loader_spinor_v1.15.114.bin
