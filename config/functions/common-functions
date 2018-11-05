@@ -9,6 +9,7 @@
 # install_deb_chroot
 # do_umount
 # cleanup
+# check_loop_device
 # prepare_toolchains
 # prepare_packages
 # get_package_list_hash
@@ -69,6 +70,13 @@ prepare_host() {
 	if [[ "$DISTRIB_RELEASE" == "bionic" && "$build_host" != "bionic" ]]; then
 		error_msg "Building Ubuntu Bionic images requires a Bionic build host, please upgrade your build host or try to build in Docker."
 		return -1
+	fi
+
+	grep -q i386 <(dpkg --print-foreign-architectures) || dpkg --add-architecture i386
+	if systemd-detect-virt -q -c; then
+		info_msg "Running in container: $(systemd-detect-virt)"
+		CONTAINER_COMPAT="yes"
+		export CONTAINER_COMPAT
 	fi
 
 	local hostdeps="wget ca-certificates device-tree-compiler pv bc lzop zip binfmt-support build-essential ccache debootstrap ntpdate \
@@ -173,6 +181,29 @@ cleanup() {
 
 		do_umount "$ROOTFS"
 	fi
+}
+
+# Check & Create loop device if not exist
+check_loop_device()
+{
+	local device=$1
+
+	PARTITIONS=$(lsblk --raw --output "MAJ:MIN" --noheadings ${device} | tail -n +2)
+	COUNTER=1
+	for i in $PARTITIONS; do
+		MAJ=$(echo $i | cut -d: -f1)
+		MIN=$(echo $i | cut -d: -f2)
+		if [ ! -e "${device}p${COUNTER}" ]; then
+			if [ "$CONTAINER_COMPAT" == "yes" ]; then
+				warning_msg "Creating device node: ${device}p${COUNTER}"
+				mknod ${device}p${COUNTER} b $MAJ $MIN
+			else
+				error_msg "Device node $device does not exist!"
+				return -1
+			fi
+		fi
+		COUNTER=$((COUNTER + 1))
+	done
 }
 
 ## Prepare toolhains

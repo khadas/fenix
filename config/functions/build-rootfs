@@ -339,10 +339,17 @@ prepare_partitions()
 		EOF
 
 		IMAGE_LOOP_DEV="$(losetup --show -f ${BUILD_IMAGES}/${IMAGE_FILE_NAME})"
+		if [[ -z $IMAGE_LOOP_DEV ]]; then
+			error_msg "Unable to find free loop device!"
+			return -1
+		fi
 		export IMAGE_LOOP_DEV
 		IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
 		IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
 		partprobe "${IMAGE_LOOP_DEV}"
+
+		check_loop_device "$IMAGE_LOOP_DEV"
+
 		mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
 		mkfs.ext4 $EXT4_MKOPTS "${IMAGE_LOOP_DEV_ROOTFS}"
 		rm -rf $ROOTFS && mkdir -p $ROOTFS

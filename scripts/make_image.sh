@@ -10,6 +10,7 @@ source ${BOARD_CONFIG}/${KHADAS_BOARD}.conf
 source config/functions/functions
 
 ######################################################################################
+prepare_host
 pack_image_platform
 
 echo -e "\nDone."
