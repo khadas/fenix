@@ -102,10 +102,10 @@ mount_chroot() {
 		echo "Usage: mount_chroot <target>"
 		return -1
 	fi
-	mount -o bind /proc $target/proc
-	mount -o bind /sys $target/sys
-	mount -o bind /dev $target/dev
-	mount -o bind /dev/pts $target/dev/pts
+	mount -t proc chproc $target/proc
+	mount -t sysfs chsys $target/sys
+	mount -t devtmpfs chdev $target/dev || mount --bind /dev $target/dev
+	mount -t devpts chpts $target/dev/pts
 }
 
 ## Umount chroot
@@ -115,13 +115,13 @@ umount_chroot() {
 		echo "Usage: umount_chroot <target>"
 		return -1
 	fi
-	umount $target/dev/pts
-	umount $target/dev
-	umount $target/proc
+	umount -l $target/dev/pts
+	umount -l $target/dev
+	umount -l $target/proc
 	if mount | grep "$target/sys/kernel/security" > /dev/null; then
 		umount $target/sys/kernel/security
 	fi
-	umount $target/sys
+	umount -l $target/sys
 }
 
 ## Install debs in chroot
