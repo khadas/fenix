@@ -182,7 +182,7 @@ function choose_linux_version() {
 	echo ""
 	echo "Choose linux version:"
 	# FIXME
-	if [ "$UBOOT" == "mainline" ]; then
+	if [ "$UBOOT" == "mainline" -a "$KHADAS_BOARD" != "Edge" ]; then
 		echo "Force set to linux-mainline"
 		export LINUX="mainline"
 		return 0
@@ -478,7 +478,7 @@ function choose_install_type() {
 	echo ""
 	echo "Choose install type:"
 	# FIXME
-	if [ "$UBOOT" == "mainline" ] || [ "$LINUX" == "mainline" ]; then
+	if [ "$KHADAS_BOARD" != "Edge" ] && [ "$UBOOT" == "mainline" -o "$LINUX" == "mainline" ]; then
 		echo "Force set to install-${INSTALL_TYPE_ARRAY[1]}"
 		export INSTALL_TYPE="${INSTALL_TYPE_ARRAY[1]}"
 		return
