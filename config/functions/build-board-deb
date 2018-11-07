@@ -57,6 +57,8 @@ build_board_deb() {
 			rm -rf /boot/s905_autoscript.cmd.mainline
 			rm -rf /boot/hdmi.sh
 			rm -rf /boot/aml_autoscript.txt
+			rm -rf /boot/boot.scr
+			rm -rf /boot/rk3399_autoscript.cmd
 
 			rm -rf /boot/initrd.img-*
 		fi
