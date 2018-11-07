@@ -1,0 +1,25 @@
+From 1f14b03dfa99ccaabead980614b1d910aae12459 Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Wed, 7 Nov 2018 18:53:46 +0800
+Subject: [PATCH] Revert "hdmi"
+
+This reverts commit ae2e11040dfd90393278fc54d13738bfb0041676.
+---
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+index a0ba8e1..f1b8cc8 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+@@ -2038,7 +2038,6 @@ static void dw_hdmi_bridge_mode_set(struct drm_bridge *bridge,
+ 
+ 	/* Store the display mode for plugin/DKMS poweron events */
+ 	memcpy(&hdmi->previous_mode, mode, sizeof(hdmi->previous_mode));
+-	dw_hdmi_setup(hdmi, mode);
+ 
+ 	mutex_unlock(&hdmi->mutex);
+ }
+-- 
+2.7.4
+
