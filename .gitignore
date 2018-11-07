@@ -27,5 +27,6 @@
 /archives/ubuntu-mate
 
 *.changes
+*.buildinfo
 /archives/epbox/
 /easy_setup_target/
