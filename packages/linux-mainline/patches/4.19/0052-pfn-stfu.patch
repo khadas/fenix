@@ -1,7 +1,7 @@
-From 60db7ce6303c019e29aa962715c8ec0a5af67f6e Mon Sep 17 00:00:00 2001
+From 4b29490b34763bbe5cf7de779acfc0eeeaf27838 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 29 Oct 2018 22:37:11 +0800
-Subject: [PATCH 52/66] pfn stfu
+Subject: [PATCH 52/70] pfn stfu
 
 ---
  mm/page_alloc.c | 2 --
@@ -21,5 +21,5 @@ index e2ef1c1..5f20c4e 100644
  		goto done;
  	}
 -- 
-1.9.1
+2.7.4
 

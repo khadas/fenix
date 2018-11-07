@@ -1,7 +1,7 @@
 From e1d999f7d34bc7e133d10dd07de6369dbb663034 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Mon, 9 Jul 2018 21:25:15 +0200
-Subject: [PATCH 40/66] drm: dw-hdmi: call hdmi_set_cts_n after clock is
+Subject: [PATCH 40/70] drm: dw-hdmi: call hdmi_set_cts_n after clock is
  enabled
 
 ---
@@ -25,5 +25,5 @@ index 909d167..7081357 100644
  
  static void dw_hdmi_ahb_audio_enable(struct dw_hdmi *hdmi)
 -- 
-1.9.1
+2.7.4
 

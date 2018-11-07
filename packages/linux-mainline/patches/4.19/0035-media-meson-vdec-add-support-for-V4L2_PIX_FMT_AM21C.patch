@@ -1,7 +1,7 @@
 From 9ff8370b55e1e3048925fc5c2e324bb618ab3f14 Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Sun, 21 Oct 2018 15:15:26 +0200
-Subject: [PATCH 35/66] media: meson: vdec: add support for V4L2_PIX_FMT_AM21C
+Subject: [PATCH 35/70] media: meson: vdec: add support for V4L2_PIX_FMT_AM21C
 
 Support the lossless framebuffer compression format.
 ---
@@ -43,7 +43,7 @@ index ca64045..dcde0a2 100644
  		default:
  			return -EINVAL;
  		}
-@@ -498,6 +506,10 @@ static void vdec_stop_streaming(struct vb2_queue *q)
+@@ -498,6 +506,10 @@ vdec_try_fmt_common(struct amvdec_session *sess, u32 size,
  			      get_output_size(pixmp->width, pixmp->height) / 4;
  			pfmt[2].bytesperline = ALIGN(pixmp->width, 64) / 2;
  			pixmp->num_planes = 3;
@@ -107,7 +107,7 @@ diff --git a/drivers/media/platform/meson/vdec/vdec_helpers.h b/drivers/media/pl
 index 060799b..189e55a 100644
 --- a/drivers/media/platform/meson/vdec/vdec_helpers.h
 +++ b/drivers/media/platform/meson/vdec/vdec_helpers.h
-@@ -26,6 +26,10 @@ int amvdec_set_canvases(struct amvdec_session *sess,
+@@ -26,6 +26,10 @@ void amvdec_clear_dos_bits(struct amvdec_core *core, u32 reg, u32 val);
  u32 amvdec_read_parser(struct amvdec_core *core, u32 reg);
  void amvdec_write_parser(struct amvdec_core *core, u32 reg, u32 val);
  
@@ -119,5 +119,5 @@ index 060799b..189e55a 100644
  			     u32 offset, u32 field);
  void amvdec_dst_buf_done(struct amvdec_session *sess,
 -- 
-1.9.1
+2.7.4
 

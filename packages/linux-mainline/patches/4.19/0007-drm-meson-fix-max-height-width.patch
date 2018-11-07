@@ -1,7 +1,7 @@
 From 3e3f153e50ecc9523c43a84f8617f9abc0cf6ed8 Mon Sep 17 00:00:00 2001
 From: Neil Armstrong <narmstrong@baylibre.com>
 Date: Thu, 4 Oct 2018 10:19:36 +0200
-Subject: [PATCH 07/66] drm/meson: fix max height/width
+Subject: [PATCH 07/70] drm/meson: fix max height/width
 
 The mode_config max_width/max_height determines the maximum framebuffer
 size the pixel reader can handle. But the values were set thinking they
@@ -31,5 +31,5 @@ index 04b634e..95843d3 100644
  
  	/* Hardware Initialization */
 -- 
-1.9.1
+2.7.4
 

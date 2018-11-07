@@ -1,7 +1,7 @@
-From 6ead6e0331fe4998a540969e8a95f2bdf8222d38 Mon Sep 17 00:00:00 2001
+From 642ba023732cbf970e9baa4f79ad4e0362231b14 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 29 Oct 2018 22:32:31 +0800
-Subject: [PATCH 48/66] dwc2
+Subject: [PATCH 48/70] fixup dwc2
 
 ---
  drivers/usb/dwc2/params.c | 1 +
@@ -20,5 +20,5 @@ index bf7052e..93561a2 100644
  
  static void dwc2_set_amcc_params(struct dwc2_hsotg *hsotg)
 -- 
-1.9.1
+2.7.4
 

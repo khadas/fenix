@@ -1,7 +1,7 @@
-From f7aff95bb144659eddbbdd71c7b079c6f75834cb Mon Sep 17 00:00:00 2001
+From 94844b50cb00369480f31e264dd95bd40ba87311 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 29 Oct 2018 22:31:40 +0800
-Subject: [PATCH 46/66] cpuinfo
+Subject: [PATCH 46/70] update cpuinfo
 
 ---
  arch/arm64/kernel/cpuinfo.c | 3 +--
@@ -22,5 +22,5 @@ index e9ab7b3..b5f83b5 100644
  
  		seq_printf(m, "BogoMIPS\t: %lu.%02lu\n",
 -- 
-1.9.1
+2.7.4
 

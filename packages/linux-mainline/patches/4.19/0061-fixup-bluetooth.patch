@@ -1,7 +1,7 @@
-From b3a6e87f3080fd8c8c4218683224f90b4016fac0 Mon Sep 17 00:00:00 2001
+From 9c2c582a3ee61a1fdf692be6346ae0681a9047c4 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 29 Oct 2018 22:52:18 +0800
-Subject: [PATCH 61/66] bt btbcm
+Subject: [PATCH 61/70] fixup bluetooth
 
 ---
  drivers/bluetooth/btbcm.c | 2 +-
@@ -11,7 +11,7 @@ diff --git a/drivers/bluetooth/btbcm.c b/drivers/bluetooth/btbcm.c
 index 99cde1f..e05a901 100644
 --- a/drivers/bluetooth/btbcm.c
 +++ b/drivers/bluetooth/btbcm.c
-@@ -326,7 +326,7 @@ struct bcm_subver_table {
+@@ -326,7 +326,7 @@ static const struct bcm_subver_table bcm_uart_subver_table[] = {
  	{ 0x4406, "BCM4324B3"	},	/* 002.004.006 */
  	{ 0x610c, "BCM4354"	},	/* 003.001.012 */
  	{ 0x2122, "BCM4343A0"	},	/* 001.001.034 */
@@ -21,5 +21,5 @@ index 99cde1f..e05a901 100644
  	{ 0x230f, "BCM4356A2"	},	/* 001.003.015 */
  	{ }
 -- 
-1.9.1
+2.7.4
 

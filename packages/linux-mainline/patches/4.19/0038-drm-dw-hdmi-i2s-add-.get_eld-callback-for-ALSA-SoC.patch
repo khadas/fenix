@@ -1,7 +1,7 @@
 From 2f34e5e35c227bf531c7c1ba82a8d7ec68dd6bb0 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 25 Mar 2018 22:17:06 +0200
-Subject: [PATCH 38/66] drm: dw-hdmi-i2s: add .get_eld callback for ALSA SoC
+Subject: [PATCH 38/70] drm: dw-hdmi-i2s: add .get_eld callback for ALSA SoC
 
 ---
  drivers/gpu/drm/bridge/synopsys/dw-hdmi-audio.h     |  1 +
@@ -62,7 +62,7 @@ diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/
 index 1fc1270..7e356bf 100644
 --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
 +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-@@ -2512,6 +2512,7 @@ static void dw_hdmi_cec_disable(struct dw_hdmi *hdmi)
+@@ -2512,6 +2512,7 @@ __dw_hdmi_probe(struct platform_device *pdev,
  		struct dw_hdmi_i2s_audio_data audio;
  
  		audio.hdmi	= hdmi;
@@ -71,5 +71,5 @@ index 1fc1270..7e356bf 100644
  		audio.read	= hdmi_readb;
  		hdmi->enable_audio = dw_hdmi_i2s_audio_enable;
 -- 
-1.9.1
+2.7.4
 

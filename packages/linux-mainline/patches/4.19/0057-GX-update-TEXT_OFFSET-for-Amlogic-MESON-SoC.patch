@@ -1,7 +1,7 @@
-From 71b33316eaa35bd890fad597bffc554e237f133c Mon Sep 17 00:00:00 2001
+From 11436343e09250814fc94c9be13f528cda25de23 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Tue, 3 Jul 2018 15:00:10 +0800
-Subject: [PATCH 57/66] GX: update TEXT_OFFSET for Amlogic MESON SoC
+Subject: [PATCH 57/70] GX: update TEXT_OFFSET for Amlogic MESON SoC
 
 this allow Amlogic vender u-boot v2015.01 to bootup mainline linux well
 ---
@@ -42,5 +42,5 @@ index b085306..e44bfa3 100644
  
  /*
 -- 
-1.9.1
+2.7.4
 

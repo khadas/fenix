@@ -1,7 +1,7 @@
-From 3306b96f5b4989bb94ba1d5738112b7f0c67dc0c Mon Sep 17 00:00:00 2001
+From ad5d46de963195169d5109559bab42bf48e4c346 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 29 Oct 2018 22:37:29 +0800
-Subject: [PATCH 53/66] rc warn once
+Subject: [PATCH 53/70] set rc warn once
 
 ---
  drivers/media/rc/meson-ir.c | 3 ++-
@@ -22,5 +22,5 @@ index f449b35..9747426 100644
  	spin_unlock(&ir->lock);
  
 -- 
-1.9.1
+2.7.4
 

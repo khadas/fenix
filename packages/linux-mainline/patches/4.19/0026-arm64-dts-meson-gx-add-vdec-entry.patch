@@ -1,7 +1,7 @@
 From e889e4e8aa602e08dee3021bebae857bac7e130c Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Wed, 29 Aug 2018 15:24:02 +0200
-Subject: [PATCH 26/66] arm64: dts: meson-gx: add vdec entry
+Subject: [PATCH 26/70] arm64: dts: meson-gx: add vdec entry
 
 Add the video decoder dts entry
 
@@ -36,5 +36,5 @@ index ec427e4..f6252d3 100644
  			compatible = "simple-bus";
  			reg = <0x0 0xc8834000 0x0 0x2000>;
 -- 
-1.9.1
+2.7.4
 

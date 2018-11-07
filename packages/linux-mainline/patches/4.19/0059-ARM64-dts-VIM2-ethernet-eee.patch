@@ -1,14 +1,14 @@
-From 1b730cdf2f9e6c1669772a7e4c9e02b67a141c80 Mon Sep 17 00:00:00 2001
+From 6cb010266e4e3e552f7abfd3ae0df6a05c104e80 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Wed, 24 Oct 2018 16:47:06 +0800
-Subject: [PATCH 59/66] ARM64: dts: VIM2: ethernet-eee
+Subject: [PATCH 59/70] ARM64: dts: VIM2: ethernet-eee
 
 ---
  arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 1 +
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-index 87265a2c..1c89738 100644
+index 87265a2..1c89738 100644
 --- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
 +++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
 @@ -305,6 +305,7 @@
@@ -20,5 +20,5 @@ index 87265a2c..1c89738 100644
  };
  
 -- 
-1.9.1
+2.7.4
 

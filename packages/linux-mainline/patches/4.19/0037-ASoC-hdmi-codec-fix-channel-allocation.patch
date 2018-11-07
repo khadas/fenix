@@ -1,7 +1,7 @@
 From 29c1208024a9bef21481a0ed19de844f25d043f5 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 25 Mar 2018 22:17:06 +0200
-Subject: [PATCH 37/66] ASoC: hdmi-codec: fix channel allocation
+Subject: [PATCH 37/70] ASoC: hdmi-codec: fix channel allocation
 
 ---
  sound/soc/codecs/hdmi-codec.c | 113 +++++++++++++++++++-----------------------
@@ -11,7 +11,7 @@ diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
 index d00734d..c61e2a5 100644
 --- a/sound/soc/codecs/hdmi-codec.c
 +++ b/sound/soc/codecs/hdmi-codec.c
-@@ -202,78 +202,69 @@ struct hdmi_codec_cea_spk_alloc {
+@@ -202,78 +202,69 @@ static const struct snd_pcm_chmap_elem hdmi_codec_8ch_chmaps[] = {
   */
  static const struct hdmi_codec_cea_spk_alloc hdmi_codec_channel_alloc[] = {
  	{ .ca_id = 0x00, .n_ch = 2,
@@ -143,5 +143,5 @@ index d00734d..c61e2a5 100644
  
  struct hdmi_codec_priv {
 -- 
-1.9.1
+2.7.4
 

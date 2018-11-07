@@ -1,7 +1,7 @@
 From a4e351d01eabfcf91f40217610375bbfbaa9061c Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Tue, 10 Jul 2018 20:54:33 +0200
-Subject: [PATCH 39/66] drm: dw-hdmi-i2s: add multi-channel lpcm support
+Subject: [PATCH 39/70] drm: dw-hdmi-i2s: add multi-channel lpcm support
 
 ---
  drivers/gpu/drm/bridge/synopsys/dw-hdmi-audio.h    |  1 +
@@ -153,7 +153,7 @@ diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/
 index 7e356bf..909d167 100644
 --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
 +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-@@ -2515,6 +2515,7 @@ static void dw_hdmi_cec_disable(struct dw_hdmi *hdmi)
+@@ -2515,6 +2515,7 @@ __dw_hdmi_probe(struct platform_device *pdev,
  		audio.eld	= hdmi->connector.eld;
  		audio.write	= hdmi_writeb;
  		audio.read	= hdmi_readb;
@@ -225,5 +225,5 @@ index 9d90eb9..760a087 100644
  
  /* MC_FLOWCTRL field values */
 -- 
-1.9.1
+2.7.4
 

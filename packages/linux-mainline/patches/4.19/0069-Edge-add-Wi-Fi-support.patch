@@ -1,7 +1,7 @@
-From ff47dabdff50a55f501d735fcbbe6b3bbbc945d7 Mon Sep 17 00:00:00 2001
+From f940f8f8083c4aa941ac3715c306aa58ef658792 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Wed, 7 Nov 2018 22:15:59 +0800
-Subject: [PATCH] Edge: add Wi-Fi support
+Subject: [PATCH 69/70] Edge: add Wi-Fi support
 
 ---
  .../boot/dts/rockchip/rk3399-khadas-edge.dtsi      | 51 ++++++++++++++++++++++

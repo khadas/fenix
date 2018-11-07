@@ -1,7 +1,7 @@
 From 5e4f9746755eea451272ce14aa0bd1378666f8e1 Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Wed, 29 Aug 2018 15:42:56 +0200
-Subject: [PATCH 31/66] media: meson: vdec: add H.264 decoding support
+Subject: [PATCH 31/70] media: meson: vdec: add H.264 decoding support
 
 Add support for V4L2_PIX_FMT_H264
 ---
@@ -554,7 +554,7 @@ index 291f1ee..baecf59 100644
  		.pixfmt = V4L2_PIX_FMT_MPEG1,
  		.min_buffers = 8,
  		.max_buffers = 8,
-@@ -38,6 +49,16 @@
+@@ -38,6 +49,16 @@ static const struct amvdec_format vdec_formats_gxbb[] = {
  
  static const struct amvdec_format vdec_formats_gxl[] = {
  	{
@@ -571,7 +571,7 @@ index 291f1ee..baecf59 100644
  		.pixfmt = V4L2_PIX_FMT_MPEG1,
  		.min_buffers = 8,
  		.max_buffers = 8,
-@@ -64,6 +85,16 @@
+@@ -64,6 +85,16 @@ static const struct amvdec_format vdec_formats_gxl[] = {
  
  static const struct amvdec_format vdec_formats_gxm[] = {
  	{
@@ -589,5 +589,5 @@ index 291f1ee..baecf59 100644
  		.min_buffers = 8,
  		.max_buffers = 8,
 -- 
-1.9.1
+2.7.4
 

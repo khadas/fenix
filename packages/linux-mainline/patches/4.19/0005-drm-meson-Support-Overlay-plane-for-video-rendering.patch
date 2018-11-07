@@ -1,7 +1,7 @@
 From 34fc8ab7457e287eb1274609614b07c1e1973670 Mon Sep 17 00:00:00 2001
 From: Neil Armstrong <narmstrong@baylibre.com>
 Date: Thu, 2 Aug 2018 10:00:01 +0200
-Subject: [PATCH 05/66] drm/meson: Support Overlay plane for video rendering
+Subject: [PATCH 05/70] drm/meson: Support Overlay plane for video rendering
 
 The Amlogic Meson GX SoCs support an Overlay plane behind the primary
 plan for video rendering.
@@ -1145,5 +1145,5 @@ index 6289965..05421d0 100644
  	}
  
 -- 
-1.9.1
+2.7.4
 

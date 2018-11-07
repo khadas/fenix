@@ -1,14 +1,14 @@
-From bde4958a1ca7186bb44fd0fb05a8c44d8b7651cf Mon Sep 17 00:00:00 2001
+From 30af0a5472b41f08d177bfed913649ec6dc80444 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 29 Oct 2018 22:54:34 +0800
-Subject: [PATCH 65/66] emmc speed
+Subject: [PATCH 65/70] arm64: dts: VIM2: update emmc speed
 
 ---
  arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-index c25c881..e6131dc2 100644
+index c25c881..e6131dc 100644
 --- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
 +++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
 @@ -373,6 +373,7 @@
@@ -44,5 +44,5 @@ index c25c881..e6131dc2 100644
  	mmc-pwrseq = <&emmc_pwrseq>;
  	vmmc-supply = <&vcc_3v3>;
 -- 
-1.9.1
+2.7.4
 

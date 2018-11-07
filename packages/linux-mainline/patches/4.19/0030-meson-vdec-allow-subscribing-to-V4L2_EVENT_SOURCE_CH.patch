@@ -1,7 +1,7 @@
 From 3c35fe0d84cdbc1691a53977c5ffb4c178cb71f6 Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Wed, 10 Oct 2018 15:44:56 +0200
-Subject: [PATCH 30/66] meson: vdec: allow subscribing to
+Subject: [PATCH 30/70] meson: vdec: allow subscribing to
  V4L2_EVENT_SOURCE_CHANGE
 
 Flag MPEG1/MPEG2 as NO_SOURCE_CHANGE.
@@ -209,7 +209,7 @@ diff --git a/drivers/media/platform/meson/vdec/vdec_helpers.h b/drivers/media/pl
 index b9250a8..060799b 100644
 --- a/drivers/media/platform/meson/vdec/vdec_helpers.h
 +++ b/drivers/media/platform/meson/vdec/vdec_helpers.h
-@@ -44,5 +44,6 @@ void amvdec_dst_buf_done(struct amvdec_session *sess,
+@@ -44,5 +44,6 @@ void amvdec_remove_ts(struct amvdec_session *sess, u64 ts);
  void amvdec_set_par_from_dar(struct amvdec_session *sess,
  			     u32 dar_num, u32 dar_den);
  
@@ -220,7 +220,7 @@ diff --git a/drivers/media/platform/meson/vdec/vdec_platform.c b/drivers/media/p
 index 46eeb74..291f1ee 100644
 --- a/drivers/media/platform/meson/vdec/vdec_platform.c
 +++ b/drivers/media/platform/meson/vdec/vdec_platform.c
-@@ -17,6 +17,7 @@
+@@ -17,6 +17,7 @@ static const struct amvdec_format vdec_formats_gxbb[] = {
  		.max_buffers = 8,
  		.max_width = 1920,
  		.max_height = 1080,
@@ -228,7 +228,7 @@ index 46eeb74..291f1ee 100644
  		.vdec_ops = &vdec_1_ops,
  		.codec_ops = &codec_mpeg12_ops,
  		.firmware_path = "meson/gx/vmpeg12_mc",
-@@ -27,6 +28,7 @@
+@@ -27,6 +28,7 @@ static const struct amvdec_format vdec_formats_gxbb[] = {
  		.max_buffers = 8,
  		.max_width = 1920,
  		.max_height = 1080,
@@ -236,7 +236,7 @@ index 46eeb74..291f1ee 100644
  		.vdec_ops = &vdec_1_ops,
  		.codec_ops = &codec_mpeg12_ops,
  		.firmware_path = "meson/gx/vmpeg12_mc",
-@@ -41,6 +43,7 @@
+@@ -41,6 +43,7 @@ static const struct amvdec_format vdec_formats_gxl[] = {
  		.max_buffers = 8,
  		.max_width = 1920,
  		.max_height = 1080,
@@ -244,7 +244,7 @@ index 46eeb74..291f1ee 100644
  		.vdec_ops = &vdec_1_ops,
  		.codec_ops = &codec_mpeg12_ops,
  		.firmware_path = "meson/gx/vmpeg12_mc",
-@@ -51,6 +54,7 @@
+@@ -51,6 +54,7 @@ static const struct amvdec_format vdec_formats_gxl[] = {
  		.max_buffers = 8,
  		.max_width = 1920,
  		.max_height = 1080,
@@ -252,7 +252,7 @@ index 46eeb74..291f1ee 100644
  		.vdec_ops = &vdec_1_ops,
  		.codec_ops = &codec_mpeg12_ops,
  		.firmware_path = "meson/gx/vmpeg12_mc",
-@@ -65,6 +69,7 @@
+@@ -65,6 +69,7 @@ static const struct amvdec_format vdec_formats_gxm[] = {
  		.max_buffers = 8,
  		.max_width = 1920,
  		.max_height = 1080,
@@ -260,7 +260,7 @@ index 46eeb74..291f1ee 100644
  		.vdec_ops = &vdec_1_ops,
  		.codec_ops = &codec_mpeg12_ops,
  		.firmware_path = "meson/gx/vmpeg12_mc",
-@@ -75,6 +80,7 @@
+@@ -75,6 +80,7 @@ static const struct amvdec_format vdec_formats_gxm[] = {
  		.max_buffers = 8,
  		.max_width = 1920,
  		.max_height = 1080,
@@ -269,5 +269,5 @@ index 46eeb74..291f1ee 100644
  		.codec_ops = &codec_mpeg12_ops,
  		.firmware_path = "meson/gx/vmpeg12_mc",
 -- 
-1.9.1
+2.7.4
 

@@ -1,7 +1,7 @@
 From 8c1776432d21fe4938cbee31ab145176d10b6cac Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <maxi.jourdan@wanadoo.fr>
 Date: Fri, 20 Apr 2018 16:22:17 +0200
-Subject: [PATCH 04/66] drm/meson: convert to the new canvas module
+Subject: [PATCH 04/70] drm/meson: convert to the new canvas module
 
 This removes the meson_canvas files within the meson/drm layer
 and makes use of the new canvas module that is referenced in the dts.
@@ -365,5 +365,5 @@ index 6bcfa52..5b48c4c 100644
  
  /**
 -- 
-1.9.1
+2.7.4
 

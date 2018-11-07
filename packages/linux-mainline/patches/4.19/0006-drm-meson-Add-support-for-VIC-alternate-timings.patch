@@ -1,7 +1,7 @@
 From bd42d0b9604c72649fcb44302300e6334823100b Mon Sep 17 00:00:00 2001
 From: Neil Armstrong <narmstrong@baylibre.com>
 Date: Mon, 23 Jul 2018 16:34:03 +0200
-Subject: [PATCH 06/66] drm/meson: Add support for VIC alternate timings
+Subject: [PATCH 06/70] drm/meson: Add support for VIC alternate timings
 
 ---
  drivers/gpu/drm/meson/meson_dw_hdmi.c |  12 +---
@@ -13,7 +13,7 @@ diff --git a/drivers/gpu/drm/meson/meson_dw_hdmi.c b/drivers/gpu/drm/meson/meson
 index df7247c..d8c5cc3 100644
 --- a/drivers/gpu/drm/meson/meson_dw_hdmi.c
 +++ b/drivers/gpu/drm/meson/meson_dw_hdmi.c
-@@ -594,17 +594,7 @@ static irqreturn_t dw_hdmi_top_thread_irq(int irq, void *dev_id)
+@@ -594,17 +594,7 @@ dw_hdmi_mode_valid(struct drm_connector *connector,
  	dev_dbg(connector->dev->dev, "%s: vclk:%d venc=%d hdmi=%d\n", __func__,
  		vclk_freq, venc_freq, hdmi_freq);
  
@@ -305,5 +305,5 @@ index 869fa3a..4bd8752 100644
  void meson_vclk_setup(struct meson_drm *priv, unsigned int target,
  		      unsigned int vclk_freq, unsigned int venc_freq,
 -- 
-1.9.1
+2.7.4
 

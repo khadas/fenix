@@ -1,7 +1,7 @@
-From 0f29499804e72573eeaf8f47b4aa45b49fc6388e Mon Sep 17 00:00:00 2001
+From 6bea2c0d56ee8b6ade7cc87a9d93c6f556ee1ada Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 29 Oct 2018 22:37:46 +0800
-Subject: [PATCH 54/66] soc id
+Subject: [PATCH 54/70] add S912 soc id
 
 ---
  drivers/soc/amlogic/meson-gx-socinfo.c | 5 +++--
@@ -11,7 +11,7 @@ diff --git a/drivers/soc/amlogic/meson-gx-socinfo.c b/drivers/soc/amlogic/meson-
 index 37ea0a1..b36bfb4 100644
 --- a/drivers/soc/amlogic/meson-gx-socinfo.c
 +++ b/drivers/soc/amlogic/meson-gx-socinfo.c
-@@ -45,7 +45,7 @@
+@@ -45,7 +45,7 @@ static const struct meson_gx_package_id {
  	unsigned int pack_id;
  } soc_packages[] = {
  	{ "S905", 0x1f, 0 },
@@ -20,7 +20,7 @@ index 37ea0a1..b36bfb4 100644
  	{ "S905M", 0x1f, 0x20 },
  	{ "S905D", 0x21, 0 },
  	{ "S905X", 0x21, 0x80 },
-@@ -53,6 +53,7 @@
+@@ -53,6 +53,7 @@ static const struct meson_gx_package_id {
  	{ "S905L", 0x21, 0xc0 },
  	{ "S905M2", 0x21, 0xe0 },
  	{ "S912", 0x22, 0 },
@@ -38,5 +38,5 @@ index 37ea0a1..b36bfb4 100644
  	int i;
  
 -- 
-1.9.1
+2.7.4
 

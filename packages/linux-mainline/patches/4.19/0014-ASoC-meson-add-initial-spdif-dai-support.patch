@@ -1,7 +1,7 @@
 From d99d35c6de1237ccbbebb7ce8e3bde5cc39b7350 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Thu, 30 Mar 2017 13:46:03 +0200
-Subject: [PATCH 14/66] ASoC: meson: add initial spdif dai support
+Subject: [PATCH 14/70] ASoC: meson: add initial spdif dai support
 
 Add support for the spdif dai found on Amlogic Meson SoC family.
 With this initial implementation, only uncompressed pcm playback
@@ -428,5 +428,5 @@ index 0000000..e763000
 +MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
 +MODULE_LICENSE("GPL v2");
 -- 
-1.9.1
+2.7.4
 

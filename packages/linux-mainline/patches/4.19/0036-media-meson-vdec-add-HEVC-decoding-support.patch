@@ -1,7 +1,7 @@
 From 737cc642a9216f131fa56ed1e1022093f9837bbe Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Wed, 29 Aug 2018 18:48:35 +0200
-Subject: [PATCH 36/66] media: meson: vdec: add HEVC decoding support
+Subject: [PATCH 36/70] media: meson: vdec: add HEVC decoding support
 
 Add support for V4L2_PIX_FMT_HEVC
 ---
@@ -2053,7 +2053,7 @@ index 61def15..86c2a2f 100644
  		.pixfmt = V4L2_PIX_FMT_MJPEG,
  		.min_buffers = 4,
  		.max_buffers = 4,
-@@ -91,6 +103,16 @@
+@@ -91,6 +103,16 @@ static const struct amvdec_format vdec_formats_gxbb[] = {
  
  static const struct amvdec_format vdec_formats_gxl[] = {
  	{
@@ -2070,7 +2070,7 @@ index 61def15..86c2a2f 100644
  		.pixfmt = V4L2_PIX_FMT_MJPEG,
  		.min_buffers = 4,
  		.max_buffers = 4,
-@@ -167,6 +189,16 @@
+@@ -167,6 +189,16 @@ static const struct amvdec_format vdec_formats_gxl[] = {
  
  static const struct amvdec_format vdec_formats_gxm[] = {
  	{
@@ -2088,5 +2088,5 @@ index 61def15..86c2a2f 100644
  		.min_buffers = 4,
  		.max_buffers = 4,
 -- 
-1.9.1
+2.7.4
 

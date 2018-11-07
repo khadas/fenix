@@ -1,7 +1,7 @@
 From af2386770392ae998a0c110194e15e5138c31474 Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Sun, 21 Oct 2018 15:14:49 +0200
-Subject: [PATCH 34/66] media: videodev2.h: Add Amlogic compressed format
+Subject: [PATCH 34/70] media: videodev2.h: Add Amlogic compressed format
 
 Add V4L2_PIX_FMT_AM21C which is a lossless, compressed framebuffer
 format.
@@ -38,5 +38,5 @@ index aa90a9a..a28acee 100644
  
  /* 10bit raw bayer packed, 32 bytes for every 25 pixels, last LSB 6 bits unused */
 -- 
-1.9.1
+2.7.4
 

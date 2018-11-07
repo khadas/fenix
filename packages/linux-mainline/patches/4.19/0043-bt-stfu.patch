@@ -1,7 +1,7 @@
 From 99ec033ed43554f30f7fc55ab914b67d3e3ba70c Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 29 Oct 2018 22:29:31 +0800
-Subject: [PATCH 43/66] bt stfu
+Subject: [PATCH 43/70] bt stfu
 
 ---
  net/bluetooth/hci_event.c | 3 +--
@@ -22,5 +22,5 @@ index f12555f..9162ac5 100644
  	}
  
 -- 
-1.9.1
+2.7.4
 

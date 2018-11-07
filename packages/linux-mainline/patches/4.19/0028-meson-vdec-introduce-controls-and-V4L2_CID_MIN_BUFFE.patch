@@ -1,7 +1,7 @@
 From f5cf0a1992b26066d44e01d5902f1b0cc0eac44a Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Wed, 10 Oct 2018 17:22:27 +0200
-Subject: [PATCH 28/66] meson: vdec: introduce controls and
+Subject: [PATCH 28/70] meson: vdec: introduce controls and
  V4L2_CID_MIN_BUFFERS_FOR_CAPTURE
 
 ---
@@ -152,5 +152,5 @@ index 0000000..4bcc5e6
 +
 +#endif
 -- 
-1.9.1
+2.7.4
 

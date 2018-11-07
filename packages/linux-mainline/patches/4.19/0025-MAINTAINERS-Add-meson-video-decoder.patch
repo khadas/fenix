@@ -1,7 +1,7 @@
 From 99d625565ebb7b1ffdafd21ddc0237e37dff050f Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Tue, 4 Sep 2018 10:07:08 +0200
-Subject: [PATCH 25/66] MAINTAINERS: Add meson video decoder
+Subject: [PATCH 25/70] MAINTAINERS: Add meson video decoder
 
 Add an entry for the meson video decoder for amlogic SoCs.
 
@@ -30,5 +30,5 @@ index b2f710e..5a7fa6a 100644
  M:	Michal Simek <monstr@monstr.eu>
  W:	http://www.monstr.eu/fdt/
 -- 
-1.9.1
+2.7.4
 

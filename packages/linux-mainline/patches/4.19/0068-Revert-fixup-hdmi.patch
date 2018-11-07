@@ -1,9 +1,9 @@
-From 1f14b03dfa99ccaabead980614b1d910aae12459 Mon Sep 17 00:00:00 2001
+From 2f9fb97085dc2a5169f594b9d8cf82565b5c106c Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
-Date: Wed, 7 Nov 2018 18:53:46 +0800
-Subject: [PATCH] Revert "hdmi"
+Date: Wed, 7 Nov 2018 23:11:22 +0800
+Subject: [PATCH 68/70] Revert "fixup hdmi"
 
-This reverts commit ae2e11040dfd90393278fc54d13738bfb0041676.
+This reverts commit eec6237a23488072f993fd5ae941407cf75e424b.
 ---
  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 1 -
  1 file changed, 1 deletion(-)

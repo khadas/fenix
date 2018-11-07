@@ -1,7 +1,7 @@
-From 53cae222836592842879a8ef54593617e8582233 Mon Sep 17 00:00:00 2001
+From cca9c644f77a8d744decca51eaf24ee25420b9aa Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Tue, 3 Jul 2018 11:25:04 +0800
-Subject: [PATCH 55/66] packaging 4.18 with postinstall scripts
+Subject: [PATCH 55/70] packaging 4.18 with postinstall scripts
 
 ---
  arch/arm64/Makefile      |   2 +-
@@ -239,5 +239,5 @@ index 663a7f3..2428e94 100755
  
  cat <<EOF > debian/rules
 -- 
-1.9.1
+2.7.4
 

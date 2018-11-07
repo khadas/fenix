@@ -1,7 +1,7 @@
 From dd50895fe7275900004c7fe49b78465f89e4367f Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Wed, 29 Aug 2018 16:01:55 +0200
-Subject: [PATCH 32/66] media: meson: vdec: add MPEG4 decoding support
+Subject: [PATCH 32/70] media: meson: vdec: add MPEG4 decoding support
 
 Add support for V4L2_PIX_FMT_MPEG4, V4L2_PIX_FMT_XVID and
 V4L2_PIX_FMT_H.263
@@ -236,7 +236,7 @@ index baecf59..80b43fd 100644
  		.pixfmt = V4L2_PIX_FMT_H264,
  		.min_buffers = 2,
  		.max_buffers = 24,
-@@ -49,6 +80,36 @@
+@@ -49,6 +80,36 @@ static const struct amvdec_format vdec_formats_gxbb[] = {
  
  static const struct amvdec_format vdec_formats_gxl[] = {
  	{
@@ -273,7 +273,7 @@ index baecf59..80b43fd 100644
  		.pixfmt = V4L2_PIX_FMT_H264,
  		.min_buffers = 2,
  		.max_buffers = 24,
-@@ -85,6 +146,36 @@
+@@ -85,6 +146,36 @@ static const struct amvdec_format vdec_formats_gxl[] = {
  
  static const struct amvdec_format vdec_formats_gxm[] = {
  	{
@@ -311,5 +311,5 @@ index baecf59..80b43fd 100644
  		.min_buffers = 2,
  		.max_buffers = 24,
 -- 
-1.9.1
+2.7.4
 

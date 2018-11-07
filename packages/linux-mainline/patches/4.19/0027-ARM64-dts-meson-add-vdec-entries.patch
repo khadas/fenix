@@ -1,7 +1,7 @@
 From 5ce913c637e5fb88251e4a3bb484cd9cfa1bfaf1 Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Wed, 29 Aug 2018 15:24:22 +0200
-Subject: [PATCH 27/66] ARM64: dts: meson: add vdec entries
+Subject: [PATCH 27/70] ARM64: dts: meson: add vdec entries
 
 This enables the video decoder for gxbb, gxl and gxm chips
 
@@ -62,5 +62,5 @@ index 247888d..2f35649 100644
 +	compatible = "amlogic,gxm-vdec";
 +};
 -- 
-1.9.1
+2.7.4
 

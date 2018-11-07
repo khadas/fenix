@@ -1,7 +1,7 @@
 From 9e274288fd64ef3e4e1cbe0d7864db9c1d4229df Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Wed, 29 Aug 2018 15:17:22 +0200
-Subject: [PATCH 24/66] media: meson: add v4l2 m2m video decoder driver
+Subject: [PATCH 24/70] media: meson: add v4l2 m2m video decoder driver
 
 Amlogic SoCs feature a powerful video decoder unit able to
 decode many formats, with a performance of usually up to 4k60.
@@ -2967,5 +2967,5 @@ index 0000000..f602532
 +
 +#endif
 -- 
-1.9.1
+2.7.4
 

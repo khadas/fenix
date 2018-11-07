@@ -1,7 +1,7 @@
-From 8f4ab34cc49e8c3ba15c5dd4d86a5d0ddbe58f75 Mon Sep 17 00:00:00 2001
+From ec520e5c429e7b8b532d3755beecfda197b1eadb Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 29 Oct 2018 22:32:01 +0800
-Subject: [PATCH 47/66] cpu serial
+Subject: [PATCH 47/70] cpu serial
 
 ---
  drivers/firmware/meson/meson_sm.c       | 56 +++++++++++++++++++++++++++++++++
@@ -109,5 +109,5 @@ index 37a5eae..915f531 100644
  
  struct meson_sm_firmware;
 -- 
-1.9.1
+2.7.4
 

@@ -1,7 +1,7 @@
-From ae2e11040dfd90393278fc54d13738bfb0041676 Mon Sep 17 00:00:00 2001
+From eec6237a23488072f993fd5ae941407cf75e424b Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 29 Oct 2018 22:34:10 +0800
-Subject: [PATCH 51/66] hdmi
+Subject: [PATCH 51/70] fixup hdmi
 
 ---
  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 1 +
@@ -20,5 +20,5 @@ index f1b8cc8..a0ba8e1 100644
  	mutex_unlock(&hdmi->mutex);
  }
 -- 
-1.9.1
+2.7.4
 

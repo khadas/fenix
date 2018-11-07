@@ -1,7 +1,7 @@
-From ca8cca16b9b3a9750ea9d0ca0d126b14d07c88b8 Mon Sep 17 00:00:00 2001
+From fc5aed1fa657bade1eec4a247820ad007bc0f053 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Tue, 6 Nov 2018 17:36:53 +0800
-Subject: [PATCH] add basic support for Khadas Edge
+Subject: [PATCH 67/70] add basic support for Khadas Edge
 
 ---
  arch/arm64/boot/dts/rockchip/Makefile              |   3 +

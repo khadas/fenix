@@ -1,7 +1,7 @@
-From 1f4a89a938b458b3a1e316c455b84ea1def26a41 Mon Sep 17 00:00:00 2001
+From 76227f364924d28a9ac80f6687dc568668a350a0 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 29 Oct 2018 22:50:25 +0800
-Subject: [PATCH 60/66] ARM64: defconfig: update defconfig
+Subject: [PATCH 60/70] ARM64: defconfig: update defconfig
 
 ---
  arch/arm64/configs/defconfig | 600 +++++++++++++------------------------------
@@ -866,5 +866,5 @@ index 189edcc..a1061bc 100644
  CONFIG_MEMTEST=y
 +# CONFIG_STRICT_DEVMEM is not set
 -- 
-1.9.1
+2.7.4
 

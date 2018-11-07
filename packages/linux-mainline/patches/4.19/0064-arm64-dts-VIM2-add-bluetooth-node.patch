@@ -1,7 +1,7 @@
-From f8a87ca8f3dc429813f32521d8e539010a5f170a Mon Sep 17 00:00:00 2001
+From b34ea2e341c4fe9181b466b2d85e183baa093922 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 29 Oct 2018 22:54:10 +0800
-Subject: [PATCH 64/66] bt dts
+Subject: [PATCH 64/70] arm64: dts: VIM2: add bluetooth node
 
 ---
  arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 5 +++++
@@ -24,5 +24,5 @@ index 1c89738..c25c881 100644
  
  /* This is brought out on the Linux_RX (18) and Linux_TX (19) pins: */
 -- 
-1.9.1
+2.7.4
 

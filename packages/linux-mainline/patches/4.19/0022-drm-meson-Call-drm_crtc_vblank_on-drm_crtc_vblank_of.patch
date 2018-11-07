@@ -1,7 +1,7 @@
 From c2a4990b3c4853a51a00d553d24b84d8949fec9e Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 29 Oct 2018 21:45:51 +0800
-Subject: [PATCH 22/66] drm/meson: Call drm_crtc_vblank_on drm_crtc_vblank_off
+Subject: [PATCH 22/70] drm/meson: Call drm_crtc_vblank_on drm_crtc_vblank_off
 
 Make sure that the CRTC code will call the enable/disable_vblank hooks.
 ---
@@ -31,5 +31,5 @@ index a4b9463..e0b8f50 100644
  	priv->viu.osd1_commit = false;
  
 -- 
-1.9.1
+2.7.4
 

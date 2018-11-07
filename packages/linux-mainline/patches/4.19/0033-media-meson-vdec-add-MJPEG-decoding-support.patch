@@ -1,7 +1,7 @@
 From 0e3d844b05e9a2ba86406a1fa21ec0ab771112aa Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Sun, 21 Oct 2018 15:14:27 +0200
-Subject: [PATCH 33/66] media: meson: vdec: add MJPEG decoding support
+Subject: [PATCH 33/70] media: meson: vdec: add MJPEG decoding support
 
 Add support for V4L2_PIX_FMT_MJPEG
 ---
@@ -216,7 +216,7 @@ index 80b43fd..61def15 100644
  		.pixfmt = V4L2_PIX_FMT_MPEG4,
  		.min_buffers = 8,
  		.max_buffers = 8,
-@@ -80,6 +91,16 @@
+@@ -80,6 +91,16 @@ static const struct amvdec_format vdec_formats_gxbb[] = {
  
  static const struct amvdec_format vdec_formats_gxl[] = {
  	{
@@ -233,7 +233,7 @@ index 80b43fd..61def15 100644
  		.pixfmt = V4L2_PIX_FMT_MPEG4,
  		.min_buffers = 8,
  		.max_buffers = 8,
-@@ -146,6 +167,16 @@
+@@ -146,6 +167,16 @@ static const struct amvdec_format vdec_formats_gxl[] = {
  
  static const struct amvdec_format vdec_formats_gxm[] = {
  	{
@@ -251,5 +251,5 @@ index 80b43fd..61def15 100644
  		.min_buffers = 8,
  		.max_buffers = 8,
 -- 
-1.9.1
+2.7.4
 

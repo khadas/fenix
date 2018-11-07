@@ -1,7 +1,7 @@
-From 258d49a3264bf926a13b89d6fa39eec86092d1df Mon Sep 17 00:00:00 2001
+From 768e7fcdfc570ec2dd49b20ffc9ba66e0eeb1b02 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 29 Oct 2018 22:33:49 +0800
-Subject: [PATCH 50/66] gxm mal
+Subject: [PATCH 50/70] arm64: dts: meson-gxm: add mali node
 
 ---
  arch/arm64/boot/dts/amlogic/meson-gxm-mali.dtsi | 68 +++++++++++++++++++++++++
@@ -96,5 +96,5 @@ index 2f35649..90e7646 100644
  / {
  	compatible = "amlogic,meson-gxm";
 -- 
-1.9.1
+2.7.4
 

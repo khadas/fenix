@@ -1,7 +1,7 @@
-From fef905a0ed6f8f66fee334b385ce9fc9bc65b49f Mon Sep 17 00:00:00 2001
+From e93d26e96202430562606866257ede9b2dcaeaa3 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 29 Oct 2018 22:52:36 +0800
-Subject: [PATCH 62/66] bt dts
+Subject: [PATCH 62/70] arm64: dts: VIM1: add bluetooth node
 
 ---
  arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts | 7 +++++++
@@ -26,5 +26,5 @@ index f053595..3f9a41cff 100644
  &uart_AO {
  	status = "okay";
 -- 
-1.9.1
+2.7.4
 

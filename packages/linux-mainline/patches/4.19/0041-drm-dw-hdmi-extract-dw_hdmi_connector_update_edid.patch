@@ -1,7 +1,7 @@
 From 3eb04abd325a199853e29e01fac9edf38f22b708 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 29 Oct 2018 21:55:16 +0800
-Subject: [PATCH 41/66] drm: dw-hdmi: extract dw_hdmi_connector_update_edid
+Subject: [PATCH 41/70] drm: dw-hdmi: extract dw_hdmi_connector_update_edid
 
 ---
  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 41 ++++++++++++++++++-------------
@@ -74,5 +74,5 @@ index 7081357..f35139d 100644
  {
  	struct dw_hdmi *hdmi = container_of(connector, struct dw_hdmi,
 -- 
-1.9.1
+2.7.4
 

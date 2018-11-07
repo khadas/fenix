@@ -1,14 +1,14 @@
-From fbe592e74a929276ca6e7a58e8fc263ea92453be Mon Sep 17 00:00:00 2001
+From 2b27d0336ed356381ed67d89d06a49b7541c165f Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 29 Oct 2018 22:55:04 +0800
-Subject: [PATCH 66/66] hdmi audio
+Subject: [PATCH 66/70] arm64: dts: VIM2: update hdmi audio name
 
 ---
  arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-index e6131dc2..087ee4b 100644
+index e6131dc..087ee4b 100644
 --- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
 +++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
 @@ -87,7 +87,7 @@
@@ -30,5 +30,5 @@ index e6131dc2..087ee4b 100644
  			frame-master = <&i2s_dai>;
  
 -- 
-1.9.1
+2.7.4
 
