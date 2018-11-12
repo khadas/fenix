@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e -o pipefail
+
 ## Parameters
 source config/config
 
