@@ -16,7 +16,7 @@ build_board_deb() {
 	Architecture: $DISTRIB_ARCH
 	Maintainer: Khadas <hello@khadas.com>
 	Installed-Size: 1
-	Replaces: linux-firmware, watchdog, base-files, mpv
+	Replaces: linux-firmware, watchdog, base-files, mpv, zram-config
 	Section: kernel
 	Priority: optional
 	Depends: bash, linux-base, u-boot-tools, initramfs-tools
@@ -74,6 +74,9 @@ build_board_deb() {
 	# Set up post remove script
 	cat <<-EOF > $pkgdir/DEBIAN/postrm
 	#!/bin/sh
+	if [ remove = "\$1" ] || [ abort-install = "\$1" ]; then
+		systemctl disable fenix-zram-config.service >/dev/null 2>&1
+	fi
 	exit 0
 	EOF
 
@@ -82,6 +85,19 @@ build_board_deb() {
 	# Set up post install script
 	cat <<-EOF > $pkgdir/DEBIAN/postinst
 	#!/bin/sh
+	# fix boot delay "waiting for suspend/resume device"
+	if [ -f "/etc/initramfs-tools/initramfs.conf" ]; then
+		if ! grep --quiet "RESUME=none" /etc/initramfs-tools/initramfs.conf; then
+			echo "RESUME=none" >> /etc/initramfs-tools/initramfs.conf
+		fi
+	fi
+
+	if [ ! -f "/etc/default/fenix-zram-config" ]; then
+		mv /etc/default/fenix-zram-config.dpkg-dist /etc/default/fenix-zram-config
+	fi
+
+	systemctl --no-reload enable fenix-zram-config.service >/dev/null 2>&1
+
 	exit 0
 	EOF
 

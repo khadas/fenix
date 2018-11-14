@@ -1,0 +1,21 @@
+# Forked from Armbian https://github.com/armbian
+# Fenix ZRAM configuration service
+# Create 1 + number of cores compressed block devices
+# This service may block the boot process for up to 30 sec
+
+[Unit]
+Description=Fenix ZRAM config
+DefaultDependencies=no
+After=local-fs.target
+#Before=fenix-ramlog.target
+Conflicts=shutdown.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/fenix/fenix-zram-config start
+ExecStop=/usr/lib/fenix/fenix-zram-config stop
+RemainAfterExit=yes
+TimeoutStartSec=30sec
+
+[Install]
+WantedBy=sysinit.target
