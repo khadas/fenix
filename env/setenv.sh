@@ -319,7 +319,7 @@ function choose_distribution_release() {
 	echo ""
 
 	local DEFAULT_NUM
-	DEFAULT_NUM=1
+	DEFAULT_NUM=2
 
 	export DISTRIB_RELEASE=
 	local ANSWER
