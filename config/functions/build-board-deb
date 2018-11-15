@@ -66,6 +66,9 @@ build_board_deb() {
 
 	mountpoint -q /boot && check_fs
 
+	# make a backup since we are unconditionally overwriting this on update
+	[ -f "/etc/default/cpufrequtils" ] && cp /etc/default/cpufrequtils /etc/default/cpufrequtils.dpkg-old
+
 	exit 0
 	EOF
 
@@ -75,7 +78,7 @@ build_board_deb() {
 	cat <<-EOF > $pkgdir/DEBIAN/postrm
 	#!/bin/sh
 	if [ remove = "\$1" ] || [ abort-install = "\$1" ]; then
-		systemctl disable fenix-zram-config.service >/dev/null 2>&1
+		systemctl disable fenix-zram-config.service fenix-hardware-optimize.service >/dev/null 2>&1
 	fi
 	exit 0
 	EOF
@@ -96,7 +99,7 @@ build_board_deb() {
 		mv /etc/default/fenix-zram-config.dpkg-dist /etc/default/fenix-zram-config
 	fi
 
-	systemctl --no-reload enable fenix-zram-config.service >/dev/null 2>&1
+	systemctl --no-reload enable fenix-zram-config.service fenix-hardware-optimize.service >/dev/null 2>&1
 
 	exit 0
 	EOF
@@ -197,6 +200,15 @@ build_board_deb() {
 	# /etc/initramfs/post-update.d/99-uboot
 	cat <<-EOF > $pkgdir/DEBIAN/triggers
 	activate update-initramfs
+	EOF
+
+	# configure MIN / MAX speed for cpufrequtils
+	cat <<-EOF > $pkgdir/etc/default/cpufrequtils
+	# WARNING: this file will be replaced on board support package upgrade
+	ENABLE=true
+	MIN_SPEED=$CPUMIN
+	MAX_SPEED=$CPUMAX
+	GOVERNOR=$GOVERNOR
 	EOF
 
 	# Config file

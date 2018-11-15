@@ -1,0 +1,176 @@
+#!/bin/bash
+#
+# Copyright (c) Authors: http://www.armbian.com/authors
+#
+# This file is licensed under the terms of the GNU General Public
+# License version 2. This program is licensed "as is" without any
+# warranty of any kind, whether express or implied.
+
+#
+# Modified to support Khadas boards
+#
+
+# Functions:
+#
+# set_io_scheduler
+# prepare_board
+# add_usb_storage_quirks
+
+
+# Read in basic OS image information
+. /etc/fenix-release
+# and script configuration
+#. /usr/lib/fenix/fenix-common
+
+set_io_scheduler() {
+
+	for i in $( lsblk -idn -o NAME | grep -v zram ); do
+		read ROTATE </sys/block/$i/queue/rotational
+		case ${ROTATE} in
+			1) # mechanical drives
+				echo cfq >/sys/block/$i/queue/scheduler
+				echo -e "[\e[0;32m ok \x1B[0m] Setting cfg I/O scheduler for $i"
+				;;
+			0) # flash based
+				echo noop >/sys/block/$i/queue/scheduler
+				echo -e "[\e[0;32m ok \x1B[0m] Setting noop I/O scheduler for $i"
+				;;
+		esac
+	done
+
+} # set_io_scheduler
+
+
+
+
+prepare_board() {
+
+	CheckDevice=$(for i in /var/log /var / ; do findmnt -n -o SOURCE $i && break ; done)
+	# adjust logrotate configs
+	if [[ "${CheckDevice}" == "/dev/zram0" || "${CheckDevice}" == "armbian-ramlog" ]]; then
+		for ConfigFile in /etc/logrotate.d/* ; do sed -i -e "s/log\//log.hdd\//" "${ConfigFile}"; done
+		sed -i "s/log\//log.hdd\//" /etc/logrotate.conf
+	else
+		for ConfigFile in /etc/logrotate.d/* ; do sed -i -e "s/\/log.hdd\//\/log\//" "${ConfigFile}"; done
+		sed -i "s/\/log.hdd\//\/log\//" /etc/logrotate.conf
+	fi
+
+	# unlock cpuinfo_cur_freq to be accesible by a normal user
+	prefix="/sys/devices/system/cpu/cpufreq"
+	for f in $(ls -1 $prefix 2> /dev/null)
+	do
+		[[ -f $prefix/$f/cpuinfo_cur_freq ]] && chmod +r $prefix/$f/cpuinfo_cur_freq 2> /dev/null
+	done
+	# older kernels
+	prefix="/sys/devices/system/cpu/cpu0/cpufreq/"
+	[[ -f $prefix/cpuinfo_cur_freq ]] && chmod +r $prefix/cpuinfo_cur_freq 2> /dev/null
+
+	# enable compression where not exists
+#	find /etc/logrotate.d/. -type f | xargs grep -H -c 'compress' | grep 0$ | cut -d':' -f1 | xargs -L1 sed -i '/{/ a compress'
+	sed -i "s/#compress/compress/" /etc/logrotate.conf
+
+	# tweak ondemand cpufreq governor settings to increase cpufreq with IO load
+	grep -q ondemand /etc/default/cpufrequtils
+	if [ $? -eq 0 ]; then
+		echo ondemand >/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+		cd /sys/devices/system/cpu
+		for i in cpufreq/ondemand cpu0/cpufreq/ondemand cpu4/cpufreq/ondemand ; do
+			if [ -d $i ]; then
+				echo 1 >${i}/io_is_busy
+				echo 25 >${i}/up_threshold
+				echo 10 >${i}/sampling_down_factor
+				echo 200000 >${i}/sampling_rate
+			fi
+		done
+	fi
+
+	# IRQ distribution based on $BOARD
+	case ${BOARD} in
+		"VIM1"|"VIM2") # S905X/S912: both kernels: send eth0 to cpu3, mmc/usb2 to cpu2 and usb1 to cpu1
+			for i in $(awk -F':' '/sd_emmc|usb2/{print $1}' </proc/interrupts | sed 's/\ //g'); do
+				echo 1 >/proc/irq/$i/smp_affinity_list
+			done
+			echo 2 >/proc/irq/$(awk -F":" "/usb1/ {print \$1}" </proc/interrupts | sed 's/\ //g')/smp_affinity_list
+			echo 3 >/proc/irq/$(awk -F":" "/eth0/ {print \$1}" </proc/interrupts | sed 's/\ //g')/smp_affinity_list
+			echo 7 >/sys/class/net/eth0/queues/rx-0/rps_cpus
+			;;
+		"Edge"|"Edge V"|"Captain")
+			for i in $(awk -F':' '/gpu/{print $1}' </proc/interrupts | sed 's/\ //g'); do
+				echo 2 >/proc/irq/$i/smp_affinity
+			done
+			for i in $(awk -F':' '/dw-mci/{print $1}' </proc/interrupts | sed 's/\ //g'); do
+				echo 2 >/proc/irq/$i/smp_affinity
+			done
+			for i in $(awk -F":" "/ehci/ {print \$1}" </proc/interrupts | sed 's/\ //g'); do
+				echo 2 >/proc/irq/$i/smp_affinity
+			done
+			for i in $(awk -F":" "/ohci/ {print \$1}" </proc/interrupts | sed 's/\ //g'); do
+				echo 2 >/proc/irq/$i/smp_affinity
+			done
+			echo 4 >/proc/irq/$(awk -F":" "/xhci/ {print \$1}" </proc/interrupts | sed 's/\ //g')/smp_affinity
+			echo 8 >/proc/irq/$(awk -F":" "/eth0/ {print \$1}" </proc/interrupts | sed 's/\ //g')/smp_affinity
+			echo 7 >/sys/class/net/eth0/queues/rx-0/rps_cpus
+			echo 32768 >/proc/sys/net/core/rps_sock_flow_entries
+			echo 32768 >/sys/class/net/eth0/queues/rx-0/rps_flow_cnt
+			for i in $(awk -F':' 'tolower($0) ~ /pcie/{print $1}' </proc/interrupts | sed 's/\ //g'); do
+				echo 16 >/proc/irq/$i/smp_affinity
+			done
+			# set dmc memory governor to performance with default kernel
+			if [ -f /sys/bus/platform/drivers/rockchip-dmc/dmc/devfreq/dmc/governor ]; then
+				echo performance > /sys/bus/platform/drivers/rockchip-dmc/dmc/devfreq/dmc/governor
+			fi
+			;;
+	esac
+} # prepare_board
+
+add_usb_storage_quirks() {
+
+	# check for /boot/env.txt existence
+	[ -f /boot/nv.txt ] || return
+
+	# cleanup. add LF. This prevents adding parameters to the same line
+	echo "" >> /boot/env.txt;  sed -i '/^$/d;$G' /boot/env.txt; sed -i '/^$/d;$G' /boot/env.txt
+
+	# cleanup. remove empty lines in the middle
+	sed -i '/^$/d' /boot/env.txt
+
+	# preserve old contents if existent
+	TMPFILE=$(mktemp /tmp/${0##*/}.XXXXXX)
+	trap "sleep 1 ; rm \"${TMPFILE}\" ; exit 0" 0 1 2 3 15
+	awk -F"=" '/^usbstoragequirks/ {print $2}' </boot/env.txt | tr -d -c '[:graph:]' >${TMPFILE}
+
+	# UAS blacklist Norelsys NS1068X and NS1066X since broken. Can be removed once
+	# they're blacklisted upstream
+	[ -s ${TMPFILE} ] || echo "0x2537:0x1066:u,0x2537:0x1068:u" >${TMPFILE}
+
+	# check for connected Seagate or WD HDD enclosures and blacklist them all
+	lsusb | awk -F" " '{print "0x"$6}' | sed 's/:/:0x/' | sort | uniq | while read ; do
+		case ${REPLY} in
+			"0x0bc2:"*|"0x1058:"*)
+				grep -q "${REPLY}" ${TMPFILE} || sed -i "1 s/\$/,${REPLY}:u/" ${TMPFILE}
+				;;
+		esac
+	done
+
+	read USBQUIRKS <${TMPFILE}
+	sed -i '/^usbstoragequirks/d' /boot/env.txt
+	echo "usbstoragequirks=${USBQUIRKS}" >>/boot/env.txt
+	sync &
+	if [ -f /sys/module/usb_storage/parameters/quirks ]; then
+		echo ${USBQUIRKS} >/sys/module/usb_storage/parameters/quirks
+	fi
+
+} # add_usb_storage_quirks
+
+case $1 in
+	*start*)
+		# set optimal disk scheduler settings
+		set_io_scheduler &
+
+		# hardware preparation
+		prepare_board &
+
+		# add usb quirks
+#		add_usb_storage_quirks &
+		;;
+esac

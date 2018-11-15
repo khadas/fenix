@@ -146,6 +146,7 @@ install_distribution_specific()
 		sed -i "s/#DNS=.*/DNS=1.1.1.1/g" $ROOTFS_TEMP/etc/systemd/resolved.conf
 		# disable watchdog
 		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable watchdog.service"'
+		chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload mask ondemand.service"
 		;;
 	esac
 }
