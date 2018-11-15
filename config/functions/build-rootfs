@@ -130,6 +130,8 @@ install_distribution_specific()
 
 		# disable watchdog
 		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable watchdog.service"'
+		# Disable Lirc service
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable lircd.socket lircd.service lircd-setup.service lircd-uinput.service lircmd.service irexec.service"'
 		;;
 	bionic)
 		# remove doubled uname from motd
@@ -147,6 +149,8 @@ install_distribution_specific()
 		# disable watchdog
 		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable watchdog.service"'
 		chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload mask ondemand.service"
+		# Disable Lirc service
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable lircd.socket lircd.service lircd-setup.service lircd-uinput.service lircmd.service irexec.service"'
 		;;
 	esac
 }
