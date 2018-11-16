@@ -17,27 +17,42 @@ if test ${devnum} = 0; then
 	echo "Uboot loaded from eMMC.";
 	setenv boot_env_part ${emmc_boot_part};
 	setenv mark_prefix "boot/"
+	setenv rootdev "/dev/mmcblk1p7"
 else if test ${devnum} = 1; then
 	echo "Uboot loaded from SD.";
 	setenv boot_env_part ${sd_boot_part};
 	setenv mark_prefix ""
+	setenv rootdev "/dev/mmcblk0p2"
 fi;fi;
+
+# Import environment from env.txt
+if load ${devtype} ${devnum}:${boot_env_part} ${ramdisk_addr_r} /boot/env.txt || load ${devtype} ${devnum}:${boot_env_part} ${ramdisk_addr_r} env.txt; then
+	echo "Import env.txt";
+	env import -t ${ramdisk_addr_r} ${filesize}
+fi
+
+# Check MIPI
+if test "${mipi_lcd_enabled}" = "true"; then
+	setenv dtb_suffix "-mipi";
+else
+	setenv dtb_suffix "";
+fi
 
 if test -e mmc ${devnum}:${boot_env_part} ${mark_prefix}.next; then
 	if test ${board_type} = 1; then
 		setenv boot_dtb "rk3399-khadas-edge.dtb";
 	else if test ${board_type} = 2; then
-		setenv boot_dtb "rk3399-khadas-edgev.dtb";
+		setenv boot_dtb "rk3399-khadas-edgev${dtb_suffix}.dtb";
 	else if test ${board_type} = 3; then
-		setenv boot_dtb "rk3399-khadas-captain.dtb";
+		setenv boot_dtb "rk3399-khadas-captain${dtb_suffix}.dtb";
 	fi;fi;fi
 else
 	if test ${board_type} = 1; then
 		setenv boot_dtb "rk3399-khadas-edge-linux.dtb";
 	else if test ${board_type} = 2; then
-		setenv boot_dtb "rk3399-khadas-edgev-linux.dtb";
+		setenv boot_dtb "rk3399-khadas-edgev${dtb_suffix}-linux.dtb";
 	else if test ${board_type} = 3; then
-		setenv boot_dtb "rk3399-khadas-captain-linux.dtb";
+		setenv boot_dtb "rk3399-khadas-captain${dtb_suffix}-linux.dtb";
 	fi;fi;fi
 fi
 
@@ -65,12 +80,6 @@ fi
 
 setenv boot_start booti ${kernel_addr_r} ${ramdisk_addr_r} ${fdt_addr_r}
 
-# Import environment from env.txt
-if load ${devtype} ${devnum}:${boot_env_part} ${ramdisk_addr_r} /boot/env.txt || load ${devtype} ${devnum}:${boot_env_part} ${ramdisk_addr_r} env.txt; then
-	echo "Import env.txt";
-	env import -t ${ramdisk_addr_r} ${filesize}
-fi
-
 setenv bootargs "${bootargs} ${condev} rw root=${rootdev} rootfstype=ext4 init=/sbin/init rootwait board_type=${board_type} board_type_name=${board_type_name}"
 
 for distro_bootpart in ${devplist}; do
@@ -85,3 +94,6 @@ for distro_bootpart in ${devplist}; do
 	fi;
 
 done
+
+# Rebuilt
+# mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "rk3399 autoscript" -d /boot/rk3399_autoscript.cmd /boot/boot.scr

@@ -1,1 +1,1 @@
-bootdelay=1
+mipi_lcd_enabled=false
