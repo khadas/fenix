@@ -1,8 +1,15 @@
 echo "Run Khadas boot script"
 
+# Constant
+setenv BOARD_TYPE_NONE		0
+setenv BOARD_TYPE_EDGE		1
+setenv BOARD_TYPE_EDGE_V	2
+setenv BOARD_TYPE_CAPTAIN	3
+
+# Detect board type
 kbi boarddetect
 
-if test ${board_type} = 0; then
+if test ${board_type} = ${BOARD_TYPE_NONE}; then
 	echo "Unsupported board detected! Stop here. Reboot...";
 	sleep 5;
 	reset;
@@ -48,19 +55,19 @@ else
 fi
 
 if test -e mmc ${devnum}:${boot_env_part} ${mark_prefix}.next; then
-	if test ${board_type} = 1; then
+	if test ${board_type} = ${BOARD_TYPE_EDGE}; then
 		setenv boot_dtb "rk3399-khadas-edge.dtb";
-	else if test ${board_type} = 2; then
+	else if test ${board_type} = ${BOARD_TYPE_EDGE_V}; then
 		setenv boot_dtb "rk3399-khadas-edgev${dtb_suffix}.dtb";
-	else if test ${board_type} = 3; then
+	else if test ${board_type} = ${BOARD_TYPE_CAPTAIN}; then
 		setenv boot_dtb "rk3399-khadas-captain${dtb_suffix}.dtb";
 	fi;fi;fi
 else
-	if test ${board_type} = 1; then
+	if test ${board_type} = ${BOARD_TYPE_EDGE}; then
 		setenv boot_dtb "rk3399-khadas-edge-linux.dtb";
-	else if test ${board_type} = 2; then
+	else if test ${board_type} = ${BOARD_TYPE_EDGE_V}; then
 		setenv boot_dtb "rk3399-khadas-edgev${dtb_suffix}-linux.dtb";
-	else if test ${board_type} = 3; then
+	else if test ${board_type} = ${BOARD_TYPE_CAPTAIN}; then
 		setenv boot_dtb "rk3399-khadas-captain${dtb_suffix}-linux.dtb";
 	fi;fi;fi
 fi
