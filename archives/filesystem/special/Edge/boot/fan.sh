@@ -32,6 +32,12 @@ for m in $(cat /proc/cmdline); do
 	esac
 done
 
+if [ -z $mode ]; then
+	mode="auto"
+fi
+
+echo "FAN mode: $mode"
+
 if [ "$mode" == "auto" ]; then
 	TEMP=0
 	TEMP_NEW=0

@@ -1,1 +1,2 @@
 mipi_lcd_enabled=false
+fan_mode=auto

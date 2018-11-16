@@ -80,7 +80,7 @@ fi
 
 setenv boot_start booti ${kernel_addr_r} ${ramdisk_addr_r} ${fdt_addr_r}
 
-setenv bootargs "${bootargs} ${condev} rw root=${rootdev} rootfstype=ext4 init=/sbin/init rootwait board_type=${board_type} board_type_name=${board_type_name}"
+setenv bootargs "${bootargs} ${condev} rw root=${rootdev} rootfstype=ext4 init=/sbin/init rootwait board_type=${board_type} board_type_name=${board_type_name} fan=${fan_mode}"
 
 for distro_bootpart in ${devplist}; do
 	echo "Scanning ${devtype} ${devnum}:${distro_bootpart}..."
