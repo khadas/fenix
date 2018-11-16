@@ -16,19 +16,28 @@ setenv sd_boot_part   1
 if test ${devnum} = 0; then
 	echo "Uboot loaded from eMMC.";
 	setenv boot_env_part ${emmc_boot_part};
+	setenv root_part ${emmc_root_part}
 	setenv mark_prefix "boot/"
-	setenv rootdev "/dev/mmcblk1p7"
+	setenv default_rootdev "/dev/mmcblk1p${emmc_root_part}"
 else if test ${devnum} = 1; then
 	echo "Uboot loaded from SD.";
 	setenv boot_env_part ${sd_boot_part};
+	setenv root_part ${sd_root_part}
 	setenv mark_prefix ""
-	setenv rootdev "/dev/mmcblk0p2"
+	setenv default_rootdev "/dev/mmcblk0p${sd_root_part}"
 fi;fi;
 
 # Import environment from env.txt
 if load ${devtype} ${devnum}:${boot_env_part} ${ramdisk_addr_r} /boot/env.txt || load ${devtype} ${devnum}:${boot_env_part} ${ramdisk_addr_r} env.txt; then
 	echo "Import env.txt";
 	env import -t ${ramdisk_addr_r} ${filesize}
+fi
+
+# Check root part filesystem UUID
+fsuuid ${devtype} ${devnum}:${root_part} root_uuid
+if test "UUID=${root_uuid}" != "${rootdev}"; then
+	echo "Rootfs UUID mismatch! Set rootfs part to default: ${default_rootdev}"
+	setenv rootdev ${default_rootdev}
 fi
 
 # Check MIPI
