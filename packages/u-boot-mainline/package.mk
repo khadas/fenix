@@ -41,5 +41,18 @@ post_make_target() {
 }
 
 makeinstall_target() {
-	:
+	mkdir -p $BUILD_IMAGES/$PKG_NAME/$KHADAS_BOARD
+	rm -rf $BUILD_IMAGES/$PKG_NAME/$KHADAS_BOARD/*
+
+	cd $BUILD/$PKG_NAME-$PKG_VERSION
+
+	if [ "$VENDOR" == "Amlogic" ]; then
+		cp fip/u-boot.bin $BUILD_IMAGES/$PKG_NAME/$KHADAS_BOARD
+		cp fip/u-boot.bin.sd.bin $BUILD_IMAGES/$PKG_NAME/$KHADAS_BOARD
+	elif [ "$VENDOR" == "Rockchip" ]; then
+		cp idbloader.img $BUILD_IMAGES/$PKG_NAME/$KHADAS_BOARD
+		cp uboot.img $BUILD_IMAGES/$PKG_NAME/$KHADAS_BOARD
+		cp trust.img $BUILD_IMAGES/$PKG_NAME/$KHADAS_BOARD
+	fi
+
 }
