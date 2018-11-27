@@ -1,0 +1,24 @@
+From 6d2dd70975921addc7dde34b3c3ff53098ce9f03 Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Tue, 27 Nov 2018 17:15:23 +0800
+Subject: [PATCH] Edge: enable Realtek PHY
+
+---
+ configs/kedge-rk3399_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/configs/kedge-rk3399_defconfig b/configs/kedge-rk3399_defconfig
+index 6936a1b..e197c13 100644
+--- a/configs/kedge-rk3399_defconfig
++++ b/configs/kedge-rk3399_defconfig
+@@ -51,6 +51,7 @@ CONFIG_SYS_I2C_ROCKCHIP=y
+ CONFIG_MMC_DW=y
+ CONFIG_MMC_SDHCI=y
+ CONFIG_MMC_SDHCI_ROCKCHIP=y
++CONFIG_PHY_REALTEK=y
+ CONFIG_DM_ETH=y
+ CONFIG_ETH_DESIGNWARE=y
+ CONFIG_GMAC_ROCKCHIP=y
+-- 
+2.7.4
+
