@@ -528,14 +528,14 @@ index 0000000..757d675
 +&io_domains {
 +	status = "okay";
 +
-+	bt656-supply = <&vcc_3v0>;
++	bt656-supply = <&vcc1v8_apio2>;
 +	audio-supply = <&vcca1v8_codec>;
 +	sdmmc-supply = <&vccio_sd>;
 +	gpio1830-supply = <&vcc_3v0>;
 +};
 +
 +&pmu_io_domains {
-+	pmu1830-supply = <&vcc_3v0>;
++	pmu1830-supply = <&vcc_1v8>;
 +	status = "okay";
 +};
 +
