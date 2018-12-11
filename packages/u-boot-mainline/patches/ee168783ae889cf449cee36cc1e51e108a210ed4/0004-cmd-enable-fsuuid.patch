@@ -1,0 +1,32 @@
+From 3b70e931a75385e7da6d7571c558f4a9f0780ef0 Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Tue, 11 Dec 2018 17:19:36 +0800
+Subject: [PATCH] cmd: enable 'fsuuid'
+
+---
+ configs/kedge-rk3399_defconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configs/kedge-rk3399_defconfig b/configs/kedge-rk3399_defconfig
+index e197c13..b3e4331 100644
+--- a/configs/kedge-rk3399_defconfig
++++ b/configs/kedge-rk3399_defconfig
+@@ -33,6 +33,7 @@ CONFIG_CMD_SF=y
+ CONFIG_CMD_USB=y
+ # CONFIG_CMD_SETEXPR is not set
+ CONFIG_CMD_TIME=y
++CONFIG_CMD_FS_UUID=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_SPL_OF_CONTROL=y
+ CONFIG_DEFAULT_DEVICE_TREE="rk3399-kedge"
+@@ -74,7 +75,6 @@ CONFIG_USB_XHCI_HCD=y
+ CONFIG_USB_XHCI_DWC3=y
+ CONFIG_USB_EHCI_HCD=y
+ CONFIG_USB_EHCI_GENERIC=y
+-CONFIG_USB_STORAGE=y
+ CONFIG_USB_HOST_ETHER=y
+ CONFIG_USB_ETHER_ASIX=y
+ CONFIG_USB_ETHER_ASIX88179=y
+-- 
+2.7.4
+

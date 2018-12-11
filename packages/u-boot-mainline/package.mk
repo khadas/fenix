@@ -1,6 +1,6 @@
 PKG_NAME="u-boot-mainline"
-PKG_VERSION="99431c1c21685fe63d46b6eac995b78ce9adce0a"
-PKG_SHA256="7e57c948d3253816e4e4224dab6db4a13b1039da984d840f7b5a959dc40b97ee"
+PKG_VERSION="ee168783ae889cf449cee36cc1e51e108a210ed4" # 2019.01-rc1
+PKG_SHA256="e42a01fe79b0fb749d83fe00c9dc0d551b01c68adf3ab696b5475a02fdc1d2a8"
 PKG_SOURCE_DIR="u-boot-${PKG_VERSION}*"
 PKG_SITE="https://github.com/u-boot/u-boot"
 PKG_URL="https://github.com/u-boot/u-boot/archive/$PKG_VERSION.tar.gz"

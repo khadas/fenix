@@ -1,7 +1,7 @@
-From 6d2dd70975921addc7dde34b3c3ff53098ce9f03 Mon Sep 17 00:00:00 2001
+From c5b59c968a489acf7d0219d064564ed09cd024b0 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Tue, 27 Nov 2018 17:15:23 +0800
-Subject: [PATCH] Edge: enable Realtek PHY
+Subject: [PATCH 3/3] Edge: enable Realtek PHY
 
 ---
  configs/kedge-rk3399_defconfig | 1 +

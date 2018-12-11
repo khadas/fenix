@@ -1,4 +1,4 @@
-From 1f4192891de0a6ef25654a0ff15e262dc3edddc4 Mon Sep 17 00:00:00 2001
+From e1abd45ea3a61115152e158dc62e3d8d8bf7eda3 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Tue, 6 Nov 2018 09:33:05 +0800
 Subject: [PATCH 1/3] add basic support for Khadas Edge
@@ -760,27 +760,27 @@ index 0000000..8922171
 +};
 +
 diff --git a/arch/arm/mach-rockchip/rk3399/Kconfig b/arch/arm/mach-rockchip/rk3399/Kconfig
-index 415466a..ec48a66 100644
+index 8f18e33..33dbede 100644
 --- a/arch/arm/mach-rockchip/rk3399/Kconfig
 +++ b/arch/arm/mach-rockchip/rk3399/Kconfig
-@@ -28,6 +28,13 @@ config TARGET_PUMA_RK3399
- 	   * HDMI, eDP, MIPI-DSI, MIPI-DSI/CSI and MIPI-CSI
- 	   * SPI, I2C, I2S, UART, GPIO, ...
+@@ -53,6 +53,13 @@ config TARGET_ROCK960_RK3399
+ 	   * 2x USB 3.0 type A, 2x USB 2.0 type A (host mode only),
+ 	     1x USB 3.0 type C OTG
  
 +config TARGET_KEDGE_RK3399
-+	bool "Khadas Edge RK3399"
-+	help
-+	  Khadas Edge is a single board computer for Rockchp rk3399,
-+	  with full function and phisical connectors support like type-C ports,
-+	  usb2.0/3.0 host ports, MIPI, eDP, MAC, SDcard, HDMI, USB-2-serial...
++   bool "Khadas Edge RK3399"
++   help
++     Khadas Edge is a single board computer for Rockchp rk3399,
++     with full function and phisical connectors support like type-C ports,
++     usb2.0/3.0 host ports, MIPI, eDP, MAC, SDcard, HDMI, USB-2-serial...
 +
  endchoice
  
  config SYS_SOC
-@@ -38,5 +45,6 @@ config SYS_MALLOC_F_LEN
- 
+@@ -64,5 +71,6 @@ config SYS_MALLOC_F_LEN
  source "board/rockchip/evb_rk3399/Kconfig"
  source "board/theobroma-systems/puma_rk3399/Kconfig"
+ source "board/vamrs/rock960_rk3399/Kconfig"
 +source "board/rockchip/kedge_rk3399/Kconfig"
  
  endif
