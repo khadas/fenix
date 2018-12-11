@@ -85,6 +85,13 @@ install_common()
 
 	# Create watchdog log directory
 	mkdir -p $ROOTFS_TEMP/var/log/watchdog
+
+	# Prevent loading paralel printer port drivers
+	if [ -f $ROOTFS_TEMP/etc/modules-load.d/cups-filters.conf ]; then
+		sed "s/^lp/#lp/" -i $ROOTFS_TEMP/etc/modules-load.d/cups-filters.conf
+		sed "s/^ppdev/#ppdev/" -i $ROOTFS_TEMP/etc/modules-load.d/cups-filters.conf
+		sed "s/^parport_pc/#parport_pc/" -i $ROOTFS_TEMP/etc/modules-load.d/cups-filters.conf
+	fi
 }
 
 install_distribution_specific()
