@@ -25,13 +25,21 @@ if test ${devnum} = 0; then
 	setenv boot_env_part ${emmc_boot_part};
 	setenv root_part ${emmc_root_part}
 	setenv mark_prefix "boot/"
-	setenv default_rootdev "/dev/mmcblk1p${emmc_root_part}"
+	if test -e mmc ${devnum}:${boot_env_part} ${mark_prefix}.next; then
+		setenv default_rootdev "/dev/mmcblk2p${emmc_root_part}"
+	else
+		setenv default_rootdev "/dev/mmcblk1p${emmc_root_part}"
+	fi
 else if test ${devnum} = 1; then
 	echo "Uboot loaded from SD.";
 	setenv boot_env_part ${sd_boot_part};
 	setenv root_part ${sd_root_part}
 	setenv mark_prefix ""
-	setenv default_rootdev "/dev/mmcblk0p${sd_root_part}"
+	if test -e mmc ${devnum}:${boot_env_part} ${mark_prefix}.next; then
+		setenv default_rootdev "/dev/mmcblk1p${sd_root_part}"
+	else
+		setenv default_rootdev "/dev/mmcblk0p${sd_root_part}"
+	fi
 fi;fi;
 
 # Import environment from env.txt
