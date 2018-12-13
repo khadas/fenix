@@ -92,6 +92,9 @@ install_common()
 		sed "s/^ppdev/#ppdev/" -i $ROOTFS_TEMP/etc/modules-load.d/cups-filters.conf
 		sed "s/^parport_pc/#parport_pc/" -i $ROOTFS_TEMP/etc/modules-load.d/cups-filters.conf
 	fi
+
+	# remove legal info from Ubuntu
+	[[ -f $ROOTFS_TEMP/etc/legal ]] && rm $ROOTFS_TEMP/etc/legal
 }
 
 install_distribution_specific()
@@ -100,9 +103,6 @@ install_distribution_specific()
 
 	case $DISTRIB_RELEASE in
 	xenial)
-		# remove legal info from Ubuntu
-		[[ -f $ROOTFS_TEMP/etc/legal ]] && rm $ROOTFS_TEMP/etc/legal
-
 		# disable not working on unneeded services
 		# ureadahead needs kernel tracing options that AFAIK are present only in mainline
 		chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload mask ondemand.service ureadahead.service setserial.service etc-setserial.service"
