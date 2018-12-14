@@ -34,6 +34,18 @@ VENDOR=
 CHIP=
 
 ###############################################################
+if [ "$1" == "expert" ]; then
+	echo -e -n "\e[33mWarning:\e[0m You choose expert options mode, please make sure you know what you are doing. Switching to Expert mode? [N/y] "
+	read result
+	if [ "$result" == "y" -o "$result" == "Y" ]; then
+		echo -e "\e[33mWarning:\e[0m Switching to Expert mode!"
+		EXPERT="yes"
+	else
+		echo -e "\e[33mWarning:\e[0m Switching to Normal mode!"
+		EXPERT=""
+	fi
+fi
+
 ## Hangup
 hangup() {
 	while true; do
@@ -423,6 +435,14 @@ function choose_distribution_type() {
 
 ## Choose distribution arch
 function choose_distribution_architecture() {
+
+	if [ "$EXPERT" != "yes" ]; then
+		echo ""
+		echo "Set architecture to 'arm64' by default."
+		DISTRIB_ARCH="arm64"
+		return
+	fi
+
 	echo ""
 	echo "Choose ${DISTRIBUTION} architecture:"
 	i=0
