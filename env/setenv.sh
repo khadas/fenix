@@ -440,6 +440,7 @@ function choose_distribution_architecture() {
 		echo ""
 		echo "Set architecture to 'arm64' by default."
 		DISTRIB_ARCH="arm64"
+		export DISTRIB_ARCH
 		return
 	fi
 
