@@ -145,7 +145,7 @@ PACKAGE_LIST_GSTREAMER="gstreamer1.0-libav gstreamer1.0-plugins-bad gstreamer1.0
 
 PACKAGE_LIST_QT="libqt5opengl5 libqt5qml5 libqt5quick5 libqt5widgets5 libqt5gui5 libqt5core5a qml-module-qtquick2 \
 	libqt5multimedia5 libqt5multimedia5-plugins libqt5multimediaquick-p5 qml-module-qt-labs-folderlistmodel qml-module-qtmultimedia \
-	libqgsttools-p1 libqt5multimediawidgets5 qtbase5-dev"
+	libqgsttools-p1 libqt5multimediawidgets5 qtbase5-dev libglib2.0-dev libpulse-dev"
 
 PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_XSERVER"
 
@@ -185,7 +185,7 @@ case $DISTRIB_RELEASE in
 	bionic)
 	PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr nano wget"
 	PACKAGE_LIST_KODI="libglu1-mesa libglu1 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libcurl4 libcrossguid0 libmariadbclient18 libmicrohttpd12"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_GSTREAMER"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_QT"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_KODI chromium-browser xserver-xorg-input-all dbus-x11 profile-sync-daemon"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP system-config-printer system-config-printer-gnome language-selector-gnome"
 	;;

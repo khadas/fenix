@@ -99,10 +99,20 @@ build_desktop_deb() {
 			$pkgdir/etc/fenix/chromium.conf
 	fi
 
-	# install default desktop settings
+	# Install default desktop settings
 	if [ -d $ROOT/archives/filesystem/blobs/desktop/${DISTRIB_TYPE} ]; then
 		mkdir -p $pkgdir/etc/skel
 		cp -R $ROOT/archives/filesystem/blobs/desktop/${DISTRIB_TYPE}/skel/. $pkgdir/etc/skel
+	fi
+
+	# Install icons
+	mkdir -p $pkgdir/etc/fenix/icons
+	cp $ROOT/archives/filesystem/blobs/desktop/icons/* $pkgdir/etc/fenix/icons
+
+	if [ "$VENDOR" != "Rockchip" ]; then
+		# Remove QT5 player for other platform
+		rm -f $pkgdir/etc/skel/.local/share/applications/qt5.desktop
+		rm -f $pkgdir/usr/local/bin/qt5_player
 	fi
 
 	# Create desktop deb file

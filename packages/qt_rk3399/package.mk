@@ -1,6 +1,6 @@
 PKG_NAME="qt_rk3399"
-PKG_VERSION="4db602fc9050f5c7a2c93c35dc6d9c26fff0ffff"
-PKG_SHA256="9ec5cc0d2a1d6cf46fcc42e49ea0292a27a3537ad14afbd3308dddfeab52eff1"
+PKG_VERSION="6185ba6c4190e6d07e74b28044134c2cb21d688a"
+PKG_SHA256="78cb2768494035651054dc6e8c9cfbbe2b631fd767f21118fb9917062d0e2e30"
 PKG_SOURCE_DIR="qt_rk3399-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/qt_rk3399"
 PKG_URL="https://github.com/numbqq/qt_rk3399/archive/$PKG_VERSION.tar.gz"
