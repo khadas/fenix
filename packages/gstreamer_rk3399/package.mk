@@ -1,6 +1,6 @@
 PKG_NAME="gstreamer_rk3399"
-PKG_VERSION="ee9ee0dd5e35294f244c8d4608a6bd75d1b8bb01"
-PKG_SHA256="30f04fa3221d7227536480fc7a2c5f69933939880a11d7d10308fbad66afd937"
+PKG_VERSION="9a88826769a9f29fe142faeb999cb26695b51661"
+PKG_SHA256="c7327dd90ed8858d560acb24295f30e383e3b6d3bf7009939acfb79c998a512d"
 PKG_SOURCE_DIR="gstreamer_rk3399-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/gstreamer_rk3399"
 PKG_URL="https://github.com/numbqq/gstreamer_rk3399/archive/$PKG_VERSION.tar.gz"
