@@ -50,6 +50,7 @@ build_board_deb() {
 		bootfstype=\$(blkid -s TYPE -o value \$boot_partition)
 		if [ "\$bootfstype" = "vfat" ]; then
 			rm -rf /boot/aml_boot.ini
+			rm -rf /boot/boot.ini
 			rm -rf /boot/fan.sh
 			rm -rf /boot/s905_autoscript
 			rm -rf /boot/aml_autoscript
@@ -143,13 +144,23 @@ build_board_deb() {
 		mkdir -p $pkgdir/boot
 		cp $BOOT_SCRIPTS/$BOOT_SCRIPT_VENDOR $pkgdir/boot
 		cp $BOOT_SCRIPTS/$BOOT_SCRIPT_BOARD $pkgdir/boot
-		cp $BOOT_SCRIPTS/$BOOT_INI $pkgdir/boot
 
 		$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$CHIP autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_BOARD $pkgdir/boot/${BOOT_SCRIPT_BOARD%.cmd*}
 		$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$VENDOR autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_VENDOR $pkgdir/boot/${BOOT_SCRIPT_VENDOR%.txt}
 		cd $pkgdir/boot
 		zip ${BOOT_SCRIPT_VENDOR%.txt}.zip ${BOOT_SCRIPT_VENDOR%.txt} ${BOOT_SCRIPT_VENDOR}
 		cd -
+	fi
+
+	# Copy boot.ini
+	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
+		if [ -f $BOOT_SCRIPTS/$BOOT_INI_SD ]; then
+			cp $BOOT_SCRIPTS/$BOOT_INI_SD $pkgdir/boot/boot.ini
+		fi
+	elif [ "$INSTALL_TYPE" == "EMMC" ]; then
+		if [ -f $BOOT_SCRIPTS/$BOOT_INI_EMMC ]; then
+			cp $BOOT_SCRIPTS/$BOOT_INI_EMMC $pkgdir/boot/boot.ini
+		fi
 	fi
 
 	# Copy boot script for Rockchip platform
