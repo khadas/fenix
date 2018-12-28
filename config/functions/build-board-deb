@@ -55,6 +55,7 @@ build_board_deb() {
 			rm -rf /boot/s905_autoscript
 			rm -rf /boot/aml_autoscript
 			rm -rf /boot/aml_autoscript.zip
+			rm -rf /boot/s905_autoscript.cmd
 			rm -rf /boot/s905_autoscript.cmd.mainline
 			rm -rf /boot/hdmi.sh
 			rm -rf /boot/aml_autoscript.txt
