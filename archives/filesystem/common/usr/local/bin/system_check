@@ -10,6 +10,12 @@ for arg in $(cat /proc/cmdline); do
 		board_type_name=*)
 			board_type_name="${arg#*=}"
 			;;
+		save_ethmac=*)
+			save_ethmac="${arg#*=}"
+			;;
+		mac=*)
+			ethmac="${arg#*=}"
+			;;
 	esac
 done
 
@@ -24,6 +30,22 @@ fi
 if [[ -n $board_type_name && $BOARD != $board_type_name ]]; then
 	echo "update fenix-release..."
 	sed -i "s/BOARD=.*/BOARD=$board_type_name/" /etc/fenix-release
+fi
+
+# Save default mac address
+if [ "$save_ethmac" == "yes" ]; then
+	if grep custom_ethmac -q /boot/env.txt; then
+		custom_ethmac=$(cat /boot/env.txt | grep custom_ethmac | awk -F "=" '{print $2}')
+		if [ "$ethmac" != "$custom_ethmac" -a "X$ethmac" != "X" ]; then
+			sed -i "s/custom_ethmac=.*/custom_ethmac=$ethmac/" /boot/env.txt
+		fi
+	else
+		echo "custom_ethmac=$ethmac" >> /boot/env.txt
+	fi
+
+	fw_setenv save_ethmac "no"
+	fw_setenv ethaddr $ethmac
+	sync
 fi
 
 exit 0

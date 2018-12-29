@@ -40,6 +40,11 @@ for dev_num in ${mmc_devnums}; do
 						echo "Found custom ethmac: ${custom_ethmac}, overwrite eth_mac!";
 						setenv eth_mac ${custom_ethmac};
 					fi;
+					if test "X${eth_mac}" = "X"; then
+						echo "Set default mac address to ethaddr: ${ethaddr}!";
+						setenv eth_mac ${ethaddr};
+						setenv save_ethmac "yes";
+					fi;
 					if test -e mmc ${dev_num}:${boot_env_part} ${mark_prefix}.next; then
 						echo "Booting mainline kernel...";
 						setenv condev "console=ttyAML0,115200n8 console=tty0 no_console_suspend consoleblank=0";
@@ -47,7 +52,7 @@ for dev_num in ${mmc_devnums}; do
 						echo "Booting legacy kernel...";
 						setenv condev "console=ttyS0,115200n8 console=tty0 no_console_suspend consoleblank=0";
 					fi;
-					setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac}";
+					setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac}";
 					run boot_start;
 				fi;
 			fi;
@@ -72,6 +77,11 @@ for dev_num in ${usb_devnums}; do
 					if test "X${custom_ethmac}" != "X"; then
 						echo "Found custom ethmac: ${custom_ethmac}, overwrite eth_mac!"; setenv eth_mac ${custom_ethmac};
 					fi;
+					if test "X${eth_mac}" = "X"; then
+						echo "Set default mac address to ethaddr: ${ethaddr}!";
+						setenv eth_mac ${ethaddr};
+						setenv save_ethmac "yes";
+					fi;
 					if test -e usb ${dev_num}:${distro_bootpart} ${mark_prefix}.next; then
 						echo "Booting mainline kernel...";
 						setenv condev "console=ttyAML0,115200n8 console=tty0 no_console_suspend consoleblank=0";
@@ -79,7 +89,7 @@ for dev_num in ${usb_devnums}; do
 						echo "Booting legacy kernel...";
 						setenv condev "console=ttyS0,115200n8 console=tty0 no_console_suspend consoleblank=0";
 					fi;
-					setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable} jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac}";
+					setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable} jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac}";
 					run boot_start;
 				fi;
 			fi;
