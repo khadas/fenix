@@ -132,13 +132,13 @@ build_board_deb() {
 	# Fixup rc.local permission
 	chmod 755 $pkgdir/etc/rc.local
 
-	# Copy extlinux configuration file
-	if [ "$VENDOR" != "Rockchip" ]; then
-		if [ -f $BOOT_SCRIPTS/extlinux/${KHADAS_BOARD}-${LINUX}.conf ]; then
-			mkdir -p $pkgdir/boot/extlinux
-			cp $BOOT_SCRIPTS/extlinux/${KHADAS_BOARD}-${LINUX}.conf $pkgdir/boot/extlinux/extlinux.conf
-		fi
-	fi
+#	# Copy extlinux configuration file
+#	if [ "$VENDOR" != "Rockchip" ]; then
+#		if [ -f $BOOT_SCRIPTS/extlinux/${KHADAS_BOARD}-${LINUX}.conf ]; then
+#			mkdir -p $pkgdir/boot/extlinux
+#			cp $BOOT_SCRIPTS/extlinux/${KHADAS_BOARD}-${LINUX}.conf $pkgdir/boot/extlinux/extlinux.conf
+#		fi
+#	fi
 
 	# Copy boot scripts
 	if [ "$INSTALL_TYPE" == "SD-USB" ] && [ "$VENDOR" != "Rockchip" ]; then
