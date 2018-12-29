@@ -1,25 +1,92 @@
+echo "Starting S905 autoscript..."
+
 setenv kernel_loadaddr "0x11000000"
+setenv dtb_loadaddr "0x1000000"
 setenv initrd_loadaddr "0x13000000"
-setenv condev "console=ttyS0,115200n8 console=tty0 no_console_suspend consoleblank=0"
+setenv env_loadaddr "0x20000000"
+
 setenv hdmiargs "logo=osd1,loaded,0x3d800000,${hdmimode} vout=${hdmimode},enable"
-setenv bootargs "root=LABEL=ROOTFS rootflags=data=writeback rw ${condev} ${hdmiargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable} jtag=disable"
-setenv boot_start booti ${kernel_loadaddr} ${initrd_loadaddr} ${dtb_mem_addr}
 
+setenv mmc_devplist "1"
+setenv mmc_devnums "0 1"
+setenv usb_devplist "1"
+setenv usb_devnums "0 1 2 3"
 
-## Import environment from env.txt
-if fatload usb 0 ${kernel_loadaddr} /boot/env.txt || fatload usb 0 ${kernel_loadaddr} env.txt; then echo "Import env.txt"; env import -t ${kernel_loadaddr} ${filesize}; fi
-if fatload usb 1 ${kernel_loadaddr} /boot/env.txt || fatload usb 1 ${kernel_loadaddr} env.txt; then echo "Import env.txt"; env import -t ${kernel_loadaddr} ${filesize}; fi
-if fatload usb 2 ${kernel_loadaddr} /boot/env.txt || fatload usb 2 ${kernel_loadaddr} env.txt; then echo "Import env.txt"; env import -t ${kernel_loadaddr} ${filesize}; fi
-if fatload usb 3 ${kernel_loadaddr} /boot/env.txt || fatload usb 3 ${kernel_loadaddr} env.txt; then echo "Import env.txt"; env import -t ${kernel_loadaddr} ${filesize}; fi
-if fatload mmc 0 ${kernel_loadaddr} /boot/env.txt || fatload mmc 0 ${kernel_loadaddr} env.txt; then echo "Import env.txt"; env import -t ${kernel_loadaddr} ${filesize}; fi
+setenv mark_prefix ""
 
-### Check custom ethernet mac address
-if test "X${custom_ethmac}" != "X"; then echo "Found custom ethmac: ${custom_ethmac}, overwrite eth_mac!"; setenv eth_mac ${custom_ethmac}; fi
-setenv bootargs ${bootargs} mac=${eth_mac} androidboot.mac=${eth_mac}
+setenv boot_start booti ${kernel_loadaddr} ${initrd_loadaddr} ${dtb_loadaddr}
 
-## Boot
-if fatload usb 0 ${initrd_loadaddr} uInitrd; then if fatload usb 0 ${kernel_loadaddr} zImage; then if fatload usb 0 ${dtb_mem_addr} dtb.img; then run boot_start; else store dtb read ${dtb_mem_addr}; run boot_start;fi;fi;fi;
-if fatload usb 1 ${initrd_loadaddr} uInitrd; then if fatload usb 1 ${kernel_loadaddr} zImage; then if fatload usb 1 ${dtb_mem_addr} dtb.img; then run boot_start; else store dtb read ${dtb_mem_addr}; run boot_start;fi;fi;fi;
-if fatload usb 2 ${initrd_loadaddr} uInitrd; then if fatload usb 2 ${kernel_loadaddr} zImage; then if fatload usb 2 ${dtb_mem_addr} dtb.img; then run boot_start; else store dtb read ${dtb_mem_addr}; run boot_start;fi;fi;fi;
-if fatload usb 3 ${initrd_loadaddr} uInitrd; then if fatload usb 3 ${kernel_loadaddr} zImage; then if fatload usb 3 ${dtb_mem_addr} dtb.img; then run boot_start; else store dtb read ${dtb_mem_addr}; run boot_start;fi;fi;fi;
-if fatload mmc 0 ${initrd_loadaddr} uInitrd; then if fatload mmc 0 ${kernel_loadaddr} zImage; then if fatload mmc 0 ${dtb_mem_addr} dtb.img; then run boot_start; else store dtb read ${dtb_mem_addr}; run boot_start;fi;fi;fi;
+if test "$hostname" = "KVIM1"; then
+	setenv ml_dtb "/dtb/amlogic/meson-gxl-s905x-khadas-vim.dtb";
+else if test "$hostname" = "KVIM2"; then
+	setenv ml_dtb "/dtb/amlogic/meson-gxm-khadas-vim2.dtb";
+fi;fi;
+
+## First, boot from mmc
+for dev_num in ${mmc_devnums}; do
+	for distro_bootpart in ${mmc_devplist}; do
+		echo "Scanning mmc ${dev_num}:${distro_bootpart}...";
+		if fatload mmc ${dev_num}:${distro_bootpart} ${initrd_loadaddr} uInitrd; then
+			if fatload mmc ${dev_num}:${distro_bootpart} ${kernel_loadaddr} zImage; then
+				if fatload mmc ${dev_num}:${distro_bootpart} ${dtb_loadaddr} dtb.img || fatload mmc ${dev_num}:${distro_bootpart} ${dtb_loadaddr} ${ml_dtb}; then
+					if fatload mmc ${dev_num}:${distro_bootpart} ${env_loadaddr} /boot/env.txt || fatload mmc ${dev_num}:${distro_bootpart} ${env_loadaddr} env.txt; then
+						echo "Import env.txt"; env import -t ${env_loadaddr} ${filesize};
+					fi;
+					if test "X${rootdev}" = "X"; then
+						echo "rootdev is missing! use default: root=LABEL=ROOTFS!";
+						setenv rootdev "LABEL=ROOTFS";
+					fi;
+					if test "X${custom_ethmac}" != "X"; then
+						echo "Found custom ethmac: ${custom_ethmac}, overwrite eth_mac!";
+						setenv eth_mac ${custom_ethmac};
+					fi;
+					if test -e mmc ${dev_num}:${boot_env_part} ${mark_prefix}.next; then
+						echo "Booting mainline kernel...";
+						setenv condev "console=ttyAML0,115200n8 console=tty0 no_console_suspend consoleblank=0";
+					else
+						echo "Booting legacy kernel...";
+						setenv condev "console=ttyS0,115200n8 console=tty0 no_console_suspend consoleblank=0";
+					fi;
+					setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac}";
+					run boot_start;
+				fi;
+			fi;
+		fi;
+	done;
+done
+
+## Second, boot from USB storage
+for dev_num in ${usb_devnums}; do
+	for distro_bootpart in ${usb_devplist}; do
+		echo "Scanning usb ${dev_num}:${distro_bootpart}...";
+		if fatload usb ${dev_num}:${distro_bootpart} ${initrd_loadaddr} uInitrd; then
+			if fatload usb ${dev_num}:${distro_bootpart} ${kernel_loadaddr} zImage; then
+				if fatload usb ${dev_num}:${distro_bootpart} ${dtb_loadaddr} dtb.img || fatload usb ${dev_num}:${distro_bootpart} ${dtb_loadaddr} ${ml_dtb}; then
+					if fatload usb ${dev_num}:${distro_bootpart} ${env_loadaddr} /boot/env.txt || fatload usb ${dev_num}:${distro_bootpart} ${env_loadaddr} env.txt; then
+						echo "Import env.txt"; env import -t ${env_loadaddr} ${filesize};
+					fi;
+					if test "X${rootdev}" = "X"; then
+						echo "rootdev is missing! use default: root=LABEL=ROOTFS!";
+						setenv rootdev "LABEL=ROOTFS";
+					fi;
+					if test "X${custom_ethmac}" != "X"; then
+						echo "Found custom ethmac: ${custom_ethmac}, overwrite eth_mac!"; setenv eth_mac ${custom_ethmac};
+					fi;
+					if test -e usb ${dev_num}:${distro_bootpart} ${mark_prefix}.next; then
+						echo "Booting mainline kernel...";
+						setenv condev "console=ttyAML0,115200n8 console=tty0 no_console_suspend consoleblank=0";
+					else
+						echo "Booting legacy kernel...";
+						setenv condev "console=ttyS0,115200n8 console=tty0 no_console_suspend consoleblank=0";
+					fi;
+					setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable} jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac}";
+					run boot_start;
+				fi;
+			fi;
+		fi;
+	done;
+done
+
+# Rebuilt
+# mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S905 autoscript" -d /boot/s905_autoscript.cmd /boot/s905_autoscript
+# mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "S905 autoscript" -d /boot/s905_autoscript.cmd /boot/boot.scr
