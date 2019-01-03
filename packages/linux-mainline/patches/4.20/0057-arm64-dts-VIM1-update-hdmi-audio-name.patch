@@ -1,0 +1,34 @@
+From 059ea964d97df11847793820f70ba40965839fe8 Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Mon, 29 Oct 2018 22:53:18 +0800
+Subject: [PATCH 57/62] arm64: dts: VIM1: update hdmi audio name
+
+---
+ arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
+index 25eb785..2a6f308 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
+@@ -68,7 +68,7 @@
+ 
+ 	sound {
+ 		compatible = "simple-audio-card";
+-		simple-audio-card,name = "meson-gx-audio";
++		simple-audio-card,name = "HDMI";
+ 
+ 		assigned-clocks = <&clkc CLKID_MPLL2>,
+ 				  <&clkc CLKID_MPLL0>,
+@@ -81,7 +81,7 @@
+ 		simple-audio-card,dai-link@0 {
+ 			/* HDMI Output */
+ 			format = "i2s";
+-			mclk-fs = <256>;
++			mclk-fs = <128>;
+ 			bitclock-master = <&i2s_dai>;
+ 			frame-master = <&i2s_dai>;
+ 
+-- 
+1.9.1
+

@@ -1,0 +1,38 @@
+From c67d98c842fa5eb462ef7ab9a9cdd7e3f648efd7 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Wed, 20 Sep 2017 18:01:26 +0200
+Subject: [PATCH 11/62] ARM64: dts: meson-gx: add sound-dai-cells to HDMI node
+
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi | 1 +
+ arch/arm64/boot/dts/amlogic/meson-gxl.dtsi  | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi
+index d971c20..f82aa23 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi
+@@ -305,6 +305,7 @@
+ 		 <&clkc CLKID_CLK81>,
+ 		 <&clkc CLKID_GCLK_VENCI_INT0>;
+ 	clock-names = "isfr", "iahb", "venci";
++	#sound-dai-cells = <0>; 
+ };
+ 
+ &sysctrl {
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
+index 11069ef..44ca89b 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
+@@ -257,6 +257,7 @@
+ 		 <&clkc CLKID_CLK81>,
+ 		 <&clkc CLKID_GCLK_VENCI_INT0>;
+ 	clock-names = "isfr", "iahb", "venci";
++	#sound-dai-cells = <0>;
+ };
+ 
+ &sysctrl {
+-- 
+1.9.1
+

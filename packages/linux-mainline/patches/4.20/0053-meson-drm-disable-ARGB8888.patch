@@ -1,0 +1,37 @@
+From c6e6897d19e1116d33ede7dc49d6425af84c5b05 Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Thu, 4 Jan 2018 19:52:37 +0800
+Subject: [PATCH 53/62] meson drm disable ARGB8888
+
+---
+ drivers/gpu/drm/meson/meson_plane.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
+
+diff --git a/drivers/gpu/drm/meson/meson_plane.c b/drivers/gpu/drm/meson/meson_plane.c
+index 8372288..fc7da38 100644
+--- a/drivers/gpu/drm/meson/meson_plane.c
++++ b/drivers/gpu/drm/meson/meson_plane.c
+@@ -162,19 +162,13 @@ static void meson_plane_atomic_update(struct drm_plane *plane,
+ 
+ 	switch (fb->format->format) {
+ 	case DRM_FORMAT_XRGB8888:
++	case DRM_FORMAT_ARGB8888:
+ 		/* For XRGB, replace the pixel's alpha by 0xFF */
+ 		writel_bits_relaxed(OSD_REPLACE_EN, OSD_REPLACE_EN,
+ 				    priv->io_base + _REG(VIU_OSD1_CTRL_STAT2));
+ 		priv->viu.osd1_blk0_cfg[0] |= OSD_BLK_MODE_32 |
+ 					      OSD_COLOR_MATRIX_32_ARGB;
+ 		break;
+-	case DRM_FORMAT_ARGB8888:
+-		/* For ARGB, use the pixel's alpha */
+-		writel_bits_relaxed(OSD_REPLACE_EN, 0,
+-				    priv->io_base + _REG(VIU_OSD1_CTRL_STAT2));
+-		priv->viu.osd1_blk0_cfg[0] |= OSD_BLK_MODE_32 |
+-					      OSD_COLOR_MATRIX_32_ARGB;
+-		break;
+ 	case DRM_FORMAT_RGB888:
+ 		priv->viu.osd1_blk0_cfg[0] |= OSD_BLK_MODE_24 |
+ 					      OSD_COLOR_MATRIX_24_RGB;
+-- 
+1.9.1
+

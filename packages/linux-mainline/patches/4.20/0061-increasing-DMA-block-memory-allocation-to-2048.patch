@@ -1,0 +1,39 @@
+From 7ba89b8763f6619390e40775f5e18ee96320abfa Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Thu, 15 Nov 2018 23:50:34 +0800
+Subject: [PATCH 61/62] increasing DMA block memory allocation to 2048
+
+---
+ arch/arm/mm/dma-mapping.c   | 2 +-
+ arch/arm64/mm/dma-mapping.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
+index 78de138..6c68b19 100644
+--- a/arch/arm/mm/dma-mapping.c
++++ b/arch/arm/mm/dma-mapping.c
+@@ -380,7 +380,7 @@ static void __dma_free_remap(void *cpu_addr, size_t size)
+ 			VM_ARM_DMA_CONSISTENT | VM_USERMAP);
+ }
+ 
+-#define DEFAULT_DMA_COHERENT_POOL_SIZE	SZ_256K
++#define DEFAULT_DMA_COHERENT_POOL_SIZE	SZ_2M
+ static struct gen_pool *atomic_pool __ro_after_init;
+ 
+ static size_t atomic_pool_size __initdata = DEFAULT_DMA_COHERENT_POOL_SIZE;
+diff --git a/arch/arm64/mm/dma-mapping.c b/arch/arm64/mm/dma-mapping.c
+index a537044..0ba9875 100644
+--- a/arch/arm64/mm/dma-mapping.c
++++ b/arch/arm64/mm/dma-mapping.c
+@@ -35,7 +35,7 @@
+ 
+ static struct gen_pool *atomic_pool __ro_after_init;
+ 
+-#define DEFAULT_DMA_COHERENT_POOL_SIZE  SZ_256K
++#define DEFAULT_DMA_COHERENT_POOL_SIZE  SZ_2M
+ static size_t atomic_pool_size __initdata = DEFAULT_DMA_COHERENT_POOL_SIZE;
+ 
+ static int __init early_coherent_pool(char *p)
+-- 
+1.9.1
+

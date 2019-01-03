@@ -1,0 +1,48 @@
+From 52573c5672540902e70a0e583effc6e966285c54 Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Mon, 29 Oct 2018 22:54:34 +0800
+Subject: [PATCH 59/62] arm64: dts: VIM2: update emmc speed
+
+---
+ arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+index e1a7446..8856f9a 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+@@ -374,6 +374,7 @@
+ &sd_emmc_a {
+ 	status = "okay";
+ 	pinctrl-0 = <&sdio_pins>;
++	pinctrl-1 = <&sdio_clk_gate_pins>;
+ 	pinctrl-names = "default";
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
+@@ -399,6 +400,7 @@
+ &sd_emmc_b {
+ 	status = "okay";
+ 	pinctrl-0 = <&sdcard_pins>;
++	pinctrl-1 = <&sdcard_clk_gate_pins>;
+ 	pinctrl-names = "default";
+ 
+ 	bus-width = <4>;
+@@ -417,6 +419,7 @@
+ &sd_emmc_c {
+ 	status = "okay";
+ 	pinctrl-0 = <&emmc_pins>, <&emmc_ds_pins>;
++	pinctrl-1 = <&emmc_clk_gate_pins>;
+ 	pinctrl-names = "default";
+ 
+ 	bus-width = <8>;
+@@ -427,7 +430,6 @@
+ 	disable-wp;
+ 	mmc-ddr-1_8v;
+ 	mmc-hs200-1_8v;
+-	mmc-hs400-1_8v;
+ 
+ 	mmc-pwrseq = <&emmc_pwrseq>;
+ 	vmmc-supply = <&vcc_3v3>;
+-- 
+1.9.1
+
