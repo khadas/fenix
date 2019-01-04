@@ -52,6 +52,18 @@ build_debs() {
 	# Build linux debs
 	if [[ ! -f $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb ]]; then
 		build_linux_debs
+	else
+		# Debs exist, but kernel version changed
+		LINUX_DEB_VER=$(dpkg --info $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb | grep Descr | awk '{print $(NF)}')
+		if [ "$LINUX" == "mainline" ]; then
+			LINUX_VER=$(cat ${BUILD}/linux-mainline-*/.config | grep "Linux/arm64" | awk '{print $3}')
+		else
+			LINUX_VER=$(cat ${ROOT}/linux/.config | grep "Linux/arm64" | awk '{print $3}')
+		fi
+
+		if [ "$LINUX_DEB_VER" != "$LINUX_VER" ]; then
+			build_linux_debs
+		fi
 	fi
 
 	# Build GPU deb
