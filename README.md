@@ -6,9 +6,9 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/khadas/fenix/pulls)
 
 Supported build host:
-* `Ubuntu Xenial 16.04 x64` - Recommend & Fully tested.
-* `Ubuntu Bionic 18.04 x64` - Need to be tested.
-* `Docker` - Recommend.
+* `Ubuntu Xenial 16.04 x64`
+* `Ubuntu Bionic 18.04 x64`
+* `Docker`
 
 ## How to use?
 - Install essential packages
