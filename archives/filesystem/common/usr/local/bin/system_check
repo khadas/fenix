@@ -16,6 +16,9 @@ for arg in $(cat /proc/cmdline); do
 		mac=*)
 			ethmac="${arg#*=}"
 			;;
+		vim2.hwver=*)
+			hwver="${arg#*=}"
+			;;
 	esac
 done
 
@@ -46,6 +49,23 @@ if [ "$save_ethmac" == "yes" ]; then
 	fw_setenv save_ethmac "no"
 	fw_setenv ethaddr $ethmac
 	sync
+fi
+
+# Update Wi-Fi/BT firmware for VIM2 V13 AP6398S
+if [ "$hwver" == "VIM2.V13" ]; then
+	if [ ! -f /etc/.wifi-fixed ]; then
+		echo "Update VIM2.V13 Wi-Fi/BT firmware..."
+		## Wi-Fi firmware
+		cp /lib/firmware/brcm/fw_bcm4359c0_ag_apsta_ap6398s.bin /lib/firmware/brcm/fw_bcm4359c0_ag_apsta.bin
+		cp /lib/firmware/brcm/fw_bcm4359c0_ag_ap6398s.bin /lib/firmware/brcm/fw_bcm4359c0_ag.bin
+		cp /lib/firmware/brcm/nvram_ap6398s.txt /lib/firmware/brcm/nvram_ap6359sa.txt
+
+		## Bluetooth firmware
+		cp /lib/firmware/brcm/BCM4359C0_ap6398s.hcd /lib/firmware/brcm/BCM4359C0.hcd
+
+		touch /etc/.wifi-fixed
+	fi
+
 fi
 
 exit 0
