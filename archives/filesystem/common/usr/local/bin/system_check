@@ -16,7 +16,7 @@ for arg in $(cat /proc/cmdline); do
 		mac=*)
 			ethmac="${arg#*=}"
 			;;
-		vim2.hwver=*)
+		hwver=*)
 			hwver="${arg#*=}"
 			;;
 	esac
