@@ -32,7 +32,7 @@ UPGRADE_DIR="$BUILD/images_upgrade-[0-9a-f]*"
 
 ##################################### Configurations ##################################
 FENIX_BRANCH="master"
-ROOTFSCACHE_VERSION=2
+ROOTFSCACHE_VERSION=3
 IMAGE_RELEASE_VERSION="V$(date +%F | sed 's/-//g')"
 
 NR_JOBS_MAX=12
@@ -70,6 +70,10 @@ esac
 
 DEST_LANG="en_US.UTF-8"
 CONSOLE_CHAR="UTF-8"
+
+# Give the option to configure DNS server used in the chroot during the build process
+NAMESERVER="1.0.0.1" # default is cloudflare alternate
+
 
 ROOTFS_TYPE="ext4"
 BOOTFS_TYPE="fat"
@@ -167,6 +171,7 @@ esac
 
 case $DISTRIB_RELEASE in
 	xenial)
+	DEBOOTSTRAP_COMPONENTS="main"
 	PACKAGE_LIST_RELEASE="man-db nano"
 	PACKAGE_LIST_KODI="libglu1-mesa libglu1 libmicrohttpd10 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libva-drm1 libcurl3"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_KODI chromium-browser gksu"
@@ -175,6 +180,7 @@ case $DISTRIB_RELEASE in
 	[[ $DISTRIB_ARCH == armhf ]] && PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP mate-utils ubuntu-mate-welcome mate-settings-daemon"
 	;;
 	stretch)
+	DEBOOTSTRAP_COMPONENTS="main"
 	PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr"
 	PACKAGE_LIST_KODI="libglu1-mesa libglu1 libmicrohttpd12 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libva-drm1 libcurl3"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_QT $PACKAGE_LIST_KODI"
@@ -183,6 +189,7 @@ case $DISTRIB_RELEASE in
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP system-config-printer"
 	;;
 	bionic)
+	DEBOOTSTRAP_COMPONENTS="main,universe"
 	PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr nano wget"
 	PACKAGE_LIST_KODI="libglu1-mesa libglu1 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libcurl4 libcrossguid0 libmariadbclient18 libmicrohttpd12"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_QT"

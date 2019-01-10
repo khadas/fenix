@@ -32,6 +32,20 @@ build_board_deb() {
 	rm -rf /etc/motd
 	rm -rf /etc/update-motd.d/*
 
+	# Disable power management on network manager
+	if [ -f /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf ]; then
+		sed -i 's/wifi.powersave.*/wifi.powersave = 2/' /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf
+	else
+		if [ -d /etc/NetworkManager/conf.d ]; then
+			echo "[connection]" > /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf
+			echo "# Values are 0 (use default), 1 (ignore/don't touch), 2 (disable) or 3 (enable)." >> /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf
+			echo "wifi.powersave = 2" >> /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf
+		fi
+	fi
+
+	# make a backup since we are unconditionally overwriting this on update
+	[ -f "/etc/default/cpufrequtils" ] && cp /etc/default/cpufrequtils /etc/default/cpufrequtils.dpkg-old
+
 	# Workaround for FAT32 /boot partition
 	# exit if we are running chroot
 	if [ "\$(stat -c %d:%i /)" != "\$(stat -c %d:%i /proc/1/root/.)" ]; then exit 0; fi
@@ -67,9 +81,6 @@ build_board_deb() {
 	}
 
 	mountpoint -q /boot && check_fs
-
-	# make a backup since we are unconditionally overwriting this on update
-	[ -f "/etc/default/cpufrequtils" ] && cp /etc/default/cpufrequtils /etc/default/cpufrequtils.dpkg-old
 
 	exit 0
 	EOF
@@ -236,26 +247,29 @@ build_board_deb() {
 		sed -i 's/BOARD=.*/BOARD=VIMs/' $pkgdir/etc/fenix-release
 	fi
 
-	mkdir -p $pkgdir/usr/lib/NetworkManager/conf.d/
-	cat <<-EOF > $pkgdir/usr/lib/NetworkManager/conf.d/zz-override-wifi-powersave-off.conf
-	[connection]
-	wifi.powersave = 2
-	EOF
+	case $DISTRIB_RELEASE in
+		xenial)
+			mkdir -p $pkgdir/usr/lib/NetworkManager/conf.d/
+			cp $ROOT/archives/filesystem/bsp/zz-override-wifi-powersave-off.conf $pkgdir/usr/lib/NetworkManager/conf.d/
+			if [ "$LINUX" == "3.14" ]; then
+				mkdir -p $pkgdir/lib/systemd/system/haveged.service.d/
+				cp $ROOT/archives/filesystem/bsp/10-no-new-privileges.conf $pkgdir/lib/systemd/system/haveged.service.d/
+			fi
+		;;
 
-	if [ "$LINUX" == "3.14" ]; then
-		mkdir -p $pkgdir/lib/systemd/system/haveged.service.d/
-		cat <<-EOF > $pkgdir/lib/systemd/system/haveged.service.d/10-no-new-privileges.conf
-		[Service]
-		NoNewPrivileges=false
-		EOF
-	fi
+		stretch)
+			mkdir -p $pkgdir/usr/lib/NetworkManager/conf.d/
+			cp $ROOT/archives/filesystem/bsp/zz-override-wifi-powersave-off.conf $pkgdir/usr/lib/NetworkManager/conf.d/
+			cp $ROOT/archives/filesystem/bsp/10-override-random-mac.conf $pkgdir/usr/lib/NetworkManager/conf.d/
+		;;
 
-	if [ "$DISTRIB_RELEASE" == "stretch" -o "$DISTRIB_RELEASE" == "bionic" ]; then
-		cat <<-EOF > $pkgdir/usr/lib/NetworkManager/conf.d/10-override-random-mac.conf
-		[device]
-		wifi.scan-rand-mac-address=no
-		EOF
-	fi
+		bionic)
+			mkdir -p $pkgdir/usr/lib/NetworkManager/conf.d/
+			cp $ROOT/archives/filesystem/bsp/zz-override-wifi-powersave-off.conf $pkgdir/usr/lib/NetworkManager/conf.d/
+			cp $ROOT/archives/filesystem/bsp/10-override-random-mac.conf $pkgdir/usr/lib/NetworkManager/conf.d/
+		;;
+
+	esac
 
 	# Create board deb file
 	echo "Building package: $pkgname"

@@ -20,6 +20,10 @@ install_common()
 		cp $BOOT_ENV/$BOOT_ENV_FILE $ROOTFS_TEMP/boot/env.txt
 	fi
 
+	# Remove default interfaces file if present
+	# before installing board support package
+	rm -f $ROOTFS_TEMP/etc/network/interfaces
+
 	# change time zone data
 	info_msg "Setup timezone to '$TZDATA'"
 	echo $TZDATA > $ROOTFS_TEMP/etc/timezone
@@ -95,6 +99,27 @@ install_common()
 
 	# remove legal info from Ubuntu
 	[[ -f $ROOTFS_TEMP/etc/legal ]] && rm $ROOTFS_TEMP/etc/legal
+
+	# DNS fix. package resolvconf is not available everywhere
+	if [ -d $ROOTFS_TEMP/etc/resolvconf/resolv.conf.d ]; then
+		echo "nameserver $NAMESERVER" > $ROOTFS_TEMP/etc/resolvconf/resolv.conf.d/head
+	fi
+
+	# configure network manager
+	sed "s/managed=\(.*\)/managed=true/g" -i $ROOTFS_TEMP/etc/NetworkManager/NetworkManager.conf
+	# Just regular DNS and maintain /etc/resolv.conf as a file
+	sed "/dns/d" -i $ROOTFS_TEMP/etc/NetworkManager/NetworkManager.conf
+	sed "s/\[main\]/\[main\]\ndns=default\nrc-manager=file/g" -i $ROOTFS_TEMP/etc/NetworkManager/NetworkManager.conf
+	if [[ -n $NM_IGNORE_DEVICES ]]; then
+		mkdir -p $ROOTFS_TEMP/etc/NetworkManager/conf.d/
+		cat <<-EOF > $ROOTFS_TEMP/etc/NetworkManager/conf.d/10-ignore-interfaces.conf
+		[keyfile]
+		unmanaged-devices=$NM_IGNORE_DEVICES
+		EOF
+	fi
+
+	# nsswitch settings for sane DNS behavior: remove resolve, assure libnss-myhostname support
+	sed "s/hosts\:.*/hosts:          files mymachines dns myhostname/g" -i $ROOTFS_TEMP/etc/nsswitch.conf
 }
 
 install_distribution_specific()
@@ -152,12 +177,17 @@ install_distribution_specific()
 		  renderer: NetworkManager
 		EOF
 		# DNS fix
-		sed -i "s/#DNS=.*/DNS=1.1.1.1/g" $ROOTFS_TEMP/etc/systemd/resolved.conf
+		sed -i "s/#DNS=.*/DNS=$NAMESERVER/g" $ROOTFS_TEMP/etc/systemd/resolved.conf
 		# disable watchdog
 		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable watchdog.service"'
 		chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload mask ondemand.service"
 		# Disable Lirc service
 		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable lircd.socket lircd.service lircd-setup.service lircd-uinput.service lircmd.service irexec.service"'
+		# Journal service adjustements
+		sed -i "s/#Storage=.*/Storage=volatile/g" $ROOTFS_TEMP/etc/systemd/journald.conf
+		sed -i "s/#Compress=.*/Compress=yes/g" $ROOTFS_TEMP/etc/systemd/journald.conf
+		sed -i "s/#RateLimitIntervalSec=.*/RateLimitIntervalSec=30s/g" $ROOTFS_TEMP/etc/systemd/journald.conf
+		sed -i "s/#RateLimitBurst=.*/RateLimitBurst=10000/g" $ROOTFS_TEMP/etc/systemd/journald.conf
 		;;
 	esac
 }
@@ -189,7 +219,7 @@ create_rootfs_cache()
 
 		info_msg "Installing base system - Stage 1/2"
 		eval 'debootstrap --include=locales ${PACKAGE_LIST_EXCLUDE:+ --exclude=${PACKAGE_LIST_EXCLUDE// /,}} \
-			--arch=$DISTRIB_ARCH --foreign $DISTRIB_RELEASE $ROOTFS_TEMP/ $apt_mirror'
+			--arch=$DISTRIB_ARCH --components=${DEBOOTSTRAP_COMPONENTS} --foreign $DISTRIB_RELEASE $ROOTFS_TEMP/ $apt_mirror'
 
 		[[ ${PIPESTATUS[0]} -ne 0 || ! -f $ROOTFS_TEMP/debootstrap/debootstrap ]] && error_msg "Debootstrap base system first stage failed" && return -1
 
@@ -243,6 +273,9 @@ create_rootfs_cache()
 			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "apt-get -y install libc6:armhf"'
 		fi
 
+		# this should fix resolvconf installation failure in some cases
+		chroot $ROOTFS_TEMP /bin/bash -c 'echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections'
+
 		# stage: update packages list
 		info_msg "Updating package list $DISTRIB_RELEASE"
 		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "apt-get -y $apt_extra update"'
@@ -271,7 +304,7 @@ create_rootfs_cache()
 
 		# this is needed for the build process later since resolvconf generated file in /run is not saved
 		rm $ROOTFS_TEMP/etc/resolv.conf
-		echo 'nameserver 8.8.8.8' >> $ROOTFS_TEMP/etc/resolv.conf
+		echo "nameserver $NAMESERVER" >> $ROOTFS_TEMP/etc/resolv.conf
 
 		# stage: make rootfs cache archive
 		info_msg "Ending debootstrap process and preparing cache $DISTRIB_RELEASE"
@@ -425,9 +458,6 @@ prepare_rootfs() {
 	chroot $ROOTFS_TEMP /bin/bash -c "dpkg-divert --quiet --local --rename --remove /sbin/initctl"
 	chroot $ROOTFS_TEMP /bin/bash -c "dpkg-divert --quiet --local --rename --remove /sbin/start-stop-daemon"
 	rm -f $ROOTFS_TEMP/usr/sbin/policy-rc.d
-
-	# reenable resolvconf managed resolv.conf
-	ln -sf /run/resolvconf/resolv.conf $ROOTFS_TEMP/etc/resolv.conf
 }
 
 ## Rootfs
