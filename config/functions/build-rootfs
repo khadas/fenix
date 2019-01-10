@@ -206,13 +206,13 @@ create_rootfs_cache()
 		info_msg "Creating new rootfs for $DISTRIB_RELEASE"
 
 		# stage: debootstrap base system
-#		if [[ $NO_APT_CACHER != yes ]]; then
-#			# apt-cacher-ng apt-get proxy parameter
-#			local apt_extra="-o Acquire::http::Proxy=\"http://${APT_PROXY_ADDR:-localhost:3142}\""
-#			local apt_mirror="http://${APT_PROXY_ADDR:-localhost:3142}/$APT_MIRROR"
-#		else
+		if [[ $NO_APT_CACHER != yes ]]; then
+			# apt-cacher-ng apt-get proxy parameter
+			local apt_extra="-o Acquire::http::Proxy=\"http://${APT_PROXY_ADDR:-localhost:3142}\""
+			local apt_mirror="http://${APT_PROXY_ADDR:-localhost:3142}/$APT_MIRROR"
+		else
 			local apt_mirror="http://$APT_MIRROR"
-#		fi
+		fi
 
 		# fancy progress bars
 		local apt_extra_progress="--show-progress -o DPKG::Progress-Fancy=1"

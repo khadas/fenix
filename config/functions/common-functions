@@ -75,8 +75,14 @@ prepare_host() {
 	grep -q i386 <(dpkg --print-foreign-architectures) || dpkg --add-architecture i386
 	if systemd-detect-virt -q -c; then
 		info_msg "Running in container: $(systemd-detect-virt)"
+		# disable apt-cacher unless NO_APT_CACHER=no is not specified explicitly
+		if [[ $NO_APT_CACHER != no ]]; then
+			info_msg "apt-cacher is disabled in containers, set NO_APT_CACHER=no to override"
+			NO_APT_CACHER=yes
+		fi
 		CONTAINER_COMPAT="yes"
 		export CONTAINER_COMPAT
+		export NO_APT_CACHER
 	fi
 
 	local hostdeps="wget ca-certificates device-tree-compiler pv bc lzop zip binfmt-support build-essential ccache debootstrap ntpdate \
@@ -86,6 +92,10 @@ prepare_host() {
 			curl patchutils python liblz4-tool libpython2.7-dev linux-base swig libpython-dev aptly acl \
 			locales ncurses-base pixz dialog systemd-container udev lib32stdc++6 libc6-i386 lib32ncurses5 lib32tinfo5 \
 			bison libbison-dev flex libfl-dev lib32z1"
+
+	# warning: apt-cacher-ng will fail if installed and used both on host and in container/chroot environment with shared network
+	# set NO_APT_CACHER=yes to prevent installation errors in such case
+	if [[ $NO_APT_CACHER != yes ]]; then hostdeps="$hostdeps apt-cacher-ng"; fi
 
 	local deps=()
 	local installed=$(dpkg-query -W -f '${db:Status-Abbrev}|${binary:Package}\n' '*' 2>/dev/null | grep '^ii' | awk -F '|' '{print $2}' | cut -d ':' -f 1)
