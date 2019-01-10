@@ -72,7 +72,7 @@ prepare_host() {
 		return -1
 	fi
 
-	grep -q i386 <(dpkg --print-foreign-architectures) || dpkg --add-architecture i386
+	grep -q i386 <(dpkg --print-foreign-architectures) || (warning_msg "Requires root privileges, please enter your passowrd!" && sudo dpkg --add-architecture i386)
 	if systemd-detect-virt -q -c; then
 		info_msg "Running in container: $(systemd-detect-virt)"
 		# disable apt-cacher unless NO_APT_CACHER=no is not specified explicitly
