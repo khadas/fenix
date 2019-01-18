@@ -215,6 +215,12 @@ build_board_deb() {
 		cp -r archives/hwpacks/dp/$VENDOR/* $pkgdir/lib/firmware/${VENDOR,,}
 	fi
 
+	# Copy Amlogic SoC microcode firmware
+	if [ "$VENDOR" == "Amlogic" ]; then
+		mkdir -p $pkgdir/lib/firmware
+		cp -r archives/hwpacks/video-firmware/Amlogic/meson $pkgdir/lib/firmware/
+	fi
+
 	# Trigger uInitrd creation after installation, to apply
 	# /etc/initramfs/post-update.d/99-uboot
 	cat <<-EOF > $pkgdir/DEBIAN/triggers
