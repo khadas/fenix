@@ -1,0 +1,79 @@
+From 2b3d8308ca32d8ae9843299c6a022f19e6451c09 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Tue, 11 Dec 2018 14:47:10 +0100
+Subject: [PATCH 55/78] ASoC: meson: axg-toddr: add support for spdifin backend
+
+add IEC958_SUBFRAME_LE to the list of format accepted by the fifo frontend.
+
+As opposed to what was initially noted in the toddr dai driver, the spdifin
+does not place the msb at bit 28, it just output a whole spdif subframe.
+
+Placing the msb at bit 28 in the toddr driver just filters out the parity,
+user, channel status and validity bits. It is better to just provide the
+whole spdif subframe to the userspace and let the iec958 plugin deal with
+it.
+
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/meson/axg-fifo.h  |  3 ++-
+ sound/soc/meson/axg-toddr.c | 15 +++++----------
+ 2 files changed, 7 insertions(+), 11 deletions(-)
+
+diff --git a/sound/soc/meson/axg-fifo.h b/sound/soc/meson/axg-fifo.h
+index cb6c401..d9f516c 100644
+--- a/sound/soc/meson/axg-fifo.h
++++ b/sound/soc/meson/axg-fifo.h
+@@ -25,7 +25,8 @@
+ 					 SNDRV_PCM_FMTBIT_S16_LE |	\
+ 					 SNDRV_PCM_FMTBIT_S20_LE |	\
+ 					 SNDRV_PCM_FMTBIT_S24_LE |	\
+-					 SNDRV_PCM_FMTBIT_S32_LE)
++					 SNDRV_PCM_FMTBIT_S32_LE |	\
++					 SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE)
+ 
+ #define AXG_FIFO_BURST			8
+ #define AXG_FIFO_MIN_CNT		64
+diff --git a/sound/soc/meson/axg-toddr.c b/sound/soc/meson/axg-toddr.c
+index c2c9bb3..0e9ca38 100644
+--- a/sound/soc/meson/axg-toddr.c
++++ b/sound/soc/meson/axg-toddr.c
+@@ -25,6 +25,8 @@
+ #define CTRL0_TODDR_LSB_POS_MASK	GENMASK(7, 3)
+ #define CTRL0_TODDR_LSB_POS(x)		((x) << 3)
+ 
++#define TODDR_MSB_POS	31
++
+ static int axg_toddr_pcm_new(struct snd_soc_pcm_runtime *rtd,
+ 			     struct snd_soc_dai *dai)
+ {
+@@ -36,14 +38,7 @@ static int axg_toddr_dai_hw_params(struct snd_pcm_substream *substream,
+ 				   struct snd_soc_dai *dai)
+ {
+ 	struct axg_fifo *fifo = snd_soc_dai_get_drvdata(dai);
+-	unsigned int type, width, msb = 31;
+-
+-	/*
+-	 * NOTE:
+-	 * Almost all backend will place the MSB at bit 31, except SPDIF Input
+-	 * which will put it at index 28. When adding support for the SPDIF
+-	 * Input, we'll need to find which type of backend we are connected to.
+-	 */
++	unsigned int type, width;
+ 
+ 	switch (params_physical_width(params)) {
+ 	case 8:
+@@ -66,8 +61,8 @@ static int axg_toddr_dai_hw_params(struct snd_pcm_substream *substream,
+ 			   CTRL0_TODDR_MSB_POS_MASK |
+ 			   CTRL0_TODDR_LSB_POS_MASK,
+ 			   CTRL0_TODDR_TYPE(type) |
+-			   CTRL0_TODDR_MSB_POS(msb) |
+-			   CTRL0_TODDR_LSB_POS(msb - (width - 1)));
++			   CTRL0_TODDR_MSB_POS(TODDR_MSB_POS) |
++			   CTRL0_TODDR_LSB_POS(TODDR_MSB_POS - (width - 1)));
+ 
+ 	return 0;
+ }
+-- 
+1.9.1
+

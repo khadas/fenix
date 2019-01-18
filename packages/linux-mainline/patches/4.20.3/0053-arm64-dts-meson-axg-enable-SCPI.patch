@@ -1,0 +1,83 @@
+From 82d9687cb66f284342d783dc9e7ab2adfabdb003 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Thu, 8 Nov 2018 14:53:52 +0100
+Subject: [PATCH 53/78] arm64: dts: meson-axg: enable SCPI
+
+Enable SCPI on the axg platform, with cpu clock and hwmon
+(core temperature) support
+
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-axg.dtsi | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
+index 3e2a077..f507e2d 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
+@@ -79,6 +79,7 @@
+ 			reg = <0x0 0x0>;
+ 			enable-method = "psci";
+ 			next-level-cache = <&l2>;
++			clocks = <&scpi_dvfs 0>;
+ 		};
+ 
+ 		cpu1: cpu@1 {
+@@ -87,6 +88,7 @@
+ 			reg = <0x0 0x1>;
+ 			enable-method = "psci";
+ 			next-level-cache = <&l2>;
++			clocks = <&scpi_dvfs 0>;
+ 		};
+ 
+ 		cpu2: cpu@2 {
+@@ -95,6 +97,7 @@
+ 			reg = <0x0 0x2>;
+ 			enable-method = "psci";
+ 			next-level-cache = <&l2>;
++			clocks = <&scpi_dvfs 0>;
+ 		};
+ 
+ 		cpu3: cpu@3 {
+@@ -103,6 +106,7 @@
+ 			reg = <0x0 0x3>;
+ 			enable-method = "psci";
+ 			next-level-cache = <&l2>;
++			clocks = <&scpi_dvfs 0>;
+ 		};
+ 
+ 		l2: l2-cache0 {
+@@ -137,6 +141,28 @@
+ 		};
+ 	};
+ 
++	scpi {
++		compatible = "arm,scpi-pre-1.0";
++		mboxes = <&mailbox 1 &mailbox 2>;
++		shmem = <&cpu_scp_lpri &cpu_scp_hpri>;
++
++		scpi_clocks: clocks {
++			compatible = "arm,scpi-clocks";
++
++			scpi_dvfs: clock-controller {
++				compatible = "arm,scpi-dvfs-clocks";
++				#clock-cells = <1>;
++				clock-indices = <0>;
++				clock-output-names = "vcpu";
++			};
++		};
++
++		scpi_sensors: sensors {
++			compatible = "amlogic,meson-gxbb-scpi-sensors";
++			#thermal-sensor-cells = <1>;
++		};
++	};
++
+ 	soc {
+ 		compatible = "simple-bus";
+ 		#address-cells = <2>;
+-- 
+1.9.1
+

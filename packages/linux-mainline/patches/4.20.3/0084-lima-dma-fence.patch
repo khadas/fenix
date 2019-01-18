@@ -1,0 +1,53 @@
+From b38231be4d4fbda46b05d7dd2778fe8808fcaa45 Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Thu, 17 Jan 2019 22:01:43 +0800
+Subject: [PATCH 084/134] lima dma fence
+
+---
+ drivers/gpu/drm/meson/meson_overlay.c | 2 ++
+ drivers/gpu/drm/meson/meson_plane.c   | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/drivers/gpu/drm/meson/meson_overlay.c b/drivers/gpu/drm/meson/meson_overlay.c
+index 9aebc5e..691a9fd 100644
+--- a/drivers/gpu/drm/meson/meson_overlay.c
++++ b/drivers/gpu/drm/meson/meson_overlay.c
+@@ -16,6 +16,7 @@
+ #include <drm/drm_plane_helper.h>
+ #include <drm/drm_gem_cma_helper.h>
+ #include <drm/drm_fb_cma_helper.h>
++#include <drm/drm_gem_framebuffer_helper.h>
+ #include <drm/drm_rect.h>
+ 
+ #include "meson_overlay.h"
+@@ -532,6 +533,7 @@ static void meson_overlay_atomic_disable(struct drm_plane *plane,
+ 	.atomic_check	= meson_overlay_atomic_check,
+ 	.atomic_disable	= meson_overlay_atomic_disable,
+ 	.atomic_update	= meson_overlay_atomic_update,
++	.prepare_fb	= drm_gem_fb_prepare_fb,
+ };
+ 
+ static const struct drm_plane_funcs meson_overlay_funcs = {
+diff --git a/drivers/gpu/drm/meson/meson_plane.c b/drivers/gpu/drm/meson/meson_plane.c
+index fc7da38..99d2eb3 100644
+--- a/drivers/gpu/drm/meson/meson_plane.c
++++ b/drivers/gpu/drm/meson/meson_plane.c
+@@ -32,6 +32,7 @@
+ #include <drm/drm_plane_helper.h>
+ #include <drm/drm_gem_cma_helper.h>
+ #include <drm/drm_fb_cma_helper.h>
++#include <drm/drm_gem_framebuffer_helper.h>
+ #include <drm/drm_rect.h>
+ 
+ #include "meson_plane.h"
+@@ -328,6 +329,7 @@ static void meson_plane_atomic_disable(struct drm_plane *plane,
+ 	.atomic_check	= meson_plane_atomic_check,
+ 	.atomic_disable	= meson_plane_atomic_disable,
+ 	.atomic_update	= meson_plane_atomic_update,
++	.prepare_fb	= drm_gem_fb_prepare_fb,
+ };
+ 
+ static const struct drm_plane_funcs meson_plane_funcs = {
+-- 
+1.9.1
+

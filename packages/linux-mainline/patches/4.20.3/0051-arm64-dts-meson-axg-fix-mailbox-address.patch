@@ -1,0 +1,35 @@
+From 1904994e23b9599fc403336c3534222710d8b03e Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Thu, 8 Nov 2018 14:53:49 +0100
+Subject: [PATCH 51/78] arm64: dts: meson-axg: fix mailbox address
+
+MHU mailbox address is wrong. Fixing it enables the mailboxes on the A113.
+These mailboxes are needed for SCPI
+
+Fixes: 9d59b708500f ("arm64: dts: meson-axg: add initial A113D SoC DT support")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-axg.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
+index 78ba031..4efae98 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
+@@ -979,9 +979,9 @@
+ 			};
+ 		};
+ 
+-		mailbox: mailbox@ff63dc00 {
++		mailbox: mailbox@ff63c404 {
+ 			compatible = "amlogic,meson-gx-mhu", "amlogic,meson-gxbb-mhu";
+-			reg = <0 0xff63dc00 0 0x400>;
++			reg = <0 0xff63c404 0 0x4c>;
+ 			interrupts = <GIC_SPI 208 IRQ_TYPE_EDGE_RISING>,
+ 				     <GIC_SPI 209 IRQ_TYPE_EDGE_RISING>,
+ 				     <GIC_SPI 210 IRQ_TYPE_EDGE_RISING>;
+-- 
+1.9.1
+

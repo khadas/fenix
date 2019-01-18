@@ -1,0 +1,85 @@
+From 3d5b36ed6ef71226e4d078c03ca1f21430a9e3e5 Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Thu, 17 Jan 2019 22:02:43 +0800
+Subject: [PATCH 085/134] simple framebuffer
+
+---
+ arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi | 25 +++++++++++++++++++++++++
+ arch/arm64/boot/dts/amlogic/meson-gxl.dtsi  | 25 +++++++++++++++++++++++++
+ 2 files changed, 50 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi
+index 77cddfb..17fb268 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi
+@@ -13,6 +13,31 @@
+ / {
+ 	compatible = "amlogic,meson-gxbb";
+ 
++	chosen {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		framebuffer@0 {
++			compatible = "amlogic,simple-framebuffer",
++				     "simple-framebuffer";
++			amlogic,pipeline = "vpu-cvbs";
++			power-domains = <&pwrc_vpu>;
++			status = "disabled";
++		};
++
++		framebuffer@1 {
++			compatible = "amlogic,simple-framebuffer",
++				     "simple-framebuffer";
++			amlogic,pipeline = "vpu-hdmi";
++			clocks = <&clkc CLKID_HDMI_PCLK>,
++				 <&clkc CLKID_CLK81>,
++				 <&clkc CLKID_GCLK_VENCI_INT0>;
++			power-domains = <&pwrc_vpu>;
++			status = "disabled";
++		};
++	};
++
+ 	soc {
+ 		usb0_phy: phy@c0000000 {
+ 			compatible = "amlogic,meson-gxbb-usb2-phy";
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
+index 8ccbd65..3a8eef3 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
+@@ -13,6 +13,31 @@
+ / {
+ 	compatible = "amlogic,meson-gxl";
+ 
++	chosen {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		framebuffer@0 {
++			compatible = "amlogic,simple-framebuffer",
++				     "simple-framebuffer";
++			amlogic,pipeline = "vpu-cvbs";
++			power-domains = <&pwrc_vpu>;
++			status = "disabled";
++		};
++
++		framebuffer@1 {
++			compatible = "amlogic,simple-framebuffer",
++				     "simple-framebuffer";
++			amlogic,pipeline = "vpu-hdmi";
++			clocks = <&clkc CLKID_HDMI_PCLK>,
++				 <&clkc CLKID_CLK81>,
++				 <&clkc CLKID_GCLK_VENCI_INT0>;
++			power-domains = <&pwrc_vpu>;
++			status = "disabled";
++		};
++	};
++
+ 	soc {
+ 		usb0: usb@c9000000 {
+ 			status = "disabled";
+-- 
+1.9.1
+

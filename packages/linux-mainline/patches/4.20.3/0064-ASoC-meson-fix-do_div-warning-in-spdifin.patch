@@ -1,0 +1,33 @@
+From 957e6dc8a5f1541580f5a26466e1efbbf25f24a1 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Thu, 13 Dec 2018 16:11:39 +0100
+Subject: [PATCH 64/78] ASoC: meson: fix do_div warning in spdifin
+
+Even if this spdif input driver is only supposed to be used on 64bits
+platform, there is possible problem with 32bits and do_div, as reported
+by the kbuild robot. Just fix it.
+
+Fixes: 5ce5658375e6 ("ASoC: meson: add axg spdif input")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ sound/soc/meson/axg-spdifin.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/meson/axg-spdifin.c b/sound/soc/meson/axg-spdifin.c
+index 09f385a..01b2035 100644
+--- a/sound/soc/meson/axg-spdifin.c
++++ b/sound/soc/meson/axg-spdifin.c
+@@ -146,8 +146,8 @@ static void axg_spdifin_write_mode_param(struct regmap *map, int mode,
+ 					 unsigned int base_reg,
+ 					 unsigned int width)
+ {
+-	unsigned int offset = mode, rem;
+-	unsigned int reg, shift;
++	uint64_t offset = mode;
++	unsigned int reg, shift, rem;
+ 
+ 	rem = do_div(offset, num_per_reg);
+ 
+-- 
+1.9.1
+

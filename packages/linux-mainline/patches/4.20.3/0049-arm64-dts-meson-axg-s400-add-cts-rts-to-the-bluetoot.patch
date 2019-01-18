@@ -1,0 +1,34 @@
+From 98d7d41fd8c12923c7cd95320f1116bd02af007a Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Thu, 8 Nov 2018 10:56:40 +0100
+Subject: [PATCH 49/78] arm64: dts: meson-axg: s400: add cts-rts to the
+ bluetooth uart
+
+The uart used with bluetooth chipset on the s400 has flow control
+available. Let's enable it.
+
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-axg-s400.dts | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-axg-s400.dts b/arch/arm64/boot/dts/amlogic/meson-axg-s400.dts
+index ba44b04..29ccb8ad 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-axg-s400.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-axg-s400.dts
+@@ -543,8 +543,9 @@
+ 
+ &uart_A {
+ 	status = "okay";
+-	pinctrl-0 = <&uart_a_pins>;
++	pinctrl-0 = <&uart_a_pins>, <&uart_a_cts_rts_pins>;
+ 	pinctrl-names = "default";
++	uart-has-rtscts;
+ };
+ 
+ &uart_AO {
+-- 
+1.9.1
+

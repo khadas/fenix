@@ -1,0 +1,28 @@
+From 5197237122698865c8a13e5ac573370bd3c78ba6 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Thu, 6 Dec 2018 16:53:16 +0100
+Subject: [PATCH 63/78] arm64: dts: meson: s400: fix emmc maximum rate
+
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-axg-s400.dts | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-axg-s400.dts b/arch/arm64/boot/dts/amlogic/meson-axg-s400.dts
+index 0206b25..837ea8a 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-axg-s400.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-axg-s400.dts
+@@ -468,9 +468,8 @@
+ 	pinctrl-names = "default", "clk-gate";
+ 
+ 	bus-width = <8>;
+-	cap-sd-highspeed;
+ 	cap-mmc-highspeed;
+-	max-frequency = <180000000>;
++	max-frequency = <200000000>;
+ 	non-removable;
+ 	disable-wp;
+ 	mmc-ddr-1_8v;
+-- 
+1.9.1
+
