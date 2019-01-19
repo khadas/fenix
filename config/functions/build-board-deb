@@ -210,15 +210,15 @@ build_board_deb() {
 	fi
 
 	# Copy DP firmware
-	if [ -d archives/hwpacks/dp/$VENDOR ]; then
+	if [ -d $ROOT/archives/hwpacks/dp/$VENDOR ]; then
 		mkdir -p $pkgdir/lib/firmware/${VENDOR,,}
-		cp -r archives/hwpacks/dp/$VENDOR/* $pkgdir/lib/firmware/${VENDOR,,}
+		cp -r $ROOT/archives/hwpacks/dp/$VENDOR/* $pkgdir/lib/firmware/${VENDOR,,}
 	fi
 
 	# Copy Amlogic SoC microcode firmware
 	if [ "$VENDOR" == "Amlogic" ]; then
 		mkdir -p $pkgdir/lib/firmware
-		cp -r archives/hwpacks/video-firmware/Amlogic/meson $pkgdir/lib/firmware/
+		cp -r $ROOT/archives/hwpacks/video-firmware/Amlogic/meson $pkgdir/lib/firmware/
 	fi
 
 	# Trigger uInitrd creation after installation, to apply
