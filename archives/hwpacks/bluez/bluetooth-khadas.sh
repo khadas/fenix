@@ -55,10 +55,10 @@ if [ "$model" = "0xa9bf" ]; then
 	/usr/local/bin/brcm_patchram_plus --patchram /lib/firmware/brcm/BCM4345C0.hcd  --no2bytes --tosleep 1000 /dev/$bt_tty
 elif [ "$model" = "0xa9a6" ]; then
     # VIM
-	/usr/local/bin/brcm_patchram_plus --patchram /lib/firmware/brcm/bcm43438a1.hcd  --no2bytes --tosleep 1000 /dev/$bt_tty
+	/usr/local/bin/brcm_patchram_plus --patchram /lib/firmware/brcm/BCM43438A1.hcd  --no2bytes --tosleep 1000 /dev/$bt_tty
 elif [ "$model" = "0x4356" ]; then
 	# VIM2
-	/usr/local/bin/brcm_patchram_plus  --patchram /lib/firmware/brcm/bcm4356a2.hcd --no2bytes --tosleep 1000 /dev/$bt_tty
+	/usr/local/bin/brcm_patchram_plus  --patchram /lib/firmware/brcm/BCM4356A2.hcd --no2bytes --tosleep 1000 /dev/$bt_tty
 elif [ "$model" = "0x4359" ]; then
 	# VIM2 Pro & Edge AP6398S
 	/usr/local/bin/brcm_patchram_plus  --patchram /lib/firmware/brcm/BCM4359C0.hcd --no2bytes --tosleep 1000 /dev/$bt_tty
