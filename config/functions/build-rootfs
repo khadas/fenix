@@ -333,7 +333,7 @@ prepare_partitions()
 	local rootfs_size=$(du -sm $ROOTFS_TEMP/ | cut -f1) # MiB
 	info_msg "Current rootfs cache size: $rootfs_size MiB"
 	if [[ -n $FIXED_IMAGE_SIZE && $FIXED_IMAGE_SIZE =~ ^[0-9]+$ ]]; then
-		info "Using user-defined image size" "$FIXED_IMAGE_SIZE MiB"
+		info_msg "Using user-defined image size: $FIXED_IMAGE_SIZE MiB"
 		local rootfs_image_size=$FIXED_IMAGE_SIZE
 		# basic sanity check
 		if [[ $ROOTFS_TYPE != nfs && $rootfs_image_size -lt $rootfs_size ]]; then
