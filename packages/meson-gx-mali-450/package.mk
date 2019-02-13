@@ -1,6 +1,6 @@
 PKG_NAME="meson-gx-mali-450"
-PKG_VERSION="141c8ae178437e6fcc2a4b8061db313441e464f9"
-PKG_SHA256="14eee02136666ceba65a974085dd06b14146c417cc2f7091fb4ddbc4f5fb59b1"
+PKG_VERSION="cb85e7d97d4c57c640ddb1a92cdb41db37ca98a4"
+PKG_SHA256="85a2c4fa9903bb889553acba1ebf6ad378f33c1510c4adb84773cf881bd486f8"
 PKG_SOURCE_DIR="meson_gx_mali_450-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/meson_gx_mali_450"
 PKG_URL="https://github.com/numbqq/meson_gx_mali_450/archive/$PKG_VERSION.tar.gz"
