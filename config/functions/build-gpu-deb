@@ -27,7 +27,7 @@ build_gpu_deb() {
 		Maintainer: Khadas <hello@khadas.com>
 		Installed-Size: 1
 		Replaces: libegl1-mesa, libegl1, libgles2, libgles2-mesa, libegl1-mesa-dev, libgles2-mesa-dev, libglvnd-dev, libgles1, libwayland-dev
-		Provides: libegl1-mesa, libegl1, libgles2, libgles2-mesa, libegl1-mesa-dev, libgles2-mesa-dev, libglvnd-dev, libgles1, libwayland-dev
+		Provides: libegl1-mesa, libegl1, libgles2-mesa, libegl1-mesa-dev, libgles2-mesa-dev, libglvnd-dev, libgles1, libwayland-dev
 		Conflicts: aml-mali-905
 		Section: kernel
 		Priority: optional
