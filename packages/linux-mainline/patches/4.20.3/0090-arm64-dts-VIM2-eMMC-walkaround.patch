@@ -1,0 +1,25 @@
+From 1852b1f1bd712e2e2e052792d00df9077f156700 Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Thu, 14 Feb 2019 16:07:20 +0800
+Subject: [PATCH 1/2] arm64: dts: VIM2: eMMC walkaround
+
+remove mmc-hs200-1_8v due to fail to detect eMMC sometimes
+---
+ arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+index f5f03ee..5eb6051 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+@@ -421,7 +421,6 @@
+ 	non-removable;
+ 	disable-wp;
+ 	mmc-ddr-1_8v;
+-	mmc-hs200-1_8v;
+ 
+ 	mmc-pwrseq = <&emmc_pwrseq>;
+ 	vmmc-supply = <&vcc_3v3>;
+-- 
+1.9.1
+
