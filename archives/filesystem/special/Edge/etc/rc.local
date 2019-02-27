@@ -18,4 +18,11 @@ rootpart=$(findmnt -n -o SOURCE /) # i.e. /dev/mmcblk0p1
 rootdevice=$(lsblk -n -o PKNAME $rootpart) # i.e. mmcblk0
 chmod 666 /dev/$rootdevice
 
+# Reboot test handle
+if cat /proc/cmdline | grep -q reboot_test > /dev/null; then
+	if ! systemctl is-active reboot-test-khadas | grep "^active$" > /dev/null; then
+		systemctl start reboot-test-khadas
+	fi
+fi
+
 exit 0
