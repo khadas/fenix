@@ -56,7 +56,10 @@ build_uboot() {
 
     info_msg "Build u-boot..."
 	export PATH=$UBOOT_COMPILER_PATH:$PATH
-	make distclean
+	if [ "$UBOOT_FORCE_REBUILD" == "yes" ]; then
+		info_msg "U-boot: Force cleaning..."
+		make distclean
+	fi
 	rm -rf .config *.bin *.img
 	make $UBOOT_DEFCONFIG
     make -j${NR_JOBS} CROSS_COMPILE=${UBOOT_COMPILER}
