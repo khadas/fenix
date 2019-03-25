@@ -1,0 +1,81 @@
+From 6f757b628a9b60658a873720032c1b632d800e56 Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Mon, 25 Mar 2019 10:47:14 +0800
+Subject: [PATCH 73/91] arm64: dts: change eMMC freq to 100M
+
+---
+ arch/arm64/boot/dts/amlogic/meson-gx-p23x-q20x.dtsi   | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-gxl-s905x-p212.dtsi | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts   | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-gxm-rbox-pro.dts    | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gx-p23x-q20x.dtsi b/arch/arm64/boot/dts/amlogic/meson-gx-p23x-q20x.dtsi
+index ead3243..181a696 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gx-p23x-q20x.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-gx-p23x-q20x.dtsi
+@@ -239,7 +239,7 @@
+ 
+ 	bus-width = <8>;
+ 	cap-mmc-highspeed;
+-	max-frequency = <200000000>;
++	max-frequency = <100000000>;
+ 	non-removable;
+ 	disable-wp;
+ 	mmc-ddr-1_8v;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-p212.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-p212.dtsi
+index bc811a2..8c60ca7 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-p212.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-p212.dtsi
+@@ -152,7 +152,7 @@
+ 
+ 	bus-width = <8>;
+ 	cap-mmc-highspeed;
+-	max-frequency = <200000000>;
++	max-frequency = <100000000>;
+ 	non-removable;
+ 	disable-wp;
+ 	mmc-ddr-1_8v;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+index 49a662c..f3833a3 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+@@ -408,7 +408,7 @@
+ 	bus-width = <8>;
+ 	cap-sd-highspeed;
+ 	cap-mmc-highspeed;
+-	max-frequency = <200000000>;
++	max-frequency = <100000000>;
+ 	non-removable;
+ 	disable-wp;
+ 	mmc-ddr-1_8v;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts
+index 4bfebc8..f4f6a22 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts
+@@ -199,7 +199,7 @@
+ 
+ 	bus-width = <8>;
+ 	cap-mmc-highspeed;
+-	max-frequency = <200000000>;
++	max-frequency = <100000000>;
+ 	non-removable;
+ 	disable-wp;
+ 	mmc-ddr-1_8v;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-rbox-pro.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-rbox-pro.dts
+index 7fa20a8..603026a 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-rbox-pro.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-rbox-pro.dts
+@@ -184,7 +184,7 @@
+ 
+ 	bus-width = <8>;
+ 	cap-mmc-highspeed;
+-	max-frequency = <200000000>;
++	max-frequency = <100000000>;
+ 	non-removable;
+ 	disable-wp;
+ 	mmc-ddr-1_8v;
+-- 
+2.7.4
+

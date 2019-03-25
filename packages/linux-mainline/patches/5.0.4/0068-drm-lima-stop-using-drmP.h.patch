@@ -1,0 +1,66 @@
+From 6114b3ab4bc3cac38a2571a9a72bc480f617f425 Mon Sep 17 00:00:00 2001
+From: Qiang Yu <yuq825@gmail.com>
+Date: Sat, 2 Mar 2019 17:34:08 +0800
+Subject: [PATCH 68/91] drm/lima: stop using drmP.h
+
+Signed-off-by: Qiang Yu <yuq825@gmail.com>
+---
+ drivers/gpu/drm/lima/lima_drv.c | 5 ++++-
+ drivers/gpu/drm/lima/lima_drv.h | 2 +-
+ drivers/gpu/drm/lima/lima_gem.c | 8 +++++---
+ 3 files changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/gpu/drm/lima/lima_drv.c b/drivers/gpu/drm/lima/lima_drv.c
+index 200f385..055d65c 100644
+--- a/drivers/gpu/drm/lima/lima_drv.c
++++ b/drivers/gpu/drm/lima/lima_drv.c
+@@ -3,7 +3,10 @@
+ 
+ #include <linux/module.h>
+ #include <linux/of_platform.h>
+-#include <linux/log2.h>
++#include <linux/uaccess.h>
++#include <linux/slab.h>
++#include <drm/drm_ioctl.h>
++#include <drm/drm_drv.h>
+ #include <drm/drm_prime.h>
+ #include <drm/lima_drm.h>
+ 
+diff --git a/drivers/gpu/drm/lima/lima_drv.h b/drivers/gpu/drm/lima/lima_drv.h
+index e222143..69c7344 100644
+--- a/drivers/gpu/drm/lima/lima_drv.h
++++ b/drivers/gpu/drm/lima/lima_drv.h
+@@ -4,7 +4,7 @@
+ #ifndef __LIMA_DRV_H__
+ #define __LIMA_DRV_H__
+ 
+-#include <drm/drmP.h>
++#include <drm/drm_file.h>
+ 
+ #include "lima_ctx.h"
+ 
+diff --git a/drivers/gpu/drm/lima/lima_gem.c b/drivers/gpu/drm/lima/lima_gem.c
+index 8e98036..943c5d3 100644
+--- a/drivers/gpu/drm/lima/lima_gem.c
++++ b/drivers/gpu/drm/lima/lima_gem.c
+@@ -1,12 +1,14 @@
+ // SPDX-License-Identifier: GPL-2.0 OR MIT
+ /* Copyright 2017-2019 Qiang Yu <yuq825@gmail.com> */
+ 
+-#include <drm/drmP.h>
+-#include <drm/drm_syncobj.h>
+-#include <drm/drm_utils.h>
++#include <linux/idr.h>
+ #include <linux/sync_file.h>
+ #include <linux/pfn_t.h>
+ 
++#include <drm/drm_file.h>
++#include <drm/drm_syncobj.h>
++#include <drm/drm_utils.h>
++
+ #include <drm/lima_drm.h>
+ 
+ #include "lima_drv.h"
+-- 
+2.7.4
+

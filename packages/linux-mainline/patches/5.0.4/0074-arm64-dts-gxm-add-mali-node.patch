@@ -1,0 +1,64 @@
+From 8ea1592a9abc50d4a9d0ad6562994220e8699915 Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Mon, 25 Mar 2019 10:49:16 +0800
+Subject: [PATCH 74/91] arm64: dts: gxm: add mali node
+
+---
+ .../devicetree/bindings/gpu/arm,mali-midgard.txt   |  2 ++
+ arch/arm64/boot/dts/amlogic/meson-gxm.dtsi         | 27 ++++++++++++++++++++++
+ 2 files changed, 29 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/gpu/arm,mali-midgard.txt b/Documentation/devicetree/bindings/gpu/arm,mali-midgard.txt
+index 18a2cde..24d83ec 100644
+--- a/Documentation/devicetree/bindings/gpu/arm,mali-midgard.txt
++++ b/Documentation/devicetree/bindings/gpu/arm,mali-midgard.txt
+@@ -37,6 +37,8 @@ Optional properties:
+ - operating-points-v2 : Refer to Documentation/devicetree/bindings/opp/opp.txt
+   for details.
+ 
++- resets : Phandle to the reset controls for the Mali Midgard device.
++
+ 
+ Example for a Mali-T760:
+ 
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxm.dtsi
+index 2f35649..8cadb20 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm.dtsi
+@@ -91,6 +91,33 @@
+ 		reset-names = "phy";
+ 		status = "okay";
+ 	};
++
++	mali: gpu@c0000 {
++		compatible = "amlogic,meson-gxm-mali", "arm,mali-t820";
++		reg = <0x0 0xc0000 0x0 0x40000>;
++		interrupt-parent = <&gic>;
++		interrupts = <GIC_SPI 160 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 161 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 162 IRQ_TYPE_LEVEL_HIGH>;
++		interrupt-names = "gpu", "mmu", "job";
++		clocks = <&clkc CLKID_MALI>;
++		resets = <&reset RESET_MALI_CAPB3>, <&reset RESET_MALI>;
++
++		/*
++		 * Mali clocking is provided by two identical clock paths
++		 * MALI_0 and MALI_1 muxed to a single clock by a glitch
++		 * free mux to safely change frequency while running.
++		 */
++		assigned-clocks = <&clkc CLKID_MALI_0_SEL>,
++				  <&clkc CLKID_MALI_0>,
++				  <&clkc CLKID_MALI>; /* Glitch free mux */
++		assigned-clock-parents = <&clkc CLKID_FCLK_DIV3>,
++					 <0>, /* Do Nothing */
++					 <&clkc CLKID_MALI_0>;
++		assigned-clock-rates = <0>, /* Do Nothing */
++				       <666666666>,
++				       <0>; /* Do Nothing */
++	};
+ };
+ 
+ &clkc_AO {
+-- 
+2.7.4
+

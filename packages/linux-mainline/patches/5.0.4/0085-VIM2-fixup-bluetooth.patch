@@ -1,0 +1,57 @@
+From 466328188afae37d0ca87e30513ef6f518a11539 Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Mon, 25 Mar 2019 11:04:00 +0800
+Subject: [PATCH 85/91] VIM2: fixup bluetooth
+
+---
+ arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+index 2f85121..98f9722 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+@@ -363,11 +363,12 @@
+ 	status = "okay";
+ 	pinctrl-0 = <&sdio_pins>;
+ 	pinctrl-1 = <&sdio_clk_gate_pins>;
+-	pinctrl-names = "default";
++	pinctrl-names = "default", "clk-gate";
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
+ 
+ 	bus-width = <4>;
++	cap-sd-highspeed;
+ 	max-frequency = <100000000>;
+ 
+ 	non-removable;
+@@ -388,7 +389,6 @@
+ &sd_emmc_b {
+ 	status = "okay";
+ 	pinctrl-0 = <&sdcard_pins>;
+-	pinctrl-1 = <&sdcard_clk_gate_pins>;
+ 	pinctrl-names = "default";
+ 
+ 	bus-width = <4>;
+@@ -406,7 +406,6 @@
+ &sd_emmc_c {
+ 	status = "okay";
+ 	pinctrl-0 = <&emmc_pins>, <&emmc_ds_pins>;
+-	pinctrl-1 = <&emmc_clk_gate_pins>;
+ 	pinctrl-names = "default";
+ 
+ 	bus-width = <8>;
+@@ -444,8 +443,9 @@
+ /* This one is connected to the Bluetooth module */
+ &uart_A {
+ 	status = "okay";
+-	pinctrl-0 = <&uart_a_pins>;
++	pinctrl-0 = <&uart_a_pins>, <&uart_a_cts_rts_pins>;
+ 	pinctrl-names = "default";
++	uart-has-rtscts;
+ 
+ 	bluetooth {
+ 		compatible = "brcm,bcm43438-bt";
+-- 
+2.7.4
+

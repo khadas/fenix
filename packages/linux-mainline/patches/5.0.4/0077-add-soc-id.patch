@@ -1,0 +1,43 @@
+From f5b255693e89db9c1ec1d3223993e4e1c069d3d9 Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Mon, 25 Mar 2019 10:54:23 +0800
+Subject: [PATCH 77/91] add soc id
+
+---
+ drivers/soc/amlogic/meson-gx-socinfo.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/soc/amlogic/meson-gx-socinfo.c b/drivers/soc/amlogic/meson-gx-socinfo.c
+index 37ea0a1..6d32bcd 100644
+--- a/drivers/soc/amlogic/meson-gx-socinfo.c
++++ b/drivers/soc/amlogic/meson-gx-socinfo.c
+@@ -45,14 +45,16 @@ static const struct meson_gx_package_id {
+ 	unsigned int pack_id;
+ } soc_packages[] = {
+ 	{ "S905", 0x1f, 0 },
+-	{ "S905H", 0x1f, 0x13 },
++	{ "S905-H", 0x1f, 0x13 },
+ 	{ "S905M", 0x1f, 0x20 },
+ 	{ "S905D", 0x21, 0 },
+ 	{ "S905X", 0x21, 0x80 },
++	{ "S905X", 0x21, 0x82 },
+ 	{ "S905W", 0x21, 0xa0 },
+ 	{ "S905L", 0x21, 0xc0 },
+ 	{ "S905M2", 0x21, 0xe0 },
+ 	{ "S912", 0x22, 0 },
++	{ "S912", 0x22, 0x82 },
+ 	{ "962X", 0x24, 0x10 },
+ 	{ "962E", 0x24, 0x20 },
+ 	{ "A113X", 0x25, 0x37 },
+@@ -81,7 +83,7 @@ static inline unsigned int socinfo_to_misc(u32 socinfo)
+ 
+ static const char *socinfo_to_package_id(u32 socinfo)
+ {
+-	unsigned int pack = socinfo_to_pack(socinfo) & 0xf0;
++	unsigned int pack = socinfo_to_pack(socinfo);
+ 	unsigned int major = socinfo_to_major(socinfo);
+ 	int i;
+ 
+-- 
+2.7.4
+
