@@ -111,6 +111,11 @@ build_linux() {
         echo "Linux: Switch to branch '$LINUX_GIT_BRANCH'"
         make ARCH=arm64 distclean
 
+		# Walkaround for branch switch
+		if [ -f drivers/gpu/arm/mali400/mali/__malidrv_build_info.c ]; then
+			rm drivers/gpu/arm/mali400/mali/__malidrv_build_info.c
+		fi
+
 		# Check modifications
 		check_modifications || {
 			error_msg "Linux: can't checkout to branch '$LINUX_GIT_BRANCH', please commit your modifications and try again!"
