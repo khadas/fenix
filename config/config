@@ -32,6 +32,10 @@ UPGRADE_DIR="$BUILD/images_upgrade-[0-9a-f]*"
 
 ##################################### Configurations ##################################
 FENIX_BRANCH="master"
+## U-boot & Linux GitHub URL
+LINUX_SOURCE_URL="https://github.com/khadas/linux"
+UBOOT_SOURCE_URL="https://github.com/khadas/u-boot"
+
 ROOTFSCACHE_VERSION=3
 IMAGE_RELEASE_VERSION="V$(date +%F | sed 's/-//g')"
 

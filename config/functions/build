@@ -21,9 +21,9 @@ build_uboot() {
 
     cd ${ROOT}
     if [ ! -d u-boot/.git ]; then
-        echo "U-boot repository does not exist, clone u-boot repository('$UBOOT_GIT_BRANCH') form Khadas GitHub..."
+        echo "U-boot repository does not exist, clone u-boot repository('$UBOOT_GIT_BRANCH') from '$UBOOT_SOURCE_URL'..."
         ## Clone u-boot from Khadas GitHub
-        git clone https://github.com/khadas/u-boot -b $UBOOT_GIT_BRANCH
+        git clone $UBOOT_SOURCE_URL -b $UBOOT_GIT_BRANCH
         [ $? != 0 ] && error_msg "Failed to clone 'u-boot'" && return -1
     fi
 
@@ -33,7 +33,7 @@ build_uboot() {
     if ! git branch | grep "^* $UBOOT_GIT_BRANCH$" > /dev/null; then
         if ! git branch | grep "^  $UBOOT_GIT_BRANCH$" > /dev/null; then
             # New branch? Try to fetch it.
-            echo "Fetching '$UBOOT_GIT_BRANCH' from Khadas GitHub..."
+            echo "Fetching '$UBOOT_GIT_BRANCH' from '$UBOOT_SOURCE_URL'..."
             git fetch origin $UBOOT_GIT_BRANCH:$UBOOT_GIT_BRANCH
         fi
 
@@ -92,9 +92,9 @@ build_linux() {
 
     cd ${ROOT}
     if [ ! -d linux/.git ]; then
-        echo "Linux repository does not exist, clone linux repository('$LINUX_GIT_BRANCH') form Khadas GitHub..."
+        echo "Linux repository does not exist, clone linux repository('$LINUX_GIT_BRANCH') from '$LINUX_SOURCE_URL'..."
         ## Clone linux from Khadas GitHub
-        git clone https://github.com/khadas/linux -b $LINUX_GIT_BRANCH
+        git clone $LINUX_SOURCE_URL -b $LINUX_GIT_BRANCH
         [ $? != 0 ] && error_msg "Failed to clone 'linux'" && return -1
     fi
 
@@ -104,7 +104,7 @@ build_linux() {
     if ! git branch | grep "^* $LINUX_GIT_BRANCH$" > /dev/null; then
         if ! git branch | grep "^  $LINUX_GIT_BRANCH$" > /dev/null; then
             # New branch? Try to fetch it.
-            echo "Fetching '$LINUX_GIT_BRANCH' from Khadas GitHub..."
+            echo "Fetching '$LINUX_GIT_BRANCH' from '$LINUX_SOURCE_URL'..."
             git fetch origin $LINUX_GIT_BRANCH:$LINUX_GIT_BRANCH
         fi
 
