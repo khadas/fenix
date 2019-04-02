@@ -58,6 +58,11 @@ install_common()
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-${VENDOR,,}-${GPU_MODEL,,}-${GPU_VER,,}-${GPU_PLATFORM}_${VERSION}_${DISTRIB_ARCH}.deb
 	fi
 
+	# Install GPU development deb in chroot
+	if [ -f $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-${VENDOR,,}-dev_${VERSION}_${DISTRIB_ARCH}.deb ]; then
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-${VENDOR,,}-dev_${VERSION}_${DISTRIB_ARCH}.deb
+	fi
+
 	# Install board deb in chroot
 	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/${LINUX_BOARD_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
 
