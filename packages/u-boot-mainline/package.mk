@@ -26,7 +26,7 @@ post_make_target() {
 		cp -r $PKGS_DIR/$PKG_NAME/fip/$KHADAS_BOARD $BUILD/$PKG_NAME-$PKG_VERSION/fip
 		cp u-boot.bin fip/bl33.bin
 		fip/blx_fix.sh fip/bl30.bin fip/zero_tmp fip/bl30_zero.bin fip/bl301.bin fip/bl301_zero.bin fip/bl30_new.bin bl30
-		fip/acs_tool.pyc fip/bl2.bin fip/bl2_acs.bin fip/acs.bin 0
+		python fip/acs_tool.pyc fip/bl2.bin fip/bl2_acs.bin fip/acs.bin 0
 		fip/blx_fix.sh fip/bl2_acs.bin fip/zero_tmp fip/bl2_zero.bin fip/bl21.bin fip/bl21_zero.bin fip/bl2_new.bin bl2
 		fip/aml_encrypt_gxl --bl3enc --input fip/bl30_new.bin
 		fip/aml_encrypt_gxl --bl3enc --input fip/bl31.img
