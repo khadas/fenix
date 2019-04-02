@@ -9,7 +9,7 @@ build_gpu_deb() {
 
 	info_msg "Build gpu deb..."
 
-	local pkgname="linux-gpu-${VENDOR,,}-${CHIP,,}-${GPU_MODEL,,}-${GPU_VER,,}-${GPU_PLATFORM}"
+	local pkgname="linux-gpu-${VENDOR,,}-${GPU_MODEL,,}-${GPU_VER,,}-${GPU_PLATFORM}"
 	local pkgdir="$BUILD_IMAGES/.tmp/${pkgname}_${VERSION}_${DISTRIB_ARCH}"
 
 	if [ "$KHADAS_BOARD" == "VIM1" ]; then
@@ -26,8 +26,8 @@ build_gpu_deb() {
 		Architecture: $DISTRIB_ARCH
 		Maintainer: Khadas <hello@khadas.com>
 		Installed-Size: 1
-		Replaces: libegl1-mesa, libegl1, libgles2, libgles2-mesa, libegl1-mesa-dev, libgles2-mesa-dev, libglvnd-dev, libgles1, libwayland-dev, mesa-common-dev
-		Provides: libegl1-mesa, libegl1, libgles2-mesa, libegl1-mesa-dev, libgles2-mesa-dev, libglvnd-dev, libgles1, libwayland-dev, mesa-common-dev
+		Replaces: libegl1-mesa, libegl1, libgles2, libgles2-mesa, libegl1-mesa-dev, libgles2-mesa-dev, libglvnd-dev, libgles1, libgles1-mesa, libwayland-dev, mesa-common-dev
+		Provides: libegl1-mesa, libegl1, libgles2-mesa, libegl1-mesa-dev, libgles2-mesa-dev, libglvnd-dev, libgles1-mesa, libwayland-dev, mesa-common-dev
 		Conflicts: aml-mali-905
 		Section: kernel
 		Priority: optional
@@ -174,7 +174,33 @@ build_gpu_deb() {
 		cp -r archives/hwpacks/mali/${VENDOR}/lib/pkgconfig_${DISTRIB_ARCH} $gpu_lib_install_dir/pkgconfig
 
 		### links
-		cp -arf archives/hwpacks/mali/${VENDOR}/lib/*.so* $gpu_lib_install_dir
+		cd $gpu_lib_install_dir
+		ln -fs libMali.so libEGL.so
+		ln -fs libMali.so libEGL.so.1
+		ln -fs libMali.so libEGL.so.1.0.0
+		ln -fs libMali.so libEGL.so.1.4
+		ln -fs libMali.so libgbm.so
+		ln -fs libMali.so libgbm.so.1
+		ln -fs libMali.so libgbm.so.1.0.0
+		ln -fs libMali.so libGLESv1_CM.so
+		ln -fs libMali.so libGLESv1_CM.so.1
+		ln -fs libMali.so libGLESv1_CM.so.1.0.0
+		ln -fs libMali.so libGLESv1_CM.so.1.1
+		ln -fs libMali.so libGLESv2.so
+		ln -fs libMali.so libGLESv2.so.2
+		ln -fs libMali.so libGLESv2.so.2.0
+		ln -fs libMali.so libGLESv2.so.2.0.0
+		ln -fs libMali.so libMaliOpenCL.so
+		ln -fs libMali.so libmali.so
+		ln -fs libMali.so libOpenCL.so
+		ln -fs libMali.so libOpenCL.so.1
+		ln -fs libMali.so libOpenCL.so.1.0.0
+		if [ "$GPU_PLATFORM" == "wayland" ]; then
+			ln -fs libMali.so libwayland-egl.so
+			ln -fs libMali.so libwayland-egl.so.1
+			ln -fs libMali.so libwayland-egl.so.1.0.0
+		fi
+		cd -
 
 		mkdir -p $pkgdir/usr/lib/udev/rules.d
 		cat <<-EOF > $pkgdir/usr/lib/udev/rules.d/50-mail.rules
