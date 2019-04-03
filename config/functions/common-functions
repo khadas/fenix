@@ -117,6 +117,8 @@ prepare_host() {
 		info_msg "Module 'binfmt_misc' not installed, try to install it!"
 		warning_msg "Requires root privileges, please enter your passowrd!"
 		sudo modprobe -q binfmt_misc
+	fi
+	if  grep -q binfmt_misc <(lsmod); then
 		mountpoint -q /proc/sys/fs/binfmt_misc/ || sudo mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
 		test -e /proc/sys/fs/binfmt_misc/qemu-arm || sudo update-binfmts --enable qemu-arm
 		test -e /proc/sys/fs/binfmt_misc/qemu-aarch64 || sudo update-binfmts --enable qemu-aarch64
