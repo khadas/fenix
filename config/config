@@ -208,8 +208,8 @@ case $DISTRIB_RELEASE in
 	;;
 esac
 
-DEBIAN_MIRROR='httpredir.debian.org/debian'
-UBUNTU_MIRROR='ports.ubuntu.com/'
+DEBIAN_MIRROR=${USER_MIRROR-'httpredir.debian.org/debian'}
+UBUNTU_MIRROR=${USER_MIRROR-'ports.ubuntu.com/'}
 
 # apt-cacher-ng mirror configurarion
 if [[ $DISTRIBUTION == Ubuntu ]]; then
