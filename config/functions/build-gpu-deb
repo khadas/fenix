@@ -3,6 +3,9 @@
 
 build_gpu_deb() {
 
+	# Remove old debs
+	rm -rf $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-*.deb
+
 	if [ -z "$GPU_MODEL" ]; then
 		return
 	fi
@@ -13,6 +16,9 @@ build_gpu_deb() {
 	local pkgdir="$BUILD_IMAGES/.tmp/${pkgname}_${VERSION}_${DISTRIB_ARCH}"
 
 	if [ "$KHADAS_BOARD" == "VIM1" ]; then
+		if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" != "xenial" ]; then
+			return
+		fi
 
 		cd $ROOT
 
@@ -92,8 +98,6 @@ build_gpu_deb() {
 		echo "Building package: $pkgname"
 		fakeroot dpkg-deb -b $pkgdir ${pkgdir}.deb
 		mkdir -p $BUILD_DEBS/$VERSION/$KHADAS_BOARD
-		# Remove old debs
-		rm -rf $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-*.deb
 		cp ${pkgdir}.deb $BUILD_DEBS/$VERSION/$KHADAS_BOARD
 		# Cleanup
 		rm -rf ${pkgdir}.deb
@@ -197,8 +201,6 @@ build_gpu_deb() {
 		echo "Building package: $pkgname"
 		fakeroot dpkg-deb -b $pkgdir ${pkgdir}.deb
 		mkdir -p $BUILD_DEBS/$VERSION/$KHADAS_BOARD
-		# Remove old debs
-		rm -rf $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-*.deb
 		cp ${pkgdir}.deb $BUILD_DEBS/$VERSION/$KHADAS_BOARD
 		# Cleanup
 		rm -rf ${pkgdir}.deb
