@@ -495,6 +495,10 @@ build_rootfs() {
 		# install mali KO
 		VER=$(ls $ROOTFS_TEMP/lib/modules/)
 		cp $BUILD_IMAGES/meson-gx-mali-450/mali-${VER}.ko $ROOTFS_TEMP/lib/modules/$VER/kernel/mali.ko
+		# Blacklist lima.ko
+		tee $ROOTFS_TEMP/etc/modprobe.d/lima.conf <<-EOF
+		blacklist lima
+		EOF
 		depmod -b $ROOTFS_TEMP/ -a $VER
 
 		# install xf86-video-armsoc
