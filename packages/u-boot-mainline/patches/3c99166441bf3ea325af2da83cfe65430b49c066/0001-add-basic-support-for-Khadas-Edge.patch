@@ -1,9 +1,10 @@
-From e1abd45ea3a61115152e158dc62e3d8d8bf7eda3 Mon Sep 17 00:00:00 2001
+From 8025fe8b1b841e55dd6ce32636e066f351b0e571 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Tue, 6 Nov 2018 09:33:05 +0800
-Subject: [PATCH 1/3] add basic support for Khadas Edge
+Subject: [PATCH 1/4] add basic support for Khadas Edge
 
 ---
+ arch/arm/dts/Makefile                      |   3 +-
  arch/arm/dts/rk3399-kedge.dts              | 730 +++++++++++++++++++++++++++++
  arch/arm/mach-rockchip/rk3399/Kconfig      |   8 +
  board/rockchip/kedge_rk3399/Kconfig        |  15 +
@@ -13,7 +14,7 @@ Subject: [PATCH 1/3] add basic support for Khadas Edge
  board/rockchip/kedge_rk3399/kedge-rk3399.c |  94 ++++
  configs/kedge-rk3399_defconfig             |  88 ++++
  include/configs/kedge_rk3399.h             |  15 +
- 9 files changed, 1081 insertions(+)
+ 10 files changed, 1083 insertions(+), 1 deletion(-)
  create mode 100644 arch/arm/dts/rk3399-kedge.dts
  create mode 100644 board/rockchip/kedge_rk3399/Kconfig
  create mode 100644 board/rockchip/kedge_rk3399/MAINTAINERS
@@ -23,6 +24,20 @@ Subject: [PATCH 1/3] add basic support for Khadas Edge
  create mode 100644 configs/kedge-rk3399_defconfig
  create mode 100644 include/configs/kedge_rk3399.h
 
+diff --git a/arch/arm/dts/Makefile b/arch/arm/dts/Makefile
+index 0e2ffdb..579500e 100644
+--- a/arch/arm/dts/Makefile
++++ b/arch/arm/dts/Makefile
+@@ -92,7 +92,8 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += \
+ 	rk3399-puma-ddr1866.dtb \
+ 	rk3399-rock960.dtb \
+ 	rv1108-elgin-r1.dtb \
+-	rv1108-evb.dtb
++	rv1108-evb.dtb \
++	rk3399-kedge.dtb
+ dtb-$(CONFIG_ARCH_MESON) += \
+ 	meson-gxbb-nanopi-k2.dtb \
+ 	meson-gxbb-odroidc2.dtb \
 diff --git a/arch/arm/dts/rk3399-kedge.dts b/arch/arm/dts/rk3399-kedge.dts
 new file mode 100644
 index 0000000..8922171
@@ -760,27 +775,27 @@ index 0000000..8922171
 +};
 +
 diff --git a/arch/arm/mach-rockchip/rk3399/Kconfig b/arch/arm/mach-rockchip/rk3399/Kconfig
-index 8f18e33..33dbede 100644
+index 2408adb..b6ee949 100644
 --- a/arch/arm/mach-rockchip/rk3399/Kconfig
 +++ b/arch/arm/mach-rockchip/rk3399/Kconfig
-@@ -53,6 +53,13 @@ config TARGET_ROCK960_RK3399
- 	   * 2x USB 3.0 type A, 2x USB 2.0 type A (host mode only),
- 	     1x USB 3.0 type C OTG
+@@ -62,6 +62,13 @@ config TARGET_CHROMEBOOK_BOB
+ 	  display. It includes a Chrome OS EC (Cortex-M3) to provide access to
+ 	  the keyboard and battery functions.
  
 +config TARGET_KEDGE_RK3399
-+   bool "Khadas Edge RK3399"
-+   help
-+     Khadas Edge is a single board computer for Rockchp rk3399,
-+     with full function and phisical connectors support like type-C ports,
-+     usb2.0/3.0 host ports, MIPI, eDP, MAC, SDcard, HDMI, USB-2-serial...
++	bool "Khadas Edge RK3399"
++	help
++	  Khadas Edge is a single board computer for Rockchp rk3399,
++	  with full function and phisical connectors support like type-C ports,
++	  usb2.0/3.0 host ports, MIPI, eDP, MAC, SDcard, HDMI, USB-2-serial...
 +
  endchoice
  
  config SYS_SOC
-@@ -64,5 +71,6 @@ config SYS_MALLOC_F_LEN
- source "board/rockchip/evb_rk3399/Kconfig"
+@@ -74,5 +81,6 @@ source "board/rockchip/evb_rk3399/Kconfig"
  source "board/theobroma-systems/puma_rk3399/Kconfig"
  source "board/vamrs/rock960_rk3399/Kconfig"
+ source "board/google/gru/Kconfig"
 +source "board/rockchip/kedge_rk3399/Kconfig"
  
  endif
@@ -1150,7 +1165,7 @@ index 0000000..3120228
 +CONFIG_ERRNO_STR=y
 diff --git a/include/configs/kedge_rk3399.h b/include/configs/kedge_rk3399.h
 new file mode 100644
-index 0000000..a99eeab
+index 0000000..d06c569
 --- /dev/null
 +++ b/include/configs/kedge_rk3399.h
 @@ -0,0 +1,15 @@
@@ -1159,8 +1174,8 @@ index 0000000..a99eeab
 + * (C) Copyright 2016 Rockchip Electronics Co., Ltd
 + */
 +
-+#ifndef __EVB_RK3399_H
-+#define __EVB_RK3399_H
++#ifndef __KEDGE_RK3399_H
++#define __KEDGE_RK3399_H
 +
 +#include <configs/rk3399_common.h>
 +

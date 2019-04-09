@@ -1,7 +1,7 @@
-From 3b70e931a75385e7da6d7571c558f4a9f0780ef0 Mon Sep 17 00:00:00 2001
+From 411ae64fe3a0e7ba8c1733bb11d1ab9d42e0329a Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Tue, 11 Dec 2018 17:19:36 +0800
-Subject: [PATCH] cmd: enable 'fsuuid'
+Subject: [PATCH 4/4] cmd: enable 'fsuuid'
 
 ---
  configs/kedge-rk3399_defconfig | 2 +-

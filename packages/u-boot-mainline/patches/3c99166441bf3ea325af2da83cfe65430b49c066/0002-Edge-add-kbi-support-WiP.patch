@@ -1,7 +1,7 @@
-From 50617ff51f56b8762be66d2f5f0c27dd6b498a9e Mon Sep 17 00:00:00 2001
+From 2b7852c5e1d5333295105dbb50cffa7a4fef0a4e Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Tue, 6 Nov 2018 10:27:42 +0800
-Subject: [PATCH 2/3] Edge: add kbi support (WiP)
+Subject: [PATCH 2/4] Edge: add kbi support (WiP)
 
 ---
  cmd/Kconfig                    |    6 +
@@ -12,10 +12,10 @@ Subject: [PATCH 2/3] Edge: add kbi support (WiP)
  create mode 100644 cmd/kbi.c
 
 diff --git a/cmd/Kconfig b/cmd/Kconfig
-index ea1a325..8a175dd 100644
+index 0b07b3b..bbd935e 100644
 --- a/cmd/Kconfig
 +++ b/cmd/Kconfig
-@@ -1901,4 +1901,10 @@ config CMD_UBIFS
+@@ -1932,4 +1932,10 @@ config CMD_UBIFS
  	help
  	  UBIFS is a file system for flash devices which works on top of UBI.
  
@@ -27,10 +27,10 @@ index ea1a325..8a175dd 100644
 +
  endmenu
 diff --git a/cmd/Makefile b/cmd/Makefile
-index 4998643..f214d22 100644
+index acb85f4..3643c6c 100644
 --- a/cmd/Makefile
 +++ b/cmd/Makefile
-@@ -166,6 +166,8 @@ obj-$(CONFIG_CMD_REGULATOR) += regulator.o
+@@ -169,6 +169,8 @@ obj-$(CONFIG_CMD_REGULATOR) += regulator.o
  
  obj-$(CONFIG_CMD_BLOB) += blob.o
  
