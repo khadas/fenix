@@ -1,0 +1,9 @@
+[Unit]
+Description=Khadas Bluetooth Power Fixup service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/bluetooth-power-fixup.sh
+
+[Install]
+WantedBy=multi-user.target

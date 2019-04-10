@@ -66,6 +66,11 @@ if [ "$hwver" == "VIM2.V13" ]; then
 		touch /etc/.wifi-fixed
 	fi
 
+elif [ "$hwver" == "VIM2.V12" ]; then
+	# Delete unused bluetooth firmware for VIM2 with AP6356SA
+	if [ -f /lib/firmware/brcm/BCM4359C0_ap6398s.hcd ]; then
+		rm /lib/firmware/brcm/BCM4359C0_ap6398s.hcd
+	fi
 fi
 
 exit 0

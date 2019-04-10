@@ -92,7 +92,7 @@ build_board_deb() {
 
 	# Set up post remove script
 	cat <<-EOF > $pkgdir/DEBIAN/postrm
-	#!/bin/sh
+	#!/bin/bash
 	if [ remove = "\$1" ] || [ abort-install = "\$1" ]; then
 		systemctl disable fenix-zram-config.service fenix-hardware-optimize.service >/dev/null 2>&1
 	fi
@@ -103,7 +103,7 @@ build_board_deb() {
 
 	# Set up post install script
 	cat <<-EOF > $pkgdir/DEBIAN/postinst
-	#!/bin/sh
+	#!/bin/bash
 	# fix boot delay "waiting for suspend/resume device"
 	if [ -f "/etc/initramfs-tools/initramfs.conf" ]; then
 		if ! grep --quiet "RESUME=none" /etc/initramfs-tools/initramfs.conf; then
@@ -114,6 +114,23 @@ build_board_deb() {
 	if [ ! -f "/etc/default/fenix-zram-config" ]; then
 		mv /etc/default/fenix-zram-config.dpkg-dist /etc/default/fenix-zram-config
 	fi
+
+	# FIXME Workaround for Bluetooth
+	# Restart bluetooth-khadas.service when bluetooth power state changed
+	if [ -f /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py ] && [ ! -f /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py.backup ]; then
+		cp /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py.backup
+		echo "        if state:" >> /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py
+		echo "           os.system(\"systemctl start bluetooth-power-fixup\")" >> /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py
+	fi
+
+	# Bluez looks firmware in /etc/firmware/
+	. /etc/fenix-release
+	if [ "\$VENDOR" == "Amlogic" ]; then
+		ln -sf /lib/firmware /etc/firmware
+	fi
+	# Patches used by hciattach
+	ln -fs /lib/firmware/brcm/BCM43438A1.hcd /lib/firmware/brcm/BCM43430A1.hcd # AP6212
+	ln -fs /lib/firmware/brcm/BCM4356A2.hcd /lib/firmware/brcm/BCM4354A2.hcd # AP6356S
 
 	systemctl --no-reload enable fenix-zram-config.service fenix-hardware-optimize.service >/dev/null 2>&1
 
@@ -196,8 +213,8 @@ build_board_deb() {
 		mkdir -p $pkgdir/usr/local/bin
 		mkdir -p $pkgdir/lib/systemd/system
 		cp -r $ROOT/archives/hwpacks/bluez/brcm_patchram_plus-$DISTRIB_ARCH $pkgdir/usr/local/bin/brcm_patchram_plus
-		cp -r $ROOT/archives/hwpacks/bluez/bluetooth-khadas.service $pkgdir/lib/systemd/system/
-		cp -r $ROOT/archives/hwpacks/bluez/bluetooth-khadas.sh $pkgdir/usr/local/bin/
+		# Use patched hciattach
+		cp -r $ROOT/archives/hwpacks/bluez/hciattach-$DISTRIB_ARCH $pkgdir/usr/local/bin/hciattach
 
 		# FIXME AP6359SA and AP6398S use the same chipid and rev, so can't identify in DHD driver.
 		# But AP6359SA only on VIM2, and AP6398S only on Edge, so modify firmware here.

@@ -2,7 +2,7 @@
 Description=Khadas Bluetooth service
 
 [Service]
-Type=forking
+Type=simple
 ExecStart=/usr/local/bin/bluetooth-khadas.sh
 
 [Install]
