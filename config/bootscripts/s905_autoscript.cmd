@@ -52,11 +52,11 @@ for dev_num in ${mmc_devnums}; do
 						echo "Booting legacy kernel...";
 						setenv condev "console=ttyS0,115200n8 console=tty0 no_console_suspend consoleblank=0";
 					fi;
-					if test "X${hwver}" = "XVIM2.V13"; then
+					if test "X${hwver}" = "XVIM2.V14"; then
 						fdt addr ${dtb_loadaddr};
 						fdt resize 65536;
-						fdt set /fan hwver "VIM2.V13";
-						fdt set /i2c@c11087c0/khadas-mcu hwver "VIM2.V13";
+						fdt set /fan hwver "VIM2.V14";
+						fdt set /i2c@c11087c0/khadas-mcu hwver "VIM2.V14";
 					fi;
 					setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver}";
 					run boot_start;
@@ -95,11 +95,11 @@ for dev_num in ${usb_devnums}; do
 						echo "Booting legacy kernel...";
 						setenv condev "console=ttyS0,115200n8 console=tty0 no_console_suspend consoleblank=0";
 					fi;
-					if test "X${hwver}" = "XVIM2.V13"; then
+					if test "X${hwver}" = "XVIM2.V14"; then
 						fdt addr ${dtb_loadaddr};
 						fdt resize 65536;
-						fdt set /fan hwver "VIM2.V13";
-						fdt set /i2c@c11087c0/khadas-mcu hwver "VIM2.V13";
+						fdt set /fan hwver "VIM2.V14";
+						fdt set /i2c@c11087c0/khadas-mcu hwver "VIM2.V14";
 					fi;
 					setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable} jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver}";
 					run boot_start;
