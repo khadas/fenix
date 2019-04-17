@@ -5,7 +5,7 @@ setenv dtb_loadaddr "0x1000000"
 setenv initrd_loadaddr "0x13000000"
 setenv env_loadaddr "0x20000000"
 
-setenv hdmiargs "logo=osd1,loaded,0x3d800000,${hdmimode} vout=${hdmimode},enable"
+setenv hdmiargs "logo=${display_layer},loaded,${fb_addr},${outputmode} vout=${outputmode},enable hdmimode=${hdmimode}"
 
 setenv mmc_devplist "1"
 setenv mmc_devnums "0 1"
