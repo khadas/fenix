@@ -113,12 +113,12 @@ prepare_host() {
 	fi
 
 	# enable arm binary format so that the cross-architecture chroot environment will work
-	if ! grep -q binfmt_misc <(lsmod); then
+	if ! grep -q binfmt_misc <(sudo lsmod); then
 		info_msg "Module 'binfmt_misc' not installed, try to install it!"
 		warning_msg "Requires root privileges, please enter your passowrd!"
 		sudo modprobe -q binfmt_misc
 	fi
-	if  grep -q binfmt_misc <(lsmod); then
+	if  grep -q binfmt_misc <(sudo lsmod); then
 		mountpoint -q /proc/sys/fs/binfmt_misc/ || sudo mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
 		test -e /proc/sys/fs/binfmt_misc/qemu-arm || sudo update-binfmts --enable qemu-arm
 		test -e /proc/sys/fs/binfmt_misc/qemu-aarch64 || sudo update-binfmts --enable qemu-aarch64
@@ -197,7 +197,7 @@ cleanup() {
 			if mount | grep "$ROOTFS/boot" > /dev/null; then
 				do_umount "$ROOTFS/boot"
 				# detach all used devices
-				losetup -D
+				sudo losetup -D
 			fi
 		fi
 
