@@ -403,9 +403,9 @@ prepare_partitions()
 		mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
 		mkfs.ext4 $EXT4_MKOPTS "${IMAGE_LOOP_DEV_ROOTFS}"
 		rm -rf $ROOTFS && mkdir -p $ROOTFS
-		mount -o loop "${IMAGE_LOOP_DEV_ROOTFS}" $ROOTFS
+		mount "${IMAGE_LOOP_DEV_ROOTFS}" $ROOTFS
 		mkdir -p $ROOTFS/boot
-		mount -o loop "${IMAGE_LOOP_DEV_BOOT}" $ROOTFS/boot
+		mount "${IMAGE_LOOP_DEV_BOOT}" $ROOTFS/boot
 		local rootfs_uuid="UUID=$(blkid -s UUID -o value $IMAGE_LOOP_DEV_ROOTFS)"
 	fi
 
@@ -438,7 +438,7 @@ prepare_partitions()
 
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		umount $ROOTFS/boot
-		losetup -d "${IMAGE_LOOP_DEV}"
+		sudo losetup -d "${IMAGE_LOOP_DEV}"
 	fi
 	umount $ROOTFS
 }

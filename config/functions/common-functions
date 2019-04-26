@@ -197,7 +197,7 @@ cleanup() {
 			if mount | grep "$ROOTFS/boot" > /dev/null; then
 				do_umount "$ROOTFS/boot"
 				# detach all used devices
-				losetup -D
+				sudo losetup -D
 			fi
 		fi
 
