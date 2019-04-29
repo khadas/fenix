@@ -1,1 +1,2 @@
 fan_mode=auto
+dma_size=2M

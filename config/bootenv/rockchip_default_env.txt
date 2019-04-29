@@ -1,2 +1,3 @@
 mipi_lcd_enabled=false
 fan_mode=auto
+dma_size=2M

@@ -111,7 +111,7 @@ if test -e ${custom_ethmac}; then
 	setenv eth_mac ${custom_ethmac}
 fi
 
-setenv bootargs "${bootargs} ${condev} rw root=${rootdev} rootfstype=ext4 init=/sbin/init rootwait board_type=${board_type} board_type_name=${board_type_name} fan=${fan_mode} mac=${eth_mac} androidboot.mac=${eth_mac}"
+setenv bootargs "${bootargs} ${condev} rw root=${rootdev} rootfstype=ext4 init=/sbin/init rootwait board_type=${board_type} board_type_name=${board_type_name} fan=${fan_mode} mac=${eth_mac} androidboot.mac=${eth_mac} coherent_pool=${dma_size}"
 
 for distro_bootpart in ${devplist}; do
 	echo "Scanning ${devtype} ${devnum}:${distro_bootpart}..."
