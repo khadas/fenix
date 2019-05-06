@@ -555,7 +555,7 @@ function choose_install_type() {
 }
 
 function lunch() {
-	if [ "$KHADAS_BOARD" == "VIM1" ] || [ "$KHADAS_BOARD" == "VIM2" ] || [ "$KHADAS_BOARD" == "VIM3L" ]; then
+	if [[ "$KHADAS_BOARD" =~ VIM[123] ]]; then
 		export VENDOR="Amlogic"
 		case "$KHADAS_BOARD" in
 			VIM1)
@@ -567,8 +567,11 @@ function lunch() {
 			VIM3L)
 				export CHIP="S905D2"
 				;;
+			VIM3)
+				export CHIP="S922X"
+				;;
 		esac
-	elif [ "$KHADAS_BOARD" == "Edge" ]; then
+	elif [[ "$KHADAS_BOARD" == "Edge" ]]; then
 		export VENDOR="Rockchip"
 		case "$KHADAS_BOARD" in
 			Edge)
