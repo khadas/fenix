@@ -149,7 +149,9 @@ build_linux_debs() {
 	cd $ROOT
 
 	# Hack for deb builder. To pack what's missing in headers pack.
-	cp archives/patches/misc/headers-debian-byteshift.patch /tmp
+	if [ ! -f /tmp/headers-debian-byteshift.patch ]; then
+		cp archives/patches/misc/headers-debian-byteshift.patch /tmp
+	fi
 
 	# Different packaging for 4.3+
 	if linux-version compare $IMAGE_LINUX_VERSION ge 4.3; then
