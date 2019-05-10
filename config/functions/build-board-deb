@@ -143,6 +143,13 @@ build_board_deb() {
 	rsync -a $ROOT/archives/filesystem/common/* $pkgdir/
 
 	# Copy board special rootfs files
+	## Copy board common rootfs files
+	if [[ "$KHADAS_BOARD" =~ VIM[123] ]]; then
+		## VIMs common rootfs files
+		rsync -a $ROOT/archives/filesystem/special/VIM-COMMON/* $pkgdir/
+	fi
+	## Copy board special rootfs files, these files will
+	## overwrite the board common part files.
 	rsync -a $ROOT/archives/filesystem/special/$KHADAS_BOARD/* $pkgdir/
 
 	if [ "$LINUX" == "mainline" ]; then
