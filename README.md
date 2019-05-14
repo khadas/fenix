@@ -32,6 +32,14 @@ $ source env/setenv.sh
 ```
 $ make
 ```
+## Somethings with Redhat series
+
+- Close SELinux 
+```
+$ vim /etc/selinux/config
+$ SELINUX=enforcing --> SELINUX=disabled
+$ sudo reboot
+```
 
 ## Build in Docker
 
