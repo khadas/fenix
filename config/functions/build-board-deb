@@ -246,6 +246,7 @@ build_board_deb() {
 	if [ "$VENDOR" == "Amlogic" ]; then
 		mkdir -p $pkgdir/lib/firmware
 		cp -r $ROOT/archives/hwpacks/video-firmware/Amlogic/meson $pkgdir/lib/firmware/
+		cp -r $ROOT/archives/hwpacks/video-firmware/Amlogic/video $pkgdir/lib/firmware/
 	fi
 
 	# Trigger uInitrd creation after installation, to apply
