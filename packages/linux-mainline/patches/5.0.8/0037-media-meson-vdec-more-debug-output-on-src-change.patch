@@ -1,0 +1,34 @@
+From c13abb7995319f9054a9801cbcbb18b931e8ccf6 Mon Sep 17 00:00:00 2001
+From: Maxime Jourdan <mjourdan@baylibre.com>
+Date: Mon, 5 Nov 2018 10:42:29 +0100
+Subject: [PATCH 37/92] media: meson: vdec: more debug output on src change
+
+---
+ drivers/media/platform/meson/vdec/vdec_helpers.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/meson/vdec/vdec_helpers.c b/drivers/media/platform/meson/vdec/vdec_helpers.c
+index 1cc697f..e7b6651 100644
+--- a/drivers/media/platform/meson/vdec/vdec_helpers.c
++++ b/drivers/media/platform/meson/vdec/vdec_helpers.c
+@@ -455,12 +455,15 @@ void amvdec_src_change(struct amvdec_session *sess, u32 width, u32 height, u32 d
+ 		return;
+ 	}
+ 
++	dev_dbg(sess->core->dev, "Res. changed (%ux%u), DPB size %u\n",
++		width, height, dpb_size);
++	dev_dbg(sess->core->dev, "Current: %ux%u, DPB %u\n",
++		sess->width, sess->height, sess->num_dst_bufs);
++
+ 	sess->width = width;
+ 	sess->height = height;
+ 	sess->status = STATUS_NEEDS_RESUME;
+ 
+-	dev_dbg(sess->core->dev, "Res. changed (%ux%u), DPB size %u\n",
+-		width, height, dpb_size);
+ 	v4l2_event_queue_fh(&sess->fh, &ev);
+ }
+ EXPORT_SYMBOL_GPL(amvdec_src_change);
+-- 
+2.7.4
+

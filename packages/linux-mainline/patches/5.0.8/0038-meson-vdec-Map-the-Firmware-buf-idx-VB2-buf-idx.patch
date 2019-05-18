@@ -1,0 +1,63 @@
+From 24e0886406f738c6784c782b6bbb7843b13180ba Mon Sep 17 00:00:00 2001
+From: Maxime Jourdan <mjourdan@baylibre.com>
+Date: Mon, 3 Dec 2018 10:25:00 +0100
+Subject: [PATCH 38/92] meson: vdec: Map the Firmware buf idx <-> VB2 buf idx
+
+The current code assumes the vb2 indexes are in order (0 -> n) when
+iterating over them. This is very wrong and, in the case where they are
+not in the perfect order, will generate mismatches between the firmware
+internal buffer indexes and the VB2 ones.
+
+This fixes this bad assumption by explicitely mapping the buffer index.
+---
+ drivers/media/platform/meson/vdec/vdec.h         | 1 +
+ drivers/media/platform/meson/vdec/vdec_helpers.c | 7 ++++++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/meson/vdec/vdec.h b/drivers/media/platform/meson/vdec/vdec.h
+index 8f8ce62..7df42c5 100644
+--- a/drivers/media/platform/meson/vdec/vdec.h
++++ b/drivers/media/platform/meson/vdec/vdec.h
+@@ -256,6 +256,7 @@ struct amvdec_session {
+ 	u32 last_offset;
+ 	u32 wrap_count;
+ 	u32 dpb_size;
++	u32 fw_idx_to_vb2_idx[32];
+ 
+ 	enum amvdec_status status;
+ 	void *priv;
+diff --git a/drivers/media/platform/meson/vdec/vdec_helpers.c b/drivers/media/platform/meson/vdec/vdec_helpers.c
+index e7b6651..053d7a0 100644
+--- a/drivers/media/platform/meson/vdec/vdec_helpers.c
++++ b/drivers/media/platform/meson/vdec/vdec_helpers.c
+@@ -186,6 +186,7 @@ int amvdec_set_canvases(struct amvdec_session *sess,
+ 	u32 reg_cur = reg_base[0];
+ 	u32 reg_num_cur = 0;
+ 	u32 reg_base_cur = 0;
++	int i = 0;
+ 	int ret;
+ 
+ 	v4l2_m2m_for_each_dst_buf(sess->m2m_ctx, buf) {
+@@ -218,6 +219,8 @@ int amvdec_set_canvases(struct amvdec_session *sess,
+ 			reg_base_cur++;
+ 			reg_num_cur = 0;
+ 		}
++
++		sess->fw_idx_to_vb2_idx[i++] = buf->vb.vb2_buf.index;
+ 	}
+ 
+ 	return 0;
+@@ -409,7 +412,9 @@ void amvdec_dst_buf_done_idx(struct amvdec_session *sess,
+ 	struct vb2_v4l2_buffer *vbuf;
+ 	struct device *dev = sess->core->dev_dec;
+ 
+-	vbuf = v4l2_m2m_dst_buf_remove_by_idx(sess->m2m_ctx, buf_idx);
++	vbuf = v4l2_m2m_dst_buf_remove_by_idx(sess->m2m_ctx,
++					      sess->fw_idx_to_vb2_idx[buf_idx]);
++
+ 	if (!vbuf) {
+ 		dev_err(dev,
+ 			"Buffer %u done but it doesn't exist in m2m_ctx\n",
+-- 
+2.7.4
+

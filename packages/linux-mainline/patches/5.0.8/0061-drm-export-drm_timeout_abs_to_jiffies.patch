@@ -1,0 +1,53 @@
+From d40aa6ecab9d7c45e524c870b3ea42c55aea9901 Mon Sep 17 00:00:00 2001
+From: Qiang Yu <yuq825@gmail.com>
+Date: Sun, 17 Feb 2019 15:45:43 +0800
+Subject: [PATCH 61/92] drm: export drm_timeout_abs_to_jiffies
+
+For other driver like lima usage.
+
+Cc: Rob Herring <robh@kernel.org>
+Signed-off-by: Qiang Yu <yuq825@gmail.com>
+---
+ drivers/gpu/drm/drm_syncobj.c | 3 ++-
+ include/drm/drm_utils.h       | 4 ++++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/drm_syncobj.c b/drivers/gpu/drm/drm_syncobj.c
+index db30a0e..23fb1a5 100644
+--- a/drivers/gpu/drm/drm_syncobj.c
++++ b/drivers/gpu/drm/drm_syncobj.c
+@@ -762,7 +762,7 @@ static signed long drm_syncobj_array_wait_timeout(struct drm_syncobj **syncobjs,
+  *
+  * Calculate the timeout in jiffies from an absolute time in sec/nsec.
+  */
+-static signed long drm_timeout_abs_to_jiffies(int64_t timeout_nsec)
++signed long drm_timeout_abs_to_jiffies(int64_t timeout_nsec)
+ {
+ 	ktime_t abs_timeout, now;
+ 	u64 timeout_ns, timeout_jiffies64;
+@@ -786,6 +786,7 @@ static signed long drm_timeout_abs_to_jiffies(int64_t timeout_nsec)
+ 
+ 	return timeout_jiffies64 + 1;
+ }
++EXPORT_SYMBOL(drm_timeout_abs_to_jiffies);
+ 
+ static int drm_syncobj_array_wait(struct drm_device *dev,
+ 				  struct drm_file *file_private,
+diff --git a/include/drm/drm_utils.h b/include/drm/drm_utils.h
+index a803988..7077574 100644
+--- a/include/drm/drm_utils.h
++++ b/include/drm/drm_utils.h
+@@ -10,6 +10,10 @@
+ #ifndef __DRM_UTILS_H__
+ #define __DRM_UTILS_H__
+ 
++#include <linux/types.h>
++
+ int drm_get_panel_orientation_quirk(int width, int height);
+ 
++signed long drm_timeout_abs_to_jiffies(int64_t timeout_nsec);
++
+ #endif
+-- 
+2.7.4
+

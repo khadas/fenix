@@ -1,0 +1,123 @@
+From 5f568e693b55fa03398221c58d43a10341774f5f Mon Sep 17 00:00:00 2001
+From: Qiang Yu <yuq825@gmail.com>
+Date: Sat, 2 Mar 2019 11:18:05 +0800
+Subject: [PATCH 63/92] drm/lima: use get param to get info
+
+Signed-off-by: Qiang Yu <yuq825@gmail.com>
+---
+ drivers/gpu/drm/lima/lima_drv.c | 33 ++++++++++++++++++++++-----------
+ include/uapi/drm/lima_drm.h     | 27 +++++++++++++++++----------
+ 2 files changed, 39 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/gpu/drm/lima/lima_drv.c b/drivers/gpu/drm/lima/lima_drv.c
+index e93bce1..617e210 100644
+--- a/drivers/gpu/drm/lima/lima_drv.c
++++ b/drivers/gpu/drm/lima/lima_drv.c
+@@ -21,23 +21,34 @@ module_param_named(sched_timeout_ms, lima_sched_timeout_ms, int, 0444);
+ MODULE_PARM_DESC(sched_max_tasks, "max queued task num in a context (default 32)");
+ module_param_named(sched_max_tasks, lima_sched_max_tasks, int, 0444);
+ 
+-static int lima_ioctl_info(struct drm_device *dev, void *data, struct drm_file *file)
++static int lima_ioctl_get_param(struct drm_device *dev, void *data, struct drm_file *file)
+ {
+-	struct drm_lima_info *info = data;
++	struct drm_lima_get_param *args = data;
+ 	struct lima_device *ldev = to_lima_dev(dev);
+ 
+-	switch (ldev->id) {
+-	case lima_gpu_mali400:
+-		info->gpu_id = LIMA_INFO_GPU_MALI400;
++	switch (args->param) {
++	case DRM_LIMA_PARAM_GPU_ID:
++		switch (ldev->id) {
++		case lima_gpu_mali400:
++			args->value = DRM_LIMA_PARAM_GPU_ID_MALI400;
++			break;
++		case lima_gpu_mali450:
++			args->value = DRM_LIMA_PARAM_GPU_ID_MALI450;
++			break;
++		default:
++			args->value = DRM_LIMA_PARAM_GPU_ID_UNKNOWN;
++			break;
++		}
+ 		break;
+-	case lima_gpu_mali450:
+-		info->gpu_id = LIMA_INFO_GPU_MALI450;
++
++	case DRM_LIMA_PARAM_NUM_PP:
++		args->value = ldev->pipe[lima_pipe_pp].num_processor;
+ 		break;
++
+ 	default:
+-		return -ENODEV;
++		return -EINVAL;
+ 	}
+-	info->num_pp = ldev->pipe[lima_pipe_pp].num_processor;
+-	info->valid = 0;
++
+ 	return 0;
+ }
+ 
+@@ -198,7 +209,7 @@ static void lima_drm_driver_postclose(struct drm_device *dev, struct drm_file *f
+ }
+ 
+ static const struct drm_ioctl_desc lima_drm_driver_ioctls[] = {
+-	DRM_IOCTL_DEF_DRV(LIMA_INFO, lima_ioctl_info, DRM_AUTH|DRM_RENDER_ALLOW),
++	DRM_IOCTL_DEF_DRV(LIMA_GET_PARAM, lima_ioctl_get_param, DRM_AUTH|DRM_RENDER_ALLOW),
+ 	DRM_IOCTL_DEF_DRV(LIMA_GEM_CREATE, lima_ioctl_gem_create, DRM_AUTH|DRM_RENDER_ALLOW),
+ 	DRM_IOCTL_DEF_DRV(LIMA_GEM_INFO, lima_ioctl_gem_info, DRM_AUTH|DRM_RENDER_ALLOW),
+ 	DRM_IOCTL_DEF_DRV(LIMA_GEM_SUBMIT, lima_ioctl_gem_submit, DRM_AUTH|DRM_RENDER_ALLOW),
+diff --git a/include/uapi/drm/lima_drm.h b/include/uapi/drm/lima_drm.h
+index 64fb480..4108067 100644
+--- a/include/uapi/drm/lima_drm.h
++++ b/include/uapi/drm/lima_drm.h
+@@ -10,14 +10,21 @@
+ extern "C" {
+ #endif
+ 
+-#define LIMA_INFO_GPU_MALI400 0x00
+-#define LIMA_INFO_GPU_MALI450 0x01
+-
+-struct drm_lima_info {
+-	__u32 gpu_id;   /* out */
+-	__u32 num_pp;   /* out */
+-	__u32 valid;    /* out */
+-	__u32 _resv[7];
++enum drm_lima_param_gpu_id {
++	DRM_LIMA_PARAM_GPU_ID_UNKNOWN,
++	DRM_LIMA_PARAM_GPU_ID_MALI400,
++	DRM_LIMA_PARAM_GPU_ID_MALI450,
++};
++
++enum drm_lima_param {
++	DRM_LIMA_PARAM_GPU_ID,
++	DRM_LIMA_PARAM_NUM_PP,
++};
++
++struct drm_lima_get_param {
++	__u32 param; /* in */
++	__u32 pad;
++	__u64 value; /* out */
+ };
+ 
+ struct drm_lima_gem_create {
+@@ -105,14 +112,14 @@ struct drm_lima_ctx {
+ 	__u32 id;          /* in/out */
+ };
+ 
+-#define DRM_LIMA_INFO        0x00
++#define DRM_LIMA_GET_PARAM   0x00
+ #define DRM_LIMA_GEM_CREATE  0x01
+ #define DRM_LIMA_GEM_INFO    0x02
+ #define DRM_LIMA_GEM_SUBMIT  0x03
+ #define DRM_LIMA_GEM_WAIT    0x04
+ #define DRM_LIMA_CTX         0x05
+ 
+-#define DRM_IOCTL_LIMA_INFO DRM_IOR(DRM_COMMAND_BASE + DRM_LIMA_INFO, struct drm_lima_info)
++#define DRM_IOCTL_LIMA_GET_PARAM DRM_IOWR(DRM_COMMAND_BASE + DRM_LIMA_GET_PARAM, struct drm_lima_get_param)
+ #define DRM_IOCTL_LIMA_GEM_CREATE DRM_IOWR(DRM_COMMAND_BASE + DRM_LIMA_GEM_CREATE, struct drm_lima_gem_create)
+ #define DRM_IOCTL_LIMA_GEM_INFO DRM_IOWR(DRM_COMMAND_BASE + DRM_LIMA_GEM_INFO, struct drm_lima_gem_info)
+ #define DRM_IOCTL_LIMA_GEM_SUBMIT DRM_IOW(DRM_COMMAND_BASE + DRM_LIMA_GEM_SUBMIT, struct drm_lima_gem_submit)
+-- 
+2.7.4
+

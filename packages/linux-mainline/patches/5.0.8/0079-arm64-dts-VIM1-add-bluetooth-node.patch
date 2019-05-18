@@ -1,0 +1,30 @@
+From fffa12b867f74f0a4b8ecedc62dc7a4242588c8c Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Mon, 25 Mar 2019 10:59:26 +0800
+Subject: [PATCH 79/92] arm64: dts: VIM1: add bluetooth node
+
+---
+ arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
+index dad31d6..6c89d10 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
+@@ -232,6 +232,13 @@
+ 	};
+ };
+ 
++&uart_A {
++	bluetooth {
++		compatible = "brcm,bcm43438-bt";
++		shutdown-gpios = <&gpio GPIOX_17 GPIO_ACTIVE_HIGH>;
++	};
++};
++
+ /* This is brought out on the Linux_RX (18) and Linux_TX (19) pins: */
+ &uart_AO {
+ 	status = "okay";
+-- 
+2.7.4
+

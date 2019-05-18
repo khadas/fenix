@@ -1,0 +1,210 @@
+From 0a938ee3cda025494bbdb47bbe79f4eb85bb1f37 Mon Sep 17 00:00:00 2001
+From: Rob Herring <robh@kernel.org>
+Date: Sat, 2 Feb 2019 09:41:54 -0600
+Subject: [PATCH 60/92] drm: Add reservation_object to drm_gem_object
+
+Many users of drm_gem_object embed a struct reservation_object into
+their subclassed struct, so let's add one to struct drm_gem_object.
+This will allow removing the reservation object from the subclasses
+and removing the ->gem_prime_res_obj callback.
+
+With the addition, add a drm_gem_reservation_object_wait() helper
+function for drivers to use in wait ioctls.
+
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Maxime Ripard <maxime.ripard@bootlin.com>
+Cc: Sean Paul <sean@poorly.run>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Signed-off-by: Rob Herring <robh@kernel.org>
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Reviewed-by: Eric Anholt <eric@anholt.net>
+Reviewed-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20190202154158.10443-2-robh@kernel.org
+---
+ Documentation/gpu/todo.rst  | 38 ++++++++++++++++++++++++++++++++++----
+ drivers/gpu/drm/drm_gem.c   | 43 +++++++++++++++++++++++++++++++++++++++++++
+ drivers/gpu/drm/drm_prime.c |  1 +
+ include/drm/drm_gem.h       | 21 +++++++++++++++++++++
+ 4 files changed, 99 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/gpu/todo.rst b/Documentation/gpu/todo.rst
+index 14191b6..550b2ff 100644
+--- a/Documentation/gpu/todo.rst
++++ b/Documentation/gpu/todo.rst
+@@ -209,12 +209,42 @@ Would be great to refactor this all into a set of small common helpers.
+ 
+ Contact: Daniel Vetter
+ 
+-Put a reservation_object into drm_gem_object
++Generic fbdev defio support
++---------------------------
++
++The defio support code in the fbdev core has some very specific requirements,
++which means drivers need to have a special framebuffer for fbdev. Which prevents
++us from using the generic fbdev emulation code everywhere. The main issue is
++that it uses some fields in struct page itself, which breaks shmem gem objects
++(and other things).
++
++Possible solution would be to write our own defio mmap code in the drm fbdev
++emulation. It would need to fully wrap the existing mmap ops, forwarding
++everything after it has done the write-protect/mkwrite trickery:
++
++- In the drm_fbdev_fb_mmap helper, if we need defio, change the
++  default page prots to write-protected with something like this::
++
++      vma->vm_page_prot = pgprot_wrprotect(vma->vm_page_prot);
++
++- Set the mkwrite and fsync callbacks with similar implementions to the core
++  fbdev defio stuff. These should all work on plain ptes, they don't actually
++  require a struct page.  uff. These should all work on plain ptes, they don't
++  actually require a struct page.
++
++- Track the dirty pages in a separate structure (bitfield with one bit per page
++  should work) to avoid clobbering struct page.
++
++Might be good to also have some igt testcases for this.
++
++Contact: Daniel Vetter, Noralf Tronnes
++
++Remove the ->gem_prime_res_obj callback
+ --------------------------------------------
+ 
+-This would remove the need for the ->gem_prime_res_obj callback. It would also
+-allow us to implement generic helpers for waiting for a bo, allowing for quite a
+-bit of refactoring in the various wait ioctl implementations.
++The ->gem_prime_res_obj callback can be removed from drivers by using the
++reservation_object in the drm_gem_object. It may also be possible to use the
++generic drm_gem_reservation_object_wait helper for waiting for a bo.
+ 
+ Contact: Daniel Vetter
+ 
+diff --git a/drivers/gpu/drm/drm_gem.c b/drivers/gpu/drm/drm_gem.c
+index 8b55ece..b09acbc 100644
+--- a/drivers/gpu/drm/drm_gem.c
++++ b/drivers/gpu/drm/drm_gem.c
+@@ -170,6 +170,10 @@ void drm_gem_private_object_init(struct drm_device *dev,
+ 	kref_init(&obj->refcount);
+ 	obj->handle_count = 0;
+ 	obj->size = size;
++	reservation_object_init(&obj->_resv);
++	if (!obj->resv)
++		obj->resv = &obj->_resv;
++
+ 	drm_vma_node_reset(&obj->vma_node);
+ }
+ EXPORT_SYMBOL(drm_gem_private_object_init);
+@@ -658,6 +662,44 @@ drm_gem_object_lookup(struct drm_file *filp, u32 handle)
+ EXPORT_SYMBOL(drm_gem_object_lookup);
+ 
+ /**
++ * drm_gem_reservation_object_wait - Wait on GEM object's reservation's objects
++ * shared and/or exclusive fences.
++ * @filep: DRM file private date
++ * @handle: userspace handle
++ * @wait_all: if true, wait on all fences, else wait on just exclusive fence
++ * @timeout: timeout value in jiffies or zero to return immediately
++ *
++ * Returns:
++ *
++ * Returns -ERESTARTSYS if interrupted, 0 if the wait timed out, or
++ * greater than 0 on success.
++ */
++long drm_gem_reservation_object_wait(struct drm_file *filep, u32 handle,
++				    bool wait_all, unsigned long timeout)
++{
++	long ret;
++	struct drm_gem_object *obj;
++
++	obj = drm_gem_object_lookup(filep, handle);
++	if (!obj) {
++		DRM_DEBUG("Failed to look up GEM BO %d\n", handle);
++		return -EINVAL;
++	}
++
++	ret = reservation_object_wait_timeout_rcu(obj->resv, wait_all,
++						  true, timeout);
++	if (ret == 0)
++		ret = -ETIME;
++	else if (ret > 0)
++		ret = 0;
++
++	drm_gem_object_put_unlocked(obj);
++
++	return ret;
++}
++EXPORT_SYMBOL(drm_gem_reservation_object_wait);
++
++/**
+  * drm_gem_close_ioctl - implementation of the GEM_CLOSE ioctl
+  * @dev: drm_device
+  * @data: ioctl data
+@@ -821,6 +863,7 @@ drm_gem_object_release(struct drm_gem_object *obj)
+ 	if (obj->filp)
+ 		fput(obj->filp);
+ 
++	reservation_object_fini(&obj->_resv);
+ 	drm_gem_free_mmap_offset(obj);
+ }
+ EXPORT_SYMBOL(drm_gem_object_release);
+diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
+index 231e3f6d..dc079efb3 100644
+--- a/drivers/gpu/drm/drm_prime.c
++++ b/drivers/gpu/drm/drm_prime.c
+@@ -504,6 +504,7 @@ struct dma_buf *drm_gem_prime_export(struct drm_device *dev,
+ 		.size = obj->size,
+ 		.flags = flags,
+ 		.priv = obj,
++		.resv = obj->resv,
+ 	};
+ 
+ 	if (dev->driver->gem_prime_res_obj)
+diff --git a/include/drm/drm_gem.h b/include/drm/drm_gem.h
+index c957274..25f1ff2 100644
+--- a/include/drm/drm_gem.h
++++ b/include/drm/drm_gem.h
+@@ -35,6 +35,7 @@
+  */
+ 
+ #include <linux/kref.h>
++#include <linux/reservation.h>
+ 
+ #include <drm/drm_vma_manager.h>
+ 
+@@ -263,6 +264,24 @@ struct drm_gem_object {
+ 	struct dma_buf_attachment *import_attach;
+ 
+ 	/**
++	 * @resv:
++	 *
++	 * Pointer to reservation object associated with the this GEM object.
++	 *
++	 * Normally (@resv == &@_resv) except for imported GEM objects.
++	 */
++	struct reservation_object *resv;
++
++	/**
++	 * @_resv:
++	 *
++	 * A reservation object for this GEM object.
++	 *
++	 * This is unused for imported GEM objects.
++	 */
++	struct reservation_object _resv;
++
++	/**
+ 	 * @funcs:
+ 	 *
+ 	 * Optional GEM object functions. If this is set, it will be used instead of the
+@@ -363,6 +382,8 @@ void drm_gem_put_pages(struct drm_gem_object *obj, struct page **pages,
+ 		bool dirty, bool accessed);
+ 
+ struct drm_gem_object *drm_gem_object_lookup(struct drm_file *filp, u32 handle);
++long drm_gem_reservation_object_wait(struct drm_file *filep, u32 handle,
++				    bool wait_all, unsigned long timeout);
+ int drm_gem_dumb_map_offset(struct drm_file *file, struct drm_device *dev,
+ 			    u32 handle, u64 *offset);
+ int drm_gem_dumb_destroy(struct drm_file *file,
+-- 
+2.7.4
+
