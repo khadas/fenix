@@ -7,6 +7,10 @@ setenv env_loadaddr "0x20000000"
 
 setenv hdmiargs "logo=${display_layer},loaded,${fb_addr},${outputmode} vout=${outputmode},enable hdmimode=${hdmimode}"
 
+if test "X$lcd_exist" = "X1"; then
+	setenv panelargs "panel_exist=${lcd_exist} panel_type=${panel_type}";
+fi;
+
 setenv mmc_devplist "1"
 setenv mmc_devnums "0 1"
 setenv usb_devplist "1"
@@ -58,7 +62,7 @@ for dev_num in ${mmc_devnums}; do
 						fdt set /fan hwver "VIM2.V14";
 						fdt set /i2c@c11087c0/khadas-mcu hwver "VIM2.V14";
 					fi;
-					setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size}";
+					setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size}";
 					run boot_start;
 				fi;
 			fi;
@@ -101,7 +105,7 @@ for dev_num in ${usb_devnums}; do
 						fdt set /fan hwver "VIM2.V14";
 						fdt set /i2c@c11087c0/khadas-mcu hwver "VIM2.V14";
 					fi;
-					setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable} jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size}";
+					setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable} jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size}";
 					run boot_start;
 				fi;
 			fi;
