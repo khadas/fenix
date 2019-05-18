@@ -205,10 +205,40 @@ tweaks_platform() {
 
 ## Build deb packages for platform
 build_deb_packages_platform() {
-	:
+	info_msg "Building Kodi packages..."
+	# FIXME
+	# remove build stamp to force build for other arch
+	if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi_s922x ]; then
+		rm -rf $BUILD/.stamps/kodi_s922x
+	fi
+	build_package "kodi_s922x:target"
+
+	# FIXME
+	# remove build stamp to force build for other arch
+	if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/codec_s905x ]; then
+		rm -rf $BUILD/.stamps/codec_s905x
+	fi
+	build_package "codec_s905x:target"
+
+	# FIXME
+	# remove build stamp to force build for other arch
+	if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote_s905x ]; then
+		rm -rf $BUILD/.stamps/amremote_s905x
+	fi
+	build_package "amremote_s905x:target"
 }
 
 ## Install deb packages for platform
 install_deb_packages_platform() {
-	:
+	cd $ROOT
+	# Install Kodi in chroot
+	info_msg "Installing Kodi packages..."
+	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi_s922x/*.deb
+
+	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/codec_s905x/*.deb
+	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote_s905x/*.deb
+
+	# Enable khadas remote
+	cp $ROOTFS_TEMP/boot/remote.conf.vim $ROOTFS_TEMP/boot/remote.conf
+	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable amlogic-remotecfg.service"'
 }
