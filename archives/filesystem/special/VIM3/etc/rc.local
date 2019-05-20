@@ -16,4 +16,11 @@
 # Add write right for fw_setenv
 chmod 666 /dev/env
 
+# For kodi
+chmod 777 /sys/class/video/freerun_mode
+chmod 777 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+chmod 777 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+chmod 777 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+chmod 777 /sys/class/display/mode
+
 exit 0
