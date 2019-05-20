@@ -92,8 +92,8 @@ build_gpu_deb() {
 			cp -arf archives/hwpacks/mali/${VENDOR}/fbdev_examples/$LINUX/opengles_20 $pkgdir/usr/share/arm/
 		fi
 
-		mkdir -p $pkgdir/usr/lib/udev/rules.d
-		cat <<-EOF > $pkgdir/usr/lib/udev/rules.d/99-mali.rules
+		mkdir -p $pkgdir/etc/udev/rules.d
+		cat <<-EOF > $pkgdir/etc/udev/rules.d/99-mali.rules
 		KERNEL=="mali",SUBSYSTEM=="misc",MODE="0777"
 		KERNEL=="ump",SUBSYSTEM=="ump",MODE="0777"
 		EOF
@@ -195,11 +195,6 @@ build_gpu_deb() {
 			ln -fs libMali.so libwayland-egl.so.1.0.0
 		fi
 		cd -
-
-		mkdir -p $pkgdir/usr/lib/udev/rules.d
-		cat <<-EOF > $pkgdir/usr/lib/udev/rules.d/50-mail.rules
-		KERNEL=="mali0", MODE="0666", GROUP="video"
-		EOF
 
 		# Create board deb file
 		echo "Building package: $pkgname"
