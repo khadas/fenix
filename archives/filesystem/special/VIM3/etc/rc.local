@@ -23,4 +23,8 @@ chmod 777 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
 chmod 777 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 chmod 777 /sys/class/display/mode
 
+# Setup LED: heartbeat if bootup completed
+echo heartbeat > /sys/class/leds/sys_led/trigger
+
+
 exit 0
