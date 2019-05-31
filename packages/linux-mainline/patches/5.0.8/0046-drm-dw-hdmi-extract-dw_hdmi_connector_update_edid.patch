@@ -1,4 +1,4 @@
-From 51884b0b9fc15327bdff8e61161797fe35fbf2c8 Mon Sep 17 00:00:00 2001
+From c38b0b81882922bf26d2a689c751d4189279c501 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 16 Dec 2018 10:22:09 +0100
 Subject: [PATCH 46/92] drm: dw-hdmi: extract dw_hdmi_connector_update_edid()

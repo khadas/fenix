@@ -1,4 +1,4 @@
-From d5b9453e7ec6655129e2305682e3f9ffcb8b6d8d Mon Sep 17 00:00:00 2001
+From bdfde461bd66543d7fb59d245911a3e8bc653c3c Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 25 Mar 2019 11:04:00 +0800
 Subject: [PATCH 85/92] VIM2: fixup bluetooth

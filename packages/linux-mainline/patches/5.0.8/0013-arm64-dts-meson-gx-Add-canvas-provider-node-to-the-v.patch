@@ -1,4 +1,4 @@
-From f290773fdf1146e01bebcdcf1b7e229f3d0f64a2 Mon Sep 17 00:00:00 2001
+From 3f480b7c0c1cf8de68191e885ef54a9c2d8e63e1 Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Mon, 15 Oct 2018 14:38:24 +0200
 Subject: [PATCH 13/92] arm64: dts: meson-gx: Add canvas provider node to the

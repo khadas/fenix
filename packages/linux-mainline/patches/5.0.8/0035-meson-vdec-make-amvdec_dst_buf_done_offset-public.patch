@@ -1,4 +1,4 @@
-From 2cfe07d4ee9b5dcdeb2c85a41ab05513e7200fe9 Mon Sep 17 00:00:00 2001
+From 115190f3c45544851cd412b28cc0da05e5d5daab Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Tue, 13 Nov 2018 10:13:02 +0100
 Subject: [PATCH 35/92] meson: vdec: make amvdec_dst_buf_done_offset public

@@ -1,4 +1,4 @@
-From 84d0bee027537f7252317f0cadd103bb4f96cd54 Mon Sep 17 00:00:00 2001
+From 8cb173f573bdf9319008839ca5b0e0b24aeb4da2 Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Sun, 21 Oct 2018 15:14:27 +0200
 Subject: [PATCH 32/92] media: meson: vdec: add MJPEG decoding support

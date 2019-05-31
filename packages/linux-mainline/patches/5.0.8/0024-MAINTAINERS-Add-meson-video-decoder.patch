@@ -1,4 +1,4 @@
-From cb6eb7546894889124cb68e21cb0ba754e9a55d4 Mon Sep 17 00:00:00 2001
+From fd5b5f2a814a7a52d2231343167084b7fa5e3fa7 Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Tue, 4 Sep 2018 10:07:08 +0200
 Subject: [PATCH 24/92] MAINTAINERS: Add meson video decoder

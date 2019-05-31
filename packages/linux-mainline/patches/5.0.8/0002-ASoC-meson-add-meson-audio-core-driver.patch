@@ -1,4 +1,4 @@
-From c57a16ac813db77d6bd2682db6c9546e334a1bc2 Mon Sep 17 00:00:00 2001
+From af30f513b61c49fff555495b0765bec2b6d1620c Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Thu, 30 Mar 2017 11:49:55 +0200
 Subject: [PATCH 02/92] ASoC: meson: add meson audio core driver

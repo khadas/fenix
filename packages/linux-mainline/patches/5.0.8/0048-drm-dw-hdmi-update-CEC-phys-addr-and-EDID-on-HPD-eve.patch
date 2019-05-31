@@ -1,4 +1,4 @@
-From f7dd67ae3d1e79c05579234107cc6b56ce6c73ca Mon Sep 17 00:00:00 2001
+From cb1bbda46183eb84a7c4ce2627e3d4842908de20 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 16 Dec 2018 10:22:09 +0100
 Subject: [PATCH 48/92] drm: dw-hdmi: update CEC phys addr and EDID on HPD

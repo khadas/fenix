@@ -1,4 +1,4 @@
-From b64562550d1a6afd903af10b52d9f3faa65c791c Mon Sep 17 00:00:00 2001
+From 4421be03a6383547ae2189dc8feabc6f91c292f9 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 25 Mar 2019 10:42:26 +0800
 Subject: [PATCH 70/92] Bluetooth: Fix spurious error message

@@ -1,4 +1,4 @@
-From f295ace822a3962333174258f88178ed43711395 Mon Sep 17 00:00:00 2001
+From f1feb4e204725b1fff300dd7a55b56ee9956d2df Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 16 Dec 2018 10:22:09 +0100
 Subject: [PATCH 49/92] Revert "drm/edid: make drm_edid_to_eld() static"

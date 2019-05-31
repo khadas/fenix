@@ -1,4 +1,4 @@
-From fe9ccc206343af673eed28bce3f8437fe672a58d Mon Sep 17 00:00:00 2001
+From c7ec1d41205c9b7c830cba9f5bb5a543359d7746 Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Wed, 29 Aug 2018 15:42:56 +0200
 Subject: [PATCH 30/92] media: meson: vdec: add H.264 decoding support

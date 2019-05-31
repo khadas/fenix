@@ -1,4 +1,4 @@
-From 04e5a29d84deab69c0138dbac1daa76875b6e817 Mon Sep 17 00:00:00 2001
+From 3d0b67def972fda740142af729abc98179b86307 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Fri, 7 Jul 2017 17:39:21 +0200
 Subject: [PATCH 08/92] snd: meson: activate HDMI audio path

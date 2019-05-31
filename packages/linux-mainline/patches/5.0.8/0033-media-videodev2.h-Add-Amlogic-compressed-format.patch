@@ -1,4 +1,4 @@
-From ebd234face6221a16cb0aa051b6d8099d854778c Mon Sep 17 00:00:00 2001
+From 2ad50ac1ee8a51d95d85d130cf580374aa3e36a1 Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Sun, 21 Oct 2018 15:14:49 +0200
 Subject: [PATCH 33/92] media: videodev2.h: Add Amlogic compressed format

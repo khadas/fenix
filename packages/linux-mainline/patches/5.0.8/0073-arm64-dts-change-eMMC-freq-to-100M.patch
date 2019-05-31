@@ -1,4 +1,4 @@
-From 00a69098434dbaaa0b869fe3f5cc8a0d559ff616 Mon Sep 17 00:00:00 2001
+From 40c997f2b4f7928a3023e4dfe720a909b264fefa Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 25 Mar 2019 10:47:14 +0800
 Subject: [PATCH 73/92] arm64: dts: change eMMC freq to 100M

@@ -1,4 +1,4 @@
-From 65c7ec803ad7bfd1537fb149602008f205455eaf Mon Sep 17 00:00:00 2001
+From d6402eb153638cb000301acfd08d969a0ac44de6 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Tue, 10 Jul 2018 20:54:33 +0200
 Subject: [PATCH 55/92] drm: dw-hdmi-i2s: add multi-channel lpcm support

@@ -1,4 +1,4 @@
-From fffa12b867f74f0a4b8ecedc62dc7a4242588c8c Mon Sep 17 00:00:00 2001
+From 365ce6e5b1d893d1239ef37083c1baa34b43e14f Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 25 Mar 2019 10:59:26 +0800
 Subject: [PATCH 79/92] arm64: dts: VIM1: add bluetooth node

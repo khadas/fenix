@@ -1,4 +1,4 @@
-From 8aaa2643fa020fc9b5ec9af2ae0ac8b9ca544ea6 Mon Sep 17 00:00:00 2001
+From 61d14bd9804a3351596ddc44103044dbacd4cd85 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 16 Dec 2018 12:56:33 +0100
 Subject: [PATCH 52/92] drm: dw-hdmi: add dw_hdmi_update_eld() callback

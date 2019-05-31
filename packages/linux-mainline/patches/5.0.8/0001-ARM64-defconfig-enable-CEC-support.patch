@@ -1,4 +1,4 @@
-From e374b0ae94a9c6a602648ec43acc9021e27ead3c Mon Sep 17 00:00:00 2001
+From b52a9cb1e615dfe5359f5f8bab4da6c37b66b4ac Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Mon, 13 Nov 2017 12:09:40 +0100
 Subject: [PATCH 01/92] ARM64: defconfig: enable CEC support

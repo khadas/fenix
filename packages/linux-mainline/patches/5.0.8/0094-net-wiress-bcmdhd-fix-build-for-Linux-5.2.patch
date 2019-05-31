@@ -1,0 +1,151 @@
+From 4cf1b6d73bb608f9cc48d03610eb4884c9774245 Mon Sep 17 00:00:00 2001
+From: Neil Armstrong <narmstrong@baylibre.com>
+Date: Mon, 13 May 2019 09:49:38 +0200
+Subject: [PATCH 2/3] net: wiress: bcmdhd: fix build for Linux 5.2
+
+---
+ drivers/net/wireless/bcmdhd/bcmsdh_sdmmc.c |  4 ----
+ drivers/net/wireless/bcmdhd/dhd_linux.c    | 32 +++++++++++++++---------------
+ drivers/net/wireless/bcmdhd/linux_osl.c    |  8 ++++----
+ drivers/net/wireless/bcmdhd/wl_cfg80211.c  |  2 +-
+ 4 files changed, 21 insertions(+), 25 deletions(-)
+
+diff --git a/drivers/net/wireless/bcmdhd/bcmsdh_sdmmc.c b/drivers/net/wireless/bcmdhd/bcmsdh_sdmmc.c
+index cfdf50c..3ae9576 100644
+--- a/drivers/net/wireless/bcmdhd/bcmsdh_sdmmc.c
++++ b/drivers/net/wireless/bcmdhd/bcmsdh_sdmmc.c
+@@ -82,14 +82,10 @@ static void IRQHandler(struct sdio_func *func);
+ static void IRQHandlerF2(struct sdio_func *func);
+ #endif /* !defined(OOB_INTR_ONLY) */
+ static int sdioh_sdmmc_get_cisaddr(sdioh_info_t *sd, uint32 regaddr);
+-#if defined(ENABLE_INSMOD_NO_FW_LOAD) && !defined(BUS_POWER_RESTORE)
+-extern int sdio_reset_comm(struct mmc_card *card);
+-#else
+ int sdio_reset_comm(struct mmc_card *card)
+ {
+ 	return 0;
+ }
+-#endif
+ #ifdef GLOBAL_SDMMC_INSTANCE
+ extern PBCMSDH_SDMMC_INSTANCE gInstance;
+ #endif
+diff --git a/drivers/net/wireless/bcmdhd/dhd_linux.c b/drivers/net/wireless/bcmdhd/dhd_linux.c
+index 7229314..97d523a 100644
+--- a/drivers/net/wireless/bcmdhd/dhd_linux.c
++++ b/drivers/net/wireless/bcmdhd/dhd_linux.c
+@@ -16244,33 +16244,33 @@ write_dump_to_file(dhd_pub_t *dhd, uint8 *buf, int size, char *fname)
+ 	int ret = 0;
+ 	char memdump_path[128];
+ 	char memdump_type[32];
+-	struct timeval curtime;
++	struct timespec64 curtime;
+ 	uint32 file_mode;
+ 
+ 	/* Init file name */
+ 	memset(memdump_path, 0, sizeof(memdump_path));
+ 	memset(memdump_type, 0, sizeof(memdump_type));
+-	do_gettimeofday(&curtime);
++	ktime_get_real_ts64(&curtime);
+ 	dhd_convert_memdump_type_to_str(dhd->memdump_type, memdump_type);
+ #ifdef CUSTOMER_HW4_DEBUG
+-	snprintf(memdump_path, sizeof(memdump_path), "%s%s_%s_%ld.%ld",
++	snprintf(memdump_path, sizeof(memdump_path), "%s%s_%s_%lld.%ld",
+ 		DHD_COMMON_DUMP_PATH, fname, memdump_type,
+-		(unsigned long)curtime.tv_sec, (unsigned long)curtime.tv_usec);
++		(unsigned long)curtime.tv_sec, (unsigned long)curtime.tv_nsec);
+ 	file_mode = O_CREAT | O_WRONLY | O_SYNC;
+ #elif defined(CUSTOMER_HW2)
+-	snprintf(memdump_path, sizeof(memdump_path), "%s%s_%s_%ld.%ld",
++	snprintf(memdump_path, sizeof(memdump_path), "%s%s_%s_%lld.%ld",
+ 		"/data/misc/wifi/", fname, memdump_type,
+-		(unsigned long)curtime.tv_sec, (unsigned long)curtime.tv_usec);
++		(unsigned long)curtime.tv_sec, (unsigned long)curtime.tv_nsec);
+ 	file_mode = O_CREAT | O_WRONLY | O_SYNC;
+ #elif (defined(BOARD_PANDA) || defined(__ARM_ARCH_7A__))
+-	snprintf(memdump_path, sizeof(memdump_path), "%s%s_%s_%ld.%ld",
++	snprintf(memdump_path, sizeof(memdump_path), "%s%s_%s_%lld.%ld",
+ 		"/data/misc/wifi/", fname, memdump_type,
+-		(unsigned long)curtime.tv_sec, (unsigned long)curtime.tv_usec);
++		(unsigned long)curtime.tv_sec, (unsigned long)curtime.tv_nsec);
+ 	file_mode = O_CREAT | O_WRONLY;
+ #else
+-	snprintf(memdump_path, sizeof(memdump_path), "%s%s_%s_%ld.%ld",
++	snprintf(memdump_path, sizeof(memdump_path), "%s%s_%s_%lld.%ld",
+ 		"/installmedia/", fname, memdump_type,
+-		(unsigned long)curtime.tv_sec, (unsigned long)curtime.tv_usec);
++		(unsigned long)curtime.tv_sec, (unsigned long)curtime.tv_nsec);
+ 	/* Extra flags O_DIRECT and O_SYNC are required for Brix Android, as we are
+ 	 * calling BUG_ON immediately after collecting the socram dump.
+ 	 * So the file write operation should directly write the contents into the
+@@ -16283,9 +16283,9 @@ write_dump_to_file(dhd_pub_t *dhd, uint8 *buf, int size, char *fname)
+ 		/* Check if it is live Brix image having /installmedia, else use /data */
+ 		if (IS_ERR(fp)) {
+ 			DHD_ERROR(("open file %s, try /data/\n", memdump_path));
+-			snprintf(memdump_path, sizeof(memdump_path), "%s%s_%s_%ld.%ld",
++			snprintf(memdump_path, sizeof(memdump_path), "%s%s_%s_%lld.%ld",
+ 				"/data/", fname, memdump_type,
+-				(unsigned long)curtime.tv_sec, (unsigned long)curtime.tv_usec);
++				(unsigned long)curtime.tv_sec, (unsigned long)curtime.tv_nsec);
+ 		} else {
+ 			filp_close(fp, NULL);
+ 		}
+@@ -17982,7 +17982,7 @@ do_dhd_log_dump(dhd_pub_t *dhdp)
+ 	loff_t pos = 0;
+ 	unsigned int wr_size = 0;
+ 	char dump_path[128];
+-	struct timeval curtime;
++	struct timespec64 curtime;
+ 	uint32 file_mode;
+ 	unsigned long flags = 0;
+ 	struct dhd_log_dump_buf *dld_buf = &g_dld_buf[0];
+@@ -18006,10 +18006,10 @@ do_dhd_log_dump(dhd_pub_t *dhdp)
+ 
+ 	/* Init file name */
+ 	memset(dump_path, 0, sizeof(dump_path));
+-	do_gettimeofday(&curtime);
+-	snprintf(dump_path, sizeof(dump_path), "%s_%ld.%ld",
++	ktime_get_real_ts64(&curtime);
++	snprintf(dump_path, sizeof(dump_path), "%s_%lld.%ld",
+ 		DHD_COMMON_DUMP_PATH "debug_dump",
+-		(unsigned long)curtime.tv_sec, (unsigned long)curtime.tv_usec);
++		(unsigned long)curtime.tv_sec, (unsigned long)curtime.tv_msec);
+ 	file_mode = O_CREAT | O_WRONLY | O_SYNC;
+ 
+ 	DHD_ERROR(("debug_dump_path = %s\n", dump_path));
+diff --git a/drivers/net/wireless/bcmdhd/linux_osl.c b/drivers/net/wireless/bcmdhd/linux_osl.c
+index ee07bd3..f08c1e3 100644
+--- a/drivers/net/wireless/bcmdhd/linux_osl.c
++++ b/drivers/net/wireless/bcmdhd/linux_osl.c
+@@ -1953,12 +1953,12 @@ osl_sleep(uint ms)
+ uint64
+ osl_sysuptime_us(void)
+ {
+-	struct timeval tv;
++	struct timespec64 tv;
+ 	uint64 usec;
+ 
+-	do_gettimeofday(&tv);
+-	/* tv_usec content is fraction of a second */
+-	usec = (uint64)tv.tv_sec * 1000000ul + tv.tv_usec;
++	ktime_get_real_ts64(&tv);
++	/* tv_nsec content is fraction of a second */
++	usec = (uint64)tv.tv_sec * 1000000ul + tv.tv_nsec / 1000ul;
+ 	return usec;
+ }
+ 
+diff --git a/drivers/net/wireless/bcmdhd/wl_cfg80211.c b/drivers/net/wireless/bcmdhd/wl_cfg80211.c
+index c9f8bfb..dae81d9 100644
+--- a/drivers/net/wireless/bcmdhd/wl_cfg80211.c
++++ b/drivers/net/wireless/bcmdhd/wl_cfg80211.c
+@@ -11515,7 +11515,7 @@ static s32 wl_inform_single_bss(struct bcm_cfg80211 *cfg, struct wl_bss_info *bi
+ 	if (!mgmt->u.probe_resp.timestamp) {
+ #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 39))
+ 		struct timespec ts;
+-		get_monotonic_boottime(&ts);
++		getboottime(&ts);
+ 		mgmt->u.probe_resp.timestamp = ((u64)ts.tv_sec*1000000)
+ 				+ ts.tv_nsec / 1000;
+ #else
+-- 
+2.7.4
+

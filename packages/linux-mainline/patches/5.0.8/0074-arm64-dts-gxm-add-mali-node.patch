@@ -1,4 +1,4 @@
-From 86d2385f703d37e34a97f745367ec61ad83e7e3f Mon Sep 17 00:00:00 2001
+From bfe03154794b4d8ab4c5eb2502d8266391d87350 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 25 Mar 2019 10:49:16 +0800
 Subject: [PATCH 74/92] arm64: dts: gxm: add mali node

@@ -1,4 +1,4 @@
-From 539379e919b482ddb7f91e242d1d30062a2af0be Mon Sep 17 00:00:00 2001
+From ab7b93629c84f746bb4177b53d49bf4a81d13ea0 Mon Sep 17 00:00:00 2001
 From: Zheng Yang <zhengyang@rock-chips.com>
 Date: Tue, 27 Jun 2017 16:22:01 +0800
 Subject: [PATCH 18/92] drm/bridge: dw-hdmi: support dynamically get input/out

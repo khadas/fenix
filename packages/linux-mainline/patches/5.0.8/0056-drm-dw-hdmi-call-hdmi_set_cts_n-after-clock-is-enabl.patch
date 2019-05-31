@@ -1,4 +1,4 @@
-From 7655a3f9e23599b452c62d2ecf1d9cc792f33f95 Mon Sep 17 00:00:00 2001
+From e8f4cdfb40c8383e870ca799326ead4183e707d4 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Mon, 9 Jul 2018 21:25:15 +0200
 Subject: [PATCH 56/92] drm: dw-hdmi: call hdmi_set_cts_n after clock is

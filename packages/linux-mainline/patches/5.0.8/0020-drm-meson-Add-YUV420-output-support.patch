@@ -1,4 +1,4 @@
-From 17ba76f17d03335a89bd45f842905ac622b82d71 Mon Sep 17 00:00:00 2001
+From 631eb7c864ec423677e10e177fa3d78bb3f664f2 Mon Sep 17 00:00:00 2001
 From: Neil Armstrong <narmstrong@baylibre.com>
 Date: Thu, 15 Nov 2018 16:41:23 +0100
 Subject: [PATCH 20/92] drm/meson: Add YUV420 output support

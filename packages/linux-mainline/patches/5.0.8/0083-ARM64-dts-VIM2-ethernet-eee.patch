@@ -1,4 +1,4 @@
-From 8571c0daaa2890392a836e5a9f3f903d1f2f29c8 Mon Sep 17 00:00:00 2001
+From cf6d3fcdd4ce8125d0c67a9ee7ab2c31942c44ff Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 25 Mar 2019 11:02:57 +0800
 Subject: [PATCH 83/92] ARM64: dts: VIM2: ethernet eee

@@ -1,0 +1,33 @@
+From af5d2a5cad787883835c771b6db1cb27cb07682f Mon Sep 17 00:00:00 2001
+From: Neil Armstrong <narmstrong@baylibre.com>
+Date: Tue, 14 May 2019 15:17:45 +0200
+Subject: [PATCH 3/3] net: wiress: bcmdhd: fixup default fw and nvram path
+
+---
+ drivers/net/wireless/bcmdhd/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/bcmdhd/Kconfig b/drivers/net/wireless/bcmdhd/Kconfig
+index f49ae76..623d3ca 100644
+--- a/drivers/net/wireless/bcmdhd/Kconfig
++++ b/drivers/net/wireless/bcmdhd/Kconfig
+@@ -7,14 +7,14 @@ config BCMDHD
+ config BCMDHD_FW_PATH
+ 	depends on BCMDHD
+ 	string "Firmware path"
+-	default "/system/etc/firmware/fw_bcmdhd.bin"
++	default "/lib/firmware/brcm/fw_bcmdhd.bin"
+ 	---help---
+ 	  Path to the firmware file.
+ 
+ config BCMDHD_NVRAM_PATH
+ 	depends on BCMDHD
+ 	string "NVRAM path"
+-	default "/system/etc/firmware/nvram.txt"
++	default "/lib/firmware/brcm/nvram.txt"
+ 	---help---
+ 	  Path to the calibration file.
+ 
+-- 
+2.7.4
+

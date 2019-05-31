@@ -1,4 +1,4 @@
-From 9993e732aac0870e20e14b67b70c9b5fe5561f50 Mon Sep 17 00:00:00 2001
+From 2110ebda064dbb81cd2cf08da269ea1e8e815373 Mon Sep 17 00:00:00 2001
 From: Neil Armstrong <narmstrong@baylibre.com>
 Date: Wed, 14 Nov 2018 17:39:46 +0100
 Subject: [PATCH 19/92] drm/bridge: dw-hdmi: allow ycbcr420 modes for >= 0x200a

@@ -1,4 +1,4 @@
-From e6a125e2d87cb82af5bdfcc1faee179a72ce8865 Mon Sep 17 00:00:00 2001
+From 074fd9846419931c9b45240a7ac26b6c63ad0534 Mon Sep 17 00:00:00 2001
 From: Neil Armstrong <narmstrong@baylibre.com>
 Date: Mon, 12 Nov 2018 16:08:13 +0100
 Subject: [PATCH 15/92] drm/meson: add HDMI div40 TMDS mode

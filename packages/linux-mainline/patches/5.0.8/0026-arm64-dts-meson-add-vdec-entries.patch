@@ -1,4 +1,4 @@
-From d6a3a892548cb1aa8dbfb0003057d65bf5becebf Mon Sep 17 00:00:00 2001
+From e317a8727220b8a65db58c255bc8ae1e8dd6c182 Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Wed, 29 Aug 2018 15:24:22 +0200
 Subject: [PATCH 26/92] arm64: dts: meson: add vdec entries

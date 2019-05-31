@@ -1,4 +1,4 @@
-From 68b1a08a8b4e90f85ea6596f7205d28b21e7fc09 Mon Sep 17 00:00:00 2001
+From a46980dd246b7ec615b6e0517aea6c42c616daf4 Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Wed, 29 Aug 2018 15:05:05 +0200
 Subject: [PATCH 22/92] dt-bindings: media: add Amlogic Video Decoder Bindings

@@ -1,4 +1,4 @@
-From b612f8a5c0ec31ee4dd3f030289e29a7dd1c99e2 Mon Sep 17 00:00:00 2001
+From e1dfb67251c3ac97101e0985871464bcbd28fd9c Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Thu, 30 Mar 2017 15:19:04 +0200
 Subject: [PATCH 07/92] ARM64: dts: meson-gx: add audio controller nodes

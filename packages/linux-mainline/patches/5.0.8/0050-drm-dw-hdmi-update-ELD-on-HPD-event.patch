@@ -1,4 +1,4 @@
-From 315f293aed19f703bb4b108ff97ff0537ad5ab60 Mon Sep 17 00:00:00 2001
+From d721a5a883fa89955c78e24e643c48ad9d8b04d1 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 16 Dec 2018 10:22:09 +0100
 Subject: [PATCH 50/92] drm: dw-hdmi: update ELD on HPD event

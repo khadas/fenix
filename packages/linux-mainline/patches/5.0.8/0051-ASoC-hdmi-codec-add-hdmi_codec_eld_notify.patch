@@ -1,4 +1,4 @@
-From b330595930d84bb593d5a8853d982507878041d0 Mon Sep 17 00:00:00 2001
+From 93afdd5dc041e77366172e471547dbdde3b9b54b Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 16 Dec 2018 10:22:09 +0100
 Subject: [PATCH 51/92] ASoC: hdmi-codec: add hdmi_codec_eld_notify()

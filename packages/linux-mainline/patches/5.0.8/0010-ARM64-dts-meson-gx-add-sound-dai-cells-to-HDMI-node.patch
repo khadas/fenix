@@ -1,4 +1,4 @@
-From 2376eea56b83d48e2bafc157fed5adb7acb70c24 Mon Sep 17 00:00:00 2001
+From 4630e3c32455946d281c917b0123e9a461a4b446 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Wed, 20 Sep 2017 18:01:26 +0200
 Subject: [PATCH 10/92] ARM64: dts: meson-gx: add sound-dai-cells to HDMI node

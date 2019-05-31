@@ -1,4 +1,4 @@
-From 88488fadb47a1a5812d82e23a55db1ca59c889e9 Mon Sep 17 00:00:00 2001
+From 4cfd90ac751ca425f871b01b4127cdbc149ec797 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 16 Dec 2018 15:00:59 +0100
 Subject: [PATCH 58/92] ASoC: sun4i-i2s: multichannel updates fixes

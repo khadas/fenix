@@ -1,4 +1,4 @@
-From 13fa19de465156aa72d9ee85bf6933022d118ca6 Mon Sep 17 00:00:00 2001
+From 49c6e40e25c89c0bf802bb4e547d470bfb01a15c Mon Sep 17 00:00:00 2001
 From: Qiang Yu <yuq825@gmail.com>
 Date: Sat, 2 Mar 2019 17:34:08 +0800
 Subject: [PATCH 68/92] drm/lima: stop using drmP.h

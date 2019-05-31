@@ -1,4 +1,4 @@
-From 7f89f0d083f6b5a9e94cea9bbdf6bc0c73dfecce Mon Sep 17 00:00:00 2001
+From cb0f828e35819afded897bc88c8402444d57d6f9 Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Thu, 4 Oct 2018 15:37:39 +0200
 Subject: [PATCH 28/92] media: videodev2: add V4L2_FMT_FLAG_NO_SOURCE_CHANGE

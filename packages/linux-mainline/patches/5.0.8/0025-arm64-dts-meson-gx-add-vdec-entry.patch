@@ -1,4 +1,4 @@
-From bca985444421cf344d5420e07384932df8cff053 Mon Sep 17 00:00:00 2001
+From 14b27bc9e17c3a7abd2279e68129e17120c30406 Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Wed, 29 Aug 2018 15:24:02 +0200
 Subject: [PATCH 25/92] arm64: dts: meson-gx: add vdec entry

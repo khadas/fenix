@@ -1,4 +1,4 @@
-From 1937842195b08f43c309d4210a11a626dd0b8713 Mon Sep 17 00:00:00 2001
+From b454403f238e0eea917f0a7c44685ea2061529cb Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Thu, 30 Mar 2017 12:17:27 +0200
 Subject: [PATCH 04/92] ASoC: meson: add initial aiu i2s support

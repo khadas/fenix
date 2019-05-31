@@ -1,4 +1,4 @@
-From 6d520e22563376b87d39a4930b8947943b51dc70 Mon Sep 17 00:00:00 2001
+From 1201bfa8f5d59da67c897152189cc4ffc25dc2a4 Mon Sep 17 00:00:00 2001
 From: Neil Armstrong <narmstrong@baylibre.com>
 Date: Wed, 14 Nov 2018 16:48:50 +0100
 Subject: [PATCH 14/92] drm/bridge: dw-hdmi: Add SCDC and TMDS Scrambling

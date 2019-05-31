@@ -1,4 +1,4 @@
-From 09fdbfaf4971226b765165457bde99c0c98a362f Mon Sep 17 00:00:00 2001
+From 7d82bd54cabb53ab060913ac2ee8da492438097e Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Mon, 4 Feb 2019 10:31:25 +0100
 Subject: [PATCH 44/92] vp9: cosmetics

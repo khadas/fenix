@@ -1,4 +1,4 @@
-From d40aa6ecab9d7c45e524c870b3ea42c55aea9901 Mon Sep 17 00:00:00 2001
+From 8e1b12d7633484289eb58db3ffceac5f8084acdd Mon Sep 17 00:00:00 2001
 From: Qiang Yu <yuq825@gmail.com>
 Date: Sun, 17 Feb 2019 15:45:43 +0800
 Subject: [PATCH 61/92] drm: export drm_timeout_abs_to_jiffies

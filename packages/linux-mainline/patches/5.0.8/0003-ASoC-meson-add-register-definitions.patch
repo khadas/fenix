@@ -1,4 +1,4 @@
-From e292da5aea7db3a05ede762801ce50ce33078878 Mon Sep 17 00:00:00 2001
+From b3bf41de2aa3c9e18b0376212c84fd717e4c712b Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Thu, 30 Mar 2017 12:00:10 +0200
 Subject: [PATCH 03/92] ASoC: meson: add register definitions

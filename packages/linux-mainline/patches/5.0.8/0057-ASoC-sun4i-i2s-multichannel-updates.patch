@@ -1,4 +1,4 @@
-From 826eb23d6cd1c03de7e1e3fefae3ba24790a2d28 Mon Sep 17 00:00:00 2001
+From 8c09b17034d5df0e6570fd88453e35726fc73bf3 Mon Sep 17 00:00:00 2001
 From: Marcus Cooper <codekipper@gmail.com>
 Date: Sun, 16 Dec 2018 15:04:16 +0100
 Subject: [PATCH 57/92] ASoC: sun4i-i2s: multichannel updates

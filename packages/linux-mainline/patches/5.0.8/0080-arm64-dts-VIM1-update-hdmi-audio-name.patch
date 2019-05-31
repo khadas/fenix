@@ -1,4 +1,4 @@
-From 37ab80f4dd70f37f6ab0743365b544c742886635 Mon Sep 17 00:00:00 2001
+From 7ff0d90b6f86379c1797fa128e7d431f2593bfbe Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 25 Mar 2019 11:00:08 +0800
 Subject: [PATCH 80/92] arm64: dts: VIM1: update hdmi audio name

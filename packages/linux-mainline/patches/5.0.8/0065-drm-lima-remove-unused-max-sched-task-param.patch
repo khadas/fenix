@@ -1,4 +1,4 @@
-From 13a107645dbe6bf46c2880dbd059d3b18119942b Mon Sep 17 00:00:00 2001
+From b1699747e848c2bd754f9b2792bb0d6ef20fd438 Mon Sep 17 00:00:00 2001
 From: Qiang Yu <yuq825@gmail.com>
 Date: Sat, 2 Mar 2019 12:02:58 +0800
 Subject: [PATCH 65/92] drm/lima: remove unused max sched task param

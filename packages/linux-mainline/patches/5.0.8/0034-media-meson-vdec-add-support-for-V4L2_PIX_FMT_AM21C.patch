@@ -1,4 +1,4 @@
-From 7d04362d3b6106283c1baf3a0bd73d34ff73a945 Mon Sep 17 00:00:00 2001
+From 5c439fdf0d46f39291f9b74fc0504e1be3a595fb Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Sun, 21 Oct 2018 15:15:26 +0200
 Subject: [PATCH 34/92] media: meson: vdec: add support for V4L2_PIX_FMT_AM21C

@@ -1,4 +1,4 @@
-From ae0007e8cc9a4f6de6be38ccb2e84fbfd890c4e7 Mon Sep 17 00:00:00 2001
+From 40af1fe681b3dbc7d3835073b1544eee25320503 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Thu, 30 Mar 2017 13:46:03 +0200
 Subject: [PATCH 05/92] ASoC: meson: add initial spdif support

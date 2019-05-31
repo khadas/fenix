@@ -1,4 +1,4 @@
-From 2f6357adfb79c00ad26fee0f59b756f6c6172ca8 Mon Sep 17 00:00:00 2001
+From 43edf9a491346f217d9fddb94833f7f99ee4d8dc Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Mon, 25 Mar 2019 10:58:49 +0800
 Subject: [PATCH 78/92] VIM1: fixup btbcm

@@ -1,4 +1,4 @@
-From 0b297163ff76dbb35580f41ad0ee1a691fb6f8fb Mon Sep 17 00:00:00 2001
+From 648dae97a2bf6b205e15564d4a19002ea0ca6061 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 16 Dec 2018 11:38:43 +0100
 Subject: [PATCH 47/92] drm: dw-hdmi: move dw_hdmi_connector_detect()

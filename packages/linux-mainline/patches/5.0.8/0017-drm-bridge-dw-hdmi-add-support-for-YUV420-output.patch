@@ -1,4 +1,4 @@
-From 494d29ec89e7cbef691f24a716701722945d90a3 Mon Sep 17 00:00:00 2001
+From 14a4c7265e230e11c27fba2c6211fca1f89c1c4d Mon Sep 17 00:00:00 2001
 From: Neil Armstrong <narmstrong@baylibre.com>
 Date: Wed, 14 Nov 2018 17:19:36 +0100
 Subject: [PATCH 17/92] drm/bridge: dw-hdmi: add support for YUV420 output

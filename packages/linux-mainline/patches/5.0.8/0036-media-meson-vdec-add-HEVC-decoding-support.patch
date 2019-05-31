@@ -1,4 +1,4 @@
-From 4290b059ea54b3cce9e4cef5a9dc20992ab97b9c Mon Sep 17 00:00:00 2001
+From 05af2dcab68e52544964c9878c59a7d05b514e72 Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Wed, 29 Aug 2018 18:48:35 +0200
 Subject: [PATCH 36/92] media: meson: vdec: add HEVC decoding support

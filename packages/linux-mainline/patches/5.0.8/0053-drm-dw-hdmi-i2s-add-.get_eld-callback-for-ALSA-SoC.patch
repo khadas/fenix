@@ -1,4 +1,4 @@
-From 92663dcf774e41f4f3e89e68fc4d753e3320e3a0 Mon Sep 17 00:00:00 2001
+From 69737e00d8cef70e674263bede85754284bc7ead Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 16 Dec 2018 10:22:09 +0100
 Subject: [PATCH 53/92] drm: dw-hdmi-i2s: add .get_eld callback for ALSA SoC

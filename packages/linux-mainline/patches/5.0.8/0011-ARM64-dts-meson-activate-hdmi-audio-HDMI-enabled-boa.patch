@@ -1,4 +1,4 @@
-From 5c2e129305d287b402e484e2b5c35d8235cf7e08 Mon Sep 17 00:00:00 2001
+From 3b00fd13769c1d260e3117514ab09b61ab4dbab9 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Wed, 20 Sep 2017 18:10:08 +0200
 Subject: [PATCH 11/92] ARM64: dts: meson: activate hdmi audio HDMI enabled

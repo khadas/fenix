@@ -1,4 +1,4 @@
-From 5f568e693b55fa03398221c58d43a10341774f5f Mon Sep 17 00:00:00 2001
+From 3020168fa55466519dee1e1ebe7ea26a40a47e93 Mon Sep 17 00:00:00 2001
 From: Qiang Yu <yuq825@gmail.com>
 Date: Sat, 2 Mar 2019 11:18:05 +0800
 Subject: [PATCH 63/92] drm/lima: use get param to get info

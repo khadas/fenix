@@ -1,4 +1,4 @@
-From a66de1a44612990f7974b9937cf4f4073316c8cd Mon Sep 17 00:00:00 2001
+From 2b274532da78c9bcf599a0140afa298adeb1a247 Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Wed, 10 Oct 2018 15:44:56 +0200
 Subject: [PATCH 29/92] meson: vdec: allow subscribing to

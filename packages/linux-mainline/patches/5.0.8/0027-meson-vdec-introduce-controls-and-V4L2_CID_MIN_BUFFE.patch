@@ -1,4 +1,4 @@
-From 09264484efca320399a8eef41b74b68809fea6b1 Mon Sep 17 00:00:00 2001
+From 95e1bfa2944a6e4a9b120669a921b4f9722c0350 Mon Sep 17 00:00:00 2001
 From: Maxime Jourdan <mjourdan@baylibre.com>
 Date: Wed, 10 Oct 2018 17:22:27 +0200
 Subject: [PATCH 27/92] meson: vdec: introduce controls and
