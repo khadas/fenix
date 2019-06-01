@@ -5,8 +5,8 @@ if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/.)" ]; then
 	exit 0
 fi
 
-#bpp=32
-bpp=24
+bpp=32
+#bpp=24
 
 #mode=1080p60hz
 mode=720p60hz
@@ -41,7 +41,3 @@ echo 0 > /sys/class/graphics/fb0/blank
 echo 1 > /sys/class/graphics/fb1/blank
 
 echo 0 > /sys/devices/virtual/graphics/fbcon/cursor_blink
-
-#/etc/webmin/start &
-
-#su -c 'hciattach /dev/ttyS1 any'

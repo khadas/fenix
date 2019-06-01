@@ -1,6 +1,7 @@
 #!/bin/sh
 
-bpp=24
+#bpp=24
+bpp=32
 mode=1080p60hz
 #mode=2160p60hz
 #mode=720p60hz
