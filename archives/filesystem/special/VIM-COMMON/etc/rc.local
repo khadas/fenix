@@ -23,7 +23,7 @@ chmod 666 /dev/env
 [ -f /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ] && chmod 777 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 [ -f /sys/class/display/mode ] && chmod 777 /sys/class/display/mode
 
-# Setup LED: breathing if bootup completed
-echo breathe > /sys/class/leds/red/trigger
+# Setup LED: heartbeat if bootup completed
+echo heartbeat > /sys/class/leds/led-sys/trigger
 
 exit 0
