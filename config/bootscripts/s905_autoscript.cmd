@@ -63,7 +63,7 @@ for dev_num in ${mmc_devnums}; do
 						fdt set /i2c@c11087c0/khadas-mcu hwver "VIM2.V14";
 						fdt set /soc/cbus@c1100000/i2c@87c0/khadas-mcu hwver "VIM2.V14"
 					fi;
-					setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size}";
+					setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size} reboot_mode=${reboot_mode}";
 					run boot_start;
 				fi;
 			fi;
@@ -107,7 +107,7 @@ for dev_num in ${usb_devnums}; do
 						fdt set /i2c@c11087c0/khadas-mcu hwver "VIM2.V14";
 						fdt set /soc/cbus@c1100000/i2c@87c0/khadas-mcu hwver "VIM2.V14"
 					fi;
-					setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable} jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size}";
+					setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable} jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size} reboot_mode=${reboot_mode}";
 					run boot_start;
 				fi;
 			fi;
