@@ -568,7 +568,7 @@ function lunch() {
 				export CHIP="S905D2"
 				;;
 			VIM3)
-				export CHIP="S922X"
+				export CHIP="A311D"
 				;;
 		esac
 	elif [[ "$KHADAS_BOARD" == "Edge" ]]; then
