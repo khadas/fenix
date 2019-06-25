@@ -179,7 +179,7 @@ build_board_deb() {
 #	fi
 
 	# Copy boot scripts
-	if [ "$INSTALL_TYPE" == "SD-USB" ] && [ "$VENDOR" != "Rockchip" ]; then
+	if [ "$VENDOR" != "Rockchip" ]; then
 		mkdir -p $pkgdir/boot
 		cp $BOOT_SCRIPTS/$BOOT_SCRIPT_VENDOR $pkgdir/boot
 		cp $BOOT_SCRIPTS/$BOOT_SCRIPT_BOARD $pkgdir/boot
@@ -194,9 +194,9 @@ build_board_deb() {
 	fi
 
 	# Copy boot.ini
-	if [ -f $BOOT_SCRIPTS/$BOOT_INI ]; then
-		cp $BOOT_SCRIPTS/$BOOT_INI $pkgdir/boot/boot.ini
-	fi
+#	if [ -f $BOOT_SCRIPTS/$BOOT_INI ]; then
+#		cp $BOOT_SCRIPTS/$BOOT_INI $pkgdir/boot/boot.ini
+#	fi
 
 	# Copy boot script for Rockchip platform
 	if [ "$VENDOR" == "Rockchip" ]; then
