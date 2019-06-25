@@ -11,12 +11,11 @@ if test "X$lcd_exist" = "X1"; then
 	setenv panelargs "panel_exist=${lcd_exist} panel_type=${panel_type}";
 fi;
 
-setenv mmc_devplist "1"
+setenv devs "mmc usb"
+setenv mmc_devplist "1 5"
 setenv mmc_devnums "0 1"
 setenv usb_devplist "1"
 setenv usb_devnums "0 1 2 3"
-
-setenv mark_prefix ""
 
 setenv boot_start booti ${kernel_loadaddr} ${initrd_loadaddr} ${dtb_loadaddr}
 
@@ -27,99 +26,68 @@ else if test "$hostname" = "KVIM2"; then
 fi;fi;
 
 ## First, boot from mmc
-for dev_num in ${mmc_devnums}; do
-	for distro_bootpart in ${mmc_devplist}; do
-		echo "Scanning mmc ${dev_num}:${distro_bootpart}...";
-		if fatload mmc ${dev_num}:${distro_bootpart} ${initrd_loadaddr} uInitrd; then
-			if fatload mmc ${dev_num}:${distro_bootpart} ${kernel_loadaddr} zImage; then
-				if fatload mmc ${dev_num}:${distro_bootpart} ${dtb_loadaddr} dtb.img || fatload mmc ${dev_num}:${distro_bootpart} ${dtb_loadaddr} ${ml_dtb}; then
-					if fatload mmc ${dev_num}:${distro_bootpart} ${env_loadaddr} /boot/env.txt || fatload mmc ${dev_num}:${distro_bootpart} ${env_loadaddr} env.txt; then
-						echo "Import env.txt"; env import -t ${env_loadaddr} ${filesize};
-					fi;
-					if test "X${rootdev}" = "X"; then
-						echo "rootdev is missing! use default: root=LABEL=ROOTFS!";
-						setenv rootdev "LABEL=ROOTFS";
-					fi;
-					if test "X${custom_ethmac}" != "X"; then
-						echo "Found custom ethmac: ${custom_ethmac}, overwrite eth_mac!";
-						setenv eth_mac ${custom_ethmac};
-					fi;
-					if test "X${eth_mac}" = "X"; then
-						echo "Set default mac address to ethaddr: ${ethaddr}!";
-						setenv eth_mac ${ethaddr};
-						setenv save_ethmac "yes";
-					fi;
-					if test -e mmc ${dev_num}:${boot_env_part} ${mark_prefix}.next; then
-						echo "Booting mainline kernel...";
-						setenv condev "console=ttyAML0,115200n8 console=tty0 no_console_suspend consoleblank=0";
-					else
-						echo "Booting legacy kernel...";
-						setenv condev "console=ttyS0,115200n8 console=tty0 no_console_suspend consoleblank=0";
-					fi;
-					if test "X${hwver}" = "XVIM2.V14"; then
-						fdt addr ${dtb_loadaddr};
-						fdt resize 65536;
-						fdt set /fan hwver "VIM2.V14";
-						fdt set /i2c@c11087c0/khadas-mcu hwver "VIM2.V14";
-						fdt set /soc/cbus@c1100000/i2c@87c0/khadas-mcu hwver "VIM2.V14";
-					else if test "X${hwver}" = "XVIM3.V11"; then
-						fdt addr ${dtb_loadaddr};
-						fdt resize 65536;
-						fdt set /soc/cbus@c1100000/i2c@87c0/khadas-mcu hwver "VIM3.V11";
-					fi;fi;
-					setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size} reboot_mode=${reboot_mode}";
-					run boot_start;
-				fi;
-			fi;
-		fi;
-	done;
-done
-
 ## Second, boot from USB storage
-for dev_num in ${usb_devnums}; do
-	for distro_bootpart in ${usb_devplist}; do
-		echo "Scanning usb ${dev_num}:${distro_bootpart}...";
-		if fatload usb ${dev_num}:${distro_bootpart} ${initrd_loadaddr} uInitrd; then
-			if fatload usb ${dev_num}:${distro_bootpart} ${kernel_loadaddr} zImage; then
-				if fatload usb ${dev_num}:${distro_bootpart} ${dtb_loadaddr} dtb.img || fatload usb ${dev_num}:${distro_bootpart} ${dtb_loadaddr} ${ml_dtb}; then
-					if fatload usb ${dev_num}:${distro_bootpart} ${env_loadaddr} /boot/env.txt || fatload usb ${dev_num}:${distro_bootpart} ${env_loadaddr} env.txt; then
-						echo "Import env.txt"; env import -t ${env_loadaddr} ${filesize};
+for dev in ${devs}; do
+	if test "X${dev}" = "Xmmc"; then
+		setenv devplist ${mmc_devplist};
+		setenv devnums ${mmc_devnums};
+	else if test "X${dev}" = "Xusb"; then
+		setenv devplist ${usb_devplist};
+		setenv devnums ${usb_devnums};
+	fi;fi;
+	for dev_num in ${devnums}; do
+		for distro_bootpart in ${devplist}; do
+			echo "Scanning ${dev} ${dev_num}:${distro_bootpart}...";
+			if test "X${distro_bootpart}" = "X5"; then
+				setenv load_method "ext4load";
+				setenv mark_prefix "boot/";
+			else
+				setenv load_method "fatload";
+				setenv mark_prefix "";
+			fi;
+			if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${initrd_loadaddr} uInitrd; then
+				if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${kernel_loadaddr} zImage; then
+					if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${dtb_loadaddr} dtb.img || ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${dtb_loadaddr} ${ml_dtb}; then
+						if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${env_loadaddr} /boot/env.txt || ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${env_loadaddr} env.txt; then
+							echo "Import env.txt"; env import -t ${env_loadaddr} ${filesize};
+						fi;
+						if test "X${rootdev}" = "X"; then
+							echo "rootdev is missing! use default: root=LABEL=ROOTFS!";
+							setenv rootdev "LABEL=ROOTFS";
+						fi;
+						if test "X${custom_ethmac}" != "X"; then
+							echo "Found custom ethmac: ${custom_ethmac}, overwrite eth_mac!";
+							setenv eth_mac ${custom_ethmac};
+						fi;
+						if test "X${eth_mac}" = "X"; then
+							echo "Set default mac address to ethaddr: ${ethaddr}!";
+							setenv eth_mac ${ethaddr};
+							setenv save_ethmac "yes";
+						fi;
+						if test -e ${dev} ${dev_num}:${distro_bootpart} ${mark_prefix}.next; then
+							echo "Booting mainline kernel...";
+							setenv condev "console=ttyAML0,115200n8 console=tty0 no_console_suspend consoleblank=0";
+						else
+							echo "Booting legacy kernel...";
+							setenv condev "console=ttyS0,115200n8 console=tty0 no_console_suspend consoleblank=0";
+						fi;
+						if test "X${hwver}" = "XVIM2.V14"; then
+							fdt addr ${dtb_loadaddr};
+							fdt resize 65536;
+							fdt set /fan hwver "VIM2.V14";
+							fdt set /i2c@c11087c0/khadas-mcu hwver "VIM2.V14";
+							fdt set /soc/cbus@c1100000/i2c@87c0/khadas-mcu hwver "VIM2.V14";
+						else if test "X${hwver}" = "XVIM3.V11"; then
+							fdt addr ${dtb_loadaddr};
+							fdt resize 65536;
+							fdt set /soc/cbus@c1100000/i2c@87c0/khadas-mcu hwver "VIM3.V11";
+						fi;fi;
+						setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size} reboot_mode=${reboot_mode}";
+						run boot_start;
 					fi;
-					if test "X${rootdev}" = "X"; then
-						echo "rootdev is missing! use default: root=LABEL=ROOTFS!";
-						setenv rootdev "LABEL=ROOTFS";
-					fi;
-					if test "X${custom_ethmac}" != "X"; then
-						echo "Found custom ethmac: ${custom_ethmac}, overwrite eth_mac!"; setenv eth_mac ${custom_ethmac};
-					fi;
-					if test "X${eth_mac}" = "X"; then
-						echo "Set default mac address to ethaddr: ${ethaddr}!";
-						setenv eth_mac ${ethaddr};
-						setenv save_ethmac "yes";
-					fi;
-					if test -e usb ${dev_num}:${distro_bootpart} ${mark_prefix}.next; then
-						echo "Booting mainline kernel...";
-						setenv condev "console=ttyAML0,115200n8 console=tty0 no_console_suspend consoleblank=0";
-					else
-						echo "Booting legacy kernel...";
-						setenv condev "console=ttyS0,115200n8 console=tty0 no_console_suspend consoleblank=0";
-					fi;
-					if test "X${hwver}" = "XVIM2.V14"; then
-						fdt addr ${dtb_loadaddr};
-						fdt resize 65536;
-						fdt set /fan hwver "VIM2.V14";
-						fdt set /i2c@c11087c0/khadas-mcu hwver "VIM2.V14";
-						fdt set /soc/cbus@c1100000/i2c@87c0/khadas-mcu hwver "VIM2.V14";
-					else if test "X${hwver}" = "XVIM3.V11"; then
-						fdt addr ${dtb_loadaddr};
-						fdt resize 65536;
-						fdt set /soc/cbus@c1100000/i2c@87c0/khadas-mcu hwver "VIM3.V11";
-					fi;fi;
-					setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable} jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size} reboot_mode=${reboot_mode}";
-					run boot_start;
 				fi;
 			fi;
-		fi;
+		done;
 	done;
 done
 
