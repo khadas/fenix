@@ -81,6 +81,15 @@ for dev in ${devs}; do
 							fdt addr ${dtb_loadaddr};
 							fdt resize 65536;
 							fdt set /soc/aobus@ff800000/i2c@5000/khadas-mcu hwver "VIM3.V11";
+							kbi init;
+							kbi portmode r;
+							if test ${port_mode} = 0; then
+								fdt set /usb3phy@ffe09080 portnum <1>;
+								fdt set /pcieA@fc000000 status disabled;
+							else
+								fdt set /usb3phy@ffe09080 portnum <0>;
+								fdt set /pcieA@fc000000 status okay;
+							fi;
 						fi;fi;
 						setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size} reboot_mode=${reboot_mode}";
 						run boot_start;
