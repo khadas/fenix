@@ -28,6 +28,8 @@ if [ "$model" == "Khadas VIM" ]; then
 	board_type_name="VIM1"
 elif [ "$model" == "Khadas VIM2" ]; then
 	board_type_name="VIM2"
+elif [ "$model" == "Khadas VIM3" ]; then
+	board_type_name="VIM3"
 fi
 
 if [[ -n $board_type_name && $BOARD != $board_type_name ]]; then
