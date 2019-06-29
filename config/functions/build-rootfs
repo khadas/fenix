@@ -71,6 +71,11 @@ install_common()
 		desktop_postinstall
 	fi
 
+	# Install common deb packages
+	if [[ $(type -t install_common_deb) == function ]]; then
+		install_common_deb
+	fi
+
 	# Install packages platform
 	if [[ $(type -t install_deb_packages_platform) == function ]]; then
 		install_deb_packages_platform

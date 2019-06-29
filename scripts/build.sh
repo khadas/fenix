@@ -31,6 +31,7 @@ case "$TARGET" in
 		build_board_deb
 		build_desktop_deb
 		build_gpu_deb
+		build_common_deb
 		;;
 	u-boot)
 		build_uboot

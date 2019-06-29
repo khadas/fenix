@@ -77,6 +77,11 @@ build_debs() {
 		build_desktop_deb
 	fi
 
+	# Build common deb packages
+	if [[ $(type -t build_common_deb) == function ]]; then
+		build_common_deb
+	fi
+
 	# Build deb packages platform
 	if [[ $(type -t build_deb_packages_platform) == function ]]; then
 		build_deb_packages_platform

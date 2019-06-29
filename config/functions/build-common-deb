@@ -1,0 +1,22 @@
+# Funcions:
+# build_common_deb
+# install_common_deb
+
+## Build common deb package
+build_common_deb() {
+
+	info_msg "Building WiringPi packages..."
+	# FIXME
+	# remove build stamp to force build for other arch
+	if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wiringpi_debs ]; then
+		rm -rf $BUILD/.stamps/wiringpi_debs
+	fi
+	build_package "wiringpi_debs:target"
+}
+
+## Build common deb package
+install_common_deb() {
+	# Install WiringPi in chroot
+	info_msg "Installing WiringPi packages..."
+	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wiringpi_debs/*.deb
+}
