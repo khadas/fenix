@@ -1,6 +1,6 @@
 PKG_NAME="codec_s905x"
-PKG_VERSION="9a17f5d819e7f489d2d31f9b67b0f37395fa4dc6"
-PKG_SHA256="438882fd81d1fbb103b64e1e24383ce61f32bcbc10efc1459dd59827dafa40b4"
+PKG_VERSION="31dd2f44b5177ca4fb04c940484cd92a704c4d7d"
+PKG_SHA256="32a939c830046cf2a6b598bff33d2e9ee1e8f304762adb91307cbe16191fd776"
 PKG_SOURCE_DIR="codec_s905x-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/codec_s905x"
 PKG_URL="https://github.com/numbqq/codec_s905x/archive/$PKG_VERSION.tar.gz"
