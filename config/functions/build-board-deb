@@ -132,6 +132,11 @@ build_board_deb() {
 	ln -fs /lib/firmware/brcm/BCM43438A1.hcd /lib/firmware/brcm/BCM43430A1.hcd # AP6212
 	ln -fs /lib/firmware/brcm/BCM4356A2.hcd /lib/firmware/brcm/BCM4354A2.hcd # AP6356S
 
+	# Remove fstab for EMMC image
+	if [ "\$INSTALL_TYPE" == "EMMC" ]; then
+		rm -rf /etc/fstab
+	fi
+
 	systemctl --no-reload enable fenix-zram-config.service fenix-hardware-optimize.service >/dev/null 2>&1
 
 	exit 0
@@ -203,11 +208,6 @@ build_board_deb() {
 		mkdir -p $pkgdir/boot
 		cp $BOOT_SCRIPTS/$BOOT_SCRIPT_BOARD $pkgdir/boot
 		$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$CHIP autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_BOARD $pkgdir/boot/boot.scr
-	fi
-
-	# Remove fstab for EMMC image
-	if [ "$INSTALL_TYPE" == "EMMC" ]; then
-		rm $pkgdir/etc/fstab
 	fi
 
 	# Copy Wi-Fi & BT firmware
