@@ -65,25 +65,20 @@ build_gpu_deb() {
 
 		## libMali.so
 		mkdir -p $pkgdir/usr/lib/
-		cp -arf $gpu_lib_dir/libMali.so $pkgdir/usr/lib/
 		if [ "$DISTRIB_ARCH" == "arm64" ]; then
-			mkdir -p $pkgdir/usr/lib/aarch64-linux-gnu
-			cp -arf $gpu_lib_dir/libMali.so $pkgdir/usr/lib/aarch64-linux-gnu
+			local gpu_lib_install_dir="$pkgdir/usr/lib/aarch64-linux-gnu"
 		elif [ "$DISTRIB_ARCH" == "armhf" ]; then
-			mkdir -p $pkgdir/usr/lib/arm-linux-gnueabihf
-			cp -arf $gpu_lib_dir/libMali.so $pkgdir/usr/lib/arm-linux-gnueabihf
+			local gpu_lib_install_dir="$pkgdir/usr/lib/arm-linux-gnueabihf"
 		fi
+
+		mkdir -p $gpu_lib_install_dir
+		cp -arf $gpu_lib_dir/libMali.so $gpu_lib_install_dir
 
 		### links
-		cp -arf archives/hwpacks/mali/${VENDOR}/lib/*.so* $pkgdir/usr/lib/
-		if [ "$DISTRIB_ARCH" == "arm64" ]; then
-			cp -arf archives/hwpacks/mali/${VENDOR}/lib/*.so* $pkgdir/usr/lib/aarch64-linux-gnu
-		elif [ "$DISTRIB_ARCH" == "armhf" ]; then
-			cp -arf archives/hwpacks/mali/${VENDOR}/lib/*.so* $pkgdir/usr/lib/arm-linux-gnueabihf
-		fi
+		cp -arf archives/hwpacks/mali/${VENDOR}/lib/*.so* $gpu_lib_install_dir
 
-		mkdir -p $pkgdir/usr/lib/pkgconfig/
-		cp -arf archives/hwpacks/mali/${VENDOR}/lib/pkgconfig/*.pc $pkgdir/usr/lib/pkgconfig/
+		## pkgconfig
+		cp -r archives/hwpacks/mali/${VENDOR}/lib/pkgconfig_${DISTRIB_ARCH} $gpu_lib_install_dir/pkgconfig
 
 		# Mali framebuffer mode examples
 		if [ "$DISTRIB_ARCH" == "arm64" ] && [ "$LINUX" != "mainline" ]; then
