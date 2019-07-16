@@ -272,6 +272,13 @@ create_rootfs_cache()
 		# stage: create apt sources list
 		create_sources_list "$DISTRIB_RELEASE" "$ROOTFS_TEMP/"
 
+		# stage: add fenix repository and install key
+		echo "deb https://dl.khadas.com/repos/${KHADAS_BOARD,,}/ ${DISTRIB_RELEASE} main" > $ROOTFS_TEMP/etc/apt/sources.list.d/fenix.list
+
+		cp $CONFIG/fenix.key $ROOTFS_TEMP
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "cat fenix.key | apt-key add -"'
+		rm $ROOTFS_TEMP/fenix.key
+
 		# compressing packages list to gain some space
 		echo "Acquire::GzipIndexes "true"; Acquire::CompressionTypes::Order:: "gz";" > $ROOTFS_TEMP/etc/apt/apt.conf.d/02compress-indexes
 		echo "Acquire::Languages "none";" > $ROOTFS_TEMP/etc/apt/apt.conf.d/no-languages

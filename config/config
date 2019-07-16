@@ -36,7 +36,7 @@ FENIX_BRANCH="master"
 LINUX_SOURCE_URL="https://github.com/khadas/linux"
 UBOOT_SOURCE_URL="https://github.com/khadas/u-boot"
 
-ROOTFSCACHE_VERSION=3
+ROOTFSCACHE_VERSION=4
 IMAGE_RELEASE_VERSION="V$(date +%F | sed 's/-//g')"
 
 NR_JOBS_MAX=20
