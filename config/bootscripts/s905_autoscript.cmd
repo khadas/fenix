@@ -41,9 +41,11 @@ for dev in ${devs}; do
 			if test "X${distro_bootpart}" = "X5"; then
 				setenv load_method "ext4load";
 				setenv mark_prefix "boot/";
+				setenv image_type "EMMC";
 			else
 				setenv load_method "fatload";
 				setenv mark_prefix "";
+				setenv image_type "SD-USB";
 			fi;
 			if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${initrd_loadaddr} uInitrd; then
 				if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${kernel_loadaddr} zImage; then
@@ -91,7 +93,7 @@ for dev in ${devs}; do
 								fdt set /pcieA@fc000000 status okay;
 							fi;
 						fi;fi;
-						setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size} reboot_mode=${reboot_mode}";
+						setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size} reboot_mode=${reboot_mode} image_type=${image_type}";
 						run boot_start;
 					fi;
 				fi;
