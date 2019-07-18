@@ -53,6 +53,11 @@ install_common()
 		install_deb_chroot $BUILD_DEBS/$VERSION/${LINUX_FIRMWARE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
 	fi
 
+	# Install u-boot deb in chroot
+	if [ -f $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${LINUX_UBOOT_DEB}_${VERSION}-${UBOOT_VER}_${DISTRIB_ARCH}.deb ]; then
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${LINUX_UBOOT_DEB}_${VERSION}-${UBOOT_VER}_${DISTRIB_ARCH}.deb
+	fi
+
 	# Install GPU deb in chroot
 	if [ -f $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-mali-${GPU_PLATFORM}_${VERSION}-${GPU_VER}_${DISTRIB_ARCH}.deb ]; then
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-mali-${GPU_PLATFORM}_${VERSION}-${GPU_VER}_${DISTRIB_ARCH}.deb

@@ -19,6 +19,9 @@ for arg in $(cat /proc/cmdline); do
 		hwver=*)
 			hwver="${arg#*=}"
 			;;
+		reboot_mode=*)
+			reboot_mode="${arg#*=}"
+			;;
 	esac
 done
 
@@ -72,6 +75,14 @@ elif [ "$hwver" == "VIM2.V12" ]; then
 	# Delete unused bluetooth firmware for VIM2 with AP6356SA
 	if [ -f /lib/firmware/brcm/BCM4359C0_ap6398s.hcd ]; then
 		rm /lib/firmware/brcm/BCM4359C0_ap6398s.hcd
+	fi
+fi
+
+# Cleanup u-boot upgrading mark
+if [ "$reboot_mode" == "uboot_updated" ]; then
+	echo "cleanup u-boot mark...."
+	if [ -f /usr/lib/u-boot/.UBOOT-NEED-UPDATE ]; then
+		rm -rf /usr/lib/u-boot/.UBOOT-NEED-UPDATE
 	fi
 fi
 

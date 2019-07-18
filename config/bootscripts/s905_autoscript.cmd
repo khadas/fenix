@@ -11,7 +11,15 @@ if test "X$lcd_exist" = "X1"; then
 	setenv panelargs "panel_exist=${lcd_exist} panel_type=${panel_type}";
 fi;
 
-setenv devs "mmc usb"
+if test "X${autoscript_source}" = "Xmmc"; then
+	echo "autoscript loaded from: mmc";
+	setenv devs "mmc";
+else if test "X${autoscript_source}" = "Xusb"; then
+	echo "autoscript loaded from: usb";
+	setenv devs "usb";
+else
+	setenv devs "mmc usb";
+fi;fi;
 setenv mmc_devplist "1 5"
 setenv mmc_devnums "0 1"
 setenv usb_devplist "1"
@@ -41,11 +49,15 @@ for dev in ${devs}; do
 			if test "X${distro_bootpart}" = "X5"; then
 				setenv load_method "ext4load";
 				setenv mark_prefix "boot/";
-				setenv image_type "EMMC";
+				setenv imagetype "EMMC";
 			else
 				setenv load_method "fatload";
 				setenv mark_prefix "";
-				setenv image_type "SD-USB";
+				if test "X${dev_num}" = "X0"; then
+					setenv imagetype "SD-USB";
+				else
+					setenv imagetype "EMMC_MBR";
+				fi;
 			fi;
 			if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${initrd_loadaddr} uInitrd; then
 				if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${kernel_loadaddr} zImage; then
@@ -56,6 +68,15 @@ for dev in ${devs}; do
 						if test "X${rootdev}" = "X"; then
 							echo "rootdev is missing! use default: root=LABEL=ROOTFS!";
 							setenv rootdev "LABEL=ROOTFS";
+						fi;
+						if test "X${dev}" = "Xmmc"; then
+							part uuid mmc ${dev_num}:${distro_bootpart} ubootpartuuid;
+							if test "X${ubootpartuuid}" = "X"; then
+								echo "Can not get u-boot part UUID, set to NULL";
+								setenv ubootpartuuid "NULL";
+							fi;
+						else
+							setenv ubootpartuuid "NULL";
 						fi;
 						if test "X${custom_ethmac}" != "X"; then
 							echo "Found custom ethmac: ${custom_ethmac}, overwrite eth_mac!";
@@ -93,7 +114,7 @@ for dev in ${devs}; do
 								fdt set /pcieA@fc000000 status okay;
 							fi;
 						fi;fi;
-						setenv bootargs "root=${rootdev} rootflags=data=writeback rw ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size} reboot_mode=${reboot_mode} image_type=${image_type}";
+						setenv bootargs "root=${rootdev} rootflags=data=writeback rw ubootpart=${ubootpartuuid} ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size} reboot_mode=${reboot_mode} imagetype=${imagetype}";
 						run boot_start;
 					fi;
 				fi;

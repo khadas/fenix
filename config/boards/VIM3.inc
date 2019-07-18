@@ -6,13 +6,17 @@ case "$UBOOT" in
 		UBOOT_COMPILER="aarch64-none-elf-"
 		UBOOT_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-none-elf/bin:$TOOLCHAINS/gcc-linaro-arm-none-eabi/bin"
 		UBOOT_DIR="$ROOT/u-boot"
+		UBOOT_IMAGE_DIR="$UBOOT_DIR/fip/_tmp"
 	;;
 	mainline)
 		UBOOT_COMPILER="aarch64-elf-"
 		UBOOT_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-elf/bin"
 		UBOOT_DIR="$BUILD/u-boot-mainline-*"
+		UBOOT_IMAGE_DIR="$BUILD_IMAGES/u-boot-mainline/$KHADAS_BOARD"
 	;;
 esac
+
+UBOOT_IMAGE_FILES="u-boot.bin u-boot.bin.sd.bin"
 
 UBOOT_FORCE_REBUILD="yes"
 
@@ -118,6 +122,33 @@ uboot_custom_postprocess() {
 	cd $ROOT
 }
 
+## Write u-boot
+write_uboot_platform()
+{
+	dd if=$1/u-boot.bin.sd.bin of=$2 conv=fsync bs=1 count=442 > /dev/null 2>&1
+	dd if=$1/u-boot.bin.sd.bin of=$2 conv=fsync bs=512 skip=1 seek=1 > /dev/null 2>&1
+}
+
+setup_write_uboot_platform()
+{
+	if grep -q "ubootpart" /proc/cmdline; then
+		local tmp=$(cat /proc/cmdline)
+		local ubootpart="${tmp##*ubootpart=}"
+		local imagetype="${tmp##*imagetype=}"
+		ubootpart="${ubootpart%% *}"
+		imagetype="${imagetype%% *}"
+
+		if [ "$imagetype" == "SD-USB" ] || [ "$imagetype" == "EMMC_MBR" ]; then
+			[[ -n $ubootpart && $ubootpart != NULL ]] && local part=$(findfs PARTUUID=$ubootpart 2>/dev/null)
+			[[ -n $part ]] && local dev=$(lsblk -n -o PKNAME $part 2>/dev/null)
+			[[ -n $dev ]] && DEVICE="/dev/$dev"
+		elif [ "$imagetype" == "EMMC" ]; then
+			# For vendor eMMC image, need to update in u-boot
+			DEVICE="VENDOR"
+		fi
+	fi
+}
+
 ## Pack image
 pack_image_platform() {
     cd ${ROOT}
@@ -158,17 +189,7 @@ pack_image_platform() {
 
 		check_loop_device "$IMAGE_LOOP_DEV"
 
-		case "$UBOOT" in
-			mainline)
-				local uboot_sd_image="$BUILD_IMAGES/u-boot-mainline/$KHADAS_BOARD/u-boot.bin.sd.bin"
-				;;
-			2015.01)
-				local uboot_sd_image="$ROOT/u-boot/fip/_tmp/u-boot.bin.sd.bin"
-				;;
-		esac
-
-		dd if=$uboot_sd_image of=${IMAGE_LOOP_DEV} conv=fsync bs=1 count=442
-		dd if=$uboot_sd_image of=${IMAGE_LOOP_DEV} conv=fsync bs=512 skip=1 seek=1
+		write_uboot_platform ${UBOOT_IMAGE_DIR} ${IMAGE_LOOP_DEV}
 
         losetup -d "${IMAGE_LOOP_DEV}"
     else
