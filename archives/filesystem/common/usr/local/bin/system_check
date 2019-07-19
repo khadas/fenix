@@ -86,4 +86,14 @@ if [ "$reboot_mode" == "uboot_updated" ]; then
 	fi
 fi
 
+# Cleanup dtb upgrading mark
+if [ "$reboot_mode" == "dtb_updated" ]; then
+	echo "cleanup dtb mark...."
+	if [ -f /boot/.DTB-NEED-UPDATE ]; then
+		rm -rf /boot/.DTB-NEED-UPDATE
+	fi
+fi
+
+sync
+
 exit 0
