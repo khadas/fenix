@@ -1,0 +1,10 @@
+prefix=/usr
+exec_prefix=/usr
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: gbm
+Description: meson gbm library
+Version: 17.1.8
+Libs: -L${libdir} -lgbm
+Cflags: -I${includedir}/ 

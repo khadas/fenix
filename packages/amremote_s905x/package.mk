@@ -1,6 +1,6 @@
 PKG_NAME="amremote_s905x"
-PKG_VERSION="278a5e3860a1fdd54e0ca3e92c4c066b90c58ff5"
-PKG_SHA256="bdf09fd9c949dc3230a8b0e2ed92a9172a0e5839463d3f673b2fb6c9e9827e57"
+PKG_VERSION="550e881b59882ff1e71c4c3cf25974de82e506eb"
+PKG_SHA256="1e471b17330ec7131e7d7c8a92600d6bd534591f123ec090ccbb010699d5f0f2"
 PKG_SOURCE_DIR="amremote_s905x-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/amremote_s905x"
 PKG_URL="https://github.com/numbqq/amremote_s905x/archive/$PKG_VERSION.tar.gz"

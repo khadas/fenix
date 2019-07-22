@@ -1,6 +1,6 @@
 PKG_NAME="images_upgrade"
-PKG_VERSION="afb8bb25ae2983d9851c69395b85a55f36376f16"
-PKG_SHA256="22c2e7ad44455bc423e5c056da2c08210408e1a8f41b19d53824340950727bdb"
+PKG_VERSION="5cc06f6f2d410328a2d5e62d8dcbfe3d866932f2"
+PKG_SHA256="f44fd2694b298d2c2265ad5776da48f3c3a54461c48d18a3d711327073b37128"
 PKG_SOURCE_DIR="images_upgrade-${PKG_VERSION}*"
 PKG_SITE="https://github.com/khadas/images_upgrade"
 PKG_URL="https://github.com/khadas/images_upgrade/archive/$PKG_VERSION.tar.gz"
