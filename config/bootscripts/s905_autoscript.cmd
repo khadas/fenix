@@ -94,15 +94,14 @@ for dev in ${devs}; do
 							echo "Booting legacy kernel...";
 							setenv condev "console=ttyS0,115200n8 console=tty0 no_console_suspend consoleblank=0";
 						fi;
+
+						fdt addr ${dtb_loadaddr};
+						fdt resize 65536;
 						if test "X${hwver}" = "XVIM2.V14"; then
-							fdt addr ${dtb_loadaddr};
-							fdt resize 65536;
 							fdt set /fan hwver "VIM2.V14";
 							fdt set /i2c@c11087c0/khadas-mcu hwver "VIM2.V14";
 							fdt set /soc/cbus@c1100000/i2c@87c0/khadas-mcu hwver "VIM2.V14";
 						else if test "X${hwver}" = "XVIM3.V11"; then
-							fdt addr ${dtb_loadaddr};
-							fdt resize 65536;
 							fdt set /soc/aobus@ff800000/i2c@5000/khadas-mcu hwver "VIM3.V11";
 							kbi init;
 							kbi portmode r;
@@ -114,7 +113,11 @@ for dev in ${devs}; do
 								fdt set /pcieA@fc000000 status okay;
 							fi;
 						fi;fi;
-						setenv bootargs "root=${rootdev} rootflags=data=writeback rw ubootpart=${ubootpartuuid} ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size} reboot_mode=${reboot_mode} imagetype=${imagetype}";
+						if test "X${imagetype}" = "XEMMC_MBR"; then
+							echo "Remove eMMC vendor partitions...";
+							fdt rm /partitions;
+						fi;
+						setenv bootargs "root=${rootdev} rootfstype=ext4 rootflags=data=writeback rw ubootpart=${ubootpartuuid} ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size} reboot_mode=${reboot_mode} imagetype=${imagetype}";
 						run boot_start;
 					fi;
 				fi;
