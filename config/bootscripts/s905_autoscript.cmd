@@ -13,12 +13,22 @@ fi;
 
 if test "X${fdtfile}" = "Xamlogic/meson-gxl-s905x-khadas-vim.dtb"; then
 	setenv uboottype "mainline";
+	setenv khadas_board "VIM1";
 else if test "X${fdtfile}" = "Xamlogic/meson-gxm-khadas-vim2.dtb"; then
 	setenv uboottype "mainline";
+	setenv khadas_board "VIM2";
 else if test "X${fdtfile}" = "Xamlogic/meson-g12b-khadas-vim3.dtb"; then
 	setenv uboottype "mainline";
+	setenv khadas_board "VIM3";
 else
 	setenv uboottype "vendor";
+	if test "X${maxcpus}" = "X4"; then
+		setenv khadas_board "VIM1";
+	else if test "X${maxcpus}" = "X8"; then
+		setenv khadas_board "VIM2";
+	else if test "X${maxcpus}" = "X6"; then
+		setenv khadas_board "VIM3";
+	fi;fi;fi;
 fi;fi;fi;
 
 echo "uboot type: $uboottype"
@@ -131,7 +141,7 @@ for dev in ${devs}; do
 							echo "Remove eMMC vendor partitions...";
 							fdt rm /partitions;
 						fi;
-						setenv bootargs "root=${rootdev} rootfstype=ext4 rootflags=data=writeback rw ubootpart=${ubootpartuuid} ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size} reboot_mode=${reboot_mode} imagetype=${imagetype} uboottype=${uboottype}";
+						setenv bootargs "root=${rootdev} rootfstype=ext4 rootflags=data=writeback rw ubootpart=${ubootpartuuid} ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} khadas_board=${khadas_board} hwver=${hwver} coherent_pool=${dma_size} reboot_mode=${reboot_mode} imagetype=${imagetype} uboottype=${uboottype}";
 						run boot_start;
 					fi;
 				fi;
