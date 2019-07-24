@@ -53,6 +53,9 @@ fi
 
 if [ "$UBOOT" == "mainline" ]; then
 	MAINLINE_UBOOT_VER=$(grep "PKG_VERSION=" $PKGS_DIR/u-boot-mainline/package.mk | awk -F '"' '{print $2}')
+	LINUX_UBOOT_DEB="linux-u-boot-${KHADAS_BOARD,,}-mainline"
+else
+	LINUX_UBOOT_DEB="linux-u-boot-${KHADAS_BOARD,,}-vendor"
 fi
 
 UBOOT_VER=${UBOOT/mainline/$MAINLINE_UBOOT_VER}
@@ -62,8 +65,6 @@ LINUX_IMAGE_DEB="linux-image-${VENDOR,,}-${LINUX}"
 LINUX_FIRMWARE_DEB="linux-firmware-image-${VENDOR,,}-${LINUX}"
 
 LINUX_BOARD_DEB="linux-board-package-${DISTRIB_RELEASE,,}-${KHADAS_BOARD,,}"
-
-LINUX_UBOOT_DEB="linux-u-boot-${KHADAS_BOARD,,}"
 
 if [ "$DISTRIB_TYPE" != "server" ]; then
 	FENIX_DESKTOP_DEB="fenix-${DISTRIBUTION,,}-${DISTRIB_RELEASE}-${DISTRIB_TYPE}-desktop"

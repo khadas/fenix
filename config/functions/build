@@ -207,7 +207,7 @@ build_uboot_deb() {
 	Section: kernel
 	Priority: optional
 	Provides: fenix-u-boot
-	Replaces: fenix-u-boot
+	Replaces: fenix-u-boot, linux-u-boot-vim1, linux-u-boot-vim2, linux-u-boot-vim3, linux-u-boot-vim1-mainline, linux-u-boot-vim1-vendor, linux-u-boot-vim2-mainline, linux-u-boot-vim2-vendor, linux-u-boot-vim3-mainline, linux-u-boot-vim3-vendor, linux-u-boot-vim3l-mainline, linux-u-boot-vim3l-vendor
 	Description: U-boot $UBOOT_VER
 	EOF
 
