@@ -28,9 +28,11 @@ title=" eMMC, USB and NVMe Fenix installer v${VERSION}"
 case ${VENDOR} in
 	Rockchip)
 		FIRSTSECTOR=32768
+		UBOOT_PACKAGE_UPDATE=no
 		;;
 	*)
 		FIRSTSECTOR=8192
+		UBOOT_PACKAGE_UPDATE=yes
 		;;
 esac
 
@@ -393,6 +395,53 @@ main()
 	[ -f $logfile ] && echo -e '\n\n\n' >> $logfile
 	LANG=C echo -e "$(date): Start ${0##*/}.\n" >> $logfile
 
+	if [[ ${UBOOT_PACKAGE_UPDATE} = yes ]]; then
+		IFS="'"
+		options=()
+		options+=(1 "Vendor u-boot")
+		[[ ${BOARD} = VIM1 || ${BOARD} = "VIM2" ]] && options+=(2 "Mainline u-boot")
+		cmd=(dialog --title 'Choose the U-boot' --backtitle "$backtitle" --menu "\n Choose the U-boot you want to use \n \n" 14 40 7)
+		choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
+		[[ $? -ne 0 ]] && exit 16
+
+		for choice in $choices
+		do
+			case $choice in
+				1)
+					uboottype="vendor"
+					;;
+				2)
+					uboottype="mainline"
+					;;
+			esac
+		done
+
+		installed_uboot_package=`dpkg -l | grep linux-u-boot | awk '{print $2}'`
+		installed_uboot_package_type=`echo $installed_uboot_package | awk -F '-' '{print $5}'`
+		uboot_package="linux-u-boot-${BOARD,,}-${uboottype}"
+		if [[ ${uboot_package} = ${installed_uboot_package} ]]; then
+			# already installed
+			UBOOT_PACKAGE_UPDATE=no
+		fi
+
+		echo "installed_uboot_package: $installed_uboot_package" >> $logfile
+		echo "uboot_package: $uboot_package" >> $logfile
+		echo "UBOOT_PACKAGE_UPDATE: $UBOOT_PACKAGE_UPDATE" >> $logfile
+
+		if [[ ${UBOOT_PACKAGE_UPDATE} = yes ]]; then
+			# update u-boot package
+			dialog --title "Update u-boot package" --backtitle "$backtitle" --colors --yesno \
+			"\n Install u-boot package from fenix repo?\n" 7 60
+			[[ $? -ne 0 ]] && exit 13
+			apt-get -q update
+			apt-get -q install -y --reinstall $uboot_package
+			[[ $? -ne 0 ]] && exit 13
+		else
+			dialog --title "$title" --backtitle "$backtitle" --cr-wrap --colors --yesno "\n U-boot package already updated! Continue? \n" 6 50
+			[[ $? -ne 0 ]] && exit 13
+		fi
+	fi
+
 	IFS="'"
 	options=()
 	if [[ -n $emmccheck ]]; then
@@ -402,24 +451,24 @@ main()
 	fi
 
 	# Boot + RootFS relocation options
-	[[ -n $emmccheck ]] && options+=(2 "Boot from $ichip - system on $ichip")
-	[[ -n $emmccheck  && -n $diskcheck ]] && options+=(3 "Boot from $ichip - system on USB or NVMe")
-	[[ -n $spicheck ]] && options+=(4 'Boot from SPI  - system on USB or NVMe')
+	[[ -n $emmccheck ]] && options+=(1 "Boot from $ichip - system on $ichip (fully install to eMMC)")
+	[[ -n $emmccheck  && -n $diskcheck ]] && options+=(2 "Boot from $ichip - system on USB or NVMe (install to USB/NVMe)")
+	[[ -n $spicheck ]] && options+=(3 'Boot from SPI  - system on USB or NVMe (install to USB/NVMe)')
 
 	# U-boot install/update options
-	[[ -n ${root_partition_device} ]] && options+=(5 'Install/Update the bootloader on SD/eMMC')
-	[[ -n $spicheck && $(type -t write_uboot_platform_mtd) == function ]] && options+=(7 'Install/Update the bootloader on SPI Flash')
+	[[ -n ${root_partition_device} ]] && options+=(4 'Install/Update the bootloader on SD/eMMC')
+	[[ -n $spicheck && $(type -t write_uboot_platform_mtd) == function ]] && options+=(5 'Install/Update the bootloader on SPI Flash')
 
 	[[ ${#options[@]} -eq 0 || "$root_uuid" == "$emmcrootuuid" ]] && \
 	dialog --ok-label 'Cancel' --title ' Warning ' --backtitle "$backtitle" --colors --no-collapse --msgbox '\n\Z1There are no targets. Please check your drives.\Zn' 7 52
-	cmd=(dialog --title 'Choose an option:' --backtitle "$backtitle" --menu "\nCurrent root: $root_uuid \n \n" 14 60 7)
+	cmd=(dialog --title 'Choose an option:' --backtitle "$backtitle" --menu "\nCurrent root: $root_uuid \n \n" 14 70 7)
 	choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
 	[[ $? -ne 0 ]] && exit 16
 
 	for choice in $choices
 	do
 		case $choice in
-			2)
+			1)
 				title="$ichip install"
 				command='Power off'
 				show_warning "This script will erase your $ichip. Continue?"
@@ -429,7 +478,7 @@ main()
 				fi
 				create_filesystem "$dest_boot" "$dest_root"
 				;;
-			3)
+			2)
 				title="$ichip boot | USB/NVMe root install"
 				command='Power off'
 				check_partitions
@@ -442,7 +491,7 @@ main()
 				format_disk "$DISK_ROOT_PART"
 				create_filesystem "$dest_boot" "$DISK_ROOT_PART"
 				;;
-			4)
+			3)
 				# TODO
 				# Espressobin has flash boot by default
 				title='SPI flash boot | USB/NVMe root install'
@@ -454,14 +503,14 @@ main()
 				format_disk "$DISK_ROOT_PART"
 				create_filesystem 'spi' "$DISK_ROOT_PART"
 				;;
-			5)
+			4)
 				show_warning 'This script will update the bootloader on SD/eMMC. Continue?'
 				write_uboot_platform "$DIR" "${root_partition_device}"
 				update_bootscript
 				dialog --backtitle "$backtitle" --title 'Writing bootloader' --msgbox '\n          Done.' 7 30
 				return
 				;;
-			7)
+			5)
 				MTD_BLK="/dev/${spicheck}"
 				show_warning "This script will update the bootloader on SPI Flash $MTD_BLK. Continue?"
 				write_uboot_platform_mtd "$DIR" $MTD_BLK
