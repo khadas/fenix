@@ -16,12 +16,10 @@ build_board_deb() {
 	Architecture: $DISTRIB_ARCH
 	Maintainer: Khadas <hello@khadas.com>
 	Installed-Size: 1
-	Replaces: linux-firmware, watchdog, base-files, mpv, zram-config
+	Replaces: linux-firmware, watchdog, base-files, mpv, zram-config, linux-board-package-${DISTRIB_RELEASE,,}-vim1, linux-board-package-${DISTRIB_RELEASE,,}-vim2, linux-board-package-${DISTRIB_RELEASE,,}-vim3, linux-board-package-${DISTRIB_RELEASE,,}-vim3l
 	Section: kernel
 	Priority: optional
 	Depends: bash, linux-base, u-boot-tools, initramfs-tools
-	Provides: linux-board-package
-	Conflicts: linux-board-package
 	Description: Fenix tweaks for ${DISTRIBUTION}-${DISTRIB_RELEASE} on $KHADAS_BOARD
 	EOF
 
@@ -143,13 +141,18 @@ build_board_deb() {
 			IS_MAINLINE_KERNEL="yes"
 		fi
 	else
-		if cat /proc/cmdline | grep -q SD-USB; then
-			sed -i "s/INSTALL_TYPE=.*/INSTALL_TYPE=SD-USB/" /etc/fenix-release
-		else
-			sed -i "s/INSTALL_TYPE=.*/INSTALL_TYPE=EMMC/" /etc/fenix-release
+		tmp=\$(cat /proc/cmdline)
+		imagetype="\${tmp##*imagetype=}"
+		imagetype="\${imagetype%% *}"
+		khadas_board="\${tmp##*khadas_board=}"
+		khadas_board="\${khadas_board%% *}"
+
+		if [ "\$imagetype" == "EMMC" ]; then
 			# Remove fstab for EMMC image
 			rm -rf /etc/fstab
 		fi
+		sed -i "s/INSTALL_TYPE=.*/INSTALL_TYPE=\$imagetype/" /etc/fenix-release
+		sed -i "s/BOARD=.*/BOARD=\$khadas_board/" /etc/fenix-release
 		linux_ver=\`uname -r\`
 		if linux-version compare \$linux_ver ge 4.12; then
 			IS_MAINLINE_KERNEL="yes"
