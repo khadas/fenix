@@ -189,6 +189,10 @@ build_board_deb() {
 	## overwrite the board common part files.
 	rsync -aI $ROOT/archives/filesystem/special/$KHADAS_BOARD/* $pkgdir/
 
+	# Add fenix repository
+	mkdir -p $pkgdir/etc/apt/sources.list.d
+	echo "deb https://dl.khadas.com/repos/${KHADAS_BOARD,,}/ ${DISTRIB_RELEASE} main" > $pkgdir/etc/apt/sources.list.d/fenix.list
+
 	if [ "$LINUX" == "mainline" ]; then
 		touch $pkgdir/etc/.mainline
 	fi
