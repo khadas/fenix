@@ -7,9 +7,21 @@ setenv env_loadaddr "0x20000000"
 
 setenv hdmiargs "logo=${display_layer},loaded,${fb_addr},${outputmode} vout=${outputmode},enable hdmimode=${hdmimode}"
 
-if test "X$lcd_exist" = "X1"; then
+if test "X${lcd_exist}" = "X1"; then
 	setenv panelargs "panel_exist=${lcd_exist} panel_type=${panel_type}";
 fi;
+
+if test "X${fdtfile}" = "Xamlogic/meson-gxl-s905x-khadas-vim.dtb"; then
+	setenv uboottype "mainline";
+else if test "X${fdtfile}" = "Xamlogic/meson-gxm-khadas-vim2.dtb"; then
+	setenv uboottype "mainline";
+else if test "X${fdtfile}" = "Xamlogic/meson-g12b-khadas-vim3.dtb"; then
+	setenv uboottype "mainline";
+else
+	setenv uboottype "vendor";
+fi;fi;fi;
+
+echo "uboot type: $uboottype"
 
 if test "X${autoscript_source}" = "Xmmc"; then
 	echo "autoscript loaded from: mmc";
@@ -26,12 +38,6 @@ setenv usb_devplist "1"
 setenv usb_devnums "0 1 2 3"
 
 setenv boot_start booti ${kernel_loadaddr} ${initrd_loadaddr} ${dtb_loadaddr}
-
-if test "$hostname" = "KVIM1"; then
-	setenv ml_dtb "/dtb/amlogic/meson-gxl-s905x-khadas-vim.dtb";
-else if test "$hostname" = "KVIM2"; then
-	setenv ml_dtb "/dtb/amlogic/meson-gxm-khadas-vim2.dtb";
-fi;fi;
 
 ## First, boot from mmc
 ## Second, boot from USB storage
@@ -53,15 +59,23 @@ for dev in ${devs}; do
 			else
 				setenv load_method "fatload";
 				setenv mark_prefix "";
-				if test "X${dev_num}" = "X0"; then
-					setenv imagetype "SD-USB";
+				if test "X${uboottype}" = "Xvendor"; then
+					if test "X${dev_num}" = "X0"; then
+						setenv imagetype "SD-USB";
+					else
+						setenv imagetype "EMMC_MBR";
+					fi;
 				else
-					setenv imagetype "EMMC_MBR";
+					if test "X${dev_num}" = "X1"; then
+						setenv imagetype "SD-USB";
+					else
+						setenv imagetype "EMMC_MBR";
+					fi;
 				fi;
 			fi;
 			if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${initrd_loadaddr} uInitrd; then
 				if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${kernel_loadaddr} zImage; then
-					if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${dtb_loadaddr} dtb.img || ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${dtb_loadaddr} ${ml_dtb}; then
+					if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${dtb_loadaddr} dtb.img; then
 						if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${env_loadaddr} /boot/env.txt || ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${env_loadaddr} env.txt; then
 							echo "Import env.txt"; env import -t ${env_loadaddr} ${filesize};
 						fi;
@@ -117,7 +131,7 @@ for dev in ${devs}; do
 							echo "Remove eMMC vendor partitions...";
 							fdt rm /partitions;
 						fi;
-						setenv bootargs "root=${rootdev} rootfstype=ext4 rootflags=data=writeback rw ubootpart=${ubootpartuuid} ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size} reboot_mode=${reboot_mode} imagetype=${imagetype}";
+						setenv bootargs "root=${rootdev} rootfstype=ext4 rootflags=data=writeback rw ubootpart=${ubootpartuuid} ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} hwver=${hwver} coherent_pool=${dma_size} reboot_mode=${reboot_mode} imagetype=${imagetype} uboottype=${uboottype}";
 						run boot_start;
 					fi;
 				fi;
