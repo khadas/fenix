@@ -21,7 +21,7 @@ else
 	setenv devs "mmc usb";
 fi;fi;
 setenv mmc_devplist "1 5"
-setenv mmc_devnums "0 1"
+setenv mmc_devnums "0 1 2"
 setenv usb_devplist "1"
 setenv usb_devnums "0 1 2 3"
 
