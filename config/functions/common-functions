@@ -62,8 +62,8 @@ prepare_host() {
 	local build_host=$(lsb_release -sc)
 	info_msg "Build host: $build_host"
 
-	if [[ -z "$build_host" || "xenial artful bionic" != *"$build_host"* ]]; then
-		error_msg "Your build host is not supported! Please use 'Ubuntu xenial/artful/bionic' as your build host."
+	if [[ -z "$build_host" || "artful bionic" != *"$build_host"* ]]; then
+		error_msg "Your build host is not supported! Please use 'Ubuntu artful/bionic' as your build host or try to build in Docker."
 		return -1
 	fi
 
