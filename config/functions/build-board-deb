@@ -305,10 +305,6 @@ build_board_deb() {
 		xenial)
 			mkdir -p $pkgdir/usr/lib/NetworkManager/conf.d/
 			cp $ROOT/archives/filesystem/bsp/zz-override-wifi-powersave-off.conf $pkgdir/usr/lib/NetworkManager/conf.d/
-			if [ "$LINUX" == "3.14" ]; then
-				mkdir -p $pkgdir/lib/systemd/system/haveged.service.d/
-				cp $ROOT/archives/filesystem/bsp/10-no-new-privileges.conf $pkgdir/lib/systemd/system/haveged.service.d/
-			fi
 		;;
 
 		stretch)
