@@ -270,7 +270,7 @@ get_package_list_hash()
 
 ## create_sources_list <release> <basedir>
 ##
-## <release>: jessie|stretch|xenial
+## <release>: stretch|bionic
 ## <basedir>: path to root directory
 create_sources_list()
 {
@@ -295,7 +295,7 @@ create_sources_list()
 	EOF
 	;;
 
-	xenial|bionic)
+	bionic)
 	cat <<-EOF > $basedir/etc/apt/sources.list
 	deb http://${UBUNTU_MIRROR} $release main restricted universe multiverse
 	#deb-src http://${UBUNTU_MIRROR} $release main restricted universe multiverse

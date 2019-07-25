@@ -189,15 +189,6 @@ case $DISTRIB_TYPE in
 esac
 
 case $DISTRIB_RELEASE in
-	xenial)
-	DEBOOTSTRAP_COMPONENTS="main"
-	PACKAGE_LIST_RELEASE="man-db nano"
-	PACKAGE_LIST_KODI="libglu1-mesa libglu1 libmicrohttpd10 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libva-drm1 libcurl3"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_KODI chromium-browser gksu"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP paman libgcr-3-common gcj-jre-headless"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP language-selector-gnome system-config-printer-gnome ubuntu-mate-lightdm-theme"
-	[[ $DISTRIB_ARCH == armhf ]] && PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP mate-utils ubuntu-mate-welcome mate-settings-daemon"
-	;;
 	stretch)
 	DEBOOTSTRAP_COMPONENTS="main"
 	PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr"

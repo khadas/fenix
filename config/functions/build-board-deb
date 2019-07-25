@@ -302,11 +302,6 @@ build_board_deb() {
 	fi
 
 	case $DISTRIB_RELEASE in
-		xenial)
-			mkdir -p $pkgdir/usr/lib/NetworkManager/conf.d/
-			cp $ROOT/archives/filesystem/bsp/zz-override-wifi-powersave-off.conf $pkgdir/usr/lib/NetworkManager/conf.d/
-		;;
-
 		stretch)
 			mkdir -p $pkgdir/usr/lib/NetworkManager/conf.d/
 			cp $ROOT/archives/filesystem/bsp/zz-override-wifi-powersave-off.conf $pkgdir/usr/lib/NetworkManager/conf.d/

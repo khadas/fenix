@@ -142,17 +142,6 @@ install_distribution_specific()
 	info_msg "Applying distribution specific tweaks for $DISTRIB_RELEASE"
 
 	case $DISTRIB_RELEASE in
-	xenial)
-		# disable not working on unneeded services
-		# ureadahead needs kernel tracing options that AFAIK are present only in mainline
-		chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload mask ondemand.service ureadahead.service setserial.service etc-setserial.service"
-
-		# Enable watchdog service(dur to a debian bug for xenial).
-		# eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -s /lib/systemd/system/watchdog.service /etc/systemd/system/multi-user.target.wants/watchdog.service"'
-		# eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl enable watchdog.service"'
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable watchdog.service"'
-		;;
-
 	stretch)
 		# remove doubled uname from motd
 		[[ -f $ROOTFS_TEMP/etc/update-motd.d/10-uname ]] && rm $ROOTFS_TEMP/etc/update-motd.d/10-uname
@@ -515,24 +504,24 @@ build_rootfs() {
 		cp $ROOT/archives/filesystem/blobs/mate_menu/icons/* $ROOTFS_TEMP
 	fi
 
-	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" == "xenial" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_ARCH" == "arm64" ]; then
-		# install mali KO
-		VER=$(ls $ROOTFS_TEMP/lib/modules/)
-		cp $BUILD_IMAGES/meson-gx-mali-450/mali-${VER}.ko $ROOTFS_TEMP/lib/modules/$VER/kernel/mali.ko
-		# Blacklist lima.ko
-		tee $ROOTFS_TEMP/etc/modprobe.d/lima.conf <<-EOF
-		blacklist lima
-		EOF
-		depmod -b $ROOTFS_TEMP/ -a $VER
-
-		# install xf86-video-armsoc
-		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/xf86-video-armsoc_s905x/*.deb
-
-		# Mali udev rule
-		tee $ROOTFS_TEMP/etc/udev/rules.d/50-mali.rules <<-EOF
-		KERNEL=="mali", MODE="0660", GROUP="video"
-		EOF
-	fi
+#	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" == "xenial" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_ARCH" == "arm64" ]; then
+#		# install mali KO
+#		VER=$(ls $ROOTFS_TEMP/lib/modules/)
+#		cp $BUILD_IMAGES/meson-gx-mali-450/mali-${VER}.ko $ROOTFS_TEMP/lib/modules/$VER/kernel/mali.ko
+#		# Blacklist lima.ko
+#		tee $ROOTFS_TEMP/etc/modprobe.d/lima.conf <<-EOF
+#		blacklist lima
+#		EOF
+#		depmod -b $ROOTFS_TEMP/ -a $VER
+#
+#		# install xf86-video-armsoc
+#		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/xf86-video-armsoc_s905x/*.deb
+#
+#		# Mali udev rule
+#		tee $ROOTFS_TEMP/etc/udev/rules.d/50-mali.rules <<-EOF
+#		KERNEL=="mali", MODE="0660", GROUP="video"
+#		EOF
+#	fi
 
 	## script executing on chroot
 	cp -r scripts/chroot-scripts/RUNME.sh $ROOTFS_TEMP/
