@@ -422,6 +422,7 @@ prepare_partitions()
 		mkdir -p $ROOTFS/boot
 		mount "${IMAGE_LOOP_DEV_BOOT}" $ROOTFS/boot
 		local rootfs_uuid="UUID=$(blkid -s UUID -o value $IMAGE_LOOP_DEV_ROOTFS)"
+		local bootfs_uuid="UUID=$(blkid -s UUID -o value $IMAGE_LOOP_DEV_BOOT)"
 	fi
 
 	rm -rf $ROOTFS/lost+found
@@ -443,6 +444,14 @@ prepare_partitions()
 
 	if [[ -f $ROOTFS_TEMP/boot/env.txt ]]; then
 		echo "rootdev=$rootfs_uuid" >> $ROOTFS/boot/env.txt
+	fi
+
+	# create /etc/fstab
+	echo "# <file system>                              <mount point>   <type>  <options>                                                             <dump>  <pass>" > $ROOTFS/etc/fstab
+	echo "tmpfs                                          /tmp            tmpfs   defaults,nosuid                                                          0   0" >> $ROOTFS/etc/fstab
+	echo "$rootfs_uuid      /               ext4    defaults,noatime,nodiratime,commit=600,errors=remount-ro,x-gvfs-hide     0   1" >> $ROOTFS/etc/fstab
+	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
+		echo "$bootfs_uuid                                 /boot           vfat    defaults                                                                 0   2" >> $ROOTFS/etc/fstab
 	fi
 
 	# DEBUG: print free space

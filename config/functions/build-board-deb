@@ -132,10 +132,6 @@ build_board_deb() {
 
 	if [ "\$(stat -c %d:%i /)" != "\$(stat -c %d:%i /proc/1/root/.)" ]; then
 		# In chroot
-		# Remove fstab for EMMC image
-		if [ "\$INSTALL_TYPE" == "EMMC" ]; then
-			rm -rf /etc/fstab
-		fi
 		if [ -f /etc/.mainline ]; then
 			rm -rf /etc/.mainline
 			IS_MAINLINE_KERNEL="yes"
@@ -147,10 +143,6 @@ build_board_deb() {
 		khadas_board="\${tmp##*khadas_board=}"
 		khadas_board="\${khadas_board%% *}"
 
-		if [ "\$imagetype" == "EMMC" ]; then
-			# Remove fstab for EMMC image
-			rm -rf /etc/fstab
-		fi
 		sed -i "s/INSTALL_TYPE=.*/INSTALL_TYPE=\$imagetype/" /etc/fenix-release
 		sed -i "s/BOARD=.*/BOARD=\$khadas_board/" /etc/fenix-release
 		linux_ver=\`uname -r\`
