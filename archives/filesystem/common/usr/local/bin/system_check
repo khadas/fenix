@@ -94,6 +94,13 @@ if [ "$reboot_mode" == "dtb_updated" ]; then
 	fi
 fi
 
+# Update source list
+source_list_board=`cat /etc/apt/sources.list.d/fenix.list | awk '{print $2}' | awk -F "/" '{print $5}'`
+if [ "$source_list_board" != "${board_type_name,,}" ]; then
+	echo "update source list from '$source_list_board' to '${board_type_name,,}'..."
+	sed -i "s/$source_list_board/${board_type_name,,}/" /etc/apt/sources.list.d/fenix.list
+fi
+
 sync
 
 exit 0
