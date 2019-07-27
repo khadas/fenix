@@ -25,6 +25,13 @@ logfile="/var/log/emmc-install.log"
 backtitle="Fenix for Khadas $BOARD install script."
 title=" eMMC, USB and NVMe Fenix installer v${VERSION}"
 
+# check release version
+# only support V0.7 and newer version
+if linux-version compare $VERSION lt 0.7; then
+	dialog --title "$title" --backtitle "$backtitle" --colors --infobox '\n\Z1This tool only support Fenix V0.7 and newer version! \Zn' 5 56
+	exit -1
+fi
+
 case ${VENDOR} in
 	Rockchip)
 		FIRSTSECTOR=32768
