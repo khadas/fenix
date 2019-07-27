@@ -236,10 +236,10 @@ build_deb_packages_platform() {
 
 	# FIXME
 	# remove build stamp to force build for other arch
-	if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/codec_s905x ]; then
-		rm -rf $BUILD/.stamps/codec_s905x
+	if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/codec_aml ]; then
+		rm -rf $BUILD/.stamps/codec_aml
 	fi
-	build_package "codec_s905x:target"
+	build_package "codec_aml:target"
 
 	# FIXME
 	# remove build stamp to force build for other arch
@@ -256,7 +256,7 @@ install_deb_packages_platform() {
 	info_msg "Installing Kodi packages..."
 	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi_aml/*.deb
 
-	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/codec_s905x/*.deb
+	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/codec_aml/*.deb
 	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote_s905x/*.deb
 
 	# Enable khadas remote
