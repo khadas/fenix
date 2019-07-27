@@ -243,10 +243,10 @@ build_deb_packages_platform() {
 
 	# FIXME
 	# remove build stamp to force build for other arch
-	if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote_s905x ]; then
-		rm -rf $BUILD/.stamps/amremote_s905x
+	if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote ]; then
+		rm -rf $BUILD/.stamps/amremote
 	fi
-	build_package "amremote_s905x:target"
+	build_package "amremote:target"
 }
 
 ## Install deb packages for platform
@@ -257,7 +257,7 @@ install_deb_packages_platform() {
 	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi_aml/*.deb
 
 	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/codec_aml/*.deb
-	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote_s905x/*.deb
+	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote/*.deb
 
 	# Enable khadas remote
 	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable amlogic-remotecfg.service"'
