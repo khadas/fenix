@@ -9,3 +9,4 @@ source config/functions/build-board-deb
 source config/functions/build-desktop-deb
 source config/functions/build-gpu-deb
 source config/functions/build
+source config/functions/build-common-deb

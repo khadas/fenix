@@ -16,12 +16,10 @@ build_board_deb() {
 	Architecture: $DISTRIB_ARCH
 	Maintainer: Khadas <hello@khadas.com>
 	Installed-Size: 1
-	Replaces: linux-firmware, watchdog, base-files, mpv, zram-config
+	Replaces: linux-firmware, watchdog, base-files, mpv, zram-config, linux-board-package-${DISTRIB_RELEASE,,}-vim1, linux-board-package-${DISTRIB_RELEASE,,}-vim2, linux-board-package-${DISTRIB_RELEASE,,}-vim3, linux-board-package-${DISTRIB_RELEASE,,}-vim3l
 	Section: kernel
 	Priority: optional
 	Depends: bash, linux-base, u-boot-tools, initramfs-tools
-	Provides: linux-board-package
-	Conflicts: linux-board-package
 	Description: Fenix tweaks for ${DISTRIBUTION}-${DISTRIB_RELEASE} on $KHADAS_BOARD
 	EOF
 
@@ -132,6 +130,40 @@ build_board_deb() {
 	ln -fs /lib/firmware/brcm/BCM43438A1.hcd /lib/firmware/brcm/BCM43430A1.hcd # AP6212
 	ln -fs /lib/firmware/brcm/BCM4356A2.hcd /lib/firmware/brcm/BCM4354A2.hcd # AP6356S
 
+	if [ "\$(stat -c %d:%i /)" != "\$(stat -c %d:%i /proc/1/root/.)" ]; then
+		# In chroot
+		if [ -f /etc/.mainline ]; then
+			rm -rf /etc/.mainline
+			IS_MAINLINE_KERNEL="yes"
+		fi
+	else
+		tmp=\$(cat /proc/cmdline)
+		imagetype="\${tmp##*imagetype=}"
+		imagetype="\${imagetype%% *}"
+		khadas_board="\${tmp##*khadas_board=}"
+		khadas_board="\${khadas_board%% *}"
+
+		sed -i "s/INSTALL_TYPE=.*/INSTALL_TYPE=\$imagetype/" /etc/fenix-release
+		sed -i "s/BOARD=.*/BOARD=\$khadas_board/" /etc/fenix-release
+		linux_ver=\`uname -r\`
+		if linux-version compare \$linux_ver ge 4.12; then
+			IS_MAINLINE_KERNEL="yes"
+		fi
+	fi
+
+	if [ "\$IS_MAINLINE_KERNEL" == "yes" ]; then
+		# Mainline linux don't use such scripts now
+		echo "#!/bin/bash" >  /etc/initramfs-tools/scripts/local-top/khadas_init.sh
+		echo "exit 0" >> /etc/initramfs-tools/scripts/local-top/khadas_init.sh
+		echo "#!/bin/bash" >  /boot/hdmi.sh
+		echo "exit 0" >> /boot/hdmi.sh
+		echo "#!/bin/sh -e" > /etc/rc.local
+		echo "exit 0" >> /etc/rc.local
+
+		# Update fw_env.config for mainline linux
+		echo "/dev/mmcblk1    0x27400000      0x10000" > /etc/fw_env.config
+	fi
+
 	systemctl --no-reload enable fenix-zram-config.service fenix-hardware-optimize.service >/dev/null 2>&1
 
 	exit 0
@@ -140,31 +172,24 @@ build_board_deb() {
 	chmod 755 $pkgdir/DEBIAN/postinst
 
 	# Copy premade common rootfs files
-	rsync -a $ROOT/archives/filesystem/common/* $pkgdir/
+	rsync -aI $ROOT/archives/filesystem/common/* $pkgdir/
 
 	# Copy board special rootfs files
 	## Copy board common rootfs files
 	if [[ "$KHADAS_BOARD" =~ VIM[123] ]]; then
 		## VIMs common rootfs files
-		rsync -a $ROOT/archives/filesystem/special/VIM-COMMON/* $pkgdir/
+		rsync -aI $ROOT/archives/filesystem/special/VIM-COMMON/* $pkgdir/
 	fi
 	## Copy board special rootfs files, these files will
 	## overwrite the board common part files.
-	rsync -a $ROOT/archives/filesystem/special/$KHADAS_BOARD/* $pkgdir/
+	rsync -aI $ROOT/archives/filesystem/special/$KHADAS_BOARD/* $pkgdir/
+
+	# Add fenix repository
+	mkdir -p $pkgdir/etc/apt/sources.list.d
+	echo "deb https://dl.khadas.com/repos/${KHADAS_BOARD,,}/ ${DISTRIB_RELEASE} main" > $pkgdir/etc/apt/sources.list.d/fenix.list
 
 	if [ "$LINUX" == "mainline" ]; then
-		if [[ "$KHADAS_BOARD" =~ VIM[12] ]]; then
-			# Mainline linux don't use such scripts now
-			echo "#!/bin/bash" >  $pkgdir/etc/initramfs-tools/scripts/local-top/khadas_init.sh
-			echo "exit 0" >> $pkgdir/etc/initramfs-tools/scripts/local-top/khadas_init.sh
-			echo "#!/bin/bash" >  $pkgdir/boot/hdmi.sh
-			echo "exit 0" >> $pkgdir/boot/hdmi.sh
-			echo "#!/bin/sh -e" > $pkgdir/etc/rc.local
-			echo "exit 0" >> $pkgdir/etc/rc.local
-
-			# Update fw_env.config for mainline linux
-			echo "/dev/mmcblk1    0x27400000      0x10000" > $pkgdir/etc/fw_env.config
-		fi
+		touch $pkgdir/etc/.mainline
 	fi
 
 	# Fixup rc.local permission
@@ -203,11 +228,6 @@ build_board_deb() {
 		mkdir -p $pkgdir/boot
 		cp $BOOT_SCRIPTS/$BOOT_SCRIPT_BOARD $pkgdir/boot
 		$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$CHIP autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_BOARD $pkgdir/boot/boot.scr
-	fi
-
-	# Remove fstab for EMMC image
-	if [ "$INSTALL_TYPE" == "EMMC" ]; then
-		rm $pkgdir/etc/fstab
 	fi
 
 	# Copy Wi-Fi & BT firmware
@@ -282,15 +302,6 @@ build_board_deb() {
 	fi
 
 	case $DISTRIB_RELEASE in
-		xenial)
-			mkdir -p $pkgdir/usr/lib/NetworkManager/conf.d/
-			cp $ROOT/archives/filesystem/bsp/zz-override-wifi-powersave-off.conf $pkgdir/usr/lib/NetworkManager/conf.d/
-			if [ "$LINUX" == "3.14" ]; then
-				mkdir -p $pkgdir/lib/systemd/system/haveged.service.d/
-				cp $ROOT/archives/filesystem/bsp/10-no-new-privileges.conf $pkgdir/lib/systemd/system/haveged.service.d/
-			fi
-		;;
-
 		stretch)
 			mkdir -p $pkgdir/usr/lib/NetworkManager/conf.d/
 			cp $ROOT/archives/filesystem/bsp/zz-override-wifi-powersave-off.conf $pkgdir/usr/lib/NetworkManager/conf.d/

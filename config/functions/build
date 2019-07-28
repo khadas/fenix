@@ -2,6 +2,7 @@
 # build_uboot
 # build_linux
 # build_linux_debs
+# build_uboot_deb
 
 ## Build U-Boot
 build_uboot() {
@@ -170,4 +171,88 @@ build_linux_debs() {
 	else
 		mv $ROOT/*.deb $BUILD_DEBS/$VERSION
 	fi
+}
+
+## Build u-boot deb
+build_uboot_deb() {
+	local pkgname="${LINUX_UBOOT_DEB}"
+	local pkgdir="$BUILD_IMAGES/.tmp/${pkgname}_${VERSION}-${UBOOT_VER}_${DISTRIB_ARCH}"
+
+	rm -rf $pkgdir
+	mkdir -p $pkgdir/usr/lib/u-boot $pkgdir/DEBIAN
+
+	# Copy u-boot files
+	local uboot_files=$UBOOT_IMAGE_FILES
+	for file in $uboot_files; do
+		if [ ! -f $UBOOT_IMAGE_DIR/$file ]; then
+			error_msg "U-boot file '$file' not found!"
+			return -1
+		fi
+		cp $UBOOT_IMAGE_DIR/$file $pkgdir/usr/lib/u-boot
+	done
+
+	cat <<-EOF > $pkgdir/usr/lib/u-boot/platform_install.sh
+	DIR=/usr/lib/u-boot
+	$(declare -f write_uboot_platform)
+	$(declare -f setup_write_uboot_platform)
+	EOF
+
+	# Set up control file
+	cat <<-EOF > $pkgdir/DEBIAN/control
+	Package: $pkgname
+	Version: $VERSION-$UBOOT_VER
+	Architecture: $DISTRIB_ARCH
+	Maintainer: khadas <hello@khadas.com>
+	Installed-Size: 1
+	Section: kernel
+	Priority: optional
+	Provides: fenix-u-boot
+	Replaces: fenix-u-boot, linux-u-boot-vim1, linux-u-boot-vim2, linux-u-boot-vim3, linux-u-boot-vim1-mainline, linux-u-boot-vim1-vendor, linux-u-boot-vim2-mainline, linux-u-boot-vim2-vendor, linux-u-boot-vim3-mainline, linux-u-boot-vim3-vendor, linux-u-boot-vim3l-mainline, linux-u-boot-vim3l-vendor
+	Description: U-boot $UBOOT_VER
+	EOF
+
+	# Set up postinst file
+	cat <<-EOF > $pkgdir/DEBIAN/postinst
+	#!/bin/bash
+
+	# Exit if we are running chroot
+	if [ "\$(stat -c %d:%i /)" != "\$(stat -c %d:%i /proc/1/root/.)" ]; then exit 0; fi
+
+	source /usr/lib/u-boot/platform_install.sh
+	[[ \$(type -t setup_write_uboot_platform) == function ]] && setup_write_uboot_platform
+	if [[ \$DEVICE = VENDOR ]]; then
+		echo "Create u-boot updating mark, will update u-boot in next bootup cycle."
+		echo "Please reboot the board to update u-boot."
+		touch /usr/lib/u-boot/.UBOOT-NEED-UPDATE
+		sync
+	else
+		if [[ -b \$DEVICE ]]; then
+			echo "Updating u-boot on \$DEVICE"
+			write_uboot_platform \$DIR \$DEVICE
+			sync
+		else
+			echo "Device \$DEVICE does not exist, skipping"
+		fi
+	fi
+
+	exit 0
+	EOF
+
+	chmod 755 $pkgdir/DEBIAN/postinst
+
+	cat <<-EOF > $pkgdir/DEBIAN/prerm
+	#!/bin/bash
+	rm -rf /usr/lib/u-boot/.UBOOT-NEED-UPDATE
+	EOF
+
+	chmod 755 $pkgdir/DEBIAN/prerm
+
+	# Create board deb file
+	echo "Building package: $pkgname"
+	fakeroot dpkg-deb -b $pkgdir ${pkgdir}.deb
+	mkdir -p $BUILD_DEBS/$VERSION/$KHADAS_BOARD
+	cp ${pkgdir}.deb $BUILD_DEBS/$VERSION/$KHADAS_BOARD
+	# Cleanup
+	rm -rf ${pkgdir}.deb
+	rm -rf $pkgdir
 }

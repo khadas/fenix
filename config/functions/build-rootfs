@@ -53,9 +53,14 @@ install_common()
 		install_deb_chroot $BUILD_DEBS/$VERSION/${LINUX_FIRMWARE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
 	fi
 
+	# Install u-boot deb in chroot
+	if [ -f $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${LINUX_UBOOT_DEB}_${VERSION}-${UBOOT_VER}_${DISTRIB_ARCH}.deb ]; then
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${LINUX_UBOOT_DEB}_${VERSION}-${UBOOT_VER}_${DISTRIB_ARCH}.deb
+	fi
+
 	# Install GPU deb in chroot
-	if [ -f $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-${VENDOR,,}-${GPU_MODEL,,}-${GPU_VER,,}-${GPU_PLATFORM}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
-		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-${VENDOR,,}-${GPU_MODEL,,}-${GPU_VER,,}-${GPU_PLATFORM}_${VERSION}_${DISTRIB_ARCH}.deb
+	if [ -f $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-mali-${GPU_PLATFORM}_${VERSION}-${GPU_VER}_${DISTRIB_ARCH}.deb ]; then
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-mali-${GPU_PLATFORM}_${VERSION}-${GPU_VER}_${DISTRIB_ARCH}.deb
 	fi
 
 	# Install GPU development deb in chroot
@@ -69,6 +74,11 @@ install_common()
 	if [ "$DISTRIB_TYPE" != "server" ]; then
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/${FENIX_DESKTOP_DEB}_${VERSION}_all.deb
 		desktop_postinstall
+	fi
+
+	# Install common deb packages
+	if [[ $(type -t install_common_deb) == function ]]; then
+		install_common_deb
 	fi
 
 	# Install packages platform
@@ -132,17 +142,6 @@ install_distribution_specific()
 	info_msg "Applying distribution specific tweaks for $DISTRIB_RELEASE"
 
 	case $DISTRIB_RELEASE in
-	xenial)
-		# disable not working on unneeded services
-		# ureadahead needs kernel tracing options that AFAIK are present only in mainline
-		chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload mask ondemand.service ureadahead.service setserial.service etc-setserial.service"
-
-		# Enable watchdog service(dur to a debian bug for xenial).
-		# eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -s /lib/systemd/system/watchdog.service /etc/systemd/system/multi-user.target.wants/watchdog.service"'
-		# eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl enable watchdog.service"'
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable watchdog.service"'
-		;;
-
 	stretch)
 		# remove doubled uname from motd
 		[[ -f $ROOTFS_TEMP/etc/update-motd.d/10-uname ]] && rm $ROOTFS_TEMP/etc/update-motd.d/10-uname
@@ -266,6 +265,11 @@ create_rootfs_cache()
 
 		# stage: create apt sources list
 		create_sources_list "$DISTRIB_RELEASE" "$ROOTFS_TEMP/"
+
+		# stage: install key
+		cp $CONFIG/fenix.key $ROOTFS_TEMP
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "cat fenix.key | apt-key add -"'
+		rm $ROOTFS_TEMP/fenix.key
 
 		# compressing packages list to gain some space
 		echo "Acquire::GzipIndexes "true"; Acquire::CompressionTypes::Order:: "gz";" > $ROOTFS_TEMP/etc/apt/apt.conf.d/02compress-indexes
@@ -407,6 +411,7 @@ prepare_partitions()
 		mkdir -p $ROOTFS/boot
 		mount "${IMAGE_LOOP_DEV_BOOT}" $ROOTFS/boot
 		local rootfs_uuid="UUID=$(blkid -s UUID -o value $IMAGE_LOOP_DEV_ROOTFS)"
+		local bootfs_uuid="UUID=$(blkid -s UUID -o value $IMAGE_LOOP_DEV_BOOT)"
 	fi
 
 	rm -rf $ROOTFS/lost+found
@@ -428,6 +433,14 @@ prepare_partitions()
 
 	if [[ -f $ROOTFS_TEMP/boot/env.txt ]]; then
 		echo "rootdev=$rootfs_uuid" >> $ROOTFS/boot/env.txt
+	fi
+
+	# create /etc/fstab
+	echo "# <file system>                              <mount point>   <type>  <options>                                                             <dump>  <pass>" > $ROOTFS/etc/fstab
+	echo "tmpfs                                          /tmp            tmpfs   defaults,nosuid                                                          0   0" >> $ROOTFS/etc/fstab
+	echo "$rootfs_uuid      /               ext4    defaults,noatime,nodiratime,commit=600,errors=remount-ro,x-gvfs-hide     0   1" >> $ROOTFS/etc/fstab
+	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
+		echo "$bootfs_uuid                                 /boot           vfat    defaults                                                                 0   2" >> $ROOTFS/etc/fstab
 	fi
 
 	# DEBUG: print free space
@@ -491,24 +504,24 @@ build_rootfs() {
 		cp $ROOT/archives/filesystem/blobs/mate_menu/icons/* $ROOTFS_TEMP
 	fi
 
-	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" == "xenial" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_ARCH" == "arm64" ]; then
-		# install mali KO
-		VER=$(ls $ROOTFS_TEMP/lib/modules/)
-		cp $BUILD_IMAGES/meson-gx-mali-450/mali-${VER}.ko $ROOTFS_TEMP/lib/modules/$VER/kernel/mali.ko
-		# Blacklist lima.ko
-		tee $ROOTFS_TEMP/etc/modprobe.d/lima.conf <<-EOF
-		blacklist lima
-		EOF
-		depmod -b $ROOTFS_TEMP/ -a $VER
-
-		# install xf86-video-armsoc
-		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/xf86-video-armsoc_s905x/*.deb
-
-		# Mali udev rule
-		tee $ROOTFS_TEMP/etc/udev/rules.d/50-mali.rules <<-EOF
-		KERNEL=="mali", MODE="0660", GROUP="video"
-		EOF
-	fi
+#	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" == "xenial" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_ARCH" == "arm64" ]; then
+#		# install mali KO
+#		VER=$(ls $ROOTFS_TEMP/lib/modules/)
+#		cp $BUILD_IMAGES/meson-gx-mali-450/mali-${VER}.ko $ROOTFS_TEMP/lib/modules/$VER/kernel/mali.ko
+#		# Blacklist lima.ko
+#		tee $ROOTFS_TEMP/etc/modprobe.d/lima.conf <<-EOF
+#		blacklist lima
+#		EOF
+#		depmod -b $ROOTFS_TEMP/ -a $VER
+#
+#		# install xf86-video-armsoc
+#		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/xf86-video-armsoc_s905x/*.deb
+#
+#		# Mali udev rule
+#		tee $ROOTFS_TEMP/etc/udev/rules.d/50-mali.rules <<-EOF
+#		KERNEL=="mali", MODE="0660", GROUP="video"
+#		EOF
+#	fi
 
 	## script executing on chroot
 	cp -r scripts/chroot-scripts/RUNME.sh $ROOTFS_TEMP/

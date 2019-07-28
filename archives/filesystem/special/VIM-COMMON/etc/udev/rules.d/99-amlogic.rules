@@ -13,4 +13,5 @@ KERNEL=="cec", SYMLINK+="aocec"
 KERNEL=="mali*",SUBSYSTEM=="misc",MODE="0777"
 KERNEL=="ump",SUBSYSTEM=="ump",MODE="0777"
 
-
+# Others
+KERNEL=="env", MODE="0666"

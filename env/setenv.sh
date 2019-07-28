@@ -7,7 +7,7 @@ unset SUPPORTED_UBOOT
 unset SUPPORTED_LINUX
 
 DISTRIBUTION_ARRAY=("Ubuntu" "Debian")
-Ubuntu_RELEASE_ARRAY=("xenial" "bionic")
+Ubuntu_RELEASE_ARRAY=("bionic")
 Debian_RELEASE_ARRAY=("stretch")
 DISTRIB_ARCH_ARRAY=("arm64" "armhf")
 Ubuntu_TYPE_ARRAY=("server" "mate" "xfce" "lxde")
@@ -331,7 +331,7 @@ function choose_distribution_release() {
 	echo ""
 
 	local DEFAULT_NUM
-	DEFAULT_NUM=2
+	DEFAULT_NUM=1
 
 	export DISTRIB_RELEASE=
 	local ANSWER

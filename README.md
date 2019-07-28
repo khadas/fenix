@@ -2,11 +2,10 @@
 
 [![Documentation](https://img.shields.io/badge/Documentation-Reference-blue.svg)](https://docs.khadas.com/vim1/FenixScript.html)
 [![Licence](https://img.shields.io/badge/Licence-GPL--2.0-brightgreen.svg)](https://github.com/khadas/fenix/blob/master/LICENSE)
-![Version](https://img.shields.io/badge/Version-v0.6-blue.svg)
+![Version](https://img.shields.io/badge/Version-v0.7-blue.svg)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/khadas/fenix/pulls)
 
 Supported build host:
-* `Ubuntu Xenial 16.04 x64`
 * `Ubuntu Bionic 18.04 x64`
 * `Docker`
 

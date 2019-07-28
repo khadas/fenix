@@ -30,6 +30,7 @@ if test ${devnum} = 0; then
 	else
 		setenv default_rootdev "/dev/mmcblk1p${emmc_root_part}"
 	fi
+	setenv image_type "EMMC";
 else if test ${devnum} = 1; then
 	echo "Uboot loaded from SD.";
 	setenv boot_env_part ${sd_boot_part};
@@ -40,6 +41,7 @@ else if test ${devnum} = 1; then
 	else
 		setenv default_rootdev "/dev/mmcblk0p${sd_root_part}"
 	fi
+	setenv image_type "SD-USB";
 fi;fi;
 
 # Import environment from env.txt
@@ -111,7 +113,7 @@ if test -e ${custom_ethmac}; then
 	setenv eth_mac ${custom_ethmac}
 fi
 
-setenv bootargs "${bootargs} ${condev} rw root=${rootdev} rootfstype=ext4 init=/sbin/init rootwait board_type=${board_type} board_type_name=${board_type_name} fan=${fan_mode} mac=${eth_mac} androidboot.mac=${eth_mac} coherent_pool=${dma_size}"
+setenv bootargs "${bootargs} ${condev} rw root=${rootdev} rootfstype=ext4 init=/sbin/init rootwait board_type=${board_type} board_type_name=${board_type_name} fan=${fan_mode} mac=${eth_mac} androidboot.mac=${eth_mac} coherent_pool=${dma_size} image_type=${image_type}"
 
 for distro_bootpart in ${devplist}; do
 	echo "Scanning ${devtype} ${devnum}:${distro_bootpart}..."

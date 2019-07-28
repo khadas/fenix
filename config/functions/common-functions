@@ -62,8 +62,8 @@ prepare_host() {
 	local build_host=$(lsb_release -sc)
 	info_msg "Build host: $build_host"
 
-	if [[ -z "$build_host" || "xenial artful bionic" != *"$build_host"* ]]; then
-		error_msg "Your build host is not supported! Please use 'Ubuntu xenial/artful/bionic' as your build host."
+	if [[ -z "$build_host" || "artful bionic" != *"$build_host"* ]]; then
+		error_msg "Your build host is not supported! Please use 'Ubuntu artful/bionic' as your build host or try to build in Docker."
 		return -1
 	fi
 
@@ -270,7 +270,7 @@ get_package_list_hash()
 
 ## create_sources_list <release> <basedir>
 ##
-## <release>: jessie|stretch|xenial
+## <release>: stretch|bionic
 ## <basedir>: path to root directory
 create_sources_list()
 {
@@ -295,7 +295,7 @@ create_sources_list()
 	EOF
 	;;
 
-	xenial|bionic)
+	bionic)
 	cat <<-EOF > $basedir/etc/apt/sources.list
 	deb http://${UBUNTU_MIRROR} $release main restricted universe multiverse
 	#deb-src http://${UBUNTU_MIRROR} $release main restricted universe multiverse

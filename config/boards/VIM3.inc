@@ -6,13 +6,17 @@ case "$UBOOT" in
 		UBOOT_COMPILER="aarch64-none-elf-"
 		UBOOT_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-none-elf/bin:$TOOLCHAINS/gcc-linaro-arm-none-eabi/bin"
 		UBOOT_DIR="$ROOT/u-boot"
+		UBOOT_IMAGE_DIR="$UBOOT_DIR/fip/_tmp"
 	;;
 	mainline)
 		UBOOT_COMPILER="aarch64-elf-"
 		UBOOT_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-elf/bin"
 		UBOOT_DIR="$BUILD/u-boot-mainline-*"
+		UBOOT_IMAGE_DIR="$BUILD_IMAGES/u-boot-mainline/$KHADAS_BOARD"
 	;;
 esac
+
+UBOOT_IMAGE_FILES="u-boot.bin u-boot.bin.sd.bin"
 
 UBOOT_FORCE_REBUILD="yes"
 
@@ -118,6 +122,33 @@ uboot_custom_postprocess() {
 	cd $ROOT
 }
 
+## Write u-boot
+write_uboot_platform()
+{
+	dd if=$1/u-boot.bin.sd.bin of=$2 conv=fsync bs=1 count=442 > /dev/null 2>&1
+	dd if=$1/u-boot.bin.sd.bin of=$2 conv=fsync bs=512 skip=1 seek=1 > /dev/null 2>&1
+}
+
+setup_write_uboot_platform()
+{
+	if grep -q "ubootpart" /proc/cmdline; then
+		local tmp=$(cat /proc/cmdline)
+		local ubootpart="${tmp##*ubootpart=}"
+		local imagetype="${tmp##*imagetype=}"
+		ubootpart="${ubootpart%% *}"
+		imagetype="${imagetype%% *}"
+
+		if [ "$imagetype" == "SD-USB" ] || [ "$imagetype" == "EMMC_MBR" ]; then
+			[[ -n $ubootpart && $ubootpart != NULL ]] && local part=$(findfs PARTUUID=$ubootpart 2>/dev/null)
+			[[ -n $part ]] && local dev=$(lsblk -n -o PKNAME $part 2>/dev/null)
+			[[ -n $dev ]] && DEVICE="/dev/$dev"
+		elif [ "$imagetype" == "EMMC" ]; then
+			# For vendor eMMC image, need to update in u-boot
+			DEVICE="VENDOR"
+		fi
+	fi
+}
+
 ## Pack image
 pack_image_platform() {
     cd ${ROOT}
@@ -158,17 +189,7 @@ pack_image_platform() {
 
 		check_loop_device "$IMAGE_LOOP_DEV"
 
-		case "$UBOOT" in
-			mainline)
-				local uboot_sd_image="$BUILD_IMAGES/u-boot-mainline/$KHADAS_BOARD/u-boot.bin.sd.bin"
-				;;
-			2015.01)
-				local uboot_sd_image="$ROOT/u-boot/fip/_tmp/u-boot.bin.sd.bin"
-				;;
-		esac
-
-		dd if=$uboot_sd_image of=${IMAGE_LOOP_DEV} conv=fsync bs=1 count=442
-		dd if=$uboot_sd_image of=${IMAGE_LOOP_DEV} conv=fsync bs=512 skip=1 seek=1
+		write_uboot_platform ${UBOOT_IMAGE_DIR} ${IMAGE_LOOP_DEV}
 
         losetup -d "${IMAGE_LOOP_DEV}"
     else
@@ -208,24 +229,24 @@ build_deb_packages_platform() {
 	info_msg "Building Kodi packages..."
 	# FIXME
 	# remove build stamp to force build for other arch
-	if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi_s922x ]; then
-		rm -rf $BUILD/.stamps/kodi_s922x
+	if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi_aml ]; then
+		rm -rf $BUILD/.stamps/kodi_aml
 	fi
-	build_package "kodi_s922x:target"
+	build_package "kodi_aml:target"
 
 	# FIXME
 	# remove build stamp to force build for other arch
-	if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/codec_s905x ]; then
-		rm -rf $BUILD/.stamps/codec_s905x
+	if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/codec_aml ]; then
+		rm -rf $BUILD/.stamps/codec_aml
 	fi
-	build_package "codec_s905x:target"
+	build_package "codec_aml:target"
 
 	# FIXME
 	# remove build stamp to force build for other arch
-	if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote_s905x ]; then
-		rm -rf $BUILD/.stamps/amremote_s905x
+	if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote ]; then
+		rm -rf $BUILD/.stamps/amremote
 	fi
-	build_package "amremote_s905x:target"
+	build_package "amremote:target"
 }
 
 ## Install deb packages for platform
@@ -233,10 +254,10 @@ install_deb_packages_platform() {
 	cd $ROOT
 	# Install Kodi in chroot
 	info_msg "Installing Kodi packages..."
-	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi_s922x/*.deb
+	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi_aml/*.deb
 
-	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/codec_s905x/*.deb
-	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote_s905x/*.deb
+	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/codec_aml/*.deb
+	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote/*.deb
 
 	# Enable khadas remote
 	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable amlogic-remotecfg.service"'

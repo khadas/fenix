@@ -1,13 +1,13 @@
 PKG_NAME="u-boot-mainline"
-PKG_VERSION="3c99166441bf3ea325af2da83cfe65430b49c066" # 2019.04
-PKG_SHA256="8a8c46760b60119e1af4fc5c76f63887b4ed3c90baca210023ab938b590902c8"
+PKG_VERSION="2019.04"
+PKG_SHA256="76b7772d156b3ddd7644c8a1736081e55b78828537ff714065d21dbade229bef"
 PKG_SOURCE_DIR="u-boot-${PKG_VERSION}*"
-PKG_SITE="https://github.com/u-boot/u-boot"
-PKG_URL="https://github.com/u-boot/u-boot/archive/$PKG_VERSION.tar.gz"
+PKG_SITE="ftp://ftp.denx.de/pub/u-boot"
+PKG_URL="ftp://ftp.denx.de/pub/u-boot/u-boot-${PKG_VERSION}.tar.bz2"
 PKG_ARCH="arm aarch64"
 PKG_LICENSE="GPL"
 PKG_SHORTDESC="u-boot: Universal Bootloader project"
-PKG_SOURCE_NAME="u-boot-${PKG_VERSION}.tar.gz"
+PKG_SOURCE_NAME="u-boot-${PKG_VERSION}.tar.bz2"
 PKG_NEED_BUILD="YES"
 
 

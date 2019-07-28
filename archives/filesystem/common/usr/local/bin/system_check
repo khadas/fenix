@@ -19,6 +19,9 @@ for arg in $(cat /proc/cmdline); do
 		hwver=*)
 			hwver="${arg#*=}"
 			;;
+		reboot_mode=*)
+			reboot_mode="${arg#*=}"
+			;;
 	esac
 done
 
@@ -74,5 +77,30 @@ elif [ "$hwver" == "VIM2.V12" ]; then
 		rm /lib/firmware/brcm/BCM4359C0_ap6398s.hcd
 	fi
 fi
+
+# Cleanup u-boot upgrading mark
+if [ "$reboot_mode" == "uboot_updated" ]; then
+	echo "cleanup u-boot mark...."
+	if [ -f /usr/lib/u-boot/.UBOOT-NEED-UPDATE ]; then
+		rm -rf /usr/lib/u-boot/.UBOOT-NEED-UPDATE
+	fi
+fi
+
+# Cleanup dtb upgrading mark
+if [ "$reboot_mode" == "dtb_updated" ]; then
+	echo "cleanup dtb mark...."
+	if [ -f /boot/.DTB-NEED-UPDATE ]; then
+		rm -rf /boot/.DTB-NEED-UPDATE
+	fi
+fi
+
+# Update source list
+source_list_board=`cat /etc/apt/sources.list.d/fenix.list | awk '{print $2}' | awk -F "/" '{print $5}'`
+if [ "$source_list_board" != "${board_type_name,,}" ]; then
+	echo "update source list from '$source_list_board' to '${board_type_name,,}'..."
+	sed -i "s/$source_list_board/${board_type_name,,}/" /etc/apt/sources.list.d/fenix.list
+fi
+
+sync
 
 exit 0

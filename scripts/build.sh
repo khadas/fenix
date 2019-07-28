@@ -14,26 +14,41 @@ source config/functions/functions
 ######################################################################################
 TARGET="$1"
 
-if [ "$TARGET" != "linux" ] && [ "$TARGET" != "debs" ] && [ "$TARGET" != "u-boot" ]; then
-	error_msg "Unsupported target: $TARGET"
-	exit -1
-fi
-
 prepare_toolchains
 prepare_packages
 
 case "$TARGET" in
+	u-boot)
+		build_uboot
+		;;
 	linux)
 		build_linux
 		;;
+	uboot-deb)
+		build_uboot_deb
+		;;
+	linux-deb)
+		build_linux_debs
+		;;
+	board-deb)
+		build_board_deb
+		;;
+	desktop-deb)
+		build_desktop_deb
+		;;
+	gpu-deb)
+		build_gpu_deb
+		;;
+	common-deb)
+		build_common_deb
+		;;
 	debs)
+		build_uboot_deb
 		build_linux_debs
 		build_board_deb
 		build_desktop_deb
 		build_gpu_deb
-		;;
-	u-boot)
-		build_uboot
+		build_common_deb
 		;;
 esac
 
