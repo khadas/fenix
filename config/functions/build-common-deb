@@ -17,7 +17,7 @@ build_common_deb() {
 ## Build common deb package
 install_common_deb() {
 	# Install WiringPi in chroot
-	if [ -n "$(ls /home/khadas/fenix/build/images/debs/0.7/VIM1/Debian-stretch/wiringpi_debs/ -1)" ]; then
+	if [ -n "$(ls $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wiringpi_debs/ -1)" ]; then
 		info_msg "Installing WiringPi packages..."
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wiringpi_debs/*.deb
 	fi
