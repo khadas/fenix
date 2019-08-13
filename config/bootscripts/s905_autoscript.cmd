@@ -125,8 +125,8 @@ for dev in ${devs}; do
 							fdt set /fan hwver "VIM2.V14";
 							fdt set /i2c@c11087c0/khadas-mcu hwver "VIM2.V14";
 							fdt set /soc/cbus@c1100000/i2c@87c0/khadas-mcu hwver "VIM2.V14";
-						else if test "X${hwver}" = "XVIM3.V11"; then
-							fdt set /soc/aobus@ff800000/i2c@5000/khadas-mcu hwver "VIM3.V11";
+						else if test "X${hwver}" = "XVIM3.V11" || test "X${hwver}" = "XVIM3.V12"; then
+							fdt set /soc/aobus@ff800000/i2c@5000/khadas-mcu hwver ${hwver};
 							kbi init;
 							kbi portmode r;
 							if test ${port_mode} = 0; then
