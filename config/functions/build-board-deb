@@ -219,9 +219,9 @@ build_board_deb() {
 	fi
 
 	# Copy boot.ini
-#	if [ -f $BOOT_SCRIPTS/$BOOT_INI ]; then
-#		cp $BOOT_SCRIPTS/$BOOT_INI $pkgdir/boot/boot.ini
-#	fi
+	if [ -f $BOOT_SCRIPTS/$BOOT_INI ]; then
+		cp $BOOT_SCRIPTS/$BOOT_INI $pkgdir/boot/boot.ini
+	fi
 
 	# Copy boot script for Rockchip platform
 	if [ "$VENDOR" == "Rockchip" ]; then
