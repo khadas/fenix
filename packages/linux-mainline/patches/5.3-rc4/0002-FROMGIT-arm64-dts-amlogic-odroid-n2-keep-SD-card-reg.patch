@@ -1,0 +1,44 @@
+From a91d5264fac40aa97db42a87386981e870f342a4 Mon Sep 17 00:00:00 2001
+From: Xavier Ruppen <xruppen@gmail.com>
+Date: Fri, 19 Jul 2019 21:29:54 +0200
+Subject: [PATCH 002/182] FROMGIT: arm64: dts: amlogic: odroid-n2: keep SD card
+ regulator always on
+
+When powering off the Odroid N2, the tflash_vdd regulator is
+automatically turned off by the kernel. This is a problem
+when issuing the "reboot" command while using an SD card.
+The boot ROM does not power this regulator back on, blocking
+the reboot process at the boot ROM stage, preventing the
+SD card from being detected.
+
+Adding the "regulator-always-on" property fixes the problem.
+
+Signed-off-by: Xavier Ruppen <xruppen@gmail.com>
+Suggested-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Fixes: c35f6dc5c377 ("arm64: dts: meson: Add minimal support for Odroid-N2")
+[khilman: minor subject change: s/meson/amlogic/]
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+(cherry-picked from d9d46ea23276d2b76b600cacec7b4e410766f4dc
+ git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-amlogic.git)
+---
+ arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dts | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dts
+index 81780ff..4e916e1 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dts
+@@ -53,6 +53,7 @@
+ 
+ 		gpio = <&gpio_ao GPIOAO_8 GPIO_ACTIVE_HIGH>;
+ 		enable-active-high;
++		regulator-always-on;
+ 	};
+ 
+ 	tf_io: gpio-regulator-tf_io {
+-- 
+2.7.4
+

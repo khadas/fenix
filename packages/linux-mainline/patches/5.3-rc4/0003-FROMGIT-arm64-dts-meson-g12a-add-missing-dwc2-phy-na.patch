@@ -1,0 +1,41 @@
+From 26a7d2302d58b4a622f9bfe4cc0c32895176d20c Mon Sep 17 00:00:00 2001
+From: Neil Armstrong <narmstrong@baylibre.com>
+Date: Tue, 25 Jun 2019 14:36:47 +0200
+Subject: [PATCH 003/182] FROMGIT: arm64: dts: meson-g12a: add missing dwc2
+ phy-names
+
+The G12A USB2 OTG capable PHY uses a 8bit large UTMI bus, and the OTG
+controller gets the PHY but width by probing the associated phy.
+
+By default it will use 16bit wide settings if a phy is not specified,
+in our case we specified the phy, but not the phy-names.
+
+The dwc2 bindings specifies that if phys is present, phy-names shall be
+"usb2-phy".
+
+Adding phy-names = "usb2-phy" solves the OTG PHY bus configuration.
+
+Fixes: 9baf7d6be730 ("arm64: dts: meson: g12a: Add G12A USB nodes")
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+(cherry picked from commit b68976cdf946497240972b9a5523ec4d89f8e838
+ git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-amlogic.git v5.3/fixes)
+---
+ arch/arm64/boot/dts/amlogic/meson-g12a.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12a.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12a.dtsi
+index f8d43e3..1785552 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12a.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-g12a.dtsi
+@@ -2386,6 +2386,7 @@
+ 				clocks = <&clkc CLKID_USB1_DDR_BRIDGE>;
+ 				clock-names = "ddr";
+ 				phys = <&usb2_phy1>;
++				phy-names = "usb2-phy";
+ 				dr_mode = "peripheral";
+ 				g-rx-fifo-size = <192>;
+ 				g-np-tx-fifo-size = <128>;
+-- 
+2.7.4
+
