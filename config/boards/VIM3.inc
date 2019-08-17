@@ -226,39 +226,44 @@ tweaks_platform() {
 
 ## Build deb packages for platform
 build_deb_packages_platform() {
-	info_msg "Building Kodi packages..."
-	# FIXME
-	# remove build stamp to force build for other arch
-	if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi_aml ]; then
-		rm -rf $BUILD/.stamps/kodi_aml
-	fi
-	build_package "kodi_aml:target"
+	if [ "$LINUX" == "4.9" ]; then
+		info_msg "Building Kodi packages..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi_aml ]; then
+			rm -rf $BUILD/.stamps/kodi_aml
+		fi
+		build_package "kodi_aml:target"
 
-	# FIXME
-	# remove build stamp to force build for other arch
-	if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/codec_aml ]; then
-		rm -rf $BUILD/.stamps/codec_aml
-	fi
-	build_package "codec_aml:target"
+		# FIXME
+		# remove build stamp to force build for other arch
+		if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/codec_aml ]; then
+			rm -rf $BUILD/.stamps/codec_aml
+		fi
+		build_package "codec_aml:target"
 
-	# FIXME
-	# remove build stamp to force build for other arch
-	if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote ]; then
-		rm -rf $BUILD/.stamps/amremote
+		# FIXME
+		# remove build stamp to force build for other arch
+		if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote ]; then
+			rm -rf $BUILD/.stamps/amremote
+		fi
+		build_package "amremote:target"
 	fi
-	build_package "amremote:target"
 }
 
 ## Install deb packages for platform
 install_deb_packages_platform() {
-	cd $ROOT
-	# Install Kodi in chroot
-	info_msg "Installing Kodi packages..."
-	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi_aml/*.deb
+	if [ "$LINUX" == "4.9" ]; then
 
-	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/codec_aml/*.deb
-	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote/*.deb
+		cd $ROOT
+		# Install Kodi in chroot
+		info_msg "Installing Kodi packages..."
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi_aml/*.deb
 
-	# Enable khadas remote
-	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable amlogic-remotecfg.service"'
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/codec_aml/*.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote/*.deb
+
+		# Enable khadas remote
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable amlogic-remotecfg.service"'
+	fi
 }
