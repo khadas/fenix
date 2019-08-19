@@ -565,7 +565,7 @@ function lunch() {
 				export CHIP="S912"
 				;;
 			VIM3L)
-				export CHIP="S905D2"
+				export CHIP="S905D3"
 				;;
 			VIM3)
 				export CHIP="A311D"
