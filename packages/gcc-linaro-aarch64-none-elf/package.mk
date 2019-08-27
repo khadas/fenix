@@ -13,7 +13,10 @@ PKG_NEED_BUILD="NO"
 PKG_SHORTDESC="GCC for building U-Boot 2015.01"
 
 makeinstall_host() {
-	mkdir -p $TOOLCHAINS/gcc-linaro-aarch64-none-elf/
-	rm -rf $TOOLCHAINS/gcc-linaro-aarch64-none-elf/*
-	cp -a $BUILD/$PKG_NAME-$PKG_VERSION/* $TOOLCHAINS/gcc-linaro-aarch64-none-elf
+#	mkdir -p $TOOLCHAINS/gcc-linaro-aarch64-none-elf/
+#	rm -rf $TOOLCHAINS/gcc-linaro-aarch64-none-elf/*
+#	cp -a $BUILD/$PKG_NAME-$PKG_VERSION/* $TOOLCHAINS/gcc-linaro-aarch64-none-elf
+	[ -d "$TOOLCHAINS" ] || mkdir -p "$TOOLCHAINS"
+	[ -d "$TOOLCHAINS/$PKG_NAME" ] && rm -rd "$TOOLCHAINS/$PKG_NAME"
+	ln -sf "../$PKG_NAME-$PKG_VERSION" "$TOOLCHAINS/$PKG_NAME"
 }
