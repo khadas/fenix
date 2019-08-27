@@ -30,3 +30,5 @@
 *.buildinfo
 /archives/epbox/
 /easy_setup_target/
+
+/*.patch
