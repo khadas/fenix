@@ -13,7 +13,7 @@ PKG_NEED_BUILD="NO"
 PKG_SHORTDESC="GCC for building Amlogic U-Boot firmware"
 
 makeinstall_host() {
-	mkdir -p $TOOLCHAINS/gcc-linaro-arm-none-eabi/
-	rm -rf $TOOLCHAINS/gcc-linaro-arm-none-eabi/*
-	cp -a $BUILD/$PKG_NAME-$PKG_VERSION/* $TOOLCHAINS/gcc-linaro-arm-none-eabi
+	[ -d "$TOOLCHAINS" ] || mkdir -p "$TOOLCHAINS"
+	[ -d "$TOOLCHAINS/$PKG_NAME" ] && rm -rdf "$TOOLCHAINS/$PKG_NAME"
+	ln -sf "../$PKG_NAME-$PKG_VERSION" "$TOOLCHAINS/$PKG_NAME"
 }

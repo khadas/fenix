@@ -13,7 +13,7 @@ PKG_NEED_BUILD="NO"
 PKG_SHORTDESC="GCC for building linux"
 
 makeinstall_host() {
-	mkdir -p $TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/
-	rm -rf $TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/*
-	cp -a $BUILD/$PKG_NAME-$PKG_VERSION/* $TOOLCHAINS/gcc-linaro-aarch64-linux-gnu
+	[ -d "$TOOLCHAINS" ] || mkdir -p "$TOOLCHAINS"
+	[ -d "$TOOLCHAINS/$PKG_NAME" ] && rm -rdf "$TOOLCHAINS/$PKG_NAME"
+	ln -sf "../$PKG_NAME-$PKG_VERSION" "$TOOLCHAINS/$PKG_NAME"
 }
