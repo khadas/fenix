@@ -4,7 +4,7 @@ HDMI_STATUS="$1"
 
 if [ "$HDMI_STATUS" == "HDMI=1" ]; then
 	# HDMI plug in, setup HDMI
-	/boot/hdmi.sh $HDMI_STATUS
+	/usr/local/bin/hdmi.sh $HDMI_STATUS
 elif [ "$HDMI_STATUS" == "HDMI=0" ]; then
 	# HDMI plug out, setup panel if exist
 
