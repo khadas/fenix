@@ -209,6 +209,10 @@ tweaks_platform() {
 	# Enable services
 	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable 0hdmi.service bluetooth-khadas.service fan.service"'
 
+	if [ "$DISTRIB_TYPE" != "server" ] && [ "$LINUX" != "mainline" ]; then
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable panel.service"'
+	fi
+
 	# Create boot links
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
 		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/zImage zImage"'
