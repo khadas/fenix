@@ -1,0 +1,1 @@
+SUBSYSTEM=="extcon", ACTION=="change", ENV{NAME}=="hdmitx_extcon_hdmi", RUN+="/usr/local/bin/display_setup.sh $env{STATE}"
