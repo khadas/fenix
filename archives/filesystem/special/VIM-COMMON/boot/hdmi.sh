@@ -1,5 +1,7 @@
 #!/bin/sh
 
+
+hdmi_status="$1" # used for hot plug event
 #bpp=24
 bpp=32
 mode=1080p60hz
@@ -8,29 +10,38 @@ mode=1080p60hz
 
 for x in $(cat /proc/cmdline); do
 	case ${x} in
-		m_bpp=*) export bpp=${x#*=} ;;
-		hdmimode=*) export mode=${x#*=} ;;
+		m_bpp=*)
+			bpp=${x#*=}
+			;;
+		hdmimode=*)
+			mode=${x#*=}
+			;;
+		vout=*)
+			vout=${x#*=}
+			;;
+		panel_exist=*)
+			panel_exist=${x#*=}
+			;;
 	esac
 done
 
-HPD_STATE=/sys/class/amhdmitx/amhdmitx0/hpd_state
-DISP_CAP=/sys/class/amhdmitx/amhdmitx0/disp_cap
-DISP_MODE=/sys/class/display/mode
+display_device=`echo $vout | awk -F ',' '{print $1}'`
 
-echo $mode > $DISP_MODE
+if [ "$hdmi_status" != "HDMI=1" ] && [ $panel_exist -eq 1 ] && [ $display_device = panel ]; then
+	# Current display devide is panel, exit.
+	exit 0
+fi
 
 common_display_setup() {
 	M="0 0 $(($X - 1)) $(($Y - 1))"
 	Y_VIRT=$(($Y * 2))
 	fbset -fb /dev/fb0 -g $X $Y $X $Y_VIRT $bpp
 	echo $mode > /sys/class/display/mode
-	echo 0 > /sys/class/graphics/fb0/free_scale
-	echo 1 > /sys/class/graphics/fb0/freescale_mode
 	echo $M > /sys/class/graphics/fb0/free_scale_axis
 	echo $M > /sys/class/graphics/fb0/window_axis
 
-	echo 0 > /sys/class/graphics/fb1/free_scale
-	echo 1 > /sys/class/graphics/fb1/freescale_mode
+	echo 0 > /sys/class/graphics/fb0/free_scale
+	echo 1 > /sys/class/graphics/fb0/freescale_mode
 }
 
 case $mode in
