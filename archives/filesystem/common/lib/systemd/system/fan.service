@@ -4,7 +4,7 @@ DefaultDependencies=no
 After=local-fs.target
 
 [Service]
-ExecStart=/boot/fan.sh
+ExecStart=/usr/local/bin/fan.sh
 RemainAfterExit=no
 
 [Install]
