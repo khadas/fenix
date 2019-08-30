@@ -121,7 +121,9 @@ for dev in ${devs}; do
 
 						fdt addr ${dtb_loadaddr};
 						fdt resize 65536;
-						if test "X${hwver}" = "XVIM2.V14"; then
+						if test "X${hwver}" = "XVIM1.V14"; then
+							fdt set /soc/cbus@c1100000/i2c@87c0/khadas-mcu hwver "VIM1.V14";
+						else if test "X${hwver}" = "XVIM2.V14"; then
 							fdt set /fan hwver "VIM2.V14";
 							fdt set /i2c@c11087c0/khadas-mcu hwver "VIM2.V14";
 							fdt set /soc/cbus@c1100000/i2c@87c0/khadas-mcu hwver "VIM2.V14";
@@ -136,7 +138,7 @@ for dev in ${devs}; do
 								fdt set /usb3phy@ffe09080 portnum <0>;
 								fdt set /pcieA@fc000000 status okay;
 							fi;
-						fi;fi;
+						fi;fi;fi;
 						if test "X${imagetype}" = "XEMMC_MBR"; then
 							echo "Remove eMMC vendor partitions...";
 							fdt rm /partitions;
