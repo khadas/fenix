@@ -1,10 +1,11 @@
 #!/bin/sh
 
-FAN_INPUT="${1:-"auto"}"
+RC=0
+FAN_INPUT="${1:-"boot"}"
 
-FAN_ENABLE_NODE="/sys/class/fan/enable"
 FAN_MODE_NODE="/sys/class/fan/mode"
 FAN_LEVEL_NODE="/sys/class/fan/level"
+FAN_ENABLE_NODE="/sys/class/fan/enable"
 
 AUTO_MODE=1
 MANUAL_MODE=0
@@ -13,12 +14,35 @@ LEVEL_LOW=1
 LEVEL_MID=2
 LEVEL_HIGH=3
 
+usage() {
+	echo ""
+	echo "Usage: $0 [on|low|mid|high|auto|off] - Set fan mode/level"
+	echo "       $0 [mode] - Query fan mode/level"
+	echo ""
+	echo "Examp: $0 auto"
+}
+
+message() {
+	local TYPE="$1"
+	local TXT="$2"
+	local RC="$3"
+	echo "$TYPE $TXT"
+	if [ "$TYPE" = "Error:" ]; then usage; fi
+	logger -s "$TXT" "$RC" 1>/dev/null 2>&1
+	exit $RC
+}
+
 # off
 # auto
 # low
 # mid
 # high
 mode="auto"
+
+# Require root privilege
+if [ $(id -u) != 0 ]; then
+   message "Error:" "Use sudo or run with root privilege!" 1
+fi
 
 if [ "$FAN_INPUT" = "mode" ]; then
 	mode=$FAN_INPUT
@@ -34,7 +58,7 @@ if [ "$FAN_INPUT" = "mode" ]; then
 		2) FAN_LEVEL=mid ;;
 		3) FAN_LEVEL=high ;;
 	esac
-elif [ "$FAN_INPUT" != "mode" ]; then
+elif [ "$FAN_INPUT" != "boot" ]; then
 	mode=$FAN_INPUT
 else {	
 	for m in $(cat /proc/cmdline); do
@@ -48,6 +72,7 @@ fi
 case $mode in
 	off)
 		echo 0 > $FAN_ENABLE_NODE
+		message "CAUTION:" "Disabling fan can reduce the lifetime of this board!" 0
 		;;
 	low)
 		echo 1 > $FAN_ENABLE_NODE
@@ -72,6 +97,9 @@ case $mode in
 		echo "Fan mode: $FAN_MODE"
 		echo "Fan level: $FAN_LEVEL"
 		;;	
+	*)
+		message "Error:" "Fan mode/level is unknown!" 1
+		;;
 esac
 
-exit 0
+exit $RC
