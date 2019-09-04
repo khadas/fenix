@@ -252,6 +252,13 @@ build_deb_packages_platform() {
 			rm -rf $BUILD/.stamps/amremote
 		fi
 		build_package "amremote:target"
+
+		# FIXME
+		# remove build stamp to force build for other arch
+		if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/npu_aml ]; then
+			rm -rf $BUILD/.stamps/npu_aml
+		fi
+		build_package "npu_aml:target"
 	fi
 }
 
@@ -266,6 +273,8 @@ install_deb_packages_platform() {
 
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/codec_aml/*.deb
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote/*.deb
+
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/npu_aml/*.deb
 
 		# Enable khadas remote
 		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable amlogic-remotecfg.service"'
