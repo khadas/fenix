@@ -17,11 +17,12 @@ LEVEL_HIGH=3
 
 usage() {
 	echo ""
-	echo "Usage: $0 [on|low|mid|high|auto|off] :: Set fan mode/level"
-	echo "       $0 [temp]    :: Query cpu temperature"
-	echo "       $0 [trig]    :: Query fan trigger temperature"
-	echo "       $0 [mode]    :: Query fan mode/level"
-	echo "       $0 --help|-h :: This text"
+	echo "Usage: $0 [on|auto|off]  :: Set fan mode"
+	echo "       $0 [low|mid|high] :: Set fan level"
+	echo "       $0 [temp]         :: Query cpu temperature"
+	echo "       $0 [trig]         :: Query fan trigger temperature"
+	echo "       $0 [mode]         :: Query fan mode/level"
+	echo "       $0 [--help|-h]    :: This text"
 	echo ""
 	echo "Examp: $0 auto"
 }
