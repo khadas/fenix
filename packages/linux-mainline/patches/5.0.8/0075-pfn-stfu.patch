@@ -1,0 +1,25 @@
+From 9a55fb163bd0c1fbfc2492398bced2bcbb4f0515 Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Mon, 25 Mar 2019 10:52:49 +0800
+Subject: [PATCH 75/92] pfn stfu
+
+---
+ mm/page_alloc.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 20dd328..30fea5c 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8223,8 +8223,6 @@ int alloc_contig_range(unsigned long start, unsigned long end,
+ 
+ 	/* Make sure the range is really isolated. */
+ 	if (test_pages_isolated(outer_start, end, false)) {
+-		pr_info_ratelimited("%s: [%lx, %lx) PFNs busy\n",
+-			__func__, outer_start, end);
+ 		ret = -EBUSY;
+ 		goto done;
+ 	}
+-- 
+2.7.4
+

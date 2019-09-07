@@ -1,0 +1,24 @@
+From cf6d3fcdd4ce8125d0c67a9ee7ab2c31942c44ff Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Mon, 25 Mar 2019 11:02:57 +0800
+Subject: [PATCH 83/92] ARM64: dts: VIM2: ethernet eee
+
+---
+ arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+index 09d7204..0f41d26 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+@@ -297,6 +297,7 @@
+ 		interrupt-parent = <&gpio_intc>;
+ 		/* MAC_INTR on GPIOZ_15 */
+ 		interrupts = <25 IRQ_TYPE_LEVEL_LOW>;
++		eee-broken-1000t;
+ 	};
+ };
+ 
+-- 
+2.7.4
+

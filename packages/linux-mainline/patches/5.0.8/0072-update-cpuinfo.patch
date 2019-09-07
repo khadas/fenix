@@ -1,0 +1,26 @@
+From e70bec77d19042ad42a551c41ccebd5a76785d26 Mon Sep 17 00:00:00 2001
+From: Nick <nick@khadas.com>
+Date: Mon, 25 Mar 2019 10:44:36 +0800
+Subject: [PATCH 72/92] update cpuinfo
+
+---
+ arch/arm64/kernel/cpuinfo.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/arch/arm64/kernel/cpuinfo.c b/arch/arm64/kernel/cpuinfo.c
+index ca0685f..e1a26a3 100644
+--- a/arch/arm64/kernel/cpuinfo.c
++++ b/arch/arm64/kernel/cpuinfo.c
+@@ -140,8 +140,7 @@ static int c_show(struct seq_file *m, void *v)
+ 		 * "processor".  Give glibc what it expects.
+ 		 */
+ 		seq_printf(m, "processor\t: %d\n", i);
+-		if (compat)
+-			seq_printf(m, "model name\t: ARMv8 Processor rev %d (%s)\n",
++		seq_printf(m, "model name\t: ARMv8 Processor rev %d (%s)\n",
+ 				   MIDR_REVISION(midr), COMPAT_ELF_PLATFORM);
+ 
+ 		seq_printf(m, "BogoMIPS\t: %lu.%02lu\n",
+-- 
+2.7.4
+

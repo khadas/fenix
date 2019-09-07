@@ -1,0 +1,65 @@
+From b1699747e848c2bd754f9b2792bb0d6ef20fd438 Mon Sep 17 00:00:00 2001
+From: Qiang Yu <yuq825@gmail.com>
+Date: Sat, 2 Mar 2019 12:02:58 +0800
+Subject: [PATCH 65/92] drm/lima: remove unused max sched task param
+
+Signed-off-by: Qiang Yu <yuq825@gmail.com>
+---
+ drivers/gpu/drm/lima/lima_drv.c | 13 -------------
+ drivers/gpu/drm/lima/lima_drv.h |  1 -
+ 2 files changed, 14 deletions(-)
+
+diff --git a/drivers/gpu/drm/lima/lima_drv.c b/drivers/gpu/drm/lima/lima_drv.c
+index 3121b31..3818f33 100644
+--- a/drivers/gpu/drm/lima/lima_drv.c
++++ b/drivers/gpu/drm/lima/lima_drv.c
+@@ -13,14 +13,10 @@
+ #include "lima_vm.h"
+ 
+ int lima_sched_timeout_ms = 0;
+-int lima_sched_max_tasks = 32;
+ 
+ MODULE_PARM_DESC(sched_timeout_ms, "task run timeout in ms (0 = no timeout (default))");
+ module_param_named(sched_timeout_ms, lima_sched_timeout_ms, int, 0444);
+ 
+-MODULE_PARM_DESC(sched_max_tasks, "max queued task num in a context (default 32)");
+-module_param_named(sched_max_tasks, lima_sched_max_tasks, int, 0444);
+-
+ static int lima_ioctl_get_param(struct drm_device *dev, void *data, struct drm_file *file)
+ {
+ 	struct drm_lima_get_param *args = data;
+@@ -331,19 +327,10 @@ static struct platform_driver lima_platform_driver = {
+ 	},
+ };
+ 
+-static void lima_check_module_param(void)
+-{
+-	if (lima_sched_max_tasks < 4)
+-		lima_sched_max_tasks = 4;
+-	else
+-		lima_sched_max_tasks = roundup_pow_of_two(lima_sched_max_tasks);
+-}
+-
+ static int __init lima_init(void)
+ {
+ 	int ret;
+ 
+-	lima_check_module_param();
+ 	ret = lima_sched_slab_init();
+ 	if (ret)
+ 		return ret;
+diff --git a/drivers/gpu/drm/lima/lima_drv.h b/drivers/gpu/drm/lima/lima_drv.h
+index 640a548..8390288 100644
+--- a/drivers/gpu/drm/lima/lima_drv.h
++++ b/drivers/gpu/drm/lima/lima_drv.h
+@@ -9,7 +9,6 @@
+ #include "lima_ctx.h"
+ 
+ extern int lima_sched_timeout_ms;
+-extern int lima_sched_max_tasks;
+ 
+ struct lima_vm;
+ struct lima_bo;
+-- 
+2.7.4
+
