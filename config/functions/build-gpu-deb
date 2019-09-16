@@ -53,6 +53,8 @@ build_gpu_deb() {
 		fi
 
 		# GPU user space binary drivers
+		mkdir -p $pkgdir/etc/OpenCL/vendors/
+		cp archives/hwpacks/mali/${VENDOR}/include/mali.icd $pkgdir/etc/OpenCL/vendors/
 		## Headers
 		mkdir -p $pkgdir/usr/include/
 		cp -arf archives/hwpacks/mali/${VENDOR}/include/EGL $pkgdir/usr/include/
