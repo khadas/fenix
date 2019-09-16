@@ -10,11 +10,6 @@ install_common()
 {
 	info_msg "Applying common tweaks..."
 
-	# create modules file
-	if [[ -n $MODULES ]]; then
-		tr ' ' '\n' <<< "$MODULES" > $ROOTFS_TEMP/etc/modules
-	fi
-
 	# Copy boot environment
 	if [[ -n $BOOT_ENV_FILE && -f $BOOT_ENV/$BOOT_ENV_FILE ]]; then
 		cp $BOOT_ENV/$BOOT_ENV_FILE $ROOTFS_TEMP/boot/env.txt
