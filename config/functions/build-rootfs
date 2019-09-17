@@ -499,6 +499,13 @@ build_rootfs() {
 		cp $ROOT/archives/filesystem/blobs/mate_menu/icons/* $ROOTFS_TEMP
 	fi
 
+	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$LINUX" == "mainline" ]; then
+		# Blacklist lima.ko
+		tee $ROOTFS_TEMP/etc/modprobe.d/lima.conf <<-EOF
+		blacklist lima
+		EOF
+	fi
+
 #	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" == "xenial" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_ARCH" == "arm64" ]; then
 #		# install mali KO
 #		VER=$(ls $ROOTFS_TEMP/lib/modules/)
