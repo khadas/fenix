@@ -47,6 +47,7 @@ download_package() {
 
 	STAMP_URL="$PKG_SOURCE_NAME.url"
 	STAMP_SHA="$PKG_SOURCE_NAME.sha256"
+#	WGET_CMD="wget --timeout=30 --tries=3 --passive-ftp --no-check-certificate -O $PKG_SOURCE_NAME"
 	WGET_CMD="wget --timeout=30 --tries=3 --passive-ftp --no-check-certificate -O $PKG_SOURCE_NAME"
 
 	# Check

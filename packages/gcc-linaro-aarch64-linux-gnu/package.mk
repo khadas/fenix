@@ -17,6 +17,6 @@ makeinstall_host() {
 #	rm -rf $TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/*
 #	cp -a $BUILD/$PKG_NAME-$PKG_VERSION/* $TOOLCHAINS/gcc-linaro-aarch64-linux-gnu
 	[ -d "$TOOLCHAINS" ] || mkdir -p "$TOOLCHAINS"
-	[ -d "$TOOLCHAINS/$PKG_NAME" ] && rm -rd "$TOOLCHAINS/$PKG_NAME"
+	[ -d "$TOOLCHAINS/$PKG_NAME" ] && rm -rdf "$TOOLCHAINS/$PKG_NAME"
 	ln -sf "../$PKG_NAME-$PKG_VERSION" "$TOOLCHAINS/$PKG_NAME"
 }
