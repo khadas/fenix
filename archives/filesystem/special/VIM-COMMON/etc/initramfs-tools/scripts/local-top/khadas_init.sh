@@ -36,8 +36,14 @@ if [ $panel_exist -eq 1 ] && [ $display_device = panel ]; then
 	echo 0 > /sys/class/graphics/fb0/free_scale
 	echo 1 > /sys/class/graphics/fb0/freescale_mode
 else
+	hpd_state=`cat /sys/class/amhdmitx/amhdmitx0/hpd_state`
 	bpp=32
 	mode=720p60hz
+
+	if [ $hpd_state -eq 0 ]; then
+		# Exit if HDMI cable is not connected
+		exit
+	fi
 
 	fbset -fb /dev/fb0 -g 1280 720 1280 1440 $bpp
 	echo $mode > /sys/class/display/mode

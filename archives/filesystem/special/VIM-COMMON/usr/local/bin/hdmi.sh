@@ -1,7 +1,8 @@
 #!/bin/sh
 
 
-hdmi_status="$1" # used for hot plug event
+hdmi_status="${1:-HDMI=1}" # used for hot plug event
+hpd_state=`cat /sys/class/amhdmitx/amhdmitx0/hpd_state`
 #bpp=24
 bpp=32
 mode=1080p60hz
@@ -29,6 +30,11 @@ display_device=`echo $vout | awk -F ',' '{print $1}'`
 
 if [ "$hdmi_status" != "HDMI=1" ] && [ $panel_exist -eq 1 ] && [ $display_device = panel ]; then
 	# Current display devide is panel, exit.
+	exit 0
+fi
+
+if [ $hpd_state -eq 0 ]; then
+	# Exit if HDMI cable is not connected
 	exit 0
 fi
 
