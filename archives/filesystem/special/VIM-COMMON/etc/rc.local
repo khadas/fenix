@@ -20,6 +20,10 @@
 [ -f /sys/class/graphics/fb0/blank ] && chmod 777 /sys/class/graphics/fb0/blank
 [ -f /sys/class/graphics/fb0/osd_clear ] && chmod 777 /sys/class/graphics/fb0/osd_clear
 
+# For MCU
+[ -f /sys/class/mcu/poweroff ] && chmod 777 /sys/class/mcu/poweroff
+[ -f /sys/class/mcu/usb_pcie_switch_mode ] && chmod 777 /sys/class/mcu/usb_pcie_switch_mode
+
 # Setup LED: heartbeat if bootup completed
 echo heartbeat > /sys/class/leds/sys_led/trigger
 
