@@ -18,10 +18,10 @@
 [ -f /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ] && chmod 777 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 [ -f /sys/class/display/mode ] && chmod 777 /sys/class/display/mode
 [ -f /sys/class/graphics/fb0/blank ] && chmod 777 /sys/class/graphics/fb0/blank
-[ -f /sys/class/graphics/fb0/osd_clear ] && chmod	777 /sys/class/graphics/fb0/osd_clear
+[ -f /sys/class/graphics/fb0/osd_clear ] && chmod 777 /sys/class/graphics/fb0/osd_clear
 
 # Setup LED: heartbeat if bootup completed
-echo heartbeat > /sys/class/leds/led-sys/trigger
+echo heartbeat > /sys/class/leds/sys_led/trigger
 
 # Reboot test handle
 if cat /proc/cmdline | grep -q reboot_test > /dev/null; then
