@@ -68,9 +68,9 @@ if test -e mmc ${devnum}:${boot_env_part} ${mark_prefix}.next; then
 	if test ${board_type} = ${BOARD_TYPE_EDGE}; then
 		setenv boot_dtb "rk3399-khadas-edge.dtb";
 	else if test ${board_type} = ${BOARD_TYPE_EDGE_V}; then
-		setenv boot_dtb "rk3399-khadas-edgev${dtb_suffix}.dtb";
+		setenv boot_dtb "rk3399-khadas-edge-v.dtb";
 	else if test ${board_type} = ${BOARD_TYPE_CAPTAIN}; then
-		setenv boot_dtb "rk3399-khadas-captain${dtb_suffix}.dtb";
+		setenv boot_dtb "rk3399-khadas-edge-captain.dtb";
 	fi;fi;fi
 else
 	if test ${board_type} = ${BOARD_TYPE_EDGE}; then
