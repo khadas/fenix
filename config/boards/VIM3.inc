@@ -241,10 +241,10 @@ build_deb_packages_platform() {
 
 		# FIXME
 		# remove build stamp to force build for other arch
-		if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/codec_aml ]; then
-			rm -rf $BUILD/.stamps/codec_aml
+		if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libplayer_aml ]; then
+			rm -rf $BUILD/.stamps/libplayer_aml
 		fi
-		build_package "codec_aml:target"
+		build_package "libplayer_aml:target"
 
 		# FIXME
 		# remove build stamp to force build for other arch
@@ -278,7 +278,7 @@ install_deb_packages_platform() {
 		info_msg "Installing Kodi packages..."
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi_aml/*.deb
 
-		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/codec_aml/*.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libplayer_aml/*.deb
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote/*.deb
 
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/npu_aml/*.deb
