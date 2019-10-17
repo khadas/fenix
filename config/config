@@ -164,7 +164,7 @@ PACKAGE_LIST_XSERVER="libunwind8 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 lib
 	x11proto-xf86bigfont-dev x11proto-dri3-dev x11proto-present-dev libxfont-dev libxkbfile-dev libpciaccess-dev mesa-common-dev"
 
 PACKAGE_LIST_GSTREAMER="gstreamer1.0-libav gstreamer1.0-plugins-bad gstreamer1.0-tools gstreamer1.0-plugins-base gstreamer1.0-alsa \
-	gstreamer1.0-plugins-good"
+	gstreamer1.0-plugins-good libconfig++9v5 libconfig9"
 
 PACKAGE_LIST_QT="libqt5opengl5 libqt5qml5 libqt5quick5 libqt5widgets5 libqt5gui5 libqt5core5a qml-module-qtquick2 \
 	libqt5multimedia5 libqt5multimedia5-plugins libqt5multimediaquick-p5 qml-module-qt-labs-folderlistmodel qml-module-qtmultimedia \
@@ -227,6 +227,6 @@ PACKAGE_LIST="$PACKAGE_LIST $PACKAGE_LIST_RELEASE $PACKAGE_LIST_ADDITIONAL"
 if [[ $DISTRIB_TYPE != server ]]; then
 	PACKAGE_LIST="$PACKAGE_LIST $PACKAGE_LIST_DESKTOP"
 else
-	PACKAGE_LIST="$PACKAGE_LIST $PACKAGE_LIST_SERVER_KODI"
+	PACKAGE_LIST="$PACKAGE_LIST $PACKAGE_LIST_SERVER_KODI $PACKAGE_LIST_GSTREAMER"
 fi
 
