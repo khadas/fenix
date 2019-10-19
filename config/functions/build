@@ -24,7 +24,7 @@ build_uboot() {
     if [ ! -d u-boot/.git ]; then
         echo "U-boot repository does not exist, clone u-boot repository('$UBOOT_GIT_BRANCH') from '$UBOOT_SOURCE_URL'..."
         ## Clone u-boot from Khadas GitHub
-        git clone $UBOOT_SOURCE_URL -b $UBOOT_GIT_BRANCH
+        git clone --depth 1 $UBOOT_SOURCE_URL -b $UBOOT_GIT_BRANCH
         [ $? != 0 ] && error_msg "Failed to clone 'u-boot'" && return -1
     fi
 
@@ -95,7 +95,7 @@ build_linux() {
     if [ ! -d linux/.git ]; then
         echo "Linux repository does not exist, clone linux repository('$LINUX_GIT_BRANCH') from '$LINUX_SOURCE_URL'..."
         ## Clone linux from Khadas GitHub
-        git clone $LINUX_SOURCE_URL -b $LINUX_GIT_BRANCH
+        git clone --depth 1 $LINUX_SOURCE_URL -b $LINUX_GIT_BRANCH
         [ $? != 0 ] && error_msg "Failed to clone 'linux'" && return -1
     fi
 
