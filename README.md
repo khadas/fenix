@@ -23,7 +23,7 @@ $ sudo apt-get install git make lsb-release qemu-user-static
 ```bash
 $ mkdir -p ~/project/khadas
 $ cd ~/project/khadas
-$ git clone https://github.com/khadas/fenix
+$ git clone --depth 1 https://github.com/khadas/fenix
 $ cd fenix
 ```
 
