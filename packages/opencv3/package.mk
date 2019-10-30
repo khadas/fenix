@@ -1,6 +1,6 @@
 PKG_NAME="opencv3"
-PKG_VERSION="72194bab45cbe1417f9ca706e48779cdafa198d3"
-PKG_SHA256="203cd20fe955454e82f5fedc8f1ee5d70fa7b1411cb1f0e268a81b67046212e7"
+PKG_VERSION="d6bf3f8647acf00cad479220e9b940290214fa80"
+PKG_SHA256="8c61db734307066e90c54141373b89cc9eb7210fa7ebf36ebe2c7f0ac88f6aba"
 PKG_SOURCE_DIR="opencv-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/opencv3"
 PKG_URL="https://github.com/numbqq/opencv3/archive/$PKG_VERSION.tar.gz"
