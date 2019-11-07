@@ -1,0 +1,12 @@
+[Unit]
+Description=Camera ISP 3A server service
+DefaultDependencies=no
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/camera_isp_3a_server_setup.sh
+RemainAfterExit=no
+Restart=always
+
+[Install]
+WantedBy=sysinit.target

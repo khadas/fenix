@@ -213,6 +213,10 @@ tweaks_platform() {
 		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable panel.service"'
 	fi
 
+	if [ "$LINUX" != "mainline" ]; then
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable camera_isp_3a_server.service"'
+	fi
+
 	# Create boot links
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
 		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/zImage zImage"'

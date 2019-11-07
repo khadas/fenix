@@ -125,6 +125,7 @@ build_board_deb() {
 	. /etc/fenix-release
 	if [ "\$VENDOR" == "Amlogic" ]; then
 		ln -sf /lib/firmware /etc/firmware
+		systemctl enable camera_isp_3a_server.service
 	fi
 	# Patches used by hciattach
 	ln -fs /lib/firmware/brcm/BCM43438A1.hcd /lib/firmware/brcm/BCM43430A1.hcd # AP6212
