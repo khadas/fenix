@@ -243,6 +243,7 @@ build_deb_packages_platform() {
 		fi
 		build_package "kodi_aml:target"
 
+		info_msg "Building libplayer_aml packages..."
 		# FIXME
 		# remove build stamp to force build for other arch
 		if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libplayer_aml ]; then
@@ -250,6 +251,7 @@ build_deb_packages_platform() {
 		fi
 		build_package "libplayer_aml:target"
 
+		info_msg "Building amremote packages..."
 		# FIXME
 		# remove build stamp to force build for other arch
 		if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote ]; then
@@ -257,6 +259,7 @@ build_deb_packages_platform() {
 		fi
 		build_package "amremote:target"
 
+		info_msg "Building gstreamer_aml packages..."
 		# FIXME
 		# remove build stamp to force build for other arch
 		if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml ]; then
@@ -264,6 +267,7 @@ build_deb_packages_platform() {
 		fi
 		build_package "gstreamer_aml:target"
 
+		info_msg "Building npu_aml packages..."
 		# FIXME
 		# remove build stamp to force build for other arch
 		if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/npu_aml ]; then
@@ -271,6 +275,7 @@ build_deb_packages_platform() {
 		fi
 		build_package "npu_aml:target"
 
+		info_msg "Building opencv3 packages..."
 		# FIXME
 		# remove build stamp to force build for other arch
 		if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/opencv3 ]; then
@@ -289,11 +294,19 @@ install_deb_packages_platform() {
 		info_msg "Installing Kodi packages..."
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi_aml/*.deb
 
+		info_msg "Installing libplayer_aml packages..."
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libplayer_aml/*.deb
+
+		info_msg "Installing amremote packages..."
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote/*.deb
+
+		info_msg "Installing gstreamer_aml packages..."
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/*.deb
 
+		info_msg "Installing npu_aml packages..."
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/npu_aml/*.deb
+
+		info_msg "Installing opencv3 packages..."
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/opencv3/*.deb
 
 		# Enable khadas remote
