@@ -144,7 +144,7 @@ PACKAGE_LIST_ADDITIONAL="alsa-utils btrfs-tools dosfstools hddtemp iotop iozone3
 	evtest htop pv lsof libfuse2 libdigest-sha-perl libproc-processtable-perl aptitude dnsutils f3 haveged \
 	hdparm rfkill vlan sysstat bash-completion hostapd git ethtool network-manager unzip ifenslave command-not-found lirc \
 	libpam-systemd iperf3 software-properties-common libnss-myhostname f2fs-tools avahi-autoipd iputils-arping bluetooth bluez bluez-tools watchdog \
-	i2c-tools qrencode mesa-utils-extra rng-tools libjpeg9 clinfo ocl-icd-libopencl1 libatlas3-base"
+	i2c-tools qrencode mesa-utils-extra rng-tools clinfo ocl-icd-libopencl1 libatlas3-base"
 
 PACKAGE_LIST_DESKTOP="xserver-xorg xserver-xorg-video-fbdev gvfs-backends gvfs-fuse xfonts-base xinit x11-xserver-utils xterm thunar-volman \
 	network-manager-gnome network-manager-openvpn-gnome gnome-keyring gcr libgck-1-0 p11-kit pasystray pavucontrol pulseaudio \
@@ -200,7 +200,7 @@ case $DISTRIB_RELEASE in
 	;;
 	bionic)
 	DEBOOTSTRAP_COMPONENTS="main,universe"
-	PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr nano wget"
+	PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr nano wget libjpeg9"
 	PACKAGE_LIST_KODI="libglu1-mesa libglu1 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libcurl4 libcrossguid0 libmariadbclient18 libmicrohttpd12 \
 		libavahi-compat-libdnssd-dev libcec4 libfstrcmp0 libnfs11 fonts-liberation python-bluez python-pil python-simplejson libaacs0 fonts-dejavu-core"
 	PACKAGE_LIST_SERVER_KODI="libao4 libwayland-cursor0 libavahi-compat-libdnssd-dev libass9 libavahi-client3 libavahi-common3 libbluray2 libcdio17 libcec4 \
