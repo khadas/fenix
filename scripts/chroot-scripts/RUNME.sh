@@ -18,12 +18,19 @@ VENDOR=$9
 export LC_ALL=C
 export LANG=C
 
-# Setup password for root user
-echo root:khadas | chpasswd
+# Default user name, password and hostname
+USERNAME=khadas
+USER_PASSWORD=khadas
+ROOT_PASSWORD=khadas
+HOSTNAME=Khadas
 
-# Admin user khadas
-useradd -m -p "pal8k5d7/m9GY" -s /bin/bash khadas
-usermod -aG sudo,adm khadas
+# Setup password for root user
+echo root:$ROOT_PASSWORD | chpasswd
+
+# Admin user
+USER_PASSWORD_ENCRYPTED=`perl -e 'printf("%s\n", crypt($ARGV[0], "password"))' "$USER_PASSWORD"`
+useradd -m -p "$USER_PASSWORD_ENCRYPTED" -s /bin/bash $USERNAME
+usermod -aG sudo,adm $USERNAME
 
 # Add group
 DEFGROUPS="audio,video,disk,input,tty,root,users,games,dialout,cdrom,dip,plugdev,bluetooth,pulse-access,systemd-journal,netdev,staff"
@@ -39,15 +46,15 @@ for group in $DEFGROUPS; do
 done
 unset IFS
 
-echo "Add khadas to ($DEFGROUPS) groups."
-usermod -a -G $DEFGROUPS khadas
+echo "Add $USERNAME to ($DEFGROUPS) groups."
+usermod -a -G $DEFGROUPS $USERNAME
 
 # Setup host
-echo Khadas > /etc/hostname
+echo $HOSTNAME > /etc/hostname
 # set hostname in hosts file
 cat <<-EOF > /etc/hosts
-127.0.0.1   localhost Khadas
-::1         localhost Khadas ip6-localhost ip6-loopback
+127.0.0.1   localhost $HOSTNAME
+::1         localhost $HOSTNAME ip6-localhost ip6-loopback
 fe00::0     ip6-localnet
 ff00::0     ip6-mcastprefix
 ff02::1     ip6-allnodes
