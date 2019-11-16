@@ -56,19 +56,6 @@ EOF
 
 cd /
 
-# MultiOS
-if [ -f /.multi-os ]; then
-	mkdir -p /home/khadas/.local/share/applications
-	mkdir -p /home/khadas/.config/menus
-	mv /*.menu /home/khadas/.config/menus
-	mv /*.desktop /home/khadas/.local/share/applications
-	mkdir -p /usr/share/multios/
-	mv /*.png /usr/share/multios/
-	chown khadas:khadas -R /home/khadas/.local
-	chown khadas:khadas -R /home/khadas/.config
-	rm -rf /.multi-os
-fi
-
 # Clean up
 apt-get -y clean
 apt-get -y autoclean
