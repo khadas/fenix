@@ -24,6 +24,11 @@
 [ -f /sys/class/mcu/poweroff ] && chmod 777 /sys/class/mcu/poweroff
 [ -f /sys/class/mcu/usb_pcie_switch_mode ] && chmod 777 /sys/class/mcu/usb_pcie_switch_mode
 
+# For HDMI service
+[ -f /sys/class/graphics/fb1/blank ] && chmod 777 /sys/class/graphics/fb1/blank
+[ -f /sys/devices/virtual/graphics/fbcon/cursor_blink ] && chmod 777 /sys/devices/virtual/graphics/fbcon/cursor_blink
+[ -f /sys/class/ppmgr/ppscaler ] && chmod 777 /sys/class/ppmgr/ppscaler
+
 # Setup LED: heartbeat if bootup completed
 echo heartbeat > /sys/class/leds/sys_led/trigger
 
