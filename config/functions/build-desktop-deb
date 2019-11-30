@@ -113,6 +113,9 @@ build_desktop_deb() {
 		# Remove QT5 player for other platform
 		rm -f $pkgdir/etc/skel/.local/share/applications/qt5.desktop
 		rm -f $pkgdir/usr/local/bin/qt5_player
+	else
+		# Remove unused menus for Rockchip platform
+		rm -rf $pkgdir/etc/skel/.local/share/applications/xfce-hdmi-resolution-settings.desktop
 	fi
 
 	# Create desktop deb file

@@ -144,12 +144,12 @@ PACKAGE_LIST_ADDITIONAL="alsa-utils btrfs-tools dosfstools hddtemp iotop iozone3
 	evtest htop pv lsof libfuse2 libdigest-sha-perl libproc-processtable-perl aptitude dnsutils f3 haveged \
 	hdparm rfkill vlan sysstat bash-completion hostapd git ethtool network-manager unzip ifenslave command-not-found lirc \
 	libpam-systemd iperf3 software-properties-common libnss-myhostname f2fs-tools avahi-autoipd iputils-arping bluetooth bluez bluez-tools watchdog \
-	i2c-tools qrencode mesa-utils-extra rng-tools clinfo ocl-icd-libopencl1 libatlas3-base p7zip p7zip-full lrzip lzip lzop ncompress unar zstd"
+	i2c-tools qrencode mesa-utils-extra rng-tools clinfo ocl-icd-libopencl1 libatlas3-base p7zip p7zip-full lrzip lzip lzop ncompress unar zstd edid-decode"
 
 PACKAGE_LIST_DESKTOP="xserver-xorg xserver-xorg-video-fbdev gvfs-backends gvfs-fuse xfonts-base xinit x11-xserver-utils xterm thunar-volman \
 	network-manager-gnome network-manager-openvpn-gnome gnome-keyring gcr libgck-1-0 p11-kit pasystray pavucontrol pulseaudio \
 	pavumeter pulseaudio-module-gconf pulseaudio-module-bluetooth blueman libgl1-mesa-dri gparted synaptic \
-	policykit-1 mesa-utils gnome-orca numix-gtk-theme gnome-system-tools gufw gedit"
+	policykit-1 mesa-utils gnome-orca numix-gtk-theme gnome-system-tools gufw gedit yad zenity"
 
 PACKAGE_LIST_OFFICE="lxtask mirage galculator hexchat mpv \
 	gtk2-engines gtk2-engines-murrine gtk2-engines-pixbuf libgnome2-perl \

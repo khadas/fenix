@@ -1,37 +1,12 @@
 #!/bin/sh
 
 
-hdmi_status="${1:-HDMI=1}" # used for hot plug event
 hpd_state=`cat /sys/class/amhdmitx/amhdmitx0/hpd_state`
 #bpp=24
 bpp=32
-mode=1080p60hz
+mode=${1:-720p60hz}
 #mode=2160p60hz
 #mode=720p60hz
-
-for x in $(cat /proc/cmdline); do
-	case ${x} in
-		m_bpp=*)
-			bpp=${x#*=}
-			;;
-		hdmimode=*)
-			mode=${x#*=}
-			;;
-		vout=*)
-			vout=${x#*=}
-			;;
-		panel_exist=*)
-			panel_exist=${x#*=}
-			;;
-	esac
-done
-
-display_device=`echo $vout | awk -F ',' '{print $1}'`
-
-if [ "$hdmi_status" != "HDMI=1" ] && [ $panel_exist -eq 1 ] && [ $display_device = panel ]; then
-	# Current display devide is panel, exit.
-	exit 0
-fi
 
 if [ $hpd_state -eq 0 ]; then
 	# Exit if HDMI cable is not connected
@@ -42,6 +17,7 @@ common_display_setup() {
 	M="0 0 $(($X - 1)) $(($Y - 1))"
 	Y_VIRT=$(($Y * 2))
 	fbset -fb /dev/fb0 -g $X $Y $X $Y_VIRT $bpp
+	echo null > /sys/class/display/mode
 	echo $mode > /sys/class/display/mode
 	echo $M > /sys/class/graphics/fb0/free_scale_axis
 	echo $M > /sys/class/graphics/fb0/window_axis
@@ -99,6 +75,10 @@ case $mode in
 		export X=1280
 		export Y=800
 		;;
+	1280x960p60hz*)
+		export X=1280
+		export Y=960
+		;;
 	1280x1024p60hz*)
 		export X=1280
 		export Y=1024
@@ -106,6 +86,10 @@ case $mode in
 	1360x768p60hz*)
 		export X=1360
 		export Y=768
+		;;
+	1400x1050p60hz*)
+		export X=1400
+		export Y=1050
 		;;
 	1440x900p60hz*)
 		export X=1440

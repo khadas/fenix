@@ -1,0 +1,10 @@
+[Unit]
+Description=Khadas HDMI Resolution Service
+
+[Service]
+#Type=forking
+ExecStart=/usr/local/bin/hdmi_resolution_daemon.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.0
+Name=HDMI Resolution Setting
+Name[zh_CN]=HDMI分辨率设置
+Comment=Configure screen resolution
+Comment[zh_CN]=配置屏幕分辨率
+Exec=/usr/local/bin/hdmi_setup.sh
+Icon=/etc/fenix/icons/hdmi_resolution.png
+Terminal=false
+Type=Application
+Categories=XFCE;GTK;Settings;DesktopSettings;X-XFCE-SettingsDialog;X-XFCE-HardwareSettings;
+StartupNotify=true
+OnlyShowIn=XFCE;
+X-XfcePluggable=true
+X-XfceHelpPage=display

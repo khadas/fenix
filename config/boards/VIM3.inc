@@ -207,10 +207,10 @@ tweaks_platform() {
 	echo "ttyAML0" >> $ROOTFS_TEMP/etc/securetty
 
 	# Enable services
-	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable 0hdmi.service bluetooth-khadas.service fan.service"'
+	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable bluetooth-khadas.service fan.service"'
 
 	if [ "$DISTRIB_TYPE" != "server" ] && [ "$LINUX" != "mainline" ]; then
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable panel.service"'
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable panel.service hdmi_resolution.service"'
 	fi
 
 	if [ "$LINUX" != "mainline" ]; then
@@ -282,6 +282,14 @@ build_deb_packages_platform() {
 			rm -rf $BUILD/.stamps/opencv3
 		fi
 		build_package "opencv3:target"
+
+		info_msg "Building edid-decode-deb packages..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/edid-decode-deb ]; then
+			rm -rf $BUILD/.stamps/edid-decode-deb
+		fi
+		build_package "edid-decode-deb:target"
 	fi
 }
 
@@ -311,5 +319,8 @@ install_deb_packages_platform() {
 
 		# Enable khadas remote
 		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable amlogic-remotecfg.service"'
+
+		info_msg "Installing edid-decode-deb packages..."
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/edid-decode-deb/*.deb
 	fi
 }
