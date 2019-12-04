@@ -45,9 +45,9 @@ message() {
 mode="auto"
 
 # Require root privilege
-if [ $(id -u) != 0 ]; then
-   message "Error:" "Use sudo or run with root privilege!" 1
-fi
+#if [ $(id -u) != 0 ]; then
+#   message "Error:" "Use sudo or run with root privilege!" 1
+#fi
 
 if [ "$FAN_INPUT" = "temp" ]; then
 	mode=$FAN_INPUT

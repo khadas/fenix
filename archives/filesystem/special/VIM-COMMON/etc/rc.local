@@ -29,6 +29,11 @@
 [ -f /sys/devices/virtual/graphics/fbcon/cursor_blink ] && chmod 777 /sys/devices/virtual/graphics/fbcon/cursor_blink
 [ -f /sys/class/ppmgr/ppscaler ] && chmod 777 /sys/class/ppmgr/ppscaler
 
+# For FAN
+[ -f /sys/class/fan/mode ] && chmod 777 /sys/class/fan/mode
+[ -f /sys/class/fan/level ] && chmod 777 /sys/class/fan/level
+[ -f /sys/class/fan/enable ] && chmod 777 /sys/class/fan/enable
+
 # Setup LED: heartbeat if bootup completed
 echo heartbeat > /sys/class/leds/sys_led/trigger
 
