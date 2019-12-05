@@ -7,6 +7,7 @@ Type=simple
 ExecStart=/usr/local/bin/camera_isp_3a_server_setup.sh
 RemainAfterExit=no
 Restart=always
+StartLimitBurst=0
 
 [Install]
 WantedBy=sysinit.target
