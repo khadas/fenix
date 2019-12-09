@@ -33,7 +33,7 @@ useradd -m -p "$USER_PASSWORD_ENCRYPTED" -s /bin/bash $USERNAME
 usermod -aG sudo,adm $USERNAME
 
 # Add group
-DEFGROUPS="audio,video,disk,input,tty,root,users,games,dialout,cdrom,dip,plugdev,bluetooth,pulse-access,systemd-journal,netdev,staff"
+DEFGROUPS="audio,video,disk,input,tty,root,users,games,dialout,cdrom,dip,plugdev,bluetooth,pulse-access,systemd-journal,netdev,staff,i2c"
 IFS=','
 for group in $DEFGROUPS; do
 	/bin/egrep  -i "^$group" /etc/group > /dev/null
