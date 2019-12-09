@@ -16,5 +16,8 @@ KERNEL=="ump",SUBSYSTEM=="ump",MODE="0777"
 #npu
 KERNEL=="galcore", MODE="0777"
 
+# spi
+KERNEL=="spidev*", MODE="0660"
+
 # Others
 KERNEL=="env", MODE="0666"
