@@ -34,6 +34,9 @@
 [ -f /sys/class/fan/level ] && chmod 777 /sys/class/fan/level
 [ -f /sys/class/fan/enable ] && chmod 777 /sys/class/fan/enable
 
+# For WOL
+[ -f /sys/class/wol/enable ] && chmod 0660 /sys/class/wol/enable
+
 # Setup LED: heartbeat if bootup completed
 echo heartbeat > /sys/class/leds/sys_led/trigger
 
