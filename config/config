@@ -209,7 +209,7 @@ case $DISTRIB_RELEASE in
 		libxslt1.1  mesa-utils x11-utils fonts-liberation fonts-dejavu-core python-bluez python-pil python-simplejson libgif7 libvorbisfile3 libaacs0 libgnutls30 \
 		libyajl2 libsndio6.1 libcrossguid0"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_QT"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_KODI chromium-browser xserver-xorg-input-all dbus-x11 profile-sync-daemon"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_KODI chromium-browser xserver-xorg-input-all dbus-x11 profile-sync-daemon firefox"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP system-config-printer system-config-printer-gnome language-selector-gnome"
 	;;
 esac
