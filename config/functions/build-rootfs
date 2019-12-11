@@ -63,9 +63,6 @@ install_common()
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-${VENDOR,,}-dev_${VERSION}_${DISTRIB_ARCH}.deb
 	fi
 
-	# Install board deb in chroot
-	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/${LINUX_BOARD_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
-
 	if [ "$DISTRIB_TYPE" != "server" ]; then
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/${FENIX_DESKTOP_DEB}_${VERSION}_all.deb
 		desktop_postinstall
@@ -80,6 +77,9 @@ install_common()
 	if [[ $(type -t install_deb_packages_platform) == function ]]; then
 		install_deb_packages_platform
 	fi
+
+	# Install board deb in chroot
+	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/${LINUX_BOARD_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
 
 	# Tweaks for platform
 	if [[ $(type -t tweaks_platform) == function ]]; then
