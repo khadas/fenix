@@ -183,10 +183,6 @@ case $DISTRIB_TYPE in
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP lxde lxlauncher lxmusic lxsession-default-apps lxsession-logout lxshortcut lxtask obconf \
 		xfce4-power-manager-plugins lxde-common desktop-base"
 	;;
-	mate)
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_OFFICE"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP mate-desktop-environment-extras mate-media mate-screensaver mate-utils mate-power-manager mate-applets mozo"
-	;;
 esac
 
 case $DISTRIB_RELEASE in

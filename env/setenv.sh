@@ -10,8 +10,8 @@ DISTRIBUTION_ARRAY=("Ubuntu" "Debian")
 Ubuntu_RELEASE_ARRAY=("bionic")
 Debian_RELEASE_ARRAY=("stretch")
 DISTRIB_ARCH_ARRAY=("arm64" "armhf")
-Ubuntu_TYPE_ARRAY=("server" "mate" "xfce" "lxde")
-Debian_TYPE_ARRAY=("server" "lxde" "xfce")
+Ubuntu_TYPE_ARRAY=("server" "xfce" "lxde")
+Debian_TYPE_ARRAY=("server" "xfce" "lxde")
 INSTALL_TYPE_ARRAY=("EMMC" "SD-USB")
 
 DISTRIBUTION_ARRAY_LEN=${#DISTRIBUTION_ARRAY[@]}
