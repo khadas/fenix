@@ -422,7 +422,7 @@ prepare_partitions()
 	fi
 
 	if [[ -f $ROOTFS_TEMP/boot/env.txt ]]; then
-		echo "rootdev=$rootfs_uuid" >> $ROOTFS/boot/env.txt
+		sed -i s/rootdev=.*/rootdev=$rootfs_uuid/g $ROOTFS/boot/env.txt
 	fi
 
 	# create /etc/fstab

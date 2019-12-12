@@ -1,3 +1,7 @@
+#############################DO NOT TOUCH THIS OPTION#############################
+rootdev=PLACEHOLDER
+#############################DO NOT TOUCH THIS OPTION#############################
+
 mipi_lcd_enabled=false
 fan_mode=auto
 dma_size=2M

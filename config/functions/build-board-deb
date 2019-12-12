@@ -194,7 +194,7 @@ build_board_deb() {
 
 	# Fix env.txt
 	rootdev=\$(sed -e 's/^.*root=//' -e 's/ .*\$//' < /proc/cmdline)
-	echo "rootdev="\$rootdev >> /boot/env.txt
+	sed -i s/rootdev=.*/rootdev=\$rootdev/g /boot/env.txt
 
 	systemctl --no-reload enable fenix-zram-config.service fenix-hardware-optimize.service >/dev/null 2>&1
 
