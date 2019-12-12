@@ -107,6 +107,9 @@ build_board_deb() {
 
 	mountpoint -q /boot && check_fs
 
+	# disable deprecated services
+	[ -f "/lib/systemd/system/0hdmi.service" ] && rm /lib/systemd/system/0hdmi.service
+
 	exit 0
 	EOF
 
