@@ -3,12 +3,12 @@
 
 ## Build board deb package
 build_board_deb() {
+	info_msg "Build board deb..."
+
 	local pkgname="${LINUX_BOARD_DEB}"
 	local pkgdir="$BUILD_IMAGES/.tmp/${pkgname}_${VERSION}_${DISTRIB_ARCH}"
 	rm -rf $pkgdir
 	mkdir -p $pkgdir/DEBIAN
-
-	info_msg "Build board deb..."
 
 	board_deb_dependencies=$(echo $PACKAGE_LIST_ADDITIONAL)
 	board_deb_dependencies=${board_deb_dependencies// /,}
@@ -89,6 +89,7 @@ build_board_deb() {
 		if [ "\$bootfstype" = "vfat" ]; then
 			rm -rf /boot/aml_boot.ini
 			rm -rf /boot/boot.ini
+			rm -rf /boot/env.txt
 			rm -rf /boot/fan.sh
 			rm -rf /boot/s905_autoscript
 			rm -rf /boot/aml_autoscript
@@ -188,6 +189,10 @@ build_board_deb() {
 		echo "/dev/mmcblk1    0x27400000      0x10000" > /etc/fw_env.config
 	fi
 
+	# Fix env.txt
+	rootdev=\$(sed -e 's/^.*root=//' -e 's/ .*\$//' < /proc/cmdline)
+	echo "rootdev="\$rootdev >> /boot/env.txt
+
 	systemctl --no-reload enable fenix-zram-config.service fenix-hardware-optimize.service >/dev/null 2>&1
 
 	exit 0
@@ -233,8 +238,8 @@ build_board_deb() {
 #	fi
 
 	# Copy boot scripts
+	mkdir -p $pkgdir/boot
 	if [ "$VENDOR" != "Rockchip" ]; then
-		mkdir -p $pkgdir/boot
 		cp $BOOT_SCRIPTS/$BOOT_SCRIPT_VENDOR $pkgdir/boot
 		cp $BOOT_SCRIPTS/$BOOT_SCRIPT_BOARD $pkgdir/boot
 
@@ -250,6 +255,11 @@ build_board_deb() {
 	# Copy boot.ini
 	if [ -f $BOOT_SCRIPTS/$BOOT_INI ]; then
 		cp $BOOT_SCRIPTS/$BOOT_INI $pkgdir/boot/boot.ini
+	fi
+
+	# Copy boot environment
+	if [ -f $BOOT_ENV/$BOOT_ENV_FILE ]; then
+		cp $BOOT_ENV/$BOOT_ENV_FILE $pkgdir/boot/env.txt
 	fi
 
 	# Copy boot script for Rockchip platform
