@@ -2,10 +2,23 @@
 rootdev=PLACEHOLDER
 #############################DO NOT TOUCH THIS OPTION#############################
 
+# Cooling FAN mode
+# auto -  auto schedule the FAN speed depend on the CPU temperature
+# low  -  FAN low speed
+# mid  -  FAN middle speed
+# high -  FAN high speed
 fan_mode=auto
+
+# DMA coherent_pool size
+# Don't touch unless you know what you are doing
 dma_size=2M
+
+# HDMI resolution auto detection
+# yes - auto detection
+# no  - set HDMI resolution via 'hdmi' node
 hdmi_autodetect=yes
 
+# HDMI mode
 # Resolution Configuration
 #    Symbol             | Resolution
 # ----------------------+-------------
@@ -46,5 +59,6 @@ hdmi_autodetect=yes
 #    "2560x1440p60hz"   | 2560x1440 Progressive 60Hz
 #    "2560x1600p60hz"   | 2560x1600 Progressive 60Hz
 #    "3440x1440p60hz"   | 3440x1440 Progressive 60Hz
-
 hdmi=720p60hz
+
+

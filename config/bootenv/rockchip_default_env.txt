@@ -2,6 +2,20 @@
 rootdev=PLACEHOLDER
 #############################DO NOT TOUCH THIS OPTION#############################
 
+# MIPI LCD control
+# true  - enable MIPI LCD
+# false - disable MIPI LCD
 mipi_lcd_enabled=false
+
+# Cooling FAN mode
+# auto -  auto schedule the FAN speed depend on the CPU temperature
+# low  -  FAN low speed
+# mid  -  FAN middle speed
+# high -  FAN high speed
 fan_mode=auto
+
+# DMA coherent_pool size
+# Don't touch unless you know what you are doing
 dma_size=2M
+
+
