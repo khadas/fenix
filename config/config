@@ -154,7 +154,7 @@ PACKAGE_LIST_DESKTOP="xserver-xorg xserver-xorg-video-fbdev gvfs-backends gvfs-f
 PACKAGE_LIST_OFFICE="lxtask mirage galculator hexchat mpv \
 	gtk2-engines gtk2-engines-murrine gtk2-engines-pixbuf libgnome2-perl \
 	libpam-gnome-keyring thunderbird system-config-printer-common paprefs tango-icon-theme \
-	libreoffice-writer libreoffice-style-tango libreoffice-gtk fbi cups-pk-helper cups"
+	libreoffice-writer libreoffice-style-tango libreoffice-gtk fbi cups-pk-helper cups libreoffice"
 
 PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
 
