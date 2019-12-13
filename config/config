@@ -175,7 +175,8 @@ PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_XSERVER"
 case $DISTRIB_TYPE in
 	xfce)
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_OFFICE"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP xfce4 xfce4-screenshooter xfce4-notifyd xfce4-terminal desktop-base"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP xfce4 xfce4-screenshooter xfce4-notifyd xfce4-terminal desktop-base software-properties-gtk"
+	[[ $DISTRIBUTION == Ubuntu ]] && PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP update-manager"
 	;;
 	lxde)
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_OFFICE"
