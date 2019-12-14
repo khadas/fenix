@@ -84,6 +84,16 @@ build_desktop_deb() {
 		fi
 	fi
 
+	# exit if we are running chroot
+	if [ "\$(stat -c %d:%i /)" == "\$(stat -c %d:%i /proc/1/root/.)" ]; then
+		# Updata default configuration
+		[ -d /etc/skel/.config ] && cp -arf /etc/skel/.config /home/khadas
+		[ -d etc/skel/.local ] && cp -arf etc/skel/.local /home/khadas
+		chown khadas:khadas /home/khadas/.* -R
+	fi
+
+	systemctl --no-reload enable hdmi_resolution.service >/dev/null 2>&1
+
 	exit 0
 	EOF
 
