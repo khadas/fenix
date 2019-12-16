@@ -149,7 +149,7 @@ PACKAGE_LIST_ADDITIONAL="alsa-utils btrfs-tools dosfstools hddtemp iotop iozone3
 PACKAGE_LIST_DESKTOP="xserver-xorg xserver-xorg-video-fbdev gvfs-backends gvfs-fuse xfonts-base xinit x11-xserver-utils xterm thunar-volman \
 	network-manager-gnome network-manager-openvpn-gnome gnome-keyring gcr libgck-1-0 p11-kit pasystray pavucontrol pulseaudio \
 	pavumeter pulseaudio-module-gconf pulseaudio-module-bluetooth blueman libgl1-mesa-dri gparted synaptic \
-	policykit-1 mesa-utils gnome-orca numix-gtk-theme gnome-system-tools gufw gedit yad zenity"
+	policykit-1 mesa-utils gnome-orca numix-gtk-theme gnome-system-tools gufw gedit yad zenity guvcview"
 
 PACKAGE_LIST_OFFICE="lxtask mirage galculator hexchat mpv \
 	gtk2-engines gtk2-engines-murrine gtk2-engines-pixbuf libgnome2-perl \
