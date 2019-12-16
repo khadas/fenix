@@ -8,9 +8,7 @@ build_common_deb() {
 	info_msg "Building WiringPi packages..."
 	# FIXME
 	# remove build stamp to force build for other arch
-	if [ ! -d $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wiringpi_debs ]; then
-		rm -rf $BUILD/.stamps/wiringpi_debs
-	fi
+	rm -rf $BUILD/.stamps/wiringpi_debs
 	build_package "wiringpi_debs:target"
 }
 
