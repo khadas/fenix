@@ -214,7 +214,9 @@ tweaks_platform() {
 	fi
 
 	if [ "$LINUX" != "mainline" ]; then
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable camera_isp_3a_server.service"'
+		if [ "$KHADAS_BOARD" == "VIM3" ]; then
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable camera_isp_3a_server.service"'
+		fi
 	fi
 
 	# Create boot links
