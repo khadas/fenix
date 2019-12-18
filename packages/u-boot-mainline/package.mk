@@ -1,6 +1,6 @@
 PKG_NAME="u-boot-mainline"
-PKG_VERSION="2019.04"
-PKG_SHA256="76b7772d156b3ddd7644c8a1736081e55b78828537ff714065d21dbade229bef"
+PKG_VERSION="2020.01-rc5"
+PKG_SHA256="a48cd9209c36a69b0bdb2184daa752f942fb16628d2d49bb69ed1d8b2236cce8"
 PKG_SOURCE_DIR="u-boot-${PKG_VERSION}*"
 PKG_SITE="ftp://ftp.denx.de/pub/u-boot"
 PKG_URL="ftp://ftp.denx.de/pub/u-boot/u-boot-${PKG_VERSION}.tar.bz2"
