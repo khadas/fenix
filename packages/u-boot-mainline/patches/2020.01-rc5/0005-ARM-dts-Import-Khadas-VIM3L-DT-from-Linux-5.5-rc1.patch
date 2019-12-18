@@ -1,0 +1,130 @@
+From 43a2708d308a934773eaf386066eec88cfa06eeb Mon Sep 17 00:00:00 2001
+From: Christian Hewitt <christianshewitt@gmail.com>
+Date: Fri, 6 Dec 2019 06:00:59 +0000
+Subject: [PATCH 5/6] ARM: dts: Import Khadas VIM3L DT from Linux 5.5-rc1
+
+Import the Khadas VIM3L device-tree from [1]
+
+[1] e42617b825f8 ("Linux 5.5-rc1")
+---
+ arch/arm/dts/Makefile                   |  1 +
+ arch/arm/dts/meson-sm1-khadas-vim3l.dts | 95 +++++++++++++++++++++++++++++++++
+ 2 files changed, 96 insertions(+)
+ create mode 100644 arch/arm/dts/meson-sm1-khadas-vim3l.dts
+
+diff --git a/arch/arm/dts/Makefile b/arch/arm/dts/Makefile
+index 3dc9c4d..b6c9f82 100644
+--- a/arch/arm/dts/Makefile
++++ b/arch/arm/dts/Makefile
+@@ -152,6 +152,7 @@ dtb-$(CONFIG_ARCH_MESON) += \
+ 	meson-g12a-sei510.dtb \
+ 	meson-g12b-odroid-n2.dtb \
+ 	meson-g12b-a311d-khadas-vim3.dtb \
++	meson-sm1-khadas-vim3l.dtb \
+ 	meson-sm1-sei610.dtb
+ dtb-$(CONFIG_TEGRA) += tegra20-harmony.dtb \
+ 	tegra20-medcom-wide.dtb \
+diff --git a/arch/arm/dts/meson-sm1-khadas-vim3l.dts b/arch/arm/dts/meson-sm1-khadas-vim3l.dts
+new file mode 100644
+index 0000000..dbbf29a
+--- /dev/null
++++ b/arch/arm/dts/meson-sm1-khadas-vim3l.dts
+@@ -0,0 +1,95 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2019 BayLibre, SAS
++ * Author: Neil Armstrong <narmstrong@baylibre.com>
++ */
++
++/dts-v1/;
++
++#include "meson-sm1.dtsi"
++#include "meson-khadas-vim3.dtsi"
++
++/ {
++	compatible = "khadas,vim3l", "amlogic,sm1";
++	model = "Khadas VIM3L";
++
++	vddcpu: regulator-vddcpu {
++		/*
++		 * Silergy SY8030DEC Regulator.
++		 */
++		compatible = "pwm-regulator";
++
++		regulator-name = "VDDCPU";
++		regulator-min-microvolt = <690000>;
++		regulator-max-microvolt = <1050000>;
++
++		vin-supply = <&vsys_3v3>;
++
++		pwms = <&pwm_AO_cd 1 1250 0>;
++		pwm-dutycycle-range = <100 0>;
++
++		regulator-boot-on;
++		regulator-always-on;
++	};
++};
++
++&cpu0 {
++	cpu-supply = <&vddcpu>;
++	operating-points-v2 = <&cpu_opp_table>;
++	clocks = <&clkc CLKID_CPU_CLK>;
++	clock-latency = <50000>;
++};
++
++&cpu1 {
++	cpu-supply = <&vddcpu>;
++	operating-points-v2 = <&cpu_opp_table>;
++	clocks = <&clkc CLKID_CPU1_CLK>;
++	clock-latency = <50000>;
++};
++
++&cpu2 {
++	cpu-supply = <&vddcpu>;
++	operating-points-v2 = <&cpu_opp_table>;
++	clocks = <&clkc CLKID_CPU2_CLK>;
++	clock-latency = <50000>;
++};
++
++&cpu3 {
++	cpu-supply = <&vddcpu>;
++	operating-points-v2 = <&cpu_opp_table>;
++	clocks = <&clkc CLKID_CPU3_CLK>;
++	clock-latency = <50000>;
++};
++
++&pwm_AO_cd {
++	pinctrl-0 = <&pwm_ao_d_e_pins>;
++	pinctrl-names = "default";
++	clocks = <&xtal>;
++	clock-names = "clkin1";
++	status = "okay";
++};
++
++/*
++ * The VIM3 on-board  MCU can mux the PCIe/USB3.0 shared differential
++ * lines using a FUSB340TMX USB 3.1 SuperSpeed Data Switch between
++ * an USB3.0 Type A connector and a M.2 Key M slot.
++ * The PHY driving these differential lines is shared between
++ * the USB3.0 controller and the PCIe Controller, thus only
++ * a single controller can use it.
++ * If the MCU is configured to mux the PCIe/USB3.0 differential lines
++ * to the M.2 Key M slot, uncomment the following block to disable
++ * USB3.0 from the USB Complex and enable the PCIe controller.
++ * The End User is not expected to uncomment the following except for
++ * testing purposes, but instead rely on the firmware/bootloader to
++ * update these nodes accordingly if PCIe mode is selected by the MCU.
++ */
++/*
++&pcie {
++	status = "okay";
++};
++
++&usb {
++	phys = <&usb2_phy0>, <&usb2_phy1>;
++	phy-names = "usb2-phy0", "usb2-phy1";
++};
++ */
+-- 
+2.7.4
+

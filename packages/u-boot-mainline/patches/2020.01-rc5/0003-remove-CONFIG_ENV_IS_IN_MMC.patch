@@ -1,7 +1,7 @@
-From ff731e11d44e3d57f292751ea04d9c372c2b25af Mon Sep 17 00:00:00 2001
+From ddc458989b28f6d8e50eec8e967fd0f2fa2f5964 Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Wed, 18 Dec 2019 12:02:53 +0800
-Subject: [PATCH 3/4] remove CONFIG_ENV_IS_IN_MMC
+Subject: [PATCH 3/6] remove CONFIG_ENV_IS_IN_MMC
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---

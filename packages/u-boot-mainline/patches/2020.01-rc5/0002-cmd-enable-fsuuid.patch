@@ -1,7 +1,7 @@
-From fcb3e4625a004eb6af9e6e230769e2ecc108d094 Mon Sep 17 00:00:00 2001
+From c804664e81cdb1aa5ef79dc11855ca048048543a Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Tue, 24 Sep 2019 11:02:22 +0800
-Subject: [PATCH 2/4] cmd: enable 'fsuuid'
+Subject: [PATCH 2/6] cmd: enable 'fsuuid'
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---

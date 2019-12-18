@@ -1,7 +1,7 @@
-From 692a24fbf6f4d16ac6310e67c3582b3f012f1fee Mon Sep 17 00:00:00 2001
+From 699650b716e4e4e9a2e74ddc1b2b778d20e5cfe7 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Tue, 6 Nov 2018 10:27:42 +0800
-Subject: [PATCH 1/4] Edge: add kbi support (WiP)
+Subject: [PATCH 1/6] Edge: add kbi support (WiP)
 
 ---
  cmd/Kconfig                                  |    6 +
@@ -41,7 +41,7 @@ index 3ac7104..052841d 100644
  
 diff --git a/cmd/kbi.c b/cmd/kbi.c
 new file mode 100644
-index 0000000..dbc25a2
+index 0000000..8b55c28
 --- /dev/null
 +++ b/cmd/kbi.c
 @@ -0,0 +1,1102 @@
@@ -438,7 +438,7 @@ index 0000000..dbc25a2
 +	char board_type = -1;
 +	char str[4] = {0};
 +
-+	ret = adc_channel_single_shot("saradc", 0, &val);
++	ret = adc_channel_single_shot("saradc@ff100000", 0, &val);
 +	if (ret) {
 +		printf("%s adc_channel_single_shot fail! ret=%d\n", __func__, ret);
 +		return -1;
