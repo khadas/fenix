@@ -1,0 +1,43 @@
+From 5c26bae732f2ef0baeb24fe457f1c04f5caa6de2 Mon Sep 17 00:00:00 2001
+From: Neil Armstrong <narmstrong@baylibre.com>
+Date: Fri, 11 Oct 2019 12:08:35 +0000
+Subject: [PATCH 26/95] FROMLIST: drm/meson: store the framebuffer width for
+ plane commit
+
+Also store the framebuffer width in the private common struct
+to be used by the AFBC decoder module driver when committing the AFBC
+plane.
+
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+---
+ drivers/gpu/drm/meson/meson_drv.h   | 1 +
+ drivers/gpu/drm/meson/meson_plane.c | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/drivers/gpu/drm/meson/meson_drv.h b/drivers/gpu/drm/meson/meson_drv.h
+index 820d07b..3287282 100644
+--- a/drivers/gpu/drm/meson/meson_drv.h
++++ b/drivers/gpu/drm/meson/meson_drv.h
+@@ -52,6 +52,7 @@ struct meson_drm {
+ 		uint32_t osd1_addr;
+ 		uint32_t osd1_stride;
+ 		uint32_t osd1_height;
++		uint32_t osd1_width;
+ 		uint32_t osd_sc_ctrl0;
+ 		uint32_t osd_sc_i_wh_m1;
+ 		uint32_t osd_sc_o_h_start_end;
+diff --git a/drivers/gpu/drm/meson/meson_plane.c b/drivers/gpu/drm/meson/meson_plane.c
+index ed54322..5e798c2 100644
+--- a/drivers/gpu/drm/meson/meson_plane.c
++++ b/drivers/gpu/drm/meson/meson_plane.c
+@@ -305,6 +305,7 @@ static void meson_plane_atomic_update(struct drm_plane *plane,
+ 	priv->viu.osd1_addr = gem->paddr;
+ 	priv->viu.osd1_stride = fb->pitches[0];
+ 	priv->viu.osd1_height = fb->height;
++	priv->viu.osd1_width = fb->width;
+ 
+ 	if (!meson_plane->enabled) {
+ 		/* Reset OSD1 before enabling it on GXL+ SoCs */
+-- 
+2.7.4
+

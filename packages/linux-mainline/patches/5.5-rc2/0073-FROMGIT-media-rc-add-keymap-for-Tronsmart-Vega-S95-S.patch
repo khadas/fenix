@@ -1,0 +1,34 @@
+From e227c9dbac862d798ed1b19ff7e17646fc631c67 Mon Sep 17 00:00:00 2001
+From: Christian Hewitt <christianshewitt@gmail.com>
+Date: Tue, 8 Oct 2019 05:02:20 +0000
+Subject: [PATCH 73/95] FROMGIT: media: rc: add keymap for Tronsmart Vega
+ S95/S96 remote
+
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+ drivers/media/rc/keymaps/rc-vega-s9x.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/media/rc/keymaps/rc-vega-s9x.c b/drivers/media/rc/keymaps/rc-vega-s9x.c
+index bf210c4..a573acc 100644
+--- a/drivers/media/rc/keymaps/rc-vega-s9x.c
++++ b/drivers/media/rc/keymaps/rc-vega-s9x.c
+@@ -10,6 +10,7 @@
+ //
+ 
+ static struct rc_map_table vega_s9x[] = {
++
+ 	{ 0x18, KEY_POWER },
+ 	{ 0x17, KEY_MUTE }, // mouse
+ 
+@@ -26,6 +27,7 @@ static struct rc_map_table vega_s9x[] = {
+ 	{ 0x14, KEY_VOLUMEDOWN },
+ 	{ 0x04, KEY_MENU },
+ 	{ 0x10, KEY_VOLUMEUP },
++
+ };
+ 
+ static struct rc_map_list vega_s9x_map = {
+-- 
+2.7.4
+

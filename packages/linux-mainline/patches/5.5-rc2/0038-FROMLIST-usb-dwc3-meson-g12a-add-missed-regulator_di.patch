@@ -1,0 +1,60 @@
+From 6f1155a249d75940bf8ea2969ddb222e863f281f Mon Sep 17 00:00:00 2001
+From: Chuhong Yuan <hslester96@gmail.com>
+Date: Sun, 1 Dec 2019 05:18:03 +0000
+Subject: [PATCH 38/95] FROMLIST: usb: dwc3: meson-g12a: add missed
+ regulator_disable
+
+The driver forgets to disable the regulator in probe failure and remove.
+Add the missed calls to fix it.
+
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+---
+ drivers/usb/dwc3/dwc3-meson-g12a.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/usb/dwc3/dwc3-meson-g12a.c b/drivers/usb/dwc3/dwc3-meson-g12a.c
+index 8a3ec1a..d9723d1 100644
+--- a/drivers/usb/dwc3/dwc3-meson-g12a.c
++++ b/drivers/usb/dwc3/dwc3-meson-g12a.c
+@@ -458,7 +458,7 @@ static int dwc3_meson_g12a_probe(struct platform_device *pdev)
+ 						dwc3_meson_g12a_irq_thread,
+ 						IRQF_ONESHOT, pdev->name, priv);
+ 		if (ret)
+-			return ret;
++			goto err_regulator_disable;
+ 	}
+ 
+ 	dwc3_meson_g12a_usb_init(priv);
+@@ -467,7 +467,7 @@ static int dwc3_meson_g12a_probe(struct platform_device *pdev)
+ 	for (i = 0 ; i < PHY_COUNT ; ++i) {
+ 		ret = phy_init(priv->phys[i]);
+ 		if (ret)
+-			return ret;
++			goto err_regulator_disable;
+ 	}
+ 
+ 	/* Set PHY Power */
+@@ -517,7 +517,9 @@ static int dwc3_meson_g12a_probe(struct platform_device *pdev)
+ err_phys_exit:
+ 	for (i = 0 ; i < PHY_COUNT ; ++i)
+ 		phy_exit(priv->phys[i]);
+-
++err_regulator_disable:
++	if (priv->vbus)
++		regulator_disable(priv->vbus);
+ 	return ret;
+ }
+ 
+@@ -536,6 +538,9 @@ static int dwc3_meson_g12a_remove(struct platform_device *pdev)
+ 		phy_exit(priv->phys[i]);
+ 	}
+ 
++	if (priv->vbus)
++		regulator_disable(priv->vbus);
++
+ 	pm_runtime_disable(dev);
+ 	pm_runtime_put_noidle(dev);
+ 	pm_runtime_set_suspended(dev);
+-- 
+2.7.4
+

@@ -1,0 +1,43 @@
+From 69975914079ed47b6e3be4fd61de0c30fa2c4cab Mon Sep 17 00:00:00 2001
+From: Nick Xie <nick@khadas.com>
+Date: Mon, 16 Sep 2019 14:45:52 +0800
+Subject: [PATCH 91/95] arm64: dts: sdio: VIM1/VIM2: change freq to 100MHz
+
+this fix Wi-Fi issue for VIM2 AP6356S
+
+Signed-off-by: Nick Xie <nick@khadas.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts | 3 +++
+ arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts      | 2 +-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
+index 518e7ba..9eed662 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
+@@ -221,6 +221,9 @@
+ };
+ 
+ &sd_emmc_a {
++
++	max-frequency = <100000000>;
++
+ 	brcmf: wifi@1 {
+ 		reg = <1>;
+ 		compatible = "brcm,bcm4329-fmac";
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+index 5339af2..e037118 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+@@ -368,7 +368,7 @@
+ 	#size-cells = <0>;
+ 
+ 	bus-width = <4>;
+-	max-frequency = <50000000>;
++	max-frequency = <100000000>;
+ 
+ 	non-removable;
+ 	disable-wp;
+-- 
+2.7.4
+

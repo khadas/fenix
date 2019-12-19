@@ -1,0 +1,29 @@
+From 409d88d20534fdfbafe6a39dc51bc8894d7de5bb Mon Sep 17 00:00:00 2001
+From: Christian Hewitt <christianshewitt@gmail.com>
+Date: Fri, 4 Oct 2019 06:12:51 +0000
+Subject: [PATCH 77/95] WIP: arm64: dts: meson-g12b-khadas-vim3: disable LED
+ heartbeat
+
+The constantly flashing white LED heartbeat is annoying for an HTPC device
+so remove the heartbeat line.
+
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+index 90815fa..cef3dce 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+@@ -44,7 +44,6 @@
+ 		white {
+ 			label = "vim3:white:sys";
+ 			gpios = <&gpio_ao GPIOAO_4 GPIO_ACTIVE_LOW>;
+-			linux,default-trigger = "heartbeat";
+ 		};
+ 
+ 		red {
+-- 
+2.7.4
+

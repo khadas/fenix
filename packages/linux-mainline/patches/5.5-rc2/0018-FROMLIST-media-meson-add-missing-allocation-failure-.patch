@@ -1,0 +1,34 @@
+From 2afd0fa7432f0e5cc6c4bfaaebd388350d86015d Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Thu, 5 Dec 2019 05:23:21 +0000
+Subject: [PATCH 18/95] FROMLIST: media: meson: add missing allocation failure
+ check on new_buf
+
+Currently if the allocation of new_buf fails then a null pointer
+dereference occurs when assiging new_buf->vb. Avoid this by returning
+early on a memory allocation failure as there is not much more can
+be done at this point.
+
+Addresses-Coverity: ("Dereference null return")
+Fixes: 3e7f51bd9607 ("media: meson: add v4l2 m2m video decoder driver")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/staging/media/meson/vdec/vdec.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/staging/media/meson/vdec/vdec.c b/drivers/staging/media/meson/vdec/vdec.c
+index af37414..432a16c 100644
+--- a/drivers/staging/media/meson/vdec/vdec.c
++++ b/drivers/staging/media/meson/vdec/vdec.c
+@@ -133,6 +133,8 @@ vdec_queue_recycle(struct amvdec_session *sess, struct vb2_buffer *vb)
+ 	struct amvdec_buffer *new_buf;
+ 
+ 	new_buf = kmalloc(sizeof(*new_buf), GFP_KERNEL);
++	if (!new_buf)
++		return;
+ 	new_buf->vb = vb;
+ 
+ 	mutex_lock(&sess->bufs_recycle_lock);
+-- 
+2.7.4
+

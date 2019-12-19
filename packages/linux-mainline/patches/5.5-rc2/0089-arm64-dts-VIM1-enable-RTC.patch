@@ -1,0 +1,26 @@
+From 62e3d9ba9b38281a37d2056931adfd335e5a3267 Mon Sep 17 00:00:00 2001
+From: Nick Xie <nick@khadas.com>
+Date: Sat, 17 Aug 2019 15:29:46 +0800
+Subject: [PATCH 89/95] arm64: dts: VIM1: enable RTC
+
+Signed-off-by: Nick Xie <nick@khadas.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
+index 68ba073..518e7ba 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
+@@ -131,7 +131,7 @@
+ 
+ 	rtc: rtc@51 {
+ 		/* has to be enabled manually when a battery is connected: */
+-		status = "disabled";
++		status = "okay";
+ 		compatible = "haoyu,hym8563";
+ 		reg = <0x51>;
+ 		#clock-cells = <0>;
+-- 
+2.7.4
+

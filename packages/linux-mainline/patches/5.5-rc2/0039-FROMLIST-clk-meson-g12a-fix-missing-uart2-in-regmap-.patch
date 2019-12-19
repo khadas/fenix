@@ -1,0 +1,35 @@
+From 83fe2eef75ebc40de77af3a2cde56cd2f3ce1a52 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Sat, 14 Dec 2019 06:04:39 +0000
+Subject: [PATCH 39/95] FROMLIST: clk: meson: g12a: fix missing uart2 in regmap
+ table
+
+UART2 peripheral is missing from the regmap fixup table of the g12a family
+clock controller. As it is, any access to this clock would Oops, which is
+not great.
+
+Add the clock to the table to fix the problem.
+
+Fixes: 085a4ea93d54 ("clk: meson: g12a: add peripheral clock controller")
+Reported-by: Dmitry Shmidt <dimitrysh@google.com>
+Tested-by: Dmitry Shmidt <dimitrysh@google.com>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ drivers/clk/meson/g12a.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
+index 66cf791..cd1de3e 100644
+--- a/drivers/clk/meson/g12a.c
++++ b/drivers/clk/meson/g12a.c
+@@ -4692,6 +4692,7 @@ static struct clk_regmap *const g12a_clk_regmaps[] = {
+ 	&g12a_bt656,
+ 	&g12a_usb1_to_ddr,
+ 	&g12a_mmc_pclk,
++	&g12a_uart2,
+ 	&g12a_vpu_intr,
+ 	&g12a_gic,
+ 	&g12a_sd_emmc_a_clk0,
+-- 
+2.7.4
+

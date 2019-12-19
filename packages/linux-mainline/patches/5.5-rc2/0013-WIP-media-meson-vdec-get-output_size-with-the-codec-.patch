@@ -1,0 +1,67 @@
+From 96ad1e993ebbe7d22c4c0bae5d233c784a0daf74 Mon Sep 17 00:00:00 2001
+From: Neil Armstrong <narmstrong@baylibre.com>
+Date: Thu, 12 Dec 2019 11:33:58 +0100
+Subject: [PATCH 13/95] WIP: media: meson: vdec: get output_size with the codec
+ ops
+
+The VP9 output_size needs special alignment and calculation,
+make it a codec_ops callback and use the generic calculation
+for mpeg2 and h264 codecs.
+
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+---
+ drivers/staging/media/meson/vdec/codec_h264.c   | 1 +
+ drivers/staging/media/meson/vdec/codec_mpeg12.c | 1 +
+ drivers/staging/media/meson/vdec/vdec.c         | 3 ++-
+ drivers/staging/media/meson/vdec/vdec.h         | 1 +
+ 4 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/staging/media/meson/vdec/codec_h264.c b/drivers/staging/media/meson/vdec/codec_h264.c
+index 4528a6a..2831e13 100644
+--- a/drivers/staging/media/meson/vdec/codec_h264.c
++++ b/drivers/staging/media/meson/vdec/codec_h264.c
+@@ -479,4 +479,5 @@ struct amvdec_codec_ops codec_h264_ops = {
+ 	.recycle = codec_h264_recycle,
+ 	.eos_sequence = codec_h264_eos_sequence,
+ 	.resume = codec_h264_resume,
++	.get_output_size = amvdec_get_output_size,
+ };
+diff --git a/drivers/staging/media/meson/vdec/codec_mpeg12.c b/drivers/staging/media/meson/vdec/codec_mpeg12.c
+index 48869cc..192ea85 100644
+--- a/drivers/staging/media/meson/vdec/codec_mpeg12.c
++++ b/drivers/staging/media/meson/vdec/codec_mpeg12.c
+@@ -207,4 +207,5 @@ struct amvdec_codec_ops codec_mpeg12_ops = {
+ 	.can_recycle = codec_mpeg12_can_recycle,
+ 	.recycle = codec_mpeg12_recycle,
+ 	.eos_sequence = codec_mpeg12_eos_sequence,
++	.get_output_size = amvdec_get_output_size,
+ };
+diff --git a/drivers/staging/media/meson/vdec/vdec.c b/drivers/staging/media/meson/vdec/vdec.c
+index bd59d32..af37414 100644
+--- a/drivers/staging/media/meson/vdec/vdec.c
++++ b/drivers/staging/media/meson/vdec/vdec.c
+@@ -189,7 +189,8 @@ static int vdec_queue_setup(struct vb2_queue *q, unsigned int *num_buffers,
+ 			    struct device *alloc_devs[])
+ {
+ 	struct amvdec_session *sess = vb2_get_drv_priv(q);
+-	u32 output_size = amvdec_get_output_size(sess);
++	struct amvdec_codec_ops *codec_ops = sess->fmt_out->codec_ops;
++	u32 output_size = codec_ops->get_output_size(sess);
+ 
+ 	if (*num_planes) {
+ 		switch (q->type) {
+diff --git a/drivers/staging/media/meson/vdec/vdec.h b/drivers/staging/media/meson/vdec/vdec.h
+index f95445a..7d7efe3 100644
+--- a/drivers/staging/media/meson/vdec/vdec.h
++++ b/drivers/staging/media/meson/vdec/vdec.h
+@@ -135,6 +135,7 @@ struct amvdec_codec_ops {
+ 	void (*recycle)(struct amvdec_core *core, u32 buf_idx);
+ 	void (*drain)(struct amvdec_session *sess);
+ 	void (*resume)(struct amvdec_session *sess);
++	u32  (*get_output_size)(struct amvdec_session *sess);
+ 	const u8 * (*eos_sequence)(u32 *len);
+ 	irqreturn_t (*isr)(struct amvdec_session *sess);
+ 	irqreturn_t (*threaded_isr)(struct amvdec_session *sess);
+-- 
+2.7.4
+

@@ -1,0 +1,34 @@
+From 01481053518cd55f38dcc20bb8dfdbe9fd95dfd3 Mon Sep 17 00:00:00 2001
+From: Christian Hewitt <christianshewitt@gmail.com>
+Date: Sat, 30 Nov 2019 14:06:54 +0000
+Subject: [PATCH 69/95] HACK: media: cec: silence CEC timeout message
+
+If testing with an AVR that does not pass-through CEC state the system
+log fills with timeout messages. Silence this to ensure other issues
+are visible.
+
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+ drivers/media/cec/cec-adap.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/cec/cec-adap.c b/drivers/media/cec/cec-adap.c
+index 9340435..6c2b25d 100644
+--- a/drivers/media/cec/cec-adap.c
++++ b/drivers/media/cec/cec-adap.c
+@@ -500,9 +500,9 @@ int cec_thread_func(void *_adap)
+ 			 * so much traffic on the bus that the adapter was
+ 			 * unable to transmit for CEC_XFER_TIMEOUT_MS (2.1s).
+ 			 */
+-			pr_warn("cec-%s: message %*ph timed out\n", adap->name,
+-				adap->transmitting->msg.len,
+-				adap->transmitting->msg.msg);
++			//pr_warn("cec-%s: message %*ph timed out\n", adap->name,
++			//	adap->transmitting->msg.len,
++			//	adap->transmitting->msg.msg);
+ 			adap->transmit_in_progress = false;
+ 			adap->tx_timeouts++;
+ 			/* Just give up on this. */
+-- 
+2.7.4
+

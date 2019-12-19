@@ -1,0 +1,134 @@
+From d6679b2928b90fe0c5745890edbca47e58f4503f Mon Sep 17 00:00:00 2001
+From: Mohammad Rasim <mohammad.rasim96@gmail.com>
+Date: Sat, 30 Nov 2019 22:53:35 +0300
+Subject: [PATCH 74/95] FROMGIT: arm64: dts: meson-gxbb: add support for
+ Videostrong KII Pro
+
+This patch adds support for the Videostrong KII Pro tv box which is
+based on the gxbb-p201 reference design
+
+Device specifications:
+- SOC: Amlogic S905
+- RAM: 2GB DDR3
+- Storage: 16GB
+- Connectivity:
+	- 10/100M Ethernet (IC Plus IP101GR)
+	- 802.11 b/g/n/ac Wi-Fi (Ampak AP6335 BT/WIFI combo)
+	- Bluetooth 4.0 (Ampak AP6335 BT/WIFI combo)
+- Video out: HDMI 2.0 up to 4K @ 60Hz, and 3.5mm AV (composite video) jack
+- Audio out: HDMI, AV (stereo audio) and optical S/PDIF
+- Tuner: AVL6862 DVB-C/T/T2 + DVB-S/S2 demod and Rafael Micro R848 tuner
+- Ports:
+	- x1 micro SD card slot up to 32GB
+	- 4x USB 2.0 host ports
+- Misc:
+    - Power button and LED, IR receiver
+
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Mohammad Rasim <mohammad.rasim96@gmail.com>
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+---
+ arch/arm64/boot/dts/amlogic/Makefile               |  1 +
+ arch/arm64/boot/dts/amlogic/meson-gxbb-kii-pro.dts | 78 ++++++++++++++++++++++
+ 2 files changed, 79 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/amlogic/meson-gxbb-kii-pro.dts
+
+diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
+index 6071a40..eef0045 100644
+--- a/arch/arm64/boot/dts/amlogic/Makefile
++++ b/arch/arm64/boot/dts/amlogic/Makefile
+@@ -7,6 +7,7 @@ dtb-$(CONFIG_ARCH_MESON) += meson-g12b-a311d-khadas-vim3.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-g12b-s922x-khadas-vim3.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-g12b-odroid-n2.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-g12b-ugoos-am6.dtb
++dtb-$(CONFIG_ARCH_MESON) += meson-gxbb-kii-pro.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-gxbb-nanopi-k2.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-gxbb-nexbox-a95x.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-gxbb-odroidc2.dtb
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-kii-pro.dts b/arch/arm64/boot/dts/amlogic/meson-gxbb-kii-pro.dts
+new file mode 100644
+index 00000000..2f1f829
+--- /dev/null
++++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-kii-pro.dts
+@@ -0,0 +1,78 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2019 Mohammad Rasim <mohammad.rasim96@gmail.com>
++ */
++
++/dts-v1/;
++
++#include "meson-gxbb-p20x.dtsi"
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/input.h>
++#include <dt-bindings/leds/common.h>
++/ {
++	compatible = "videostrong,kii-pro", "amlogic,p201", "amlogic,s905", "amlogic,meson-gxbb";
++	model = "Videostrong KII Pro";
++
++	leds {
++		compatible = "gpio-leds";
++		status {
++			gpios = <&gpio_ao GPIOAO_13 GPIO_ACTIVE_LOW>;
++			default-state = "off";
++			color = <LED_COLOR_ID_RED>;
++			function = LED_FUNCTION_STATUS;
++		};
++	};
++
++	gpio-keys-polled {
++		compatible = "gpio-keys-polled";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		poll-interval = <20>;
++
++		button-reset {
++			label = "reset";
++			linux,code = <KEY_POWER>;
++			gpios = <&gpio_ao GPIOAO_3 GPIO_ACTIVE_HIGH>;
++		};
++	};
++
++};
++
++
++
++&uart_A {
++	status = "okay";
++	pinctrl-0 = <&uart_a_pins>, <&uart_a_cts_rts_pins>;
++	pinctrl-names = "default";
++	uart-has-rtscts;
++
++	bluetooth {
++		compatible = "brcm,bcm4335a0";
++	};
++};
++
++
++
++&ethmac {
++	status = "okay";
++	pinctrl-0 = <&eth_rmii_pins>;
++	pinctrl-names = "default";
++
++	phy-handle = <&eth_phy0>;
++	phy-mode = "rmii";
++
++	mdio {
++		compatible = "snps,dwmac-mdio";
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		eth_phy0: ethernet-phy@0 {
++			/* IC Plus IP101GR (0x02430c54) */
++			reg = <0>;
++			reset-assert-us = <10000>;
++			reset-deassert-us = <10000>;
++			reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
++		};
++	};
++};
+-- 
+2.7.4
+

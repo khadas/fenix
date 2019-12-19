@@ -1,0 +1,73 @@
+From e9e80c2196196421d68cf83962e982087ebee3fb Mon Sep 17 00:00:00 2001
+From: Remi Pommarel <repk@triplefau.lt>
+Date: Tue, 17 Dec 2019 05:27:59 +0000
+Subject: [PATCH 47/95] FROMLIST: clk: meson: pll: Fix by 0 division in
+ __pll_params_to_rate()
+
+Some meson pll registers can be initialized with 0 as N value, introducing
+the following division by 0 when computing rate :
+
+  UBSAN: Undefined behaviour in drivers/clk/meson/clk-pll.c:75:9
+  division by zero
+  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.4.0-rc3-608075-g86c9af8630e1-dirty #400
+  Call trace:
+   dump_backtrace+0x0/0x1c0
+   show_stack+0x14/0x20
+   dump_stack+0xc4/0x100
+   ubsan_epilogue+0x14/0x68
+   __ubsan_handle_divrem_overflow+0x98/0xb8
+   __pll_params_to_rate+0xdc/0x140
+   meson_clk_pll_recalc_rate+0x278/0x3a0
+   __clk_register+0x7c8/0xbb0
+   devm_clk_hw_register+0x54/0xc0
+   meson_eeclkc_probe+0xf4/0x1a0
+   platform_drv_probe+0x54/0xd8
+   really_probe+0x16c/0x438
+   driver_probe_device+0xb0/0xf0
+   device_driver_attach+0x94/0xa0
+   __driver_attach+0x70/0x108
+   bus_for_each_dev+0xd8/0x128
+   driver_attach+0x30/0x40
+   bus_add_driver+0x1b0/0x2d8
+   driver_register+0xbc/0x1d0
+   __platform_driver_register+0x78/0x88
+   axg_driver_init+0x18/0x20
+   do_one_initcall+0xc8/0x24c
+   kernel_init_freeable+0x2b0/0x344
+   kernel_init+0x10/0x128
+   ret_from_fork+0x10/0x18
+
+This checks if N is null before doing the division.
+
+Fixes: 7a29a869434e ("clk: meson: Add support for Meson clock controller")
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Remi Pommarel <repk@triplefau.lt>
+[jbrunet@baylibre.com: update the comment in above the fix]
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ drivers/clk/meson/clk-pll.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/clk/meson/clk-pll.c b/drivers/clk/meson/clk-pll.c
+index ddb1e56..3a5853c 100644
+--- a/drivers/clk/meson/clk-pll.c
++++ b/drivers/clk/meson/clk-pll.c
+@@ -77,6 +77,15 @@ static unsigned long meson_clk_pll_recalc_rate(struct clk_hw *hw,
+ 	unsigned int m, n, frac;
+ 
+ 	n = meson_parm_read(clk->map, &pll->n);
++
++	/*
++	 * On some HW, N is set to zero on init. This value is invalid as
++	 * it would result in a division by zero. The rate can't be
++	 * calculated in this case
++	 */
++	if (n == 0)
++		return 0;
++
+ 	m = meson_parm_read(clk->map, &pll->m);
+ 
+ 	frac = MESON_PARM_APPLICABLE(&pll->frac) ?
+-- 
+2.7.4
+

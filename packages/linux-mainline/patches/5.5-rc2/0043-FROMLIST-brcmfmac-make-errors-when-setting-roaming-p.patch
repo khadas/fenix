@@ -1,0 +1,46 @@
+From 5b45ed5d3293bdfcfe502e4a3463ab0b65f9b986 Mon Sep 17 00:00:00 2001
+From: Soeren Moch <smoch@web.de>
+Date: Thu, 12 Dec 2019 10:44:19 +0000
+Subject: [PATCH 43/95] FROMLIST: brcmfmac: make errors when setting roaming
+ parameters non-fatal
+
+4359 dongles do not support setting roaming parameters (error -52).
+Do not fail the 80211 configuration in this case.
+
+Signed-off-by: Soeren Moch <smoch@web.de>
+Acked-by: Chi-Hsien Lin <chi-hsien.lin@cypress.com>
+---
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+index 5598bbd..0cf13ce 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+@@ -6012,19 +6012,17 @@ static s32 brcmf_dongle_roam(struct brcmf_if *ifp)
+ 	roamtrigger[1] = cpu_to_le32(BRCM_BAND_ALL);
+ 	err = brcmf_fil_cmd_data_set(ifp, BRCMF_C_SET_ROAM_TRIGGER,
+ 				     (void *)roamtrigger, sizeof(roamtrigger));
+-	if (err) {
++	if (err)
+ 		bphy_err(drvr, "WLC_SET_ROAM_TRIGGER error (%d)\n", err);
+-		goto roam_setup_done;
+-	}
+ 
+ 	roam_delta[0] = cpu_to_le32(WL_ROAM_DELTA);
+ 	roam_delta[1] = cpu_to_le32(BRCM_BAND_ALL);
+ 	err = brcmf_fil_cmd_data_set(ifp, BRCMF_C_SET_ROAM_DELTA,
+ 				     (void *)roam_delta, sizeof(roam_delta));
+-	if (err) {
++	if (err)
+ 		bphy_err(drvr, "WLC_SET_ROAM_DELTA error (%d)\n", err);
+-		goto roam_setup_done;
+-	}
++
++	return 0;
+ 
+ roam_setup_done:
+ 	return err;
+-- 
+2.7.4
+
