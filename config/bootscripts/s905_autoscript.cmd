@@ -5,7 +5,7 @@ setenv dtb_loadaddr "0x1000000"
 setenv initrd_loadaddr "0x13000000"
 setenv env_loadaddr "0x20000000"
 
-setenv hdmiargs "logo=${display_layer},loaded,${fb_addr},${outputmode} vout=${outputmode},enable hdmimode=${hdmimode}"
+setenv hdmiargs "logo=${display_layer},loaded,${fb_addr},${outputmode} vout=${outputmode},enable"
 
 if test "X${lcd_exist}" = "X1"; then
 	setenv panelargs "panel_exist=${lcd_exist} panel_type=${panel_type}";
@@ -17,19 +17,26 @@ if test "X${fdtfile}" = "Xamlogic/meson-gxl-s905x-khadas-vim.dtb"; then
 else if test "X${fdtfile}" = "Xamlogic/meson-gxm-khadas-vim2.dtb"; then
 	setenv uboottype "mainline";
 	setenv khadas_board "VIM2";
-else if test "X${fdtfile}" = "Xamlogic/meson-g12b-khadas-vim3.dtb"; then
+else if test "X${fdtfile}" = "Xamlogic/meson-g12b-a311d-khadas-vim3.dtb"; then
 	setenv uboottype "mainline";
 	setenv khadas_board "VIM3";
+else if test "X${fdtfile}" = "Xamlogic/meson-sm1-khadas-vim3l.dtb"; then
+	setenv uboottype "mainline";
+	setenv khadas_board "VIM3L";
 else
 	setenv uboottype "vendor";
 	if test "X${maxcpus}" = "X4"; then
-		setenv khadas_board "VIM1";
+		if test "X${hostname}" = "XKVIM3L"; then
+			setenv khadas_board "VIM3L";
+		else
+			setenv khadas_board "VIM1";
+		fi;
 	else if test "X${maxcpus}" = "X8"; then
 		setenv khadas_board "VIM2";
 	else if test "X${maxcpus}" = "X6"; then
 		setenv khadas_board "VIM3";
 	fi;fi;fi;
-fi;fi;fi;
+fi;fi;fi;fi;
 
 echo "uboot type: $uboottype"
 
@@ -142,6 +149,17 @@ for dev in ${devs}; do
 						if test "X${imagetype}" = "XEMMC_MBR"; then
 							echo "Remove eMMC vendor partitions...";
 							fdt rm /partitions;
+						fi;
+						if test "X${hdmi_autodetect}" != "Xyes"; then
+							if test "X${hdmi}" = "X"; then
+								echo "HDMI: 'hdmi' value is missing, set to default value 720p60hz!";
+								setenv hdmi 720p60hz;
+							fi;
+							echo "HDMI: Custom mode: ${hdmi}";
+							setenv hdmiargs "${hdmiargs} hdmimode=${hdmi}";
+						else
+							echo "HDMI: Autodetect: ${hdmimode}";
+							setenv hdmiargs "${hdmiargs} hdmimode=${hdmimode}";
 						fi;
 						setenv bootargs "root=${rootdev} rootfstype=ext4 rootflags=data=writeback rw ubootpart=${ubootpartuuid} ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ddr_size=${ddr_size} wol_enable=${wol_enable}  jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} save_ethmac=${save_ethmac} fan=${fan_mode} khadas_board=${khadas_board} hwver=${hwver} coherent_pool=${dma_size} reboot_mode=${reboot_mode} imagetype=${imagetype} uboottype=${uboottype}";
 						run boot_start;
