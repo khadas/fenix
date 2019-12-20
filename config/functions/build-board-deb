@@ -295,6 +295,9 @@ build_board_deb() {
 			mv $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag_ap6398s.bin $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag.bin
 			mv $pkgdir/lib/firmware/brcm/nvram_ap6398s.txt $pkgdir/lib/firmware/brcm/nvram_ap6359sa.txt
 
+			mv $pkgdir/lib/firmware/brcm/brcmfmac4359-sdio_ap6398s.bin $pkgdir/lib/firmware/brcm/brcmfmac4359-sdio.bin
+			mv $pkgdir/lib/firmware/brcm/brcmfmac4359-sdio_ap6398s.txt $pkgdir/lib/firmware/brcm/brcmfmac4359-sdio.txt
+
 			## Bluetooth firmware
 			mv $pkgdir/lib/firmware/brcm/BCM4359C0_ap6398s.hcd $pkgdir/lib/firmware/brcm/BCM4359C0.hcd
 		fi
