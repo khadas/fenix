@@ -1,0 +1,63 @@
+From 70cc5374068f166a8ddf4ea880120249c30aaafb Mon Sep 17 00:00:00 2001
+From: Nick Xie <nick@khadas.com>
+Date: Sat, 21 Dec 2019 11:07:39 +0800
+Subject: [PATCH] VIM1/VIM2: enable logo display
+
+---
+ configs/khadas-vim2_defconfig | 2 ++
+ configs/khadas-vim_defconfig  | 2 ++
+ include/configs/meson64.h     | 7 +++++++
+ 3 files changed, 11 insertions(+)
+
+diff --git a/configs/khadas-vim2_defconfig b/configs/khadas-vim2_defconfig
+index 5e03d7d..ff59038 100644
+--- a/configs/khadas-vim2_defconfig
++++ b/configs/khadas-vim2_defconfig
+@@ -9,6 +9,8 @@ CONFIG_DEBUG_UART_CLOCK=24000000
+ CONFIG_IDENT_STRING=" khadas-vim2"
+ CONFIG_DEBUG_UART=y
+ CONFIG_OF_BOARD_SETUP=y
++CONFIG_USE_PREBOOT=y
++CONFIG_PREBOOT="run load_logo"
+ CONFIG_MISC_INIT_R=y
+ # CONFIG_DISPLAY_CPUINFO is not set
+ # CONFIG_CMD_BDI is not set
+diff --git a/configs/khadas-vim_defconfig b/configs/khadas-vim_defconfig
+index 3de5aaf..09a47a4 100644
+--- a/configs/khadas-vim_defconfig
++++ b/configs/khadas-vim_defconfig
+@@ -9,6 +9,8 @@ CONFIG_DEBUG_UART_CLOCK=24000000
+ CONFIG_IDENT_STRING=" khadas-vim"
+ CONFIG_DEBUG_UART=y
+ CONFIG_OF_BOARD_SETUP=y
++CONFIG_USE_PREBOOT=y
++CONFIG_PREBOOT="run load_logo"
+ CONFIG_MISC_INIT_R=y
+ # CONFIG_DISPLAY_CPUINFO is not set
+ # CONFIG_CMD_BDI is not set
+diff --git a/include/configs/meson64.h b/include/configs/meson64.h
+index 7360812..8cacecc 100644
+--- a/include/configs/meson64.h
++++ b/include/configs/meson64.h
+@@ -75,11 +75,18 @@
+ 	func(DHCP, dhcp, na)
+ #endif
+ 
++#define PREBOOT_LOAD_LOGO \
++	"if load mmc 1:2 ${loadaddr} /usr/share/fenix/logo/logo.bmp || load mmc 2:2 ${loadaddr} /usr/share/fenix/logo/logo.bmp; then " \
++			"bmp display ${loadaddr} m m;" \
++	"fi;"
++
+ #ifndef CONFIG_EXTRA_ENV_SETTINGS
+ #define CONFIG_EXTRA_ENV_SETTINGS \
++	"load_logo=" PREBOOT_LOAD_LOGO "\0" \
+ 	"stdin=" STDIN_CFG "\0" \
+ 	"stdout=" STDOUT_CFG "\0" \
+ 	"stderr=" STDOUT_CFG "\0" \
++	"loadaddr=0x01000000\0" \
+ 	"fdt_addr_r=0x08008000\0" \
+ 	"scriptaddr=0x08000000\0" \
+ 	"kernel_addr_r=0x08080000\0" \
+-- 
+2.7.4
+
