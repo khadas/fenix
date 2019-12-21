@@ -316,6 +316,10 @@ build_board_deb() {
 		cp -r $ROOT/archives/hwpacks/video-firmware/Amlogic/video $pkgdir/lib/firmware/
 	fi
 
+	# Install bmp logo
+	mkdir -p $pkgdir/usr/share/fenix/logo
+	cp $ROOT/archives/logo/bmp/* $pkgdir/usr/share/fenix/logo
+
 	# Trigger uInitrd creation after installation, to apply
 	# /etc/initramfs/post-update.d/99-uboot
 	cat <<-EOF > $pkgdir/DEBIAN/triggers
