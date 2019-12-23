@@ -135,6 +135,35 @@ for dev in ${devs}; do
 						if test -e ${dev} ${dev_num}:${distro_bootpart} ${mark_prefix}.next; then
 							echo "Booting mainline kernel...";
 							setenv condev "console=ttyAML0,115200n8 console=tty0 no_console_suspend consoleblank=0";
+
+							# Setup dtb for different HW version
+							fdt addr ${dtb_loadaddr};
+							fdt resize 65536;
+
+							if test "X${hwver}" = "XVIM1.V14"; then
+								fdt set /soc/bus@c1100000/i2c@87c0/khadas-mcu@18 hwver "VIM1.V14";
+							else if test "X${hwver}" = "XVIM2.V14"; then
+								fdt set /soc/bus@c1100000/i2c@87c0/khadas-mcu@18 hwver "VIM2.V14";
+								fdt set /gpio-fan status "disabled";
+							else if test "X${hwver}" = "XVIM3.V11" || test "X${hwver}" = "XVIM3.V12"; then
+								fdt set /soc/bus@ff800000/i2c@5000/khadas-mcu@18 hwver ${hwver};
+								kbi init;
+								kbi portmode r;
+
+								fdt get value usb2_phy0 /soc/bus@ff600000/phy@36000 phandle;
+								fdt get value usb2_phy1 /soc/bus@ff600000/phy@3a000 phandle;
+								fdt get value usb3_pcie_phy /soc/bus@ff600000/phy@46000 phandle;
+
+								if test ${port_mode} = 0; then
+									fdt set /soc/usb@ffe09000 phys <${usb2_phy0} ${usb2_phy1} ${usb3_pcie_phy} 0x00000004>;
+									fdt set /soc/usb@ffe09000 phy-names "usb2-phy0" "usb2-phy1" "usb3-phy0";
+									fdt set /soc/pcie@fc000000 status disabled;
+								else
+									fdt set /soc/usb@ffe09000 phys <${usb2_phy0} ${usb2_phy1}>;
+									fdt set /soc/usb@ffe09000 phy-names "usb2-phy0" "usb2-phy1";
+									fdt set /soc/pcie@fc000000 status okay;
+								fi;
+							fi;fi;fi;
 						else
 							echo "Booting legacy kernel...";
 							setenv condev "console=ttyS0,115200n8 console=tty0 no_console_suspend consoleblank=0";
