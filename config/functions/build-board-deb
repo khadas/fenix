@@ -153,7 +153,9 @@ build_board_deb() {
 	if [ "\$VENDOR" == "Amlogic" ]; then
 		ln -sf /lib/firmware /etc/firmware
 		if [ "\$KHADAS_BOARD" == "VIM3" ]; then
-			systemctl enable camera_isp_3a_server.service
+			if linux-version compare \`uname -r\` lt 4.12; then
+				systemctl enable camera_isp_3a_server.service
+			fi
 		fi
 	fi
 	# Patches used by hciattach
