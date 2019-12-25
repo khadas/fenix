@@ -145,6 +145,7 @@ for dev in ${devs}; do
 							else if test "X${hwver}" = "XVIM2.V14"; then
 								fdt set /soc/bus@c1100000/i2c@87c0/khadas-mcu@18 hwver "VIM2.V14";
 								fdt set /gpio-fan status "disabled";
+								fdt set /fan status "disabled";
 							else if test "X${hwver}" = "XVIM3.V11" || test "X${hwver}" = "XVIM3.V12"; then
 								fdt set /soc/bus@ff800000/i2c@5000/khadas-mcu@18 hwver ${hwver};
 								kbi init;
@@ -174,7 +175,7 @@ for dev in ${devs}; do
 							if test "X${hwver}" = "XVIM1.V14"; then
 								fdt set /soc/cbus@c1100000/i2c@87c0/khadas-mcu hwver "VIM1.V14";
 							else if test "X${hwver}" = "XVIM2.V14"; then
-								fdt set /fan hwver "VIM2.V14";
+								fdt set /fan status "disabled";
 								fdt set /i2c@c11087c0/khadas-mcu hwver "VIM2.V14";
 								fdt set /soc/cbus@c1100000/i2c@87c0/khadas-mcu hwver "VIM2.V14";
 							else if test "X${hwver}" = "XVIM3.V11" || test "X${hwver}" = "XVIM3.V12"; then
