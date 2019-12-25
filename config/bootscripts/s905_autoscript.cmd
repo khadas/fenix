@@ -127,7 +127,7 @@ for dev in ${devs}; do
 							echo "Found custom ethmac: ${custom_ethmac}, overwrite eth_mac!";
 							setenv eth_mac ${custom_ethmac};
 						fi;
-						if test "X${eth_mac}" = "X"; then
+						if test "X${eth_mac}" = "X" || test "X${eth_mac}" = "X00:00:00:00:00:00"; then
 							echo "Set default mac address to ethaddr: ${ethaddr}!";
 							setenv eth_mac ${ethaddr};
 							setenv saveethmac "save_ethmac=yes";
