@@ -113,7 +113,13 @@ if test -e ${custom_ethmac}; then
 	setenv eth_mac ${custom_ethmac}
 fi
 
-setenv bootargs "${bootargs} ${condev} rw root=${rootdev} rootfstype=ext4 init=/sbin/init rootwait board_type=${board_type} board_type_name=${board_type_name} fan=${fan_mode} mac=${eth_mac} androidboot.mac=${eth_mac} coherent_pool=${dma_size} image_type=${image_type}"
+if test "X${eth_mac}" = "X" || test "X${eth_mac}" = "X00:00:00:00:00:00"; then
+	echo "Set default mac address to ethaddr: ${ethaddr}!";
+	setenv eth_mac ${ethaddr};
+	setenv saveethmac "save_ethmac=yes";
+fi;
+
+setenv bootargs "${bootargs} ${condev} rw root=${rootdev} rootfstype=ext4 init=/sbin/init rootwait board_type=${board_type} board_type_name=${board_type_name} fan=${fan_mode} mac=${eth_mac} androidboot.mac=${eth_mac} ${saveethmac} coherent_pool=${dma_size} image_type=${image_type}"
 
 for distro_bootpart in ${devplist}; do
 	echo "Scanning ${devtype} ${devnum}:${distro_bootpart}..."
