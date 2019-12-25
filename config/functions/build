@@ -194,6 +194,7 @@ build_uboot_deb() {
 	cat <<-EOF > $pkgdir/usr/lib/u-boot/platform_install.sh
 	DIR=/usr/lib/u-boot
 	$(declare -f write_uboot_platform)
+	$(declare -f write_uboot_platform_ext)
 	$(declare -f setup_write_uboot_platform)
 	EOF
 
@@ -207,7 +208,19 @@ build_uboot_deb() {
 	Section: kernel
 	Priority: optional
 	Provides: fenix-u-boot
-	Replaces: fenix-u-boot, linux-u-boot-vim1, linux-u-boot-vim2, linux-u-boot-vim3, linux-u-boot-vim1-mainline, linux-u-boot-vim1-vendor, linux-u-boot-vim2-mainline, linux-u-boot-vim2-vendor, linux-u-boot-vim3-mainline, linux-u-boot-vim3-vendor, linux-u-boot-vim3l-mainline, linux-u-boot-vim3l-vendor
+	EOF
+
+	if [ "$VENDOR" == "Amlogic" ]; then
+		cat <<-EOF >> $pkgdir/DEBIAN/control
+		Replaces: fenix-u-boot, linux-u-boot-vim1, linux-u-boot-vim2, linux-u-boot-vim3, linux-u-boot-vim1-mainline, linux-u-boot-vim1-vendor, linux-u-boot-vim2-mainline, linux-u-boot-vim2-vendor, linux-u-boot-vim3-mainline, linux-u-boot-vim3-vendor, linux-u-boot-vim3l-mainline, linux-u-boot-vim3l-vendor
+		EOF
+	else
+		cat <<-EOF >> $pkgdir/DEBIAN/control
+		Replaces: fenix-u-boot, linux-u-boot-edge-mainline, linux-u-boot-edge-vendor
+		EOF
+	fi
+
+	cat <<-EOF >> $pkgdir/DEBIAN/control
 	Description: U-boot $UBOOT_VER
 	EOF
 
@@ -219,24 +232,46 @@ build_uboot_deb() {
 	if [ "\$(stat -c %d:%i /)" != "\$(stat -c %d:%i /proc/1/root/.)" ]; then exit 0; fi
 
 	source /usr/lib/u-boot/platform_install.sh
+	source /etc/fenix-release
 	[[ \$(type -t setup_write_uboot_platform) == function ]] && setup_write_uboot_platform
-	if [[ \$DEVICE = VENDOR ]]; then
-		echo "Create u-boot updating mark, will update u-boot in next bootup cycle."
-		echo "Please reboot the board to update u-boot."
-		touch /usr/lib/u-boot/.UBOOT-NEED-UPDATE
-		sync
+	EOF
+
+	if [ "$VENDOR" == "Amlogic" ]; then
+		cat <<-EOF >> $pkgdir/DEBIAN/postinst
+		if [[ \$DEVICE = VENDOR ]]; then
+			echo "Create u-boot updating mark, will update u-boot in next bootup cycle."
+			echo "Please reboot the board to update u-boot."
+			touch /usr/lib/u-boot/.UBOOT-NEED-UPDATE
+			sync
+		else
+			if [[ -b \$DEVICE ]]; then
+				echo "Updating u-boot on \$DEVICE"
+				write_uboot_platform \$DIR \$DEVICE
+				sync
+			else
+				echo "Device \$DEVICE does not exist, skipping"
+			fi
+		fi
+
+		exit 0
+		EOF
 	else
+		cat <<-EOF >> $pkgdir/DEBIAN/postinst
 		if [[ -b \$DEVICE ]]; then
 			echo "Updating u-boot on \$DEVICE"
-			write_uboot_platform \$DIR \$DEVICE
+			if [[ "$INSTALL_TYPE" == "EMMC" ]]; then
+				[[ \$(type -t write_uboot_platform_ext) == function ]] && write_uboot_platform_ext \$DIR \$DEVICE
+			else
+				write_uboot_platform \$DIR \$DEVICE
+			fi
 			sync
 		else
 			echo "Device \$DEVICE does not exist, skipping"
 		fi
-	fi
 
-	exit 0
-	EOF
+		exit 0
+		EOF
+	fi
 
 	chmod 755 $pkgdir/DEBIAN/postinst
 
