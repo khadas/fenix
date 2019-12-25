@@ -140,14 +140,6 @@ build_board_deb() {
 		mv /etc/default/fenix-zram-config.dpkg-dist /etc/default/fenix-zram-config
 	fi
 
-	# FIXME Workaround for Bluetooth
-	# Restart bluetooth-khadas.service when bluetooth power state changed
-	if [ -f /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py ] && [ ! -f /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py.backup ]; then
-		cp /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py.backup
-		echo "        if state:" >> /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py
-		echo "           os.system(\"systemctl start bluetooth-power-fixup\")" >> /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py
-	fi
-
 	# Bluez looks firmware in /etc/firmware/
 	. /etc/fenix-release
 	if [ "\$VENDOR" == "Amlogic" ]; then
@@ -191,9 +183,26 @@ build_board_deb() {
 		echo "exit 0" >> /usr/local/bin/hdmi.sh
 		echo "#!/bin/sh -e" > /etc/rc.local
 		echo "exit 0" >> /etc/rc.local
+		echo "#!/bin/bash" > /usr/local/bin/bluetooth-khadas.sh
+		echo "exit 0" >> /usr/local/bin/bluetooth-khadas.sh
+		echo "#!/bin/bash" > /usr/local/bin/bluetooth-power-fixup.sh
+		echo "exit 0" >> /usr/local/bin/bluetooth-power-fixup.sh
 
 		# Update fw_env.config for mainline linux
 		echo "/dev/mmcblk1    0x27400000      0x10000" > /etc/fw_env.config
+
+		# Disable deprecated services for mainline kernel
+		[ -f "/lib/systemd/system/0hdmi.service" ] && rm /lib/systemd/system/0hdmi.service
+		[ -f "/lib/systemd/system/bluetooth-khadas.service" ] && rm /lib/systemd/system/bluetooth-khadas.service
+		[ -f "/lib/systemd/system/bluetooth-power-fixup.service" ] && rm /lib/systemd/system/bluetooth-power-fixup.service
+	else
+		# FIXME Workaround for Bluetooth
+		# Restart bluetooth-khadas.service when bluetooth power state changed
+		if [ -f /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py ] && [ ! -f /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py.backup ]; then
+			cp /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py.backup
+			echo "        if state:" >> /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py
+			echo "           os.system(\"systemctl start bluetooth-power-fixup\")" >> /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py
+		fi
 	fi
 
 	# Fix env.txt

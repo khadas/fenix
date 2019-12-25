@@ -207,13 +207,14 @@ tweaks_platform() {
 	echo "ttyAML0" >> $ROOTFS_TEMP/etc/securetty
 
 	# Enable services
-	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable bluetooth-khadas.service fan.service"'
+	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable fan.service"'
 
 	if [ "$DISTRIB_TYPE" != "server" ] && [ "$LINUX" != "mainline" ]; then
 		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable panel.service hdmi_resolution.service"'
 	fi
 
 	if [ "$LINUX" != "mainline" ]; then
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable bluetooth-khadas.service"'
 		if [ "$KHADAS_BOARD" == "VIM3" ]; then
 			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable camera_isp_3a_server.service"'
 		fi
