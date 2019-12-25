@@ -30,7 +30,11 @@ if test ${devnum} = 0; then
 	else
 		setenv default_rootdev "/dev/mmcblk1p${emmc_root_part}"
 	fi
-	setenv image_type "EMMC";
+	if test -e mmc ${devnum}:${emmc_root_part} zImage; then
+		setenv imagetype "EMMC";
+	else
+		setenv imagetype "EMMC_MBR";
+	fi;
 else if test ${devnum} = 1; then
 	echo "Uboot loaded from SD.";
 	setenv boot_env_part ${sd_boot_part};
@@ -41,7 +45,7 @@ else if test ${devnum} = 1; then
 	else
 		setenv default_rootdev "/dev/mmcblk0p${sd_root_part}"
 	fi
-	setenv image_type "SD-USB";
+	setenv imagetype "SD-USB";
 fi;fi;
 
 # Import environment from env.txt
@@ -106,8 +110,13 @@ fi
 
 setenv boot_start booti ${kernel_addr_r} ${ramdisk_addr_r} ${fdt_addr_r}
 
-kbi ethmac
+part uuid mmc ${devnum}:1 ubootpartuuid;
+if test "X${ubootpartuuid}" = "X"; then
+	echo "Can not get u-boot part UUID, set to NULL";
+	setenv ubootpartuuid "NULL";
+fi;
 
+kbi ethmac
 if test -e ${custom_ethmac}; then
 	echo "Found custom ethmac: ${custom_ethmac}, overwrite eth_mac!";
 	setenv eth_mac ${custom_ethmac}
@@ -119,7 +128,7 @@ if test "X${eth_mac}" = "X" || test "X${eth_mac}" = "X00:00:00:00:00:00"; then
 	setenv saveethmac "save_ethmac=yes";
 fi;
 
-setenv bootargs "${bootargs} ${condev} rw root=${rootdev} rootfstype=ext4 init=/sbin/init rootwait board_type=${board_type} board_type_name=${board_type_name} fan=${fan_mode} mac=${eth_mac} androidboot.mac=${eth_mac} ${saveethmac} coherent_pool=${dma_size} image_type=${image_type}"
+setenv bootargs "${bootargs} ${condev} rw root=${rootdev} rootfstype=ext4 init=/sbin/init rootwait ubootpart=${ubootpartuuid} board_type=${board_type} board_type_name=${board_type_name} khadas_board=${board_type_name} fan=${fan_mode} mac=${eth_mac} androidboot.mac=${eth_mac} ${saveethmac} coherent_pool=${dma_size} imagetype=${imagetype}"
 
 for distro_bootpart in ${devplist}; do
 	echo "Scanning ${devtype} ${devnum}:${distro_bootpart}..."
