@@ -52,7 +52,7 @@ build_desktop_deb() {
 
 	# Set up post install script
 	cat <<-EOF > $pkgdir/DEBIAN/postinst
-	#!/bin/sh
+	#!/bin/bash
 
 	# Overwrite Chromium default configuration
 	if [ -d /etc/chromium-browser/ ]; then ln -sf /etc/fenix/chromium.conf /etc/chromium-browser/default; fi
@@ -88,7 +88,7 @@ build_desktop_deb() {
 	if [ "\$(stat -c %d:%i /)" == "\$(stat -c %d:%i /proc/1/root/.)" ]; then
 		# Updata default configuration
 		[ -d /etc/skel/.config ] && cp -arf /etc/skel/.config /home/khadas
-		[ -d etc/skel/.local ] && cp -arf etc/skel/.local /home/khadas
+		[ -d /etc/skel/.local ] && cp -arf /etc/skel/.local /home/khadas
 		chown khadas:khadas /home/khadas/.* -R
 	fi
 
