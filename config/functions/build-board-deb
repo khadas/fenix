@@ -181,8 +181,6 @@ build_board_deb() {
 		echo "exit 0" >> /etc/initramfs-tools/scripts/local-top/khadas_init.sh
 		echo "#!/bin/bash" >  /usr/local/bin/hdmi.sh
 		echo "exit 0" >> /usr/local/bin/hdmi.sh
-		echo "#!/bin/sh -e" > /etc/rc.local
-		echo "exit 0" >> /etc/rc.local
 		echo "#!/bin/bash" > /usr/local/bin/bluetooth-khadas.sh
 		echo "exit 0" >> /usr/local/bin/bluetooth-khadas.sh
 		echo "#!/bin/bash" > /usr/local/bin/bluetooth-power-fixup.sh

@@ -38,7 +38,7 @@
 [ -f /sys/class/wol/enable ] && chmod 0660 /sys/class/wol/enable
 
 # Setup LED: heartbeat if bootup completed
-echo heartbeat > /sys/class/leds/sys_led/trigger
+[ -f /sys/class/leds/sys_led/trigger ] && echo heartbeat > /sys/class/leds/sys_led/trigger
 
 # Reboot test handle
 if cat /proc/cmdline | grep -q reboot_test > /dev/null; then
