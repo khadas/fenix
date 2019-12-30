@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if [[ $EUID != 0 ]]; then
+	echo "This script requires root privileges, please use sudo to execute it."
+	exit 1
+fi
+
+. /etc/fenix-release
+
+if linux-version compare `uname -r` ge 4.12; then
+	LINUX=mainline
+else
+	VERSION=`uname -r | awk -F "." '{print $1}'`
+	PATCHLEVEL=`uname -r | awk -F "." '{print $2}'`
+	LINUX=${VERSION}.${PATCHLEVEL}
+fi
+
+FENIX_UPDATER=fenix-updater-package-bionic-${BOARD,,}-${LINUX,,}
+
+sudo apt update
+sudo apt full-upgrade -y
+
+echo "Installing Fenix updater: $FENIX_UPDATER ..."
+sudo apt install -y $FENIX_UPDATER
+
+sync
+
+exit
+
