@@ -86,6 +86,13 @@ else
 	./scripts/build.sh common-deb
 endif
 
+updater-deb:
+ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
+	$(call help_message)
+else
+	./scripts/build.sh updater-deb
+endif
+
 info:
 	@echo ""
 	@echo "Version: ${VERSION}"

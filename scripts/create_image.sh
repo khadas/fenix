@@ -75,6 +75,9 @@ build_debs() {
 	# Build board deb
 	build_board_deb
 
+	# Build updater deb
+	build_updater_deb
+
 	# Build desktop deb
 	if [ "$DISTRIB_TYPE" != "server" ]; then
 		build_desktop_deb

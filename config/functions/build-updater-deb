@@ -1,0 +1,95 @@
+# Funcions:
+# build_updater_deb
+
+## Build updater deb package
+build_updater_deb() {
+	info_msg "Build updater deb..."
+
+	local pkgname="${FENIX_UPDATER_DEB}"
+	local pkgdir="$BUILD_IMAGES/.tmp/${pkgname}_${VERSION}_${DISTRIB_ARCH}"
+	rm -rf $pkgdir
+	mkdir -p $pkgdir/DEBIAN
+
+	if [ "$LINUX" != "mainline" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
+		case $KHADAS_BOARD in
+			VIM1)
+				updater_deb_dependencies+="gstreamer-aml, libplayer-aml, opencv3, python3-wiringpi"
+				;;
+			VIM2)
+				updater_deb_dependencies+="gstreamer-aml, libplayer-aml, opencv3, python3-wiringpi"
+				;;
+			VIM3)
+				updater_deb_dependencies+="aml-npu, gstreamer-aml, libplayer-aml, opencv3, python3-wiringpi"
+				;;
+			VIM3L)
+				updater_deb_dependencies+="aml-npu, gstreamer-aml, libplayer-aml, opencv3, python3-wiringpi"
+				;;
+			Edge)
+				updater_deb_dependencies+="python3-wiringpi"
+				;;
+		esac
+	elif [ "$LINUX" == "mainline" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
+		case $KHADAS_BOARD in
+			VIM1)
+				updater_deb_dependencies+="linux-u-boot-vim1-mainline"
+				;;
+			VIM2)
+				updater_deb_dependencies+="linux-u-boot-vim2-mainline"
+				;;
+			VIM3)
+				updater_deb_dependencies+="linux-u-boot-vim3-mainline"
+				;;
+			VIM3L)
+				updater_deb_dependencies+="linux-u-boot-vim3l-mainline"
+				;;
+			Edge)
+				updater_deb_dependencies+="linux-u-boot-edge-mainline"
+				;;
+		esac
+	fi
+
+	cat <<-EOF > $pkgdir/DEBIAN/control
+	Package: $pkgname
+	Version: $VERSION
+	Architecture: $DISTRIB_ARCH
+	Maintainer: Khadas <hello@khadas.com>
+	Installed-Size: 1
+	Section: kernel
+	Priority: optional
+	Depends: ${updater_deb_dependencies}
+	Description: Fenix updater for ${DISTRIBUTION}-${DISTRIB_RELEASE} on $KHADAS_BOARD Linux ${LINUX}
+	EOF
+
+	# Set up pre install script
+	cat <<-EOF > $pkgdir/DEBIAN/preinst
+	#!/bin/bash
+	exit 0
+	EOF
+
+	chmod 755 $pkgdir/DEBIAN/preinst
+
+	# Set up post remove script
+	cat <<-EOF > $pkgdir/DEBIAN/postrm
+	#!/bin/bash
+	exit 0
+	EOF
+
+	chmod 755 $pkgdir/DEBIAN/postrm
+
+	# Set up post install script
+	cat <<-EOF > $pkgdir/DEBIAN/postinst
+	#!/bin/bash
+	exit 0
+	EOF
+
+	chmod 755 $pkgdir/DEBIAN/postinst
+
+	# Create updater deb file
+	echo "Building package: $pkgname"
+	fakeroot dpkg-deb -b $pkgdir ${pkgdir}.deb
+	mkdir -p $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}
+	cp ${pkgdir}.deb $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}
+	# Cleanup
+	rm -rf ${pkgdir}.deb
+	rm -rf $pkgdir
+}

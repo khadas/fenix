@@ -42,6 +42,9 @@ case "$TARGET" in
 	common-deb)
 		build_common_deb
 		;;
+	updater-deb)
+		build_updater_deb
+		;;
 	debs)
 		build_uboot_deb
 		build_linux_debs
@@ -49,6 +52,7 @@ case "$TARGET" in
 		build_desktop_deb
 		build_gpu_deb
 		build_common_deb
+		build_updater_deb
 		;;
 esac
 

@@ -76,6 +76,9 @@ install_common()
 	# Install board deb in chroot
 	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/${LINUX_BOARD_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
 
+	# Install updater deb in chroot
+	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/${FENIX_UPDATER_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
+
 	# Tweaks for platform
 	if [[ $(type -t tweaks_platform) == function ]]; then
 		tweaks_platform
