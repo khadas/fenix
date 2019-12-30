@@ -156,8 +156,7 @@ build_board_deb() {
 
 	if [ "\$(stat -c %d:%i /)" != "\$(stat -c %d:%i /proc/1/root/.)" ]; then
 		# In chroot
-		if [ -f /etc/.mainline ]; then
-			rm -rf /etc/.mainline
+		if [ -f /boot/.next ]; then
 			IS_MAINLINE_KERNEL="yes"
 		fi
 	else
@@ -193,6 +192,9 @@ build_board_deb() {
 		[ -f "/lib/systemd/system/0hdmi.service" ] && rm /lib/systemd/system/0hdmi.service
 		[ -f "/lib/systemd/system/bluetooth-khadas.service" ] && rm /lib/systemd/system/bluetooth-khadas.service
 		[ -f "/lib/systemd/system/bluetooth-power-fixup.service" ] && rm /lib/systemd/system/bluetooth-power-fixup.service
+
+		# Update modules
+		[ -f /etc/modules.mainline ] && mv /etc/modules.mainline /etc/modules
 	else
 		# FIXME Workaround for Bluetooth
 		# Restart bluetooth-khadas.service when bluetooth power state changed
@@ -200,6 +202,16 @@ build_board_deb() {
 			cp /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py.backup
 			echo "        if state:" >> /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py
 			echo "           os.system(\"systemctl start bluetooth-power-fixup\")" >> /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py
+		fi
+		# Update modules
+		[ -f /etc/modules.mainlne ] && rm /etc/modules.mainlne
+		if [ "\$BOARD" == "VIM2" ]; then
+			sed -i 's/mali//g' /etc/modules
+		elif [ "\$BOARD" == "VIM3L" ]; then
+			sed -i 's/iv009_isp_iq//g' /etc/modules
+			sed -i 's/iv009_isp_lens//g' /etc/modules
+			sed -i 's/iv009_isp_sensor//g' /etc/modules
+			sed -i 's/iv009_isp//g' /etc/modules
 		fi
 	fi
 
@@ -227,18 +239,9 @@ build_board_deb() {
 	## overwrite the board common part files.
 	rsync -aI $ROOT/archives/filesystem/special/$KHADAS_BOARD/* $pkgdir/
 
-	# Create modules file
-	if [[ -n $MODULES ]]; then
-		tr ' ' '\n' <<< "$MODULES" > $pkgdir/etc/modules
-	fi
-
 	# Add fenix repository
 	mkdir -p $pkgdir/etc/apt/sources.list.d
 	echo "deb https://dl.khadas.com/repos/${KHADAS_BOARD,,}/ ${DISTRIB_RELEASE} main" > $pkgdir/etc/apt/sources.list.d/fenix.list
-
-	if [ "$LINUX" == "mainline" ]; then
-		touch $pkgdir/etc/.mainline
-	fi
 
 	# Fixup rc.local permission
 	chmod 755 $pkgdir/etc/rc.local
@@ -355,11 +358,6 @@ build_board_deb() {
 	INSTALL_TYPE=$INSTALL_TYPE
 	IMAGE_RELEASE_VERSION=$IMAGE_RELEASE_VERSION
 	EOF
-
-	# Set SD/USB installation board name to VIMs for VIM1 & VIM2 because they use the same image.
-	if [[ "$INSTALL_TYPE" == "SD-USB" ]] && [[ "$KHADAS_BOARD" =~ "VIM" ]]; then
-		sed -i 's/BOARD=.*/BOARD=VIMs/' $pkgdir/etc/fenix-release
-	fi
 
 	case $DISTRIB_RELEASE in
 		stretch)
