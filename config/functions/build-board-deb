@@ -13,26 +13,6 @@ build_board_deb() {
 	board_deb_dependencies=$(echo $PACKAGE_LIST_ADDITIONAL)
 	board_deb_dependencies=${board_deb_dependencies// /,}
 
-	if [ "$LINUX" != "mainline" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
-		case $KHADAS_BOARD in
-			VIM1)
-				board_deb_dependencies+=", gstreamer-aml, libplayer-aml, opencv3, python3-wiringpi"
-				;;
-			VIM2)
-				board_deb_dependencies+=", gstreamer-aml, libplayer-aml, opencv3, python3-wiringpi"
-				;;
-			VIM3)
-				board_deb_dependencies+=", aml-npu, gstreamer-aml, libplayer-aml, opencv3, python3-wiringpi"
-				;;
-			VIM3L)
-				board_deb_dependencies+=", aml-npu, gstreamer-aml, libplayer-aml, opencv3, python3-wiringpi"
-				;;
-			Edge)
-				board_deb_dependencies+=", python3-wiringpi"
-				;;
-		esac
-	fi
-
 	cat <<-EOF > $pkgdir/DEBIAN/control
 	Package: $pkgname
 	Version: $VERSION
