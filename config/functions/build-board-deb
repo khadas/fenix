@@ -124,7 +124,7 @@ build_board_deb() {
 	. /etc/fenix-release
 	if [ "\$VENDOR" == "Amlogic" ]; then
 		ln -sf /lib/firmware /etc/firmware
-		if [ "\$KHADAS_BOARD" == "VIM3" ]; then
+		if [ "\$BOARD" == "VIM3" ]; then
 			if linux-version compare \`uname -r\` lt 4.12; then
 				systemctl enable camera_isp_3a_server.service
 			fi
