@@ -247,6 +247,8 @@ build_uboot_deb() {
 			if [[ -b \$DEVICE ]]; then
 				echo "Updating u-boot on \$DEVICE"
 				write_uboot_platform \$DIR \$DEVICE
+				echo "Reseting u-boot environment variables ..."
+				[ -b /dev/env ] && dd if=/dev/zero of=/dev/env bs=1M count=1
 				sync
 			else
 				echo "Device \$DEVICE does not exist, skipping"
