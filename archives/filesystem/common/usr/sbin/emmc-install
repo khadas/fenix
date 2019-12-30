@@ -39,7 +39,7 @@ case ${VENDOR} in
 		;;
 	*)
 		FIRSTSECTOR=8192
-		UBOOT_PACKAGE_UPDATE=yes
+		UBOOT_PACKAGE_UPDATE=no
 		;;
 esac
 
@@ -405,7 +405,7 @@ main()
 		IFS="'"
 		options=()
 		options+=(1 "Vendor u-boot")
-		[[ ${BOARD} = VIM1 || ${BOARD} = "VIM2" ]] && options+=(2 "Mainline u-boot")
+		[[ ${BOARD} = VIM1 || ${BOARD} = VIM2 || ${BOARD} = VIM3 || ${BOARD} = VIM3L ]] && options+=(2 "Mainline u-boot")
 		cmd=(dialog --title 'Choose the U-boot' --backtitle "$backtitle" --menu "\n Choose the U-boot you want to use \n \n" 14 40 7)
 		choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
 		[[ $? -ne 0 ]] && exit 16
