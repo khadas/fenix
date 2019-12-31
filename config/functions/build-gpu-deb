@@ -3,9 +3,6 @@
 
 build_gpu_deb() {
 
-	# Remove old debs
-	rm -rf $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-*.deb
-
 	if [ -z "$GPU_MODEL" ]; then
 		return
 	fi
@@ -22,6 +19,8 @@ build_gpu_deb() {
 
 		cd $ROOT
 
+		# Remove old debs
+		rm -rf $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-*.deb
 		rm -rf $pkgdir
 		mkdir -p $pkgdir/DEBIAN
 
@@ -107,6 +106,8 @@ build_gpu_deb() {
 
 		cd $ROOT
 
+		# Remove old debs
+		rm -rf $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-*.deb
 		rm -rf $pkgdir
 		mkdir -p $pkgdir/DEBIAN
 
