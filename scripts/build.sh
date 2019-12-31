@@ -49,10 +49,11 @@ case "$TARGET" in
 		build_uboot_deb
 		build_linux_debs
 		build_board_deb
-		build_desktop_deb
+		[ "$DISTRIB_TYPE" != "server" ] && build_desktop_deb
 		build_gpu_deb
-		build_common_deb
+		[[ $(type -t build_common_deb) == function ]] && build_common_deb
 		build_updater_deb
+		[[ $(type -t build_deb_packages_platform) == function ]] && build_deb_packages_platform
 		;;
 esac
 
