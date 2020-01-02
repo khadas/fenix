@@ -37,7 +37,7 @@ LINUX_SOURCE_URL="https://github.com/khadas/linux"
 UBOOT_SOURCE_URL="https://github.com/khadas/u-boot"
 
 ROOTFSCACHE_VERSION=5
-IMAGE_RELEASE_VERSION="V$(date +%F | sed 's/-//g')"
+IMAGE_RELEASE_VERSION="V${VERSION}-$(date +%F | sed 's/-//g')"
 
 NR_JOBS_MAX=20
 NR_CPUS=$(grep -c processor /proc/cpuinfo)
