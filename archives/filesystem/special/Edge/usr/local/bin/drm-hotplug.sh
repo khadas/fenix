@@ -1,17 +1,28 @@
 #!/bin/sh -x
 
-LIGHTDM_DIR=/var/run/lightdm/root/
-if [ -d $LIGHTDM_DIR ]; then
-	export DISPLAY=$(ls $LIGHTDM_DIR)
-	export XAUTHORITY=$LIGHTDM_DIR/$DISPLAY
-fi
+# Try to figure out XAUTHORITY and DISPLAY
+for pid in $(pgrep X 2>/dev/null || ls /proc|grep -ow "[0-9]*"|sort -rn); do
+    PROC_DIR=/proc/$pid
+
+    # Filter out non-X processes
+    readlink $PROC_DIR/exe|grep -qwE "X$|Xorg$" || continue
+
+    # Parse auth file and display from cmd args
+    export XAUTHORITY=$(cat $PROC_DIR/cmdline|tr '\0' '\n'| \
+        grep -w "\-auth" -A 1|tail -1)
+    export DISPLAY=$(cat $PROC_DIR/cmdline|tr '\0' '\n'| \
+        grep -w "^:.*" || echo ":0")
+
+    echo Found auth: $XAUTHORITY for dpy: $DISPLAY
+    break
+done
 
 export DISPLAY=${DISPLAY:-:0}
 
 # Find an authorized user
 unset USER
 for user in root $(users);do
-    sudo -u $user xdpyinfo 2>/dev/null >&2 && \
+    sudo -u $user xdpyinfo &>/dev/null && \
         { USER=$user; break; }
 done
 [ $USER ] || exit 0
@@ -25,10 +36,9 @@ for monitor in $MONITORS;do
     CRTC=$(echo $monitor|sed "s/HDMI\(-[^B]\)/HDMI-A\1/")
 
     SYS="/sys/class/drm/card*-$CRTC/"
-    MODE=$(cat $SYS/mode)
 
     # Already got a valid mode
-    grep -w $MODE $SYS/modes && continue
+    grep -w "$(cat $SYS/mode)" $SYS/modes && continue
 
     # Ether disabled or wrongly configured
     sudo -u $user xrandr --output $monitor --auto
