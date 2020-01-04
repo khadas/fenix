@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Name=System Information
+Comment=System Information
+Name[zh_CN]=系统信息
+Comment[zh_CN]=系统信息
+Exec=/usr/local/bin/systeminfo.sh
+Icon=/etc/fenix/icons/systeminfo.png
+Terminal=false
+Type=Application
+Keywords=system;
+Categories=System;
