@@ -1,6 +1,6 @@
 PKG_NAME="rkbin"
-PKG_VERSION="5e54e6c0bbc0141985aca17adcebf3692cdc7f78"
-PKG_SHA256="39289966b39c7bd5b2e5031d12f071e1aa80b80dc83c74b8658b3c119b6d5fd5"
+PKG_VERSION="5aa9a92b5652d37b323c870329103e120dfc8d87"
+PKG_SHA256="2b8f817e90ce623bf2cae5e6249f14ffc7ac9991e1e44b9ad6b43ca34c57663c"
 PKG_SOURCE_DIR="rkbin-${PKG_VERSION}*"
 PKG_SITE="https://github.com/rockchip-linux/rkbin"
 PKG_URL="https://github.com/rockchip-linux/rkbin/archive/$PKG_VERSION.tar.gz"
@@ -16,6 +16,6 @@ make_host() {
 	# Fixup links
 	ln -fs bin/rk33/rk3399_ddr_800MHz_v1.24.bin rk3399_ddr.bin
 	ln -fs bin/rk33/rk3399_miniloader_spinor_v1.14.bin rk3399miniloaderall_spi.bin
-	ln -fs bin/rk33/rk3399_miniloader_v1.19.bin rk3399miniloaderall.bin
+	ln -fs bin/rk33/rk3399_miniloader_v1.24.bin rk3399miniloaderall.bin
 }
 
