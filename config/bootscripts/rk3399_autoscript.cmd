@@ -15,26 +15,32 @@ if test ${board_type} = ${BOARD_TYPE_NONE}; then
 	reset;
 fi
 
-setenv emmc_root_part 7
-setenv emmc_boot_part 7
-setenv sd_root_part   2
-setenv sd_boot_part   1
+setenv emmc_root_part		7
+setenv emmc_boot_part		7
+setenv emmc_mbr_root_part	2
+setenv emmc_mbr_boot_part	1
+setenv sd_root_part			2
+setenv sd_boot_part			1
 
 if test ${devnum} = 0; then
 	echo "Uboot loaded from eMMC.";
-	setenv boot_env_part ${emmc_boot_part};
-	setenv root_part ${emmc_root_part}
-	setenv mark_prefix "boot/"
-	if test -e mmc ${devnum}:${boot_env_part} ${mark_prefix}.next; then
-		setenv default_rootdev "/dev/mmcblk2p${emmc_root_part}"
-	else
-		setenv default_rootdev "/dev/mmcblk1p${emmc_root_part}"
-	fi
 	if test -e mmc ${devnum}:${emmc_root_part} zImage; then
 		setenv imagetype "EMMC";
+		setenv boot_env_part ${emmc_boot_part};
+		setenv root_part ${emmc_root_part};
+		setenv mark_prefix "boot/";
 	else
 		setenv imagetype "EMMC_MBR";
+		setenv boot_env_part ${emmc_mbr_boot_part};
+		setenv root_part ${emmc_mbr_root_part};
+		setenv mark_prefix "";
 	fi;
+
+	if test -e mmc ${devnum}:${boot_env_part} ${mark_prefix}.next; then
+		setenv default_rootdev "/dev/mmcblk2p${root_part}"
+	else
+		setenv default_rootdev "/dev/mmcblk1p${root_part}"
+	fi
 else if test ${devnum} = 1; then
 	echo "Uboot loaded from SD.";
 	setenv boot_env_part ${sd_boot_part};
@@ -88,9 +94,17 @@ fi
 
 if test ${devnum} = 0; then
 	if test -e mmc ${devnum}:${boot_env_part} ${mark_prefix}.next; then
-		setenv dtb_prefix "/boot/dtb/rockchip/";
+		if test ${imagetype} = EMMC_MBR; then
+			setenv dtb_prefix "/dtb/rockchip/";
+		else
+			setenv dtb_prefix "/boot/dtb/rockchip/";
+		fi
 	else
-		setenv dtb_prefix "/boot/dtb/";
+		if test ${imagetype} = EMMC_MBR; then
+			setenv dtb_prefix "/dtb/";
+		else
+			setenv dtb_prefix "/boot/dtb/";
+		fi
 	fi
 else if test ${devnum} = 1; then
 	if test -e mmc ${devnum}:${boot_env_part} ${mark_prefix}.next; then
