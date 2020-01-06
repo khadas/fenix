@@ -261,7 +261,7 @@ build_uboot_deb() {
 		cat <<-EOF >> $pkgdir/DEBIAN/postinst
 		if [[ -b \$DEVICE ]]; then
 			echo "Updating u-boot on \$DEVICE"
-			if [[ "$INSTALL_TYPE" == "EMMC" ]]; then
+			if [[ "\$INSTALL_TYPE" == "EMMC" ]]; then
 				[[ \$(type -t write_uboot_platform_ext) == function ]] && write_uboot_platform_ext \$DIR \$DEVICE
 			else
 				write_uboot_platform \$DIR \$DEVICE
