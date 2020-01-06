@@ -196,6 +196,10 @@ function choose_linux_version() {
 	# FIXME
 	if [ "$UBOOT" == "mainline" ]; then
 		SUPPORTED_LINUX=("mainline")
+	else
+		if [ "$EXPERT" != "yes" ]; then
+			SUPPORTED_LINUX=(`echo ${SUPPORTED_LINUX[@]} | sed s/mainline//g`)
+		fi
 	fi
 
 	i=0
