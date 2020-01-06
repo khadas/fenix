@@ -32,6 +32,7 @@ INSTALL_TYPE=
 DISTRIB_TYPE=
 VENDOR=
 CHIP=
+EXPERT=
 
 ###############################################################
 if [ "$1" == "expert" ]; then
