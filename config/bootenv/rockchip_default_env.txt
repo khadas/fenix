@@ -18,4 +18,8 @@ fan_mode=auto
 # Don't touch unless you know what you are doing
 dma_size=2M
 
+# Specify the initial console log level (0~8)
+loglevel=7
+
+
 

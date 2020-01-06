@@ -132,6 +132,9 @@ for dev in ${devs}; do
 							setenv eth_mac ${ethaddr};
 							setenv saveethmac "save_ethmac=yes";
 						fi;
+						if test "X${loglevel}" != "X"; then
+							setenv log "loglevel=${loglevel}"
+						fi
 						if test -e ${dev} ${dev_num}:${distro_bootpart} ${mark_prefix}.next; then
 							echo "Booting mainline kernel...";
 							setenv condev "console=ttyAML0,115200n8 console=tty0 no_console_suspend consoleblank=0";
@@ -210,7 +213,7 @@ for dev in ${devs}; do
 								setenv hdmiargs "${hdmiargs} hdmimode=${hdmimode}";
 							fi;
 						fi;
-						setenv bootargs "root=${rootdev} rootfstype=ext4 rootflags=data=writeback rw ubootpart=${ubootpartuuid} ${condev} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ${ddr} ${wol} jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} ${saveethmac} fan=${fan_mode} khadas_board=${khadas_board} hwver=${hwver} coherent_pool=${dma_size} ${rebootmode} imagetype=${imagetype} uboottype=${uboottype}";
+						setenv bootargs "root=${rootdev} rootfstype=ext4 rootflags=data=writeback rw ubootpart=${ubootpartuuid} ${condev} ${log} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ${ddr} ${wol} jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} ${saveethmac} fan=${fan_mode} khadas_board=${khadas_board} hwver=${hwver} coherent_pool=${dma_size} ${rebootmode} imagetype=${imagetype} uboottype=${uboottype}";
 						run boot_start;
 					fi;
 				fi;

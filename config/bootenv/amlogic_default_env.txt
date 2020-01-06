@@ -61,4 +61,8 @@ hdmi_autodetect=yes
 #    "3440x1440p60hz"   | 3440x1440 Progressive 60Hz
 hdmi=720p60hz
 
+# Specify the initial console log level (0~8)
+loglevel=7
+
+
 
