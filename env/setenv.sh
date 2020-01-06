@@ -194,10 +194,8 @@ function choose_linux_version() {
 	echo ""
 	echo "Choose linux version:"
 	# FIXME
-	if [ "$UBOOT" == "mainline" -a "$KHADAS_BOARD" != "Edge" ]; then
-		echo "Force set to linux-mainline"
-		export LINUX="mainline"
-		return 0
+	if [ "$UBOOT" == "mainline" ]; then
+		SUPPORTED_LINUX=("mainline")
 	fi
 
 	i=0
