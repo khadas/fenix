@@ -191,6 +191,11 @@ build_uboot_deb() {
 		cp $UBOOT_IMAGE_DIR/$file $pkgdir/usr/lib/u-boot
 	done
 
+	# For amlogic platform, we need to update the dtb for u-boot
+	if [ "$VENDOR" == "Amlogic" ]; then
+		cp $ROOT/linux/$LINUX_DTB $pkgdir/usr/lib/u-boot/dtb.img
+	fi
+
 	cat <<-EOF > $pkgdir/usr/lib/u-boot/platform_install.sh
 	DIR=/usr/lib/u-boot
 	$(declare -f write_uboot_platform)
@@ -239,6 +244,8 @@ build_uboot_deb() {
 	if [ "$VENDOR" == "Amlogic" ]; then
 		cat <<-EOF >> $pkgdir/DEBIAN/postinst
 		if [[ \$DEVICE = VENDOR ]]; then
+			echo "Updating dtb for u-boot ..."
+			[ -c /dev/dtb -a -f /usr/lib/u-boot/dtb.img ] && dd if=/usr/lib/u-boot/dtb.img of=/dev/dtb
 			echo "Create u-boot updating mark, will update u-boot in next bootup cycle."
 			echo "Please reboot the board to update u-boot."
 			touch /usr/lib/u-boot/.UBOOT-NEED-UPDATE
