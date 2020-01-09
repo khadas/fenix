@@ -1,6 +1,6 @@
 PKG_NAME="wiringpi_debs"
-PKG_VERSION="a0ce2225a378e70ddf7f9ee8ccb6404e64f6c327"
-PKG_SHA256="16882f39bb9569b07924bba34f589d2f5f9fabb39ae578feb7cac465886b316a"
+PKG_VERSION="c1f48d2dbe0417cf34699f2edd6bc0ff6bf86f40"
+PKG_SHA256="281c2711485b3495d076825fc3c933fe3d911879ff96bb82252aa36aa2f687c3"
 PKG_SOURCE_DIR="wiringpi_debs-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/wiringpi_debs"
 PKG_URL="https://github.com/numbqq/wiringpi_debs/archive/$PKG_VERSION.tar.gz"
