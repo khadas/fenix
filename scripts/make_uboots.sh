@@ -4,20 +4,22 @@
 
 #= build uboot for VIMx boards
 
-VENDOR=Amlogic
-LINUX=mainline
-UBOOT=mainline
-DISTRIBUTION=Ubuntu
-DISTRIB_RELEASE=bionic
-DISTRIB_TYPE=server
-DISTRIB_ARCH=arm64
-INSTALL_TYPE=SD-USB
+export VENDOR=Amlogic
+export LINUX=mainline
+export UBOOT=mainline
+export DISTRIBUTION=Ubuntu
+export DISTRIB_RELEASE=bionic
+export DISTRIB_TYPE=server
+export DISTRIB_ARCH=arm64
+export INSTALL_TYPE=SD-USB
 
 DST=/tmp/uboot-mainline
 
 [ -d "$DST" ] ||  mkdir -p "$DST"
 
 for KHADAS_BOARD in VIM1 VIM2 VIM3 VIM3L; do
+
+    export KHADAS_BOARD=$KHADAS_BOARD
 
     case $KHADAS_BOARD in
     *1)
@@ -35,6 +37,7 @@ for KHADAS_BOARD in VIM1 VIM2 VIM3 VIM3L; do
     esac
 
     echo "[i] build $KHADAS_BOARD">&2
+    export CHIP=$CHIP
 
     make uboot
 
@@ -43,7 +46,7 @@ for KHADAS_BOARD in VIM1 VIM2 VIM3 VIM3L; do
     cp build/u-boot-mainline*/fip/u-boot.bin.sd.bin \
 	$DST/u-boot.$KHADAS_BOARD.sd.bin
 
-    exit 0
+#   exit 0
 
 done
 
