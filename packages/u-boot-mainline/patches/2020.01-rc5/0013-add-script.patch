@@ -1,0 +1,272 @@
+From bef68448ee7e1e8d5da9cf0bc541ff6f21e577ec Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Thu, 13 Feb 2020 14:16:00 +0900
+Subject: [PATCH] add script
+
+---
+ cmd/Kconfig      |   6 ++
+ cmd/Makefile     |   1 +
+ cmd/cmd_script.c | 214 +++++++++++++++++++++++++++++++++++++++++++++++
+ cmd/script.c     |   1 +
+ 4 files changed, 222 insertions(+)
+ create mode 100644 cmd/cmd_script.c
+ create mode 120000 cmd/script.c
+
+diff --git a/cmd/Kconfig b/cmd/Kconfig
+index 0f13d0dd..af4a00c3 100644
+--- a/cmd/Kconfig
++++ b/cmd/Kconfig
+@@ -2149,4 +2149,10 @@ config CMD_KHADAS_KBI
+ 	help
+ 	  Khadas Bootloader Instructions
+ 
++config CMD_SCRIPT
++	bool "simple plain script run from mem without mkimage wrappers"
++	default y
++	help
++	  simple plain script run from mem without mkimage wrappers
++
+ endmenu
+diff --git a/cmd/Makefile b/cmd/Makefile
+index 052841da..133040c6 100644
+--- a/cmd/Makefile
++++ b/cmd/Makefile
+@@ -173,6 +173,7 @@ obj-$(CONFIG_CMD_REGULATOR) += regulator.o
+ obj-$(CONFIG_CMD_BLOB) += blob.o
+ 
+ obj-$(CONFIG_CMD_KHADAS_KBI) += kbi.o
++obj-$(CONFIG_CMD_SCRIPT) += script.o
+ 
+ # Android Verified Boot 2.0
+ obj-$(CONFIG_CMD_AVB) += avb.o
+diff --git a/cmd/cmd_script.c b/cmd/cmd_script.c
+new file mode 100644
+index 00000000..1854326e
+--- /dev/null
++++ b/cmd/cmd_script.c
+@@ -0,0 +1,214 @@
++
++// ## hyphop ## for khadas
++
++/*
++
++## script
++
++simple plain script run from mem without mkimage wrappers
++
++`script` is cool alternative for `autoscript` and `source` , we can
++ use one `script` command for plain script and wrapped scripts!
++
+++ https://github.com/hyphop/uboot-extra
+++ https://raw.githubusercontent.com/hyphop/uboot-extra/master/cmd_script.c
++
++## sintax and parsing
++
++```
++#!script - script must begin from this marker
++##END##  - its end marker - after this lines all strings ignored
++'\0'     - its same end marker
++72bytes  - mkimage header parsed 
++
++```
++
++script parsed by run_command_list
++
++## how to install it 
++
++just add next line to Makefile
++
++    obj-y += cmd_script.o
++
++## uboot usage
++
++    script [addr|check] [bytes] [nochk] [silent] - run script starting at addr
++        bytes - read bytes (hex) limit
++        nochk - no check #!script header
++        silent - be silent
++
++    script check && echo ok # check script cmd
++
++## uboot usage  examples
++
++    script 0x1000000				- simple run from addr 0x1000000
++    script 0x1000000 32 			- same but only fist 32 bytes
++    script 0x1000000 $filesize 			- same but limited by file size value 
++    script 0x1000000 $filesize nochk 		- same but without $!script header check
++    script 0x1000000 $filesize nochk silent	- same but silent
++
++    # tftp script usage
++    ADDR=0x1000000; tftp $ADDR test.script && script $ADDR $filesize 
++
++    # usage as files
++    ADDR=100000; ext4load mmc 1:5 $ADDR dhcp.cmd_test.script; script $ADDR $filesize
++
++    # spi flash usage
++    ADDR=100000; sf read $ADDR $SCRIPT_OFFSET $SCRIPT_BYTES; script $ADDR
++
++*/
++
++
++#include <common.h>
++#include <command.h>
++//#include <image.h>
++#include <malloc.h>
++//mainline
++#include <mapmem.h>
++//#include <asm/byteorder.h>
++
++int
++script (ulong addr , unsigned leng,  unsigned hdr_chk , unsigned silent)
++{
++	unsigned  len = leng;
++	void *buf;
++	
++	buf = map_sysmem(addr, 0);
++	
++	char *data;
++	char *n;
++	
++	data = (char *)buf;
++	n = data;
++
++// simple mkimage header parser
++	if ( *(n+0) == 0x27 &&
++	     *(n+1) == 0x05 &&
++	     *(n+2) == 0x19 &&
++	     *(n+3) == 0x56
++	     ) {
++
++//	size calculate
++	    unsigned int l = (*(n+14))*256 + *(n+15);
++
++	    if ( l > 8 ) l-=8;
++//	fix offest
++	    data+=72;
++	    hdr_chk=0;
++
++	    if (!silent)
++		printf ("[w] mkimage Script a:%08lx l:%u - s:%u\n", addr, len, l) ;
++
++//	fix len
++	    len=l;
++
++	}
++	
++// simple script header parser
++	if ( hdr_chk ) {
++	if ( *n++ == '#' &&
++	     *n++ == '!' &&
++	     *n++ == 's' &&
++	     *n++ == 'c' &&
++	     *n++ == 'r' &&
++	     *n++ == 'i' &&
++	     *n++ == 'p' &&
++	     *n++ == 't' ) {
++	} else {
++		if (!silent)
++		    printf ("[w] Script a:%08lx l:%u c:%u - wrong header!\n", addr, len, hdr_chk ) ;
++
++		return -1;
++
++	}
++	}
++
++	if (len < 1) {
++	    len = 1024*32;
++	}
++
++	char a = *(data + len);
++
++	*(data + len) = '\0';
++
++	char *p = strstr( data , "\n##END##" );
++	
++	if (p != NULL) {
++	    *(data + len) = a;
++	    len = p - data;
++	} else {
++	    int i = 0;
++	    while ( *n++ != '\0' ) {
++		if ( i++ >= len ) break;
++	    }
++	    *(data + len) = a;
++	    len = n - data; //len = i;
++	}
++
++	len--;
++
++	if (!silent)
++	    printf ("[#] Script a:%08lx l:%u c:%u s:%u - run\n", addr, len, hdr_chk, silent ) ;
++
++	return run_command_list(data, len, 0);
++
++//	unmap_sysmem(buf);
++
++	return 0;
++
++
++}
++
++/**************************************************/
++
++int do_script (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
++{
++	ulong addr;
++	int rcode;
++
++	if ( argc < 2 )  {
++	    printf ("[e] not defined addr\n");
++	    return -1;
++	}
++
++	unsigned leng;
++
++	char *n;
++	n = (char *)argv[1];
++
++	// just check
++	//$ script check && echo ok
++	//printf ("[i] args %s %s\n", argv[1], n);
++
++	if ( *n++  == 'c' && 
++	     *n++  == 'h' &&
++	    1
++	    ) {
++	    return 0;
++	}
++
++	addr = simple_strtoul(argv[1], NULL, 16);
++	if ( argc < 3 )  {
++	    leng = 65536/2;
++	} else { 
++	    leng = simple_strtoul(argv[2], NULL, 16);
++	}
++
++	rcode = script (addr , leng , 
++		argc > 3 ? 0 : 1,
++		argc > 4 ? 1 : 0
++	);
++
++	 
++	return rcode;
++}
++
++U_BOOT_CMD(
++	script, 5, 0,	do_script,
++	"# run plain script from memory",
++	"[addr|check] [bytes] [nochk] [silent] - run script starting at addr\n"
++	"	bytes - read bytes (hex) limit\n"
++	"	nochk - no check #!script header\n"
++	"	silent - be silent\n"
++);
+diff --git a/cmd/script.c b/cmd/script.c
+new file mode 120000
+index 00000000..a64fc45a
+--- /dev/null
++++ b/cmd/script.c
+@@ -0,0 +1 @@
++cmd_script.c
+\ No newline at end of file
+-- 
+2.17.1
+
