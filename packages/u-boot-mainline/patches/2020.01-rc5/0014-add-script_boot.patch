@@ -1,0 +1,43 @@
+From 9661b33e7d9411aace4c350988e02f04361d6ef2 Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Sat, 15 Feb 2020 14:17:13 +0900
+Subject: [PATCH] script_boot
+
+---
+ include/config_distro_bootcmd.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/include/config_distro_bootcmd.h b/include/config_distro_bootcmd.h
+index fc0935fa..6202845d 100644
+--- a/include/config_distro_bootcmd.h
++++ b/include/config_distro_bootcmd.h
+@@ -367,7 +367,7 @@
+ 		BOOTENV_RUN_NET_USB_START \
+ 		BOOTENV_RUN_PCI_ENUM \
+ 		"if dhcp ${scriptaddr} ${boot_script_dhcp}; then " \
+-			"source ${scriptaddr}; " \
++			"script ${scriptaddr}; " \
+ 		"fi;" \
+ 		BOOTENV_EFI_RUN_DHCP \
+ 		"\0"
+@@ -418,7 +418,7 @@
+ 	BOOTENV_SHARED_EFI \
+ 	BOOTENV_SHARED_VIRTIO \
+ 	"boot_prefixes=/ /boot/\0" \
+-	"boot_scripts=boot.scr.uimg boot.scr\0" \
++	"boot_scripts=boot.cmd boot.scr.uimg boot.scr\0" \
+ 	"boot_script_dhcp=boot.scr.uimg\0" \
+ 	BOOTENV_BOOT_TARGETS \
+ 	\
+@@ -439,7 +439,7 @@
+ 	"boot_a_script="                                                  \
+ 		"load ${devtype} ${devnum}:${distro_bootpart} "           \
+ 			"${scriptaddr} ${prefix}${script}; "              \
+-		"source ${scriptaddr}\0"                                  \
++		"script ${scriptaddr}\0"                                  \
+ 	\
+ 	"scan_dev_for_scripts="                                           \
+ 		"for script in ${boot_scripts}; do "                      \
+-- 
+2.17.1
+

@@ -39,7 +39,7 @@ for KHADAS_BOARD in VIM1 VIM2 VIM3 VIM3L; do
     echo "[i] build $KHADAS_BOARD">&2
     export CHIP=$CHIP
 
-    make uboot
+    make uboot || exit 1
 
     cp build/u-boot-mainline*/fip/u-boot.bin \
 	$DST/u-boot.$KHADAS_BOARD.bin
