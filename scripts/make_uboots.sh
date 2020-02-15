@@ -4,6 +4,11 @@
 
 #= build uboot for VIMx boards
 
+# USAGE
+#
+#     ./script/make_uboots.sh [VIM1] [VIM2] [VIM3] [VIM3L]
+#
+
 export VENDOR=Amlogic
 export LINUX=mainline
 export UBOOT=mainline
@@ -17,7 +22,11 @@ DST=/tmp/uboot-mainline
 
 [ -d "$DST" ] ||  mkdir -p "$DST"
 
-for KHADAS_BOARD in VIM1 VIM2 VIM3 VIM3L; do
+[ "$ARGS" ] || ARGS=$@
+[ "$ARGS" ] || ARGS="VIM1 VIM2 VIM3 VIM3L"
+echo "[i] build uboots: $ARGS">&2
+
+for KHADAS_BOARD in $ARGS ; do
 
     export KHADAS_BOARD=$KHADAS_BOARD
 
@@ -50,3 +59,4 @@ for KHADAS_BOARD in VIM1 VIM2 VIM3 VIM3L; do
 
 done
 
+## END ##
