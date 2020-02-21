@@ -192,7 +192,8 @@ build_uboot_deb() {
 	done
 
 	# For amlogic platform, we need to update the dtb for u-boot
-	if [ "$VENDOR" == "Amlogic" ]; then
+	# Only for vendor u-boot & kernel
+	if [ "$VENDOR" == "Amlogic" ] && [ "$LINUX" != "mainline" ]; then
 		cp $ROOT/linux/$LINUX_DTB $pkgdir/usr/lib/u-boot/dtb.img
 	fi
 
