@@ -51,9 +51,20 @@ for KHADAS_BOARD in $ARGS ; do
     make uboot || exit 1
 
     cp build/u-boot-mainline*/fip/u-boot.bin \
-	$DST/u-boot.$KHADAS_BOARD.bin
+	$DST/u-boot.$KHADAS_BOARD.spi.bin
+
     cp build/u-boot-mainline*/fip/u-boot.bin.sd.bin \
 	$DST/u-boot.$KHADAS_BOARD.sd.bin
+
+#    cp build/u-boot-mainline*/u-boot.bin \
+#	$DST/u-boot.$KHADAS_BOARD.bin
+
+    gzip -9 -c build/u-boot-mainline*/u-boot.bin > $DST/u-boot.$KHADAS_BOARD.bin.gz
+    gzip -9 -c build/u-boot-mainline*/u-boot-nodtb.bin > $DST/u-boot.$KHADAS_BOARD.nodtb.bin.gz
+    cp build/u-boot-mainline*/u-boot.dtb $DST/u-boot.$KHADAS_BOARD.dtb
+
+#	$DST/u-boot.$KHADAS_BOARD.nodtb.bin
+
 
 #   exit 0
 

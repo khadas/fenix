@@ -1,0 +1,55 @@
+From d6f85afd8ddd8b83b33973d19f5d61bc42b027f2 Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Sun, 1 Mar 2020 01:33:32 +0900
+Subject: [PATCH] lzo+zstd
+
+---
+ configs/khadas-vim2_defconfig  | 2 ++
+ configs/khadas-vim3_defconfig  | 2 ++
+ configs/khadas-vim3l_defconfig | 2 ++
+ configs/khadas-vim_defconfig   | 2 ++
+ 4 files changed, 8 insertions(+)
+
+diff --git a/configs/khadas-vim2_defconfig b/configs/khadas-vim2_defconfig
+index f26d66f6..862a31a1 100644
+--- a/configs/khadas-vim2_defconfig
++++ b/configs/khadas-vim2_defconfig
+@@ -66,3 +66,5 @@ CONFIG_ENV_FAT_INTERFACE="mmc"
+ CONFIG_ENV_FAT_DEVICE_AND_PART="2"
+ CONFIG_ENV_FAT_FILE="uboot.env"
+ CONFIG_ENV_SIZE=0x8000
++CONFIG_LZO=y
++CONFIG_ZSTD=y
+diff --git a/configs/khadas-vim3_defconfig b/configs/khadas-vim3_defconfig
+index 295331c7..8de63118 100644
+--- a/configs/khadas-vim3_defconfig
++++ b/configs/khadas-vim3_defconfig
+@@ -64,3 +64,5 @@ CONFIG_ENV_FAT_INTERFACE="mmc"
+ CONFIG_ENV_FAT_DEVICE_AND_PART="2"
+ CONFIG_ENV_FAT_FILE="uboot.env"
+ CONFIG_ENV_SIZE=0x8000
++CONFIG_LZO=y
++CONFIG_ZSTD=y
+diff --git a/configs/khadas-vim3l_defconfig b/configs/khadas-vim3l_defconfig
+index 828f4e8a..9679afd3 100644
+--- a/configs/khadas-vim3l_defconfig
++++ b/configs/khadas-vim3l_defconfig
+@@ -68,3 +68,5 @@ CONFIG_ENV_FAT_INTERFACE="mmc"
+ CONFIG_ENV_FAT_DEVICE_AND_PART="2"
+ CONFIG_ENV_FAT_FILE="uboot.env"
+ CONFIG_ENV_SIZE=0x8000
++CONFIG_LZO=y
++CONFIG_ZSTD=y
+diff --git a/configs/khadas-vim_defconfig b/configs/khadas-vim_defconfig
+index 1bf4aed6..b58ca3a2 100644
+--- a/configs/khadas-vim_defconfig
++++ b/configs/khadas-vim_defconfig
+@@ -66,3 +66,5 @@ CONFIG_ENV_FAT_INTERFACE="mmc"
+ CONFIG_ENV_FAT_DEVICE_AND_PART="2"
+ CONFIG_ENV_FAT_FILE="uboot.env"
+ CONFIG_ENV_SIZE=0x8000
++CONFIG_LZO=y
++CONFIG_ZSTD=y
+-- 
+2.17.1
+
