@@ -279,7 +279,7 @@ create_sources_list()
 	[[ -z $basedir ]] && error_msg "No basedir passed to create_sources_list" && return -1
 
 	case $release in
-	stretch)
+	stretch|buster)
 	cat <<-EOF > $basedir/etc/apt/sources.list
 	deb http://${DEBIAN_MIRROR} $release main contrib non-free
 	#deb-src http://${DEBIAN_MIRROR} $release main contrib non-free

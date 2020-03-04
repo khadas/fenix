@@ -6,9 +6,9 @@ ROOT="$(pwd)"
 unset SUPPORTED_UBOOT
 unset SUPPORTED_LINUX
 
-DISTRIBUTION_ARRAY=("Ubuntu" "Debian")
+DISTRIBUTION_ARRAY=("Ubuntu" "Debian" )
 Ubuntu_RELEASE_ARRAY=("bionic")
-Debian_RELEASE_ARRAY=("stretch")
+Debian_RELEASE_ARRAY=("stretch" "buster")
 DISTRIB_ARCH_ARRAY=("arm64" "armhf")
 Ubuntu_TYPE_ARRAY=("server" "xfce" "lxde")
 Debian_TYPE_ARRAY=("server" "xfce" "lxde")
