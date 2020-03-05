@@ -40,7 +40,7 @@ for KHADAS_BOARD in $ARGS ; do
     *3)
     CHIP=A311D
     ;;
-    *3l)
+    *3l|*3L)
     CHIP=S905D3
     ;;
     esac

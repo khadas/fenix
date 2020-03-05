@@ -16,7 +16,7 @@ index fc0935fa..6202845d 100644
  		BOOTENV_RUN_PCI_ENUM \
  		"if dhcp ${scriptaddr} ${boot_script_dhcp}; then " \
 -			"source ${scriptaddr}; " \
-+			"script ${scriptaddr}; " \
++			"script ${scriptaddr} || source ${scriptaddr} " \
  		"fi;" \
  		BOOTENV_EFI_RUN_DHCP \
  		"\0"
@@ -34,7 +34,7 @@ index fc0935fa..6202845d 100644
  		"load ${devtype} ${devnum}:${distro_bootpart} "           \
  			"${scriptaddr} ${prefix}${script}; "              \
 -		"source ${scriptaddr}\0"                                  \
-+		"script ${scriptaddr}\0"                                  \
++		"script ${scriptaddr} || source ${scriptaddr}\0"          \
  	\
  	"scan_dev_for_scripts="                                           \
  		"for script in ${boot_scripts}; do "                      \

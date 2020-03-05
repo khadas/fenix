@@ -1,0 +1,94 @@
+#!/bin/sh
+
+## hyphop ##
+
+#= xze - advanced xz + suitable for mt decompression & padding
+
+USAGE() { echo "
+    xze - advanced xz + suitable for mt decompression & padding
+
+USAGE
+
+    xze [ARGS] FILE
+    
+    -T#thread
+    -B#blocksize in M
+"
+exit 
+}
+
+[ "$xz" ] || xz=$(which xz)
+[ $? = 0 ] || {
+    echo "[e] plz install xz">&2
+    echo " sudo apt-get install xz-utils">&2
+    exit 1
+}
+
+echo "[i] $xz">&2
+
+$xz --help | grep -q threads= || {
+    echo "[i] plz install last xz with MT support">&2
+    exit 1
+}
+
+
+IN=
+OPTS=
+
+[ $# = 0 ] && USAGE
+
+T=4      # threads
+B=90     # in MEGS
+
+for a in $@; do
+    case $a in
+	-T*)
+	T=${a#-T}
+	continue
+	;;
+	-B*)
+	B=${a#-B}
+	continue
+	;;
+	*)
+	[ -f "$a" ] && {
+	    [ "$IN" ] || IN=$a
+	    continue
+	}
+	OPTS="$OPTS $a"
+	;;
+    esac
+done
+
+[ "$IN" ] || USAGE
+
+OUT="$IN.xz"
+
+BS=4096 # block size
+S1=$(stat -c%s $IN)
+S14=$((S1/T))
+
+[ $S14 -lt $B ] && B=$S14
+
+B="${B}M"
+
+ARGS="$xz -T$T --block-size $B -k -c $OPTS $IN"
+
+echo "[i] xze compress $IN ($S1 bytes) > $OUT">&2
+echo "# $ARGS">&2
+
+$ARGS > $OUT
+
+S=$(stat -c%s $OUT)
+S2=$((S/BS*BS))
+[ $S2 -lt $S ] && S2=$((S2+BS))
+SD=$((S2-S))
+dd if=/dev/zero bs=$SD count=1 2>/dev/null >> $OUT
+echo "[i] compressed $S2 < $S1">&2
+echo $S2
+
+XZS=$($xz -l $OUT)
+echo "[i] XZ info
+$XZS">&2
+
+#echo "[i] pad +$SD">&2

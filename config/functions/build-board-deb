@@ -243,6 +243,7 @@ build_board_deb() {
 		$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$CHIP autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_BOARD $pkgdir/boot/${BOOT_SCRIPT_BOARD%.cmd*}
 		# For mainline u-boot to load autoscript
 		cp $pkgdir/boot/${BOOT_SCRIPT_BOARD%.cmd*} $pkgdir/boot/boot.scr
+
 		$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$VENDOR autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_VENDOR $pkgdir/boot/${BOOT_SCRIPT_VENDOR%.txt}
 		cd $pkgdir/boot
 		zip ${BOOT_SCRIPT_VENDOR%.txt}.zip ${BOOT_SCRIPT_VENDOR%.txt} ${BOOT_SCRIPT_VENDOR}
@@ -253,6 +254,15 @@ build_board_deb() {
 	if [ -f $BOOT_SCRIPTS/$BOOT_INI ]; then
 		cp $BOOT_SCRIPTS/$BOOT_INI $pkgdir/boot/boot.ini
 	fi
+
+	# uboot script
+	echo "#!script
+" >  $pkgdir/boot/boot.cmd
+	grep -v BOOT-CONFIG $BOOT_SCRIPTS/$BOOT_INI \
+  >> $pkgdir/boot/boot.cmd
+	echo "
+##END##
+" >> $pkgdir/boot/boot.cmd
 
 	# Copy boot environment
 	if [ -f $BOOT_ENV/$BOOT_ENV_FILE ]; then
