@@ -9,6 +9,8 @@
 #     ./script/make_uboots.sh [VIM1] [VIM2] [VIM3] [VIM3L]
 #
 
+cd "../$(dirname $0)"
+
 export VENDOR=Amlogic
 export LINUX=mainline
 export UBOOT=mainline
@@ -59,8 +61,12 @@ for KHADAS_BOARD in $ARGS ; do
 #    cp build/u-boot-mainline*/u-boot.bin \
 #	$DST/u-boot.$KHADAS_BOARD.bin
 
-    gzip -9 -c build/u-boot-mainline*/u-boot.bin > $DST/u-boot.$KHADAS_BOARD.bin.gz
-    gzip -9 -c build/u-boot-mainline*/u-boot-nodtb.bin > $DST/u-boot.$KHADAS_BOARD.nodtb.bin.gz
+    gzip -9 -k -c build/u-boot-mainline*/u-boot.bin > $DST/u-boot.$KHADAS_BOARD.bin.gz
+    gzip -9 -k -c build/u-boot-mainline*/u-boot-nodtb.bin > $DST/u-boot.$KHADAS_BOARD.nodtb.bin.gz
+
+    cat build/u-boot-mainline*/u-boot.bin > $DST/u-boot.$KHADAS_BOARD.bin
+    cat build/u-boot-mainline*/u-boot-nodtb.bin > $DST/u-boot.$KHADAS_BOARD.nodtb.bin
+
     cp build/u-boot-mainline*/u-boot.dtb $DST/u-boot.$KHADAS_BOARD.dtb
 
 #	$DST/u-boot.$KHADAS_BOARD.nodtb.bin
