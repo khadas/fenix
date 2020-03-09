@@ -81,13 +81,6 @@ build_gpu_deb() {
 		## pkgconfig
 		cp -r archives/hwpacks/mali/${VENDOR}/lib/pkgconfig_${DISTRIB_ARCH} $gpu_lib_install_dir/pkgconfig
 
-		# Mali framebuffer mode examples
-		if [ "$DISTRIB_ARCH" == "arm64" ] && [ "$LINUX" != "mainline" ]; then
-			mkdir -p $pkgdir/usr/share/arm/
-			cp -arf archives/hwpacks/mali/${VENDOR}/fbdev_examples/$LINUX/lib/* $pkgdir/usr/lib/
-			cp -arf archives/hwpacks/mali/${VENDOR}/fbdev_examples/$LINUX/opengles_20 $pkgdir/usr/share/arm/
-		fi
-
 		mkdir -p $pkgdir/etc/udev/rules.d
 		cat <<-EOF > $pkgdir/etc/udev/rules.d/99-mali.rules
 		KERNEL=="mali",SUBSYSTEM=="misc",MODE="0777"
