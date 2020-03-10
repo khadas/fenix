@@ -279,6 +279,12 @@ build_deb_packages_platform() {
 		# remove build stamp to force build for other arch
 		rm -rf $BUILD/.stamps/edid-decode-deb
 		build_package "edid-decode-deb:target"
+
+		info_msg "Building mali_examples_aml packages..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/mali_examples_aml
+		build_package "mali_examples_aml:target"
 	fi
 }
 
@@ -311,5 +317,8 @@ install_deb_packages_platform() {
 
 		info_msg "Installing edid-decode-deb packages..."
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/edid-decode-deb/*.deb
+
+		info_msg "Installing mali_examples_aml packages..."
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mali_examples_aml/*.deb
 	fi
 }
