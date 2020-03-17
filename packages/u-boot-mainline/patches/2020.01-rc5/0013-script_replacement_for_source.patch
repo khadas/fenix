@@ -44,7 +44,7 @@ new file mode 100644
 index 00000000..02ae9f87
 --- /dev/null
 +++ b/cmd/cmd_script.c
-@@ -0,0 +1,236 @@
+@@ -0,0 +1,206 @@
 +
 +// ## hyphop ## for khadas
 +
@@ -209,7 +209,7 @@ index 00000000..02ae9f87
 +	}
 +
 +	if (!silent)
-+	    printf ("## Script run a:%08lx l:%lu c:%u\n", addr, len, no_hdr_chk ) ;
++	    printf ("## Script run a:%08lx l:%lu c:%lu\n", addr, len, no_hdr_chk ) ;
 +
 +	return run_command_list(data, len, 0);
 +	return 0;
@@ -220,57 +220,27 @@ index 00000000..02ae9f87
 +
 +int do_script (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 +{
-+	ulong addr;
-+	int rcode;
-+
-+//	if ( argc < 2 )  {
-+//	    printf ("[e] not defined addr\n");
-+//	    return -1;
-+//	}
-+
-+	ulong leng;
-+	char *n;
-+
-+// just check
-+//$ script check && echo ok
-+	if ( argc > 1 )  {
-+	n = (char *)argv[1];
-+	if ( *n++  == 'c' &&
-+	     *n++  == 'h' &&
-+	    1
-+	    ) {
-+	    return 0;
-+	}
-+	}
-+
-+// 	default no args
-+	addr = simple_strtoul( argc < 2 || *argv[1] == '-' ?
-+	     env_get("loadaddr") : argv[1], NULL, 16);
-+
-+	leng = MAX_SCRIPT_SIZE;
-+
-+	if ( argc < 3 )  {
-+	    if ( env_get("filesize") ) {
-+		leng = simple_strtoul(env_get("filesize"), NULL, 16);
-+	    }
-+	} else {
-+	    leng = simple_strtoul(argv[2], NULL, 16);
-+	    if (leng > 0 ) {
-+	    ;
-+	    } else {
-+		n = (char *)argv[2];
-+// error if wrong size
-+		if ( *n != '-' && *n != '0' )
-+		    return -1;
-+	    }
-+	}
-+
-+	rcode = script (addr , leng ,
-+		    simple_strtoul(argv[3], NULL, 10),
-+		    simple_strtoul(argv[4], NULL, 10)
-+		);
-+
-+	return rcode;
++    int rcode;
++    ulong addr, leng, hdr, slnt;
++    char *fs;
++    // just check
++    if ( argc > 1 && *argv[1] == 'c' && *argv[1] == 'h' ) return 0;
++    
++    addr = simple_strtoul( argc < 2 || *argv[1] == '-' ?
++	env_get("loadaddr") : argv[1], NULL, 16);
++    
++    leng = MAX_SCRIPT_SIZE;
++    leng = 0;
++    fs = env_get("filesize");
++    if ( fs ) leng = simple_strtoul( fs , NULL, 16);
++    leng = argc < 3 ? leng : *argv[2] == '-' ? leng : simple_strtoul(argv[2], NULL, 16);
++    hdr  = argc < 4 ? 0 : simple_strtoul( argv[3], NULL, 10);
++    slnt = argc < 5 ? 0 : simple_strtoul( argv[4], NULL, 10);
++    
++//	printf ("## Script cmd a:%08lx l:%lu c:%lu l:%lu fs:%s\n", addr, leng, hdr, slnt, fs);
++    rcode = script (addr , leng , hdr, slnt);
++    
++    return rcode;
 +}
 +
 +U_BOOT_CMD(
