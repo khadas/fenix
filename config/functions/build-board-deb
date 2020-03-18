@@ -259,7 +259,7 @@ build_board_deb() {
 	[ "$UBOOT_SCRIPT_CMD" ] && {
 	(
 	echo "#!script"
-	grep -v BOOT-CONFIG $BOOT_SCRIPTS/$BOOT_INI \
+	grep -v BOOT-CONFIG $BOOT_SCRIPTS/$BOOT_INI
 	echo "##END##"
 	) >  $pkgdir/boot/boot.cmd
 	}
