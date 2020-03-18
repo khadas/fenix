@@ -256,13 +256,13 @@ build_board_deb() {
 	fi
 
 	# uboot script
-	echo "#!script
-" >  $pkgdir/boot/boot.cmd
+	[ "$UBOOT_SCRIPT_CMD" ] && {
+	(
+	echo "#!script"
 	grep -v BOOT-CONFIG $BOOT_SCRIPTS/$BOOT_INI \
-  >> $pkgdir/boot/boot.cmd
-	echo "
-##END##
-" >> $pkgdir/boot/boot.cmd
+	echo "##END##"
+	) >  $pkgdir/boot/boot.cmd
+	}
 
 	# Copy boot environment
 	if [ -f $BOOT_ENV/$BOOT_ENV_FILE ]; then
