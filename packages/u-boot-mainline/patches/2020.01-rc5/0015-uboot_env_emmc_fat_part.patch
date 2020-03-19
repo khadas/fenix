@@ -1,0 +1,69 @@
+From 684bb22c19b3af2898a55c793c32020af3880823 Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Sat, 15 Feb 2020 15:04:58 +0900
+Subject: [PATCH] change default config for VIMx 
+
+activate uboot env from 1st fat partition, we can use saveenv again
+
+---
+ configs/khadas-vim2_defconfig  | 5 +++++
+ configs/khadas-vim3_defconfig  | 5 +++++
+ configs/khadas-vim3l_defconfig | 5 +++++
+ configs/khadas-vim_defconfig   | 5 +++++
+ 4 files changed, 20 insertions(+)
+
+diff --git a/configs/khadas-vim2_defconfig b/configs/khadas-vim2_defconfig
+index ff590380..f26d66f6 100644
+--- a/configs/khadas-vim2_defconfig
++++ b/configs/khadas-vim2_defconfig
+@@ -61,3 +61,8 @@ CONFIG_DM_VIDEO=y
+ CONFIG_SYS_WHITE_ON_BLACK=y
+ CONFIG_VIDEO_MESON=y
+ CONFIG_OF_LIBFDT_OVERLAY=y
++CONFIG_ENV_IS_IN_FAT=y
++CONFIG_ENV_FAT_INTERFACE="mmc"
++CONFIG_ENV_FAT_DEVICE_AND_PART="2"
++CONFIG_ENV_FAT_FILE="uboot.env"
++CONFIG_ENV_SIZE=0x8000
+diff --git a/configs/khadas-vim3_defconfig b/configs/khadas-vim3_defconfig
+index b4c575a0..295331c7 100644
+--- a/configs/khadas-vim3_defconfig
++++ b/configs/khadas-vim3_defconfig
+@@ -59,3 +59,8 @@ CONFIG_USB_GADGET_DWC2_OTG=y
+ CONFIG_USB_GADGET_DWC2_OTG_PHY_BUS_WIDTH_8=y
+ CONFIG_USB_GADGET_DOWNLOAD=y
+ CONFIG_OF_LIBFDT_OVERLAY=y
++CONFIG_ENV_IS_IN_FAT=y
++CONFIG_ENV_FAT_INTERFACE="mmc"
++CONFIG_ENV_FAT_DEVICE_AND_PART="2"
++CONFIG_ENV_FAT_FILE="uboot.env"
++CONFIG_ENV_SIZE=0x8000
+diff --git a/configs/khadas-vim3l_defconfig b/configs/khadas-vim3l_defconfig
+index e3972867..828f4e8a 100644
+--- a/configs/khadas-vim3l_defconfig
++++ b/configs/khadas-vim3l_defconfig
+@@ -63,3 +63,8 @@ CONFIG_DM_VIDEO=y
+ CONFIG_VIDEO_MESON=y
+ CONFIG_VIDEO_DT_SIMPLEFB=y
+ CONFIG_OF_LIBFDT_OVERLAY=y
++CONFIG_ENV_IS_IN_FAT=y
++CONFIG_ENV_FAT_INTERFACE="mmc"
++CONFIG_ENV_FAT_DEVICE_AND_PART="2"
++CONFIG_ENV_FAT_FILE="uboot.env"
++CONFIG_ENV_SIZE=0x8000
+diff --git a/configs/khadas-vim_defconfig b/configs/khadas-vim_defconfig
+index 09a47a48..1bf4aed6 100644
+--- a/configs/khadas-vim_defconfig
++++ b/configs/khadas-vim_defconfig
+@@ -61,3 +61,8 @@ CONFIG_DM_VIDEO=y
+ CONFIG_SYS_WHITE_ON_BLACK=y
+ CONFIG_VIDEO_MESON=y
+ CONFIG_OF_LIBFDT_OVERLAY=y
++CONFIG_ENV_IS_IN_FAT=y
++CONFIG_ENV_FAT_INTERFACE="mmc"
++CONFIG_ENV_FAT_DEVICE_AND_PART="2"
++CONFIG_ENV_FAT_FILE="uboot.env"
++CONFIG_ENV_SIZE=0x8000
+-- 
+2.17.1
+
