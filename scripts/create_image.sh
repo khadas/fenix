@@ -15,7 +15,7 @@ source config/functions/functions
 ## Try to update Fenix
 check_update() {
 	cd $ROOT
-
+	[ "$FENIX_CHECK_UPDATE_NO" ] && return
 	update_git_repo "$PWD" ${FENIX_BRANCH:- master}
 }
 
