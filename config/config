@@ -150,13 +150,13 @@ PACKAGE_LIST_ADDITIONAL="alsa-utils btrfs-tools dosfstools hddtemp iotop iozone3
 
 PACKAGE_LIST_DESKTOP="xserver-xorg xserver-xorg-video-fbdev gvfs-backends gvfs-fuse xfonts-base xinit x11-xserver-utils xterm thunar-volman \
 	network-manager-gnome network-manager-openvpn-gnome gnome-keyring gcr libgck-1-0 p11-kit pasystray pavucontrol pulseaudio \
-	pavumeter pulseaudio-module-gconf pulseaudio-module-bluetooth blueman libgl1-mesa-dri gparted synaptic \
+	pavumeter pulseaudio-module-bluetooth blueman libgl1-mesa-dri gparted synaptic \
 	policykit-1 mesa-utils gnome-orca numix-gtk-theme gnome-system-tools gufw gedit yad zenity guvcview"
 
 PACKAGE_LIST_OFFICE="lxtask mirage galculator hexchat mpv \
-	gtk2-engines gtk2-engines-murrine gtk2-engines-pixbuf libgnome2-perl \
+	gtk2-engines gtk2-engines-murrine gtk2-engines-pixbuf \
 	libpam-gnome-keyring thunderbird system-config-printer-common paprefs tango-icon-theme \
-	libreoffice-writer libreoffice-style-tango libreoffice-gtk fbi cups-pk-helper cups libreoffice"
+	libreoffice libreoffice-style-tango fbi cups-pk-helper cups"
 
 PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
 
@@ -169,8 +169,8 @@ PACKAGE_LIST_GSTREAMER="gstreamer1.0-libav gstreamer1.0-plugins-bad gstreamer1.0
 	gstreamer1.0-plugins-good libconfig++9v5 libconfig9"
 
 PACKAGE_LIST_QT="libqt5opengl5 libqt5qml5 libqt5quick5 libqt5widgets5 libqt5gui5 libqt5core5a qml-module-qtquick2 \
-	libqt5multimedia5 libqt5multimedia5-plugins libqt5multimediaquick-p5 qml-module-qt-labs-folderlistmodel qml-module-qtmultimedia \
-	libqgsttools-p1 libqt5multimediawidgets5 qtbase5-dev libglib2.0-dev libpulse-dev"
+	libqt5multimedia5 libqt5multimedia5-plugins qml-module-qt-labs-folderlistmodel qml-module-qtmultimedia \
+	libqt5multimediawidgets5 qtbase5-dev libglib2.0-dev libpulse-dev"
 
 PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_XSERVER"
 
@@ -192,23 +192,25 @@ case $DISTRIB_RELEASE in
 	DEBOOTSTRAP_COMPONENTS="main"
 	PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr"
 	PACKAGE_LIST_KODI="libglu1-mesa libglu1 libmicrohttpd12 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libva-drm1 libcurl3"
+	PACKAGE_LIST_QT="$PACKAGE_LIST_QT libqt5multimediaquick-p5 libqgsttools-p1"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_QT $PACKAGE_LIST_KODI"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP chromium dbus-x11 gksu profile-sync-daemon"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP chromium dbus-x11 gksu profile-sync-daemon pulseaudio-module-gconf libgnome2-perl"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP paman libgcr-3-common gcj-jre-headless"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP system-config-printer"
 	;;
 	buster)
 	DEBOOTSTRAP_COMPONENTS="main"
 	PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr"
-	PACKAGE_LIST_KODI="libglu1-mesa libglu1 libmicrohttpd12 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libva-drm1 libcurl3"
+	PACKAGE_LIST_KODI="libglu1-mesa libglu1 libmicrohttpd12 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libva-drm2 libcurl4"
+	PACKAGE_LIST_QT="$PACKAGE_LIST_QT libqt5multimediaquick5"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_QT $PACKAGE_LIST_KODI"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP chromium dbus-x11 gksu profile-sync-daemon"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP paman libgcr-3-common gcj-jre-headless"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP chromium dbus-x11 profile-sync-daemon"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP system-config-printer"
 	;;
 	bionic)
 	DEBOOTSTRAP_COMPONENTS="main,universe"
 	PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr nano wget libjpeg9"
+	PACKAGE_LIST_QT="$PACKAGE_LIST_QT libqt5multimediaquick-p5 libqgsttools-p1"
 	PACKAGE_LIST_KODI="libglu1-mesa libglu1 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libcurl4 libcrossguid0 libmariadbclient18 libmicrohttpd12 \
 		libavahi-compat-libdnssd-dev libcec4 libfstrcmp0 libnfs11 fonts-liberation python-bluez python-pil python-simplejson libaacs0 fonts-dejavu-core libao-dev"
 	PACKAGE_LIST_SERVER_KODI="libao4 libwayland-cursor0 libavahi-compat-libdnssd-dev libass9 libavahi-client3 libavahi-common3 libbluray2 libcdio17 libcec4 \
@@ -216,7 +218,7 @@ case $DISTRIB_RELEASE in
 		libxslt1.1  mesa-utils x11-utils fonts-liberation fonts-dejavu-core python-bluez python-pil python-simplejson libgif7 libvorbisfile3 libaacs0 libgnutls30 \
 		libyajl2 libsndio6.1 libcrossguid0 libao-dev"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_QT"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_KODI chromium-browser xserver-xorg-input-all dbus-x11 profile-sync-daemon firefox"
+	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_KODI chromium-browser xserver-xorg-input-all dbus-x11 profile-sync-daemon firefox pulseaudio-module-gconf libgnome2-perl"
 	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP system-config-printer system-config-printer-gnome language-selector-gnome"
 	;;
 esac
