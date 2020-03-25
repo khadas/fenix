@@ -614,3 +614,4 @@ choose_distribution_architecture
 choose_install_type
 lunch
 
+export ARCH=arm64 

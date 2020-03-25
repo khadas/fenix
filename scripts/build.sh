@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e -o pipefail
+set -xe -o pipefail
 
 ## Parameters
 source config/config
@@ -14,6 +14,7 @@ source config/functions/functions
 ######################################################################################
 TARGET="$1"
 
+prepare_host
 prepare_toolchains
 prepare_packages
 

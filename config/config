@@ -39,12 +39,14 @@ UBOOT_SOURCE_URL="https://github.com/khadas/u-boot"
 ROOTFSCACHE_VERSION=5
 IMAGE_RELEASE_VERSION="V${VERSION}-$(date +%F | sed 's/-//g')"
 
-NR_JOBS_MAX=20
-NR_CPUS=$(grep -c processor /proc/cpuinfo)
-if [ ${NR_CPUS} -le ${NR_JOBS_MAX} ]; then
-	NR_JOBS=${NR_CPUS}
-else
-	NR_JOBS=${NR_JOBS_MAX}
+if [[ -z "${JOBS}" ]]; then
+	JOBS_MAX=20
+	NR_CPUS="$(( $(grep -c processor /proc/cpuinfo) - 3 ))" # reserve some for the os
+	if [ ${NR_CPUS} -le ${JOBS_MAX} ]; then
+		JOBS=${NR_CPUS}
+	else
+		JOBS=${JOBS_MAX}
+	fi
 fi
 
 if [ "$LINUX" == "mainline" ]; then
@@ -76,10 +78,6 @@ case $DISTRIB_ARCH in
 	arm64)
 	INITRD_ARCH=arm64
 	QEMU_BINARY="qemu-aarch64-static"
-	;;
-	armhf)
-	INITRD_ARCH=arm
-	QEMU_BINARY="qemu-arm-static"
 	;;
 esac
 

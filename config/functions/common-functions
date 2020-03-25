@@ -54,54 +54,126 @@ time_cal() {
 ## Install essential packages
 prepare_host() {
 
-	if [[ $(dpkg --print-architecture) != "amd64" ]]; then
-		error_msg "Your build host architecture is not supported,please use a 'x86-x64' build host."
-		return -1
-	fi
-
-	local build_host=$(lsb_release -sc)
-	info_msg "Build host: $build_host"
-
-	if [[ -z "$build_host" || "bionic focal" != *"$build_host"* ]]; then
-		error_msg "Your build host is not supported! Please use 'Ubuntu bionic(18.04)/focal(20.04)' as your build host or try to build in Docker."
-		return -1
-	fi
-
-	case $DISTRIB_RELEASE in
-		bionic)
-			if [ "$build_host" != "focal" -a "$build_host" != "bionic" ]; then
-				error_msg "Building Ubuntu Bionic(18.04) images requires a Ubuntu Bionic(18.04)/Focal(20.04) build host, please upgrade your build host or try to build in Docker."
-				return -1
-			fi
-		;;
-		buster|focal)
-			if [ "$build_host" != "focal" ]; then
-				error_msg "Building Debian Buster(10)/Ubuntu Focal(20.04) images requires a Ubuntu Focal(20.04) build host, please upgrade your build host or try to build in Docker."
-				return -1
-			fi
-		;;
+	HOST_ARCH=$(dpkg --print-architecture)
+	case "${HOST_ARCH}" in
+		amd64|x86-64|x64)
+			HOST_ARCH=amd64
+			;;
+		arm*|aarch64) 
+			# 64 bit arm boards
+			HOST_ARCH=arm64
+			;;
+		*)
+			error_msg "Your build host architecture is not supported,please use a 'x86-x64 or arm64' build host."
+			return 255
+			;;
 	esac
 
-	grep -q i386 <(dpkg --print-foreign-architectures) || (warning_msg "Requires root privileges, please enter your passowrd!" && sudo dpkg --add-architecture i386)
-	if systemd-detect-virt -q -c; then
-		info_msg "Running in container: $(systemd-detect-virt)"
-		# disable apt-cacher unless NO_APT_CACHER=no is not specified explicitly
-		if [[ $NO_APT_CACHER != no ]]; then
-			info_msg "apt-cacher is disabled in containers, set NO_APT_CACHER=no to override"
-			NO_APT_CACHER=yes
+	local hostdeps=()
+	if [[ "${HOST_ARCH}" == "amd64" ]]
+	then
+		hostdeps+=(
+			lib32stdc++6
+			libc6-i386 
+			lib32ncurses5 
+			lib32tinfo5 
+			gcc-arm-linux-gnueabihf 
+			lib32z1
+			libc6-dev-armhf-cross 
+			systemd-container 
+			binfmt-support
+		)
+
+		grep -q i386 <(dpkg --print-foreign-architectures) || (warning_msg "Requires root privileges, please enter your passowrd!" && sudo dpkg --add-architecture i386)
+		if systemd-detect-virt -q -c; then
+			info_msg "Running in container: $(systemd-detect-virt)"
+			# disable apt-cacher unless NO_APT_CACHER=no is not specified explicitly
+			if [[ $NO_APT_CACHER != no ]]; then
+				info_msg "apt-cacher is disabled in containers, set NO_APT_CACHER=no to override"
+				NO_APT_CACHER=yes
+			fi
+			CONTAINER_COMPAT="yes"
+			export CONTAINER_COMPAT
+			export NO_APT_CACHER
 		fi
-		CONTAINER_COMPAT="yes"
-		export CONTAINER_COMPAT
-		export NO_APT_CACHER
 	fi
 
-	local hostdeps="wget ca-certificates device-tree-compiler pv bc lzop zip binfmt-support build-essential ccache debootstrap ntpdate \
-			gawk gcc-arm-linux-gnueabihf qemu-user-static u-boot-tools uuid-dev zlib1g-dev unzip libusb-1.0-0-dev fakeroot \
-			parted pkg-config libncurses5-dev whiptail debian-keyring debian-archive-keyring f2fs-tools libfile-fcntllock-perl rsync libssl-dev \
-			nfs-kernel-server btrfs-progs ncurses-term p7zip-full kmod dosfstools libc6-dev-armhf-cross \
-			curl patchutils liblz4-tool libpython2.7-dev linux-base swig aptly acl \
-			locales ncurses-base pixz dialog systemd-container udev lib32stdc++6 libc6-i386 lib32ncurses5 lib32tinfo5 \
-			bison libbison-dev flex libfl-dev lib32z1"
+	hostdeps+=(
+		qemu-user-static
+		wget
+		ca-certificates
+		device-tree-compiler
+		pv
+		bc
+		lzop
+		zip
+		build-essential
+		ccache
+		debootstrap
+		ntpdate
+		gawk
+		u-boot-tools
+		uuid-dev
+		zlib1g-dev
+		unzip
+		libusb-1.0-0-dev
+		fakeroot
+		parted
+		pkg-config
+		libncurses5-dev
+		whiptail
+		debian-keyring
+		debian-archive-keyring
+		f2fs-tools
+		libfile-fcntllock-perl
+		rsync
+		libssl-dev
+		nfs-kernel-server
+		btrfs-tools
+		ncurses-term
+		p7zip-full
+		kmod
+		dosfstools
+		curl
+		patchutils
+		python
+		liblz4-tool
+		libpython2.7-dev
+		linux-base
+		swig
+		libpython-dev
+		aptly
+		acl
+		locales
+		ncurses-base
+		pixz
+		dialog
+		udev
+		bison
+		libbison-dev
+		flex
+		libfl-dev
+		libdw-dev
+		systemtap-sdt-dev
+		elfutils
+		libslang2-dev
+		libgtk2.0-dev
+		libperl-dev
+		python-dev
+		binutils-dev libiberty-dev
+		libzstd-dev
+		libbabeltrace-dev 
+		libbabeltrace-ctf-dev
+		openjdk-11-jdk
+		libunwind-dev
+		libcap-dev
+		libnuma-dev
+		libaudit-dev
+		libreadline-dev
+		libfuse-dev
+		libpopt-dev
+		btrfs-progs
+	)
 
 
 	if [[ -z $build_host || "focal" == "$build_host" ]]; then
@@ -119,12 +191,12 @@ prepare_host() {
 
 	# warning: apt-cacher-ng will fail if installed and used both on host and in container/chroot environment with shared network
 	# set NO_APT_CACHER=yes to prevent installation errors in such case
-	if [[ $NO_APT_CACHER != yes ]]; then hostdeps="$hostdeps apt-cacher-ng"; fi
+	if [[ $NO_APT_CACHER != yes ]]; then hostdeps+=( apt-cacher-ng ); fi
 
 	local deps=()
 	local installed=$(dpkg-query -W -f '${db:Status-Abbrev}|${binary:Package}\n' '*' 2>/dev/null | grep '^ii' | awk -F '|' '{print $2}' | cut -d ':' -f 1)
 
-	for packet in $hostdeps; do
+	for packet in "${hostdeps[@]}"; do
 		if ! grep -q -x -e "$packet" <<< "$installed"; then deps+=("$packet"); fi
 	done
 
@@ -136,24 +208,26 @@ prepare_host() {
 		sudo update-ccache-symlinks
 	fi
 
-	# enable arm binary format so that the cross-architecture chroot environment will work
-	if ! grep -q binfmt_misc <(lsmod); then
-		info_msg "Module 'binfmt_misc' not installed, try to install it!"
-		warning_msg "Requires root privileges, please enter your passowrd!"
-		sudo modprobe -q binfmt_misc || {
-			# FIXME 'binfmt_misc' should be installed on host PC manually
-			# https://github.com/khadas/fenix/issues/35#issuecomment-492326880
-			if systemd-detect-virt -q -c; then
-				error_msg "You are built in container: $(systemd-detect-virt), but the module 'binfmt_misc' is not installed, please exit the container to execute 'sudo modprobe binfmt_misc' on your host PC and try again!"
-			fi
+	if [[ "${HOST_ARCH}" == "amd64" ]]; then
+		# enable arm/x86 binary format so that the cross-architecture chroot environment will work
+		if ! grep -q binfmt_misc <(lsmod); then
+			info_msg "Module 'binfmt_misc' not installed, try to install it!"
+			warning_msg "Requires root privileges, please enter your passowrd!"
+			sudo modprobe -q binfmt_misc || {
+				# FIXME 'binfmt_misc' should be installed on host PC manually
+				# https://github.com/khadas/fenix/issues/35#issuecomment-492326880
+				if systemd-detect-virt -q -c; then
+					error_msg "You are built in container: $(systemd-detect-virt), but the module 'binfmt_misc' is not installed, please exit the container to execute 'sudo modprobe binfmt_misc' on your host PC and try again!"
+				fi
 
-			exit -1
-		}
-	fi
-	if  grep -q binfmt_misc <(lsmod); then
-		mountpoint -q /proc/sys/fs/binfmt_misc/ || sudo mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
-		test -e /proc/sys/fs/binfmt_misc/qemu-arm || sudo update-binfmts --enable qemu-arm
-		test -e /proc/sys/fs/binfmt_misc/qemu-aarch64 || sudo update-binfmts --enable qemu-aarch64
+				exit 255
+			}
+		fi
+		if  grep -q binfmt_misc <(lsmod); then
+			mountpoint -q /proc/sys/fs/binfmt_misc/ || sudo mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
+			test -e /proc/sys/fs/binfmt_misc/qemu-aarch64 || sudo update-binfmts --enable qemu-aarch64
+		fi
+
 	fi
 }
 
@@ -162,7 +236,7 @@ mount_chroot() {
 	local target=$1
 	if [ -z "$target" ]; then
 		echo "Usage: mount_chroot <target>"
-		return -1
+		return 255
 	fi
 	mount -t proc chproc $target/proc
 	mount -t sysfs chsys $target/sys
@@ -175,7 +249,7 @@ umount_chroot() {
 	local target=$1
 	if [ -z "$target" ]; then
 		echo "Usage: umount_chroot <target>"
-		return -1
+		return 255
 	fi
 	umount -l $target/dev/pts
 	umount -l $target/dev
@@ -253,7 +327,7 @@ check_loop_device()
 				mknod ${device}p${COUNTER} b $MAJ $MIN
 			else
 				error_msg "Device node $device does not exist!"
-				return -1
+				return 255
 			fi
 		fi
 		COUNTER=$((COUNTER + 1))
@@ -262,17 +336,34 @@ check_loop_device()
 
 ## Prepare toolhains
 prepare_toolchains() {
+	case "$(uname -m)" in
+		arm*|aarch64)
+			# try to find a compiler if none is set on CC
+			CC="$(command -v "${CC}")" || \
+			CC="$(command -v gcc)" || \
+			CC="$(command -v clang)" || \
+				( echo "No compiler found, exiting" && exit 3 )
 
-    build_package "gcc-linaro-aarch64-linux-gnu:host"
-    build_package "gcc-linaro-aarch64-linux-gnu-6.3:host"
-    build_package "gcc-linaro-aarch64-none-elf:host"
-    build_package "gcc-linaro-arm-none-eabi:host"
-    build_package "gcc-arm-none-eabi:host"
-    if [ "$UBOOT" == "mainline" ]; then
-        build_package "gcc-linaro-aarch64-elf:host"
-    fi
+			# make sure to export it if it was not set
+			export CC=${CC}
+			return 0
+			;;
+		x86_64|amd64)
+			# get the linaro toolchain
+			build_package "gcc-linaro-aarch64-linux-gnu:host"
 
-    return 0
+			# export the toolchain
+			export CROSS_COMPILE="aarch64-linux-gnu-"
+			export PATH="${TOOLCHAINS}/gcc-linaro-aarch64-linux-gnu/bin:${PATH}"
+			export CC="${TOOLCHAINS}/gcc-linaro-aarch64-linux-gnu/bin/aarch64-linux-gnu-gcc"
+			return 0
+			;;
+		*)
+			echo "Unable to prepare a compiler for arm/arm64 on a $(uname -m) host, exiting"
+			exit 3
+			;;
+	esac
+
 }
 
 ## Prepare packages
@@ -300,7 +391,7 @@ create_sources_list()
 {
 	local release=$1
 	local basedir=$2
-	[[ -z $basedir ]] && error_msg "No basedir passed to create_sources_list" && return -1
+	[[ -z $basedir ]] && error_msg "No basedir passed to create_sources_list" && return 255
 
 	case $release in
 	buster)

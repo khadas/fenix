@@ -23,12 +23,12 @@ rm -rf $DOWNLOAD_PKG_DIR
 ## Cleanup U-Boot
 info_msg "Cleanup U-Boot..."
 cd $ROOT/u-boot
-make -j8 CROSS_COMPILE=aarch64-linux-gnu- distclean
+make distclean
 
 ## Cleanup Linux
 info_msg "Cleanup Linux..."
 cd $ROOT/linux
-make -j8 ARCH=arm64 distclean
+make distclean
 
 echo -e "\nDone."
 echo -e "\n`date`"

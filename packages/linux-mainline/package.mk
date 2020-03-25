@@ -15,15 +15,14 @@ PKG_NEED_BUILD="YES"
 
 make_target() {
 
-	export PATH=$KERNEL_COMPILER_PATH:$PATH
-
-#	make ARCH=arm64 distclean
-	make ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} ${LINUX_DEFCONFIG}
+#	make distclean
+	make ${LINUX_DEFCONFIG}
 
 	# Apply configuration
 	cp $PKGS_DIR/$PKG_NAME/configs/${KHADAS_BOARD}.config .config
 
-	make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} Image modules dtbs
+	make -j${JOBS} Image modules dtbs 
+	make -i -j${JOBS} tools/all
 }
 
 makeinstall_target() {

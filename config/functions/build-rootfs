@@ -326,11 +326,15 @@ prepare_partitions()
 {
 	info_msg "Preparing image file for rootfs..."
 
+<<<<<<< HEAD
 	if [[ $(lsb_release -sc) =~ bionic|focal ]]; then
 		EXT4_MKOPTS="-q -F -L ROOTFS -m 2 -O ^64bit,^metadata_csum"
 	elif [[ $(lsb_release -sc) == "xenial" ]]; then
 		EXT4_MKOPTS="-q -F -L ROOTFS -m 2"
 	fi
+=======
+	EXT4_MKOPTS="-q -F -L ROOTFS -m 2 -O ^64bit,^metadata_csum"
+>>>>>>> cef4bf0... This commit enable native builds
 
 	# calculate rootfs size
 	local rootfs_size=$(du -sm $ROOTFS_TEMP/ | cut -f1) # MiB
@@ -485,9 +489,6 @@ build_rootfs() {
 		# just for EMMC image.
 		touch $ROOTFS_TEMP/etc/default/FIRSTBOOT
 	fi
-
-	# mkimage tool
-	cp $UTILS_DIR/mkimage-$DISTRIB_ARCH $ROOTFS_TEMP/usr/local/bin/mkimage
 
 	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$LINUX" == "mainline" ]; then
 		# Blacklist lima.ko

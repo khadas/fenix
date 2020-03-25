@@ -13,8 +13,7 @@ PKG_NEED_BUILD="YES"
 
 make_target() {
 
-	export PATH=$TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/bin/:$PATH
-	(KDIR=$BUILD/linux-mainline-*/ ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- ./build.sh)
+	(KDIR=$BUILD/linux-mainline-*/ ./build.sh)
 }
 
 makeinstall_target() {

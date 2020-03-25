@@ -56,14 +56,13 @@ build_uboot() {
     update_git_repo "$PWD" "$UBOOT_GIT_BRANCH"
 
     info_msg "Build u-boot..."
-	export PATH=$UBOOT_COMPILER_PATH:$PATH
 	if [ "$UBOOT_FORCE_REBUILD" == "yes" ]; then
 		info_msg "U-boot: Force cleaning..."
 		make distclean
 	fi
 	rm -rf .config *.bin *.img
 	make $UBOOT_DEFCONFIG
-    make -j${NR_JOBS} CROSS_COMPILE=${UBOOT_COMPILER}
+    make -j${JOBS}
 
 	if [[ $(type -t uboot_custom_postprocess) == function ]]; then
 		uboot_custom_postprocess
@@ -110,7 +109,7 @@ build_linux() {
         fi
 
         echo "Linux: Switch to branch '$LINUX_GIT_BRANCH'"
-        make ARCH=arm64 distclean
+        make distclean
 
 		# Walkaround for branch switch
 		if [ -f drivers/gpu/arm/mali400/mali/__malidrv_build_info.c ]; then
@@ -134,9 +133,13 @@ build_linux() {
     update_git_repo "$PWD" "$LINUX_GIT_BRANCH"
 
     info_msg "Build linux..."
-    export PATH=$KERNEL_COMPILER_PATH:$PATH
-    make ARCH=arm64 $LINUX_DEFCONFIG
-    make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} Image dtbs  modules
+    make $LINUX_DEFCONFIG
+	# go get a coffe :)
+	make -j${JOBS} Image dtbs modules
+	# try to make all the tools but we continue if it fails
+	cd tools
+    make -i -j${JOBS} prefix=/usr/
+
 }
 
 ## Build linux debs
@@ -154,15 +157,9 @@ build_linux_debs() {
 		cp archives/patches/misc/headers-debian-byteshift.patch /tmp
 	fi
 
-	# Different packaging for 4.3+
-	if linux-version compare $IMAGE_LINUX_VERSION ge 4.3; then
-		KERNEL_PACKING="bindeb-pkg"
-	else
-		KERNEL_PACKING="deb-pkg"
-	fi
+	KERNEL_PACKING="deb-pkg"
 
-	export PATH=$KERNEL_COMPILER_PATH:$PATH
-	make -j${NR_JOBS} -C $LINUX_DIR $KERNEL_PACKING KDEB_PKGVERSION="$VERSION" LOCAL_VERSION="-${VENDOR,,}-${LINUX}" KBUILD_DEBARCH="$DISTRIB_ARCH" ARCH=arm64 DEBFULLNAME="Khadas" DEBEMAIL="hello@khadas.com" CROSS_COMPILE="${KERNEL_COMPILER}" CONFIG_SHELL="bash"
+	make -j${JOBS} -C $LINUX_DIR $KERNEL_PACKING KDEB_PKGVERSION="$VERSION" LOCAL_VERSION="-${VENDOR,,}-${LINUX}" KBUILD_DEBARCH="$DISTRIB_ARCH" DEBFULLNAME="Khadas" DEBEMAIL="hello@khadas.com" CONFIG_SHELL="bash"
 
 	mkdir -p $BUILD_DEBS/$VERSION
 

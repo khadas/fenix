@@ -3,14 +3,10 @@
 ##########################
 case "$UBOOT" in
 	2015.01)
-		UBOOT_COMPILER="aarch64-none-elf-"
-		UBOOT_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-none-elf/bin:$TOOLCHAINS/gcc-linaro-arm-none-eabi/bin"
 		UBOOT_DIR="$ROOT/u-boot"
 		UBOOT_IMAGE_DIR="$UBOOT_DIR/fip/_tmp"
 	;;
 	mainline)
-		UBOOT_COMPILER="aarch64-elf-"
-		UBOOT_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-elf/bin"
 		UBOOT_DIR="$BUILD/u-boot-mainline-*"
 		UBOOT_IMAGE_DIR="$BUILD_IMAGES/u-boot-mainline/$KHADAS_BOARD"
 	;;
@@ -19,9 +15,6 @@ esac
 UBOOT_IMAGE_FILES="u-boot.bin u-boot.bin.sd.bin"
 
 UBOOT_FORCE_REBUILD="yes"
-
-KERNEL_COMPILER="aarch64-linux-gnu-"
-KERNEL_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/bin"
 
 case "$LINUX" in
 	mainline)

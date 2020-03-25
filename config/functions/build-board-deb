@@ -242,10 +242,10 @@ build_board_deb() {
 		cp $BOOT_SCRIPTS/$BOOT_SCRIPT_VENDOR $pkgdir/boot
 		cp $BOOT_SCRIPTS/$BOOT_SCRIPT_BOARD $pkgdir/boot
 
-		$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$CHIP autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_BOARD $pkgdir/boot/${BOOT_SCRIPT_BOARD%.cmd*}
+		mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$CHIP autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_BOARD $pkgdir/boot/${BOOT_SCRIPT_BOARD%.cmd*}
 		# For mainline u-boot to load autoscript
 		cp $pkgdir/boot/${BOOT_SCRIPT_BOARD%.cmd*} $pkgdir/boot/boot.scr
-		$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$VENDOR autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_VENDOR $pkgdir/boot/${BOOT_SCRIPT_VENDOR%.txt}
+		mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$VENDOR autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_VENDOR $pkgdir/boot/${BOOT_SCRIPT_VENDOR%.txt}
 		cd $pkgdir/boot
 		zip ${BOOT_SCRIPT_VENDOR%.txt}.zip ${BOOT_SCRIPT_VENDOR%.txt} ${BOOT_SCRIPT_VENDOR}
 		cd -
@@ -265,7 +265,7 @@ build_board_deb() {
 	if [ "$VENDOR" == "Rockchip" ]; then
 		mkdir -p $pkgdir/boot
 		cp $BOOT_SCRIPTS/$BOOT_SCRIPT_BOARD $pkgdir/boot
-		$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$CHIP autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_BOARD $pkgdir/boot/boot.scr
+		mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$CHIP autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_BOARD $pkgdir/boot/boot.scr
 	fi
 
 	# Copy Wi-Fi & BT firmware
