@@ -10,7 +10,7 @@ build_updater_deb() {
 	rm -rf $pkgdir
 	mkdir -p $pkgdir/DEBIAN
 
-	if [ "$LINUX" != "mainline" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
+	if [ "$LINUX" != "mainline" ] && [ "$DISTRIBUTION" == "Ubuntu" ] && [ "$DISTRIB_RELEASE" != "focal" ]; then
 		case $KHADAS_BOARD in
 			VIM1)
 				updater_deb_dependencies+="gstreamer-aml, libplayer-aml, opencv3, python3-wiringpi"

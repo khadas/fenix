@@ -162,7 +162,7 @@ install_distribution_specific()
 		# Disable Lirc service
 		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable lircd.socket lircd.service lircd-setup.service lircd-uinput.service lircmd.service irexec.service"'
 		;;
-	bionic)
+	bionic|focal)
 		# remove doubled uname from motd
 		[[ -f $$ROOTFS_TEMP/etc/update-motd.d/10-uname ]] && rm $ROOTFS_TEMP/etc/update-motd.d/10-uname
 		# remove motd news from motd.ubuntu.com

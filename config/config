@@ -146,7 +146,7 @@ PACKAGE_LIST+=" automake libwrap0-dev libssl-dev libnl-3-dev libnl-genl-3-dev"
 # Non-essential packages
 PACKAGE_LIST_ADDITIONAL="alsa-utils btrfs-progs dosfstools hddtemp iotop iozone3 stress sysbench screen ntfs-3g vim pciutils \
 	evtest htop pv lsof libfuse2 libdigest-sha-perl libproc-processtable-perl aptitude dnsutils f3 haveged \
-	hdparm rfkill vlan sysstat bash-completion hostapd git ethtool network-manager unzip ifenslave command-not-found lirc \
+	hdparm rfkill vlan sysstat bash-completion hostapd git ethtool network-manager unzip ifenslave lirc \
 	libpam-systemd iperf3 software-properties-common libnss-myhostname f2fs-tools avahi-autoipd iputils-arping bluetooth bluez bluez-tools watchdog \
 	i2c-tools qrencode mesa-utils-extra rng-tools clinfo ocl-icd-libopencl1 libatlas3-base p7zip p7zip-full lrzip lzip lzop ncompress unar zstd edid-decode libgtk-3-0 dnsmasq-base"
 
@@ -155,7 +155,7 @@ PACKAGE_LIST_DESKTOP="xserver-xorg xserver-xorg-video-fbdev gvfs-backends gvfs-f
 	pavumeter pulseaudio-module-bluetooth blueman libgl1-mesa-dri gparted synaptic \
 	policykit-1 mesa-utils gnome-orca numix-gtk-theme gnome-system-tools gufw gedit yad zenity guvcview"
 
-PACKAGE_LIST_OFFICE="lxtask mirage galculator hexchat mpv gtk2-engines gtk2-engines-murrine gtk2-engines-pixbuf \
+PACKAGE_LIST_OFFICE="lxtask galculator hexchat mpv gtk2-engines gtk2-engines-murrine gtk2-engines-pixbuf \
 	libpam-gnome-keyring thunderbird system-config-printer-common paprefs tango-icon-theme libreoffice libreoffice-style-tango fbi cups-pk-helper cups"
 
 PACKAGE_LIST_DESKTOP+=" lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
@@ -190,17 +190,19 @@ esac
 case $DISTRIB_RELEASE in
 	buster)
 		DEBOOTSTRAP_COMPONENTS="main"
-		PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr"
+		PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr command-not-found"
 		PACKAGE_LIST_KODI="libglu1 libmicrohttpd12 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libva-drm2 libcurl4"
 		PACKAGE_LIST_QT+=" libqt5multimediaquick5"
+		PACKAGE_LIST_OFFICE+=" mirage"
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_QT $PACKAGE_LIST_KODI"
 		PACKAGE_LIST_DESKTOP+=" chromium dbus-x11 profile-sync-daemon"
 		PACKAGE_LIST_DESKTOP+=" system-config-printer"
 	;;
 	bionic)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
-		PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr nano wget libjpeg9"
+		PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr nano wget libjpeg9 command-not-found"
 		PACKAGE_LIST_QT=" libqt5multimediaquick-p5 libqgsttools-p1"
+		PACKAGE_LIST_OFFICE+=" mirage"
 		PACKAGE_LIST_KODI="libglu1 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libcurl4 libcrossguid0 libmariadbclient18 libmicrohttpd12 \
 			libavahi-compat-libdnssd-dev libcec4 libfstrcmp0 libnfs11 fonts-liberation python-bluez python-pil python-simplejson libaacs0 fonts-dejavu-core libao-dev"
 		PACKAGE_LIST_SERVER_KODI="libao4 libwayland-cursor0 libavahi-compat-libdnssd-dev libass9 libavahi-client3 libavahi-common3 libbluray2 libcdio17 libcec4 \
@@ -210,6 +212,12 @@ case $DISTRIB_RELEASE in
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_QT"
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_KODI chromium-browser xserver-xorg-input-all dbus-x11 profile-sync-daemon firefox pulseaudio-module-gconf libgnome2-perl"
 		PACKAGE_LIST_DESKTOP+=" system-config-printer system-config-printer-gnome language-selector-gnome"
+	;;
+	focal)
+		DEBOOTSTRAP_COMPONENTS="main,universe"
+		PACKAGE_LIST_RELEASE="man-db kbd net-tools gnupg2 dirmngr networkd-dispatcher"
+		PACKAGE_LIST_DESKTOP+=" xserver-xorg-input-all paprefs dbus-x11 pulseaudio-module-gsettings onboard thunderbird firefox system-config-printer-common \
+			system-config-printer language-selector-gnome viewnior"
 	;;
 esac
 

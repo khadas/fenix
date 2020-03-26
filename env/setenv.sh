@@ -7,7 +7,7 @@ unset SUPPORTED_UBOOT
 unset SUPPORTED_LINUX
 
 DISTRIBUTION_ARRAY=("Ubuntu" "Debian")
-Ubuntu_RELEASE_ARRAY=("bionic")
+Ubuntu_RELEASE_ARRAY=("bionic" "focal")
 Debian_RELEASE_ARRAY=("buster")
 DISTRIB_ARCH_ARRAY=("arm64" "armhf")
 Ubuntu_TYPE_ARRAY=("server" "xfce" "lxde")
