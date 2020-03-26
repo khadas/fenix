@@ -135,10 +135,10 @@ install_distribution_specific()
 	info_msg "Applying distribution specific tweaks for $DISTRIB_RELEASE"
 
 	case $DISTRIB_RELEASE in
-	stretch|buster)
+	buster)
 		# remove doubled uname from motd
 		[[ -f $ROOTFS_TEMP/etc/update-motd.d/10-uname ]] && rm $ROOTFS_TEMP/etc/update-motd.d/10-uname
-		# rc.local is not existing in stretch but we might need it
+		# rc.local is not existing in buster but we might need it
 		cat <<-EOF > $ROOTFS_TEMP/etc/rc.local
 		#!/bin/sh -e
 		#

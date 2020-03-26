@@ -190,16 +190,6 @@ case $DISTRIB_TYPE in
 esac
 
 case $DISTRIB_RELEASE in
-	stretch)
-	DEBOOTSTRAP_COMPONENTS="main"
-	PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr"
-	PACKAGE_LIST_KODI="libglu1 libmicrohttpd12 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libva-drm1 libcurl3"
-	PACKAGE_LIST_QT="$PACKAGE_LIST_QT libqt5multimediaquick-p5 libqgsttools-p1"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_QT $PACKAGE_LIST_KODI"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP chromium dbus-x11 gksu profile-sync-daemon pulseaudio-module-gconf libgnome2-perl"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP paman libgcr-3-common gcj-jre-headless"
-	PACKAGE_LIST_DESKTOP="$PACKAGE_LIST_DESKTOP system-config-printer"
-	;;
 	buster)
 	DEBOOTSTRAP_COMPONENTS="main"
 	PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr"

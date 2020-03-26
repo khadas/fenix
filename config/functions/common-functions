@@ -294,7 +294,7 @@ get_package_list_hash()
 
 ## create_sources_list <release> <basedir>
 ##
-## <release>: stretch|bionic
+## <release>: buster|bionic
 ## <basedir>: path to root directory
 create_sources_list()
 {
@@ -303,7 +303,7 @@ create_sources_list()
 	[[ -z $basedir ]] && error_msg "No basedir passed to create_sources_list" && return -1
 
 	case $release in
-	stretch|buster)
+	buster)
 	cat <<-EOF > $basedir/etc/apt/sources.list
 	deb http://${DEBIAN_MIRROR} $release main contrib non-free
 	#deb-src http://${DEBIAN_MIRROR} $release main contrib non-free
