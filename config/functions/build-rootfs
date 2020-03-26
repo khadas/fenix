@@ -168,7 +168,7 @@ install_distribution_specific()
 		# remove motd news from motd.ubuntu.com
 		[[ -f $ROOTFS_TEMP/etc/default/motd-news ]] && sed -i "s/^ENABLED=.*/ENABLED=0/" $ROOTFS_TEMP/etc/default/motd-news
 		# Basic Netplan config. Let NetworkManager manage all devices on this system
-		cat <<-EOF > $ROOTFS_TEMP/etc/netplan/fenix-default.yaml
+		[[ -d $ROOTFS_TEMP/etc/netplan ]] && cat <<-EOF > $ROOTFS_TEMP/etc/netplan/fenix-default.yaml
 		network:
 		  version: 2
 		  renderer: NetworkManager
@@ -218,12 +218,14 @@ create_rootfs_cache()
 		eval 'debootstrap --include=${DEBOOTSTRAP_LIST} ${PACKAGE_LIST_EXCLUDE:+ --exclude=${PACKAGE_LIST_EXCLUDE// /,}} \
 			--arch=$DISTRIB_ARCH --components=${DEBOOTSTRAP_COMPONENTS} --foreign $DISTRIB_RELEASE $ROOTFS_TEMP/ $apt_mirror'
 
+
 		[[ ${PIPESTATUS[0]} -ne 0 || ! -f $ROOTFS_TEMP/debootstrap/debootstrap ]] && error_msg "Debootstrap base system first stage failed" && return -1
 
 		cp /usr/bin/$QEMU_BINARY $ROOTFS_TEMP/usr/bin/
 
 		mkdir -p $ROOTFS_TEMP/usr/share/keyrings/
 		cp /usr/share/keyrings/debian-archive-keyring.gpg $ROOTFS_TEMP/usr/share/keyrings/
+		cp /usr/share/keyrings/ubuntu-archive-keyring.gpg $ROOTFS_TEMP/usr/share/keyrings/
 
 		info_msg "Installing base system - Stage 2/2"
 		eval 'chroot $ROOTFS_TEMP /bin/bash -c "/debootstrap/debootstrap --second-stage"'
@@ -246,9 +248,8 @@ create_rootfs_cache()
 		info_msg "Configuring locales $DEST_LANG"
 
 		[[ -f $ROOTFS_TEMP/etc/locale.gen ]] && sed -i "s/^# $DEST_LANG/$DEST_LANG/" $ROOTFS_TEMP/etc/locale.gen
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "locale-gen $DEST_LANG"' ${OUTPUT_VERYSILENT:+' >/dev/null 2>/dev/null'}
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "update-locale LANG=$DEST_LANG LANGUAGE=$DEST_LANG LC_MESSAGES=$DEST_LANG"' \
-			${OUTPUT_VERYSILENT:+' >/dev/null 2>/dev/null'}
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "locale-gen $DEST_LANG"'
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "update-locale LANG=$DEST_LANG LANGUAGE=$DEST_LANG LC_MESSAGES=$DEST_LANG"'
 
 		if [[ -f $ROOTFS_TEMP/etc/default/console-setup ]]; then
 			sed -e 's/CHARMAP=.*/CHARMAP="UTF-8"/' -e 's/FONTSIZE=.*/FONTSIZE="8x16"/' \
@@ -325,9 +326,9 @@ prepare_partitions()
 {
 	info_msg "Preparing image file for rootfs..."
 
-	if [ $(lsb_release -sc) == "artful" -o $(lsb_release -sc) == "bionic" ]; then
+	if [[ $(lsb_release -sc) =~ bionic|focal ]]; then
 		EXT4_MKOPTS="-q -F -L ROOTFS -m 2 -O ^64bit,^metadata_csum"
-	elif [ $(lsb_release -sc) == "xenial" ]; then
+	elif [[ $(lsb_release -sc) == "xenial" ]]; then
 		EXT4_MKOPTS="-q -F -L ROOTFS -m 2"
 	fi
 

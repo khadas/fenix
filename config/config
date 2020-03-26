@@ -130,13 +130,15 @@ if [[ $DISTRIB_TYPE != server ]]; then
 	DEBOOTSTRAP_LIST+=",libgtk2.0-bin"
 fi
 
+PACKAGE_LIST_EXCLUDE="rsyslog"
+
 # Essential packages
 PACKAGE_LIST="bc bridge-utils build-essential cpufrequtils device-tree-compiler figlet fbset fping \
 	iw fake-hwclock wpasupplicant psmisc ntp parted rsync sudo curl linux-base dialog crda \
 	wireless-regdb ncurses-term python3-apt sysfsutils toilet u-boot-tools unattended-upgrades \
 	usbutils wireless-tools console-setup unicode-data openssh-server initramfs-tools \
 	resolvconf expect iptables mc abootimg wget udev libc6 libdrm2 libgcc1 libstdc++6 libx11-6 \
-	libx11-xcb1 libxcb-dri2-0 libxcb1"
+	libx11-xcb1 libxcb-dri2-0 libxcb1 rsyslog"
 
 # development related packages. remove when they are not needed for building packages in chroot
 PACKAGE_LIST="$PACKAGE_LIST automake libwrap0-dev libssl-dev libnl-3-dev libnl-genl-3-dev"

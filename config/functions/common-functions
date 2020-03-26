@@ -62,15 +62,25 @@ prepare_host() {
 	local build_host=$(lsb_release -sc)
 	info_msg "Build host: $build_host"
 
-	if [[ -z "$build_host" || "artful bionic" != *"$build_host"* ]]; then
-		error_msg "Your build host is not supported! Please use 'Ubuntu artful/bionic' as your build host or try to build in Docker."
+	if [[ -z "$build_host" || "bionic focal" != *"$build_host"* ]]; then
+		error_msg "Your build host is not supported! Please use 'Ubuntu bionic(18.04)/focal(20.04)' as your build host or try to build in Docker."
 		return -1
 	fi
 
-	if [[ "$DISTRIB_RELEASE" == "bionic" && "$build_host" != "bionic" ]]; then
-		error_msg "Building Ubuntu Bionic images requires a Bionic build host, please upgrade your build host or try to build in Docker."
-		return -1
-	fi
+	case $DISTRIB_RELEASE in
+		bionic)
+			if [ "$build_host" != "focal" -a "$build_host" != "bionic" ]; then
+				error_msg "Building Ubuntu Bionic(18.04) images requires a Ubuntu Bionic(18.04)/Focal(20.04) build host, please upgrade your build host or try to build in Docker."
+				return -1
+			fi
+		;;
+		buster)
+			if [ "$build_host" != "focal" ]; then
+				error_msg "Building Debian Buster(10) images requires a Ubuntu Focal(20.04) build host, please upgrade your build host or try to build in Docker."
+				return -1
+			fi
+		;;
+	esac
 
 	grep -q i386 <(dpkg --print-foreign-architectures) || (warning_msg "Requires root privileges, please enter your passowrd!" && sudo dpkg --add-architecture i386)
 	if systemd-detect-virt -q -c; then
@@ -88,10 +98,24 @@ prepare_host() {
 	local hostdeps="wget ca-certificates device-tree-compiler pv bc lzop zip binfmt-support build-essential ccache debootstrap ntpdate \
 			gawk gcc-arm-linux-gnueabihf qemu-user-static u-boot-tools uuid-dev zlib1g-dev unzip libusb-1.0-0-dev fakeroot \
 			parted pkg-config libncurses5-dev whiptail debian-keyring debian-archive-keyring f2fs-tools libfile-fcntllock-perl rsync libssl-dev \
-			nfs-kernel-server btrfs-tools ncurses-term p7zip-full kmod dosfstools libc6-dev-armhf-cross \
-			curl patchutils python liblz4-tool libpython2.7-dev linux-base swig libpython-dev aptly acl \
+			nfs-kernel-server btrfs-progs ncurses-term p7zip-full kmod dosfstools libc6-dev-armhf-cross \
+			curl patchutils liblz4-tool libpython2.7-dev linux-base swig aptly acl \
 			locales ncurses-base pixz dialog systemd-container udev lib32stdc++6 libc6-i386 lib32ncurses5 lib32tinfo5 \
 			bison libbison-dev flex libfl-dev lib32z1"
+
+
+	if [[ -z $build_host || "focal" == "$build_host" ]]; then
+		hostdeps="${hostdeps/lib32ncurses5 lib32tinfo5/lib32ncurses6 lib32tinfo6}"
+	fi
+
+	# Getting ready for Ubuntu 20.04
+	if [[ "$build_host" == "focal" ]]; then
+		hostdeps+=" python2 python3"
+		sudo ln -fs /usr/bin/python2.7 /usr/bin/python2
+		sudo ln -fs /usr/bin/python2.7 /usr/bin/python
+	else
+		hostdeps+=" python libpython-dev"
+	fi
 
 	# warning: apt-cacher-ng will fail if installed and used both on host and in container/chroot environment with shared network
 	# set NO_APT_CACHER=yes to prevent installation errors in such case
