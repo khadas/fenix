@@ -7,7 +7,11 @@
 
 Supported build host:
 
-* `Ubuntu Bionic 18.04 x64`
+* `Ubuntu 18.04 Bionic x64`
+  * `Building Ubuntu 18.04 Bionic image`
+* `Ubuntu 20.04 Focal x64 (Testing)`
+  * `Building Ubuntu 18.04 Bionic image`
+  * `Building Debian 10 Buster image`
 * `Docker`
 
 ## How to use
@@ -37,6 +41,11 @@ $ source env/setenv.sh
 
 ```bash
 $ make
+```
+For Chinese users, it's better to use mirror from China:
+
+```bash
+$ DOWNLOAD_MIRROR=china make
 ```
 
 ## Somethings with Redhat series
@@ -72,6 +81,13 @@ $ docker run -it --name fenix -v $(pwd):/home/khadas/fenix -v /etc/localtime:/et
 khadas@919cab43f66d:~/fenix$ source env/setenv.sh
 khadas@919cab43f66d:~/fenix$ make
 ```
+
+For Chinese users, it's better to use mirror from China:
+
+```bash
+khadas@919cab43f66d:~/fenix$ DOWNLOAD_MIRROR=china make
+```
+
 
 To restart the Docker container a second time.
 
