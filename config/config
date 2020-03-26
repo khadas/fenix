@@ -215,8 +215,13 @@ case $DISTRIB_RELEASE in
 	;;
 esac
 
-DEBIAN_MIRROR=${USER_MIRROR-'httpredir.debian.org/debian'}
-UBUNTU_MIRROR=${USER_MIRROR-'ports.ubuntu.com/'}
+DEBIAN_MIRROR='httpredir.debian.org/debian'
+UBUNTU_MIRROR='ports.ubuntu.com/'
+
+if [[ $DOWNLOAD_MIRROR == china ]] ; then
+	DEBIAN_MIRROR='mirrors.tuna.tsinghua.edu.cn/debian'
+	UBUNTU_MIRROR='mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/'
+fi
 
 # apt-cacher-ng mirror configurarion
 if [[ $DISTRIBUTION == Ubuntu ]]; then
