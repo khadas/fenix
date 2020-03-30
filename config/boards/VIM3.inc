@@ -243,7 +243,9 @@ build_deb_packages_platform() {
 		# remove build stamp to force build for other arch
 		rm -rf $BUILD/.stamps/kodi_aml
 		build_package "kodi_aml:target"
+	fi
 
+	if [ "$LINUX" == "4.9" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
 		info_msg "Building libplayer_aml packages..."
 		# FIXME
 		# remove build stamp to force build for other arch
@@ -303,6 +305,9 @@ install_deb_packages_platform() {
 		info_msg "Installing Kodi packages..."
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi_aml/*.deb
 
+	fi
+
+	if [ "$LINUX" == "4.9" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
 		info_msg "Installing libplayer_aml packages..."
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libplayer_aml/*.deb
 
@@ -332,7 +337,7 @@ install_deb_packages_platform() {
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/libcec4_*.deb
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/libcec_*.deb
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/libcec4-*.deb
-		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/python-libcec_*.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/python3-libcec_*.deb
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/cec-utils_*.deb
 	fi
 }

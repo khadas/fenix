@@ -1,6 +1,6 @@
 PKG_NAME="gstreamer_aml"
-PKG_VERSION="c7f015e13b4c95400140744c022a46bb7ce71a25"
-PKG_SHA256="7e699eff8f87e1a794ccf381548ce504dd754c91ba9d2efc637c0877a0ddc2bc"
+PKG_VERSION="201fb8997e55d6422970e4383f66e129252a8cc3"
+PKG_SHA256="417a9a36ae4490934f2f3f447fdd1a415655bb6aee5704a5a8a2631e9d7ad3d8"
 PKG_SOURCE_DIR="gstreamer_aml-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/gstreamer_aml"
 PKG_URL="https://github.com/numbqq/gstreamer_aml/archive/$PKG_VERSION.tar.gz"

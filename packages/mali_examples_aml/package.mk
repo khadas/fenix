@@ -1,6 +1,6 @@
 PKG_NAME="mali_examples_aml"
-PKG_VERSION="990b2ea7c978b570a4f6a0aeacc9edf2de7e4dcb"
-PKG_SHA256="4fb5bafda013d798b15f99ae1fba25d7ffca4fa8fdf369ea3252a26682bfe35a"
+PKG_VERSION="3eab3850719060114c07aa2794287d271002b9b0"
+PKG_SHA256="a770e12fdcd4795fffa92955f48dabe1790e7998b3e139456f0eeee118e3c0eb"
 PKG_SOURCE_DIR="mali_examples_aml-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/mali_examples_aml"
 PKG_URL="https://github.com/numbqq/mali_examples_aml/archive/$PKG_VERSION.tar.gz"

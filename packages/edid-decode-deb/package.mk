@@ -1,6 +1,6 @@
 PKG_NAME="edid-decode-deb"
-PKG_VERSION="970c43074b4caf4d4d4e71825c48d33438387ce8"
-PKG_SHA256="fb60baa926c3d9c99131720cc4a4008b02501f76084e49cb0b94daa771aaa6eb"
+PKG_VERSION="ad6429d89755d5fa0fe94f0b0205eaf153e26947"
+PKG_SHA256="e5f28c16a6a80c8e7507c07e719b17a8336db504349cf7cd716b24ccfb4426f0"
 PKG_SOURCE_DIR="edid-decode-deb-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/edid-decode-deb"
 PKG_URL="https://github.com/numbqq/edid-decode-deb/archive/$PKG_VERSION.tar.gz"

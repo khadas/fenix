@@ -1,6 +1,6 @@
 PKG_NAME="libcec_debs"
-PKG_VERSION="d1de72eb00eefd22b18996111b2a11d93e8c5bdd"
-PKG_SHA256="f02e4dddb25d156593e6063183f204816de00983b0f9fdf3af9c140ed0556a37"
+PKG_VERSION="424ffb4f0adec2fc022998d09c41e8f609dd6833"
+PKG_SHA256="d2a2c050a835c3a2e00bec724e53b693f72c834e6ff6be19f6e84544f8cacd6e"
 PKG_SOURCE_DIR="libcec_debs-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/libcec_debs"
 PKG_URL="https://github.com/numbqq/libcec_debs/archive/$PKG_VERSION.tar.gz"
