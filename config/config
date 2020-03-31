@@ -134,7 +134,7 @@ PACKAGE_LIST_EXCLUDE="rsyslog"
 
 # Essential packages
 PACKAGE_LIST="bc bridge-utils build-essential cpufrequtils device-tree-compiler figlet fbset fping \
-	iw fake-hwclock wpasupplicant psmisc ntp parted rsync sudo curl linux-base dialog crda \
+	iw fake-hwclock wpasupplicant psmisc parted rsync sudo curl linux-base dialog crda \
 	wireless-regdb ncurses-term python3-apt sysfsutils toilet u-boot-tools unattended-upgrades \
 	usbutils wireless-tools console-setup unicode-data openssh-server initramfs-tools \
 	resolvconf expect iptables mc abootimg wget udev libc6 libdrm2 libgcc1 libstdc++6 libx11-6 \
@@ -200,7 +200,7 @@ case $DISTRIB_RELEASE in
 	;;
 	bionic)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
-		PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr nano wget libjpeg9 command-not-found"
+		PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr nano wget libjpeg9 command-not-found ntp"
 		PACKAGE_LIST_QT=" libqt5multimediaquick-p5 libqgsttools-p1"
 		PACKAGE_LIST_OFFICE+=" mirage"
 		PACKAGE_LIST_KODI="libglu1 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libcurl4 libcrossguid0 libmariadbclient18 libmicrohttpd12 \
