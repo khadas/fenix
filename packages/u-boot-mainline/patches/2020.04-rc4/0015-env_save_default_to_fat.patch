@@ -1,22 +1,20 @@
-From dc776c2c7054b2ed7b26cdeb3dc4efdf842a6838 Mon Sep 17 00:00:00 2001
+From e1d1060c653a0bcdb9043b13816fb147027b9eb0 Mon Sep 17 00:00:00 2001
 From: hyphop <art@khadas.com>
 Date: Tue, 10 Mar 2020 23:21:40 +0900
-Subject: [PATCH] env_save_default_to_fat
+Subject: [PATCH 15/15] env_save_default_to_fat
 
 if uboot env file not found we can try to save default env for next usage
-there we just define env_need_save env var like a flag 
+there we just define env_need_save env var like a flag
 for post save on last init stage before run_main_loop
-
 ---
- env/fat.c                          | 24 +++++++++++++++---------
- 1 files changed
+ env/fat.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
- 
 diff --git a/env/fat.c b/env/fat.c
-index 9075147f..6ebcc8ec 100644
+index 2e38c3d4f5..81f0769355 100644
 --- a/env/fat.c
 +++ b/env/fat.c
-@@ -110,6 +110,21 @@ static int env_fat_load(void)
+@@ -147,6 +147,21 @@ static int env_fat_load(void)
  	}
  
  	err = file_fat_read(CONFIG_ENV_FAT_FILE, buf, CONFIG_ENV_SIZE);
@@ -38,7 +36,6 @@ index 9075147f..6ebcc8ec 100644
  	if (err == -1) {
  		/*
  		 * This printf is embedded in the messages from env_save that
- 	return env_import(buf, 1);
 -- 
 2.17.1
 

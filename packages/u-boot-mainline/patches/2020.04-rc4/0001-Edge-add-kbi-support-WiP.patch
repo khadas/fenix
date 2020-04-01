@@ -1,21 +1,21 @@
-From 699650b716e4e4e9a2e74ddc1b2b778d20e5cfe7 Mon Sep 17 00:00:00 2001
+From 248842e820d2505eeb81b029b5a03791143d2cc1 Mon Sep 17 00:00:00 2001
 From: Nick <nick@khadas.com>
 Date: Tue, 6 Nov 2018 10:27:42 +0800
-Subject: [PATCH 1/6] Edge: add kbi support (WiP)
+Subject: [PATCH 01/15] Edge: add kbi support (WiP)
 
 ---
  cmd/Kconfig                                  |    6 +
  cmd/Makefile                                 |    2 +
- cmd/kbi.c                                    | 1102 ++++++++++++++++++++++++++
+ cmd/kbi.c                                    | 1102 ++++++++++++++++++
  configs/khadas-edge-captain-rk3399_defconfig |    1 +
  4 files changed, 1111 insertions(+)
  create mode 100644 cmd/kbi.c
 
 diff --git a/cmd/Kconfig b/cmd/Kconfig
-index 1e4cf14..b9242e9 100644
+index 6403bc45a5..3b795a03c8 100644
 --- a/cmd/Kconfig
 +++ b/cmd/Kconfig
-@@ -2144,4 +2144,10 @@ config CMD_UBIFS
+@@ -2180,4 +2180,10 @@ config CMD_UBIFS
  	help
  	  UBIFS is a file system for flash devices which works on top of UBI.
  
@@ -27,10 +27,10 @@ index 1e4cf14..b9242e9 100644
 +
  endmenu
 diff --git a/cmd/Makefile b/cmd/Makefile
-index 3ac7104..052841d 100644
+index f1dd513a4b..ec191bdb8a 100644
 --- a/cmd/Makefile
 +++ b/cmd/Makefile
-@@ -172,6 +172,8 @@ obj-$(CONFIG_CMD_REGULATOR) += regulator.o
+@@ -174,6 +174,8 @@ obj-$(CONFIG_CMD_REGULATOR) += regulator.o
  
  obj-$(CONFIG_CMD_BLOB) += blob.o
  
@@ -41,7 +41,7 @@ index 3ac7104..052841d 100644
  
 diff --git a/cmd/kbi.c b/cmd/kbi.c
 new file mode 100644
-index 0000000..8b55c28
+index 0000000000..8b55c281dc
 --- /dev/null
 +++ b/cmd/kbi.c
 @@ -0,0 +1,1102 @@
@@ -1148,7 +1148,7 @@ index 0000000..8b55c28
 +		kbi_help_text
 +);
 diff --git a/configs/khadas-edge-captain-rk3399_defconfig b/configs/khadas-edge-captain-rk3399_defconfig
-index c408a1a..7da30a2 100644
+index 8668917ecc..79a7081a11 100644
 --- a/configs/khadas-edge-captain-rk3399_defconfig
 +++ b/configs/khadas-edge-captain-rk3399_defconfig
 @@ -21,6 +21,7 @@ CONFIG_CMD_MMC=y
@@ -1160,5 +1160,5 @@ index c408a1a..7da30a2 100644
  CONFIG_DEFAULT_DEVICE_TREE="rk3399-khadas-edge-captain"
  CONFIG_OF_SPL_REMOVE_PROPS="pinctrl-0 pinctrl-names clock-names interrupt-parent assigned-clocks assigned-clock-rates assigned-clock-parents"
 -- 
-2.7.4
+2.17.1
 

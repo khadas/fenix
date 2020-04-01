@@ -1,7 +1,7 @@
-From c804664e81cdb1aa5ef79dc11855ca048048543a Mon Sep 17 00:00:00 2001
+From 751d1a158698d07745f4ee72290732389d72194f Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Tue, 24 Sep 2019 11:02:22 +0800
-Subject: [PATCH 2/6] cmd: enable 'fsuuid'
+Subject: [PATCH 02/15] cmd: enable 'fsuuid'
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---
@@ -9,7 +9,7 @@ Signed-off-by: Nick Xie <nick@khadas.com>
  1 file changed, 1 insertion(+)
 
 diff --git a/configs/khadas-edge-captain-rk3399_defconfig b/configs/khadas-edge-captain-rk3399_defconfig
-index 7da30a2..4d0ea6e 100644
+index 79a7081a11..e204f5dc87 100644
 --- a/configs/khadas-edge-captain-rk3399_defconfig
 +++ b/configs/khadas-edge-captain-rk3399_defconfig
 @@ -21,6 +21,7 @@ CONFIG_CMD_MMC=y
@@ -21,5 +21,5 @@ index 7da30a2..4d0ea6e 100644
  CONFIG_SPL_OF_CONTROL=y
  CONFIG_DEFAULT_DEVICE_TREE="rk3399-khadas-edge-captain"
 -- 
-2.7.4
+2.17.1
 

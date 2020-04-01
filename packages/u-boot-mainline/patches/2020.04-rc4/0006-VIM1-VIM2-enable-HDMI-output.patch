@@ -1,7 +1,7 @@
-From 11df3e53c07cb49077e724b4ec93a87f2f815af7 Mon Sep 17 00:00:00 2001
+From ad7ab70166bfc0dbd9da9cb97bdd307678a484f2 Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Fri, 20 Dec 2019 23:07:06 +0800
-Subject: [PATCH] VIM1/VIM2: enable HDMI output
+Subject: [PATCH 06/15] VIM1/VIM2: enable HDMI output
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---
@@ -10,10 +10,10 @@ Signed-off-by: Nick Xie <nick@khadas.com>
  2 files changed, 12 insertions(+), 2 deletions(-)
 
 diff --git a/configs/khadas-vim2_defconfig b/configs/khadas-vim2_defconfig
-index 321ac56..5e03d7d 100644
+index a3e07269af..03120ddd6a 100644
 --- a/configs/khadas-vim2_defconfig
 +++ b/configs/khadas-vim2_defconfig
-@@ -9,7 +9,6 @@ CONFIG_DEBUG_UART_CLOCK=24000000
+@@ -10,7 +10,6 @@ CONFIG_DEBUG_UART_CLOCK=24000000
  CONFIG_IDENT_STRING=" khadas-vim2"
  CONFIG_DEBUG_UART=y
  CONFIG_OF_BOARD_SETUP=y
@@ -21,7 +21,7 @@ index 321ac56..5e03d7d 100644
  CONFIG_MISC_INIT_R=y
  # CONFIG_DISPLAY_CPUINFO is not set
  # CONFIG_CMD_BDI is not set
-@@ -21,6 +20,7 @@ CONFIG_CMD_I2C=y
+@@ -22,6 +21,7 @@ CONFIG_CMD_I2C=y
  CONFIG_CMD_MMC=y
  CONFIG_CMD_USB=y
  # CONFIG_CMD_SETEXPR is not set
@@ -47,10 +47,10 @@ index 321ac56..5e03d7d 100644
 +CONFIG_VIDEO_MESON=y
  CONFIG_OF_LIBFDT_OVERLAY=y
 diff --git a/configs/khadas-vim_defconfig b/configs/khadas-vim_defconfig
-index 7e7d999..3de5aaf 100644
+index fd9d708b31..50be318987 100644
 --- a/configs/khadas-vim_defconfig
 +++ b/configs/khadas-vim_defconfig
-@@ -9,7 +9,6 @@ CONFIG_DEBUG_UART_CLOCK=24000000
+@@ -10,7 +10,6 @@ CONFIG_DEBUG_UART_CLOCK=24000000
  CONFIG_IDENT_STRING=" khadas-vim"
  CONFIG_DEBUG_UART=y
  CONFIG_OF_BOARD_SETUP=y
@@ -58,7 +58,7 @@ index 7e7d999..3de5aaf 100644
  CONFIG_MISC_INIT_R=y
  # CONFIG_DISPLAY_CPUINFO is not set
  # CONFIG_CMD_BDI is not set
-@@ -20,6 +19,7 @@ CONFIG_CMD_GPIO=y
+@@ -22,6 +21,7 @@ CONFIG_CMD_I2C=y
  CONFIG_CMD_MMC=y
  CONFIG_CMD_USB=y
  # CONFIG_CMD_SETEXPR is not set
@@ -66,7 +66,7 @@ index 7e7d999..3de5aaf 100644
  CONFIG_CMD_REGULATOR=y
  CONFIG_CMD_KHADAS_KBI=y
  CONFIG_OF_CONTROL=y
-@@ -41,6 +41,8 @@ CONFIG_PHY=y
+@@ -42,6 +42,8 @@ CONFIG_PHY=y
  CONFIG_MESON_GXL_USB_PHY=y
  CONFIG_PINCTRL=y
  CONFIG_PINCTRL_MESON_GXL=y
@@ -75,7 +75,7 @@ index 7e7d999..3de5aaf 100644
  CONFIG_DM_REGULATOR_FIXED=y
  CONFIG_DM_RESET=y
  CONFIG_DEBUG_UART_MESON=y
-@@ -53,4 +55,7 @@ CONFIG_USB_XHCI_HCD=y
+@@ -54,4 +56,7 @@ CONFIG_USB_XHCI_HCD=y
  CONFIG_USB_XHCI_DWC3=y
  CONFIG_USB_XHCI_DWC3_OF_SIMPLE=y
  CONFIG_USB_DWC3=y
@@ -84,5 +84,5 @@ index 7e7d999..3de5aaf 100644
 +CONFIG_VIDEO_MESON=y
  CONFIG_OF_LIBFDT_OVERLAY=y
 -- 
-2.7.4
+2.17.1
 

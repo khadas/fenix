@@ -1,27 +1,28 @@
-From c8ada211d0024be0f4b99c01011c5ed6dde03073 Mon Sep 17 00:00:00 2001
+From 8a1d55a2bc8f7b5dac739043ed56ece5a24252c8 Mon Sep 17 00:00:00 2001
 From: hyphop <art@khadas.com>
 Date: Mon, 9 Mar 2020 23:02:01 +0900
-Subject: [PATCH] add script cmd similar with source or autoscr and cfgload
+Subject: [PATCH 10/15] add script cmd similar with source or autoscr and
+ cfgload
 
 script can fully replace all of them
 plus boot sequnce change to boot.cmd -> boot.ini -> boot.scr.uimg -> boot.scr
-
 ---
- cmd/Kconfig      |   6 ++
- cmd/Makefile     |   1 +
- cmd/cmd_script.c | 214 +++++++++++++++++++++++++++++++++++++++++++++++
- cmd/script.c     |   1 +
- 4 files changed, 222 insertions(+)
+ cmd/Kconfig                     |   6 +
+ cmd/Makefile                    |   1 +
+ cmd/cmd_script.c                | 206 ++++++++++++++++++++++++++++++++
+ cmd/script.c                    |   1 +
+ include/config_distro_bootcmd.h |   8 +-
+ 5 files changed, 218 insertions(+), 4 deletions(-)
  create mode 100644 cmd/cmd_script.c
  create mode 120000 cmd/script.c
 
 diff --git a/cmd/Kconfig b/cmd/Kconfig
-index 0f13d0dd..af4a00c3 100644
+index 7f95266712..324611c1f1 100644
 --- a/cmd/Kconfig
 +++ b/cmd/Kconfig
-@@ -2149,4 +2149,10 @@ config CMD_KHADAS_KBI
-    help
-      Khadas Bootloader Instructions
+@@ -2185,4 +2185,10 @@ config CMD_KHADAS_KBI
+ 	help
+ 	  Khadas Bootloader Instructions
  
 +config CMD_SCRIPT
 +	bool "simple plain script run from mem without mkimage wrappers"
@@ -31,10 +32,10 @@ index 0f13d0dd..af4a00c3 100644
 +
  endmenu
 diff --git a/cmd/Makefile b/cmd/Makefile
-index 052841da..133040c6 100644
+index ec191bdb8a..e2db0149da 100644
 --- a/cmd/Makefile
 +++ b/cmd/Makefile
-@@ -173,6 +173,7 @@ obj-$(CONFIG_CMD_REGULATOR) += regulator.o
+@@ -175,6 +175,7 @@ obj-$(CONFIG_CMD_REGULATOR) += regulator.o
  obj-$(CONFIG_CMD_BLOB) += blob.o
  
  obj-$(CONFIG_CMD_KHADAS_KBI) += kbi.o
@@ -44,7 +45,7 @@ index 052841da..133040c6 100644
  obj-$(CONFIG_CMD_AVB) += avb.o
 diff --git a/cmd/cmd_script.c b/cmd/cmd_script.c
 new file mode 100644
-index 00000000..02ae9f87
+index 0000000000..c071e40a2a
 --- /dev/null
 +++ b/cmd/cmd_script.c
 @@ -0,0 +1,206 @@
@@ -256,14 +257,14 @@ index 00000000..02ae9f87
 +);
 diff --git a/cmd/script.c b/cmd/script.c
 new file mode 120000
-index 00000000..a64fc45a
+index 0000000000..a64fc45a98
 --- /dev/null
 +++ b/cmd/script.c
 @@ -0,0 +1 @@
 +cmd_script.c
 \ No newline at end of file
 diff --git a/include/config_distro_bootcmd.h b/include/config_distro_bootcmd.h
-index fc0935fa..a6e68dcb 100644
+index fc0935fa21..a6e68dcbc4 100644
 --- a/include/config_distro_bootcmd.h
 +++ b/include/config_distro_bootcmd.h
 @@ -367,7 +367,7 @@

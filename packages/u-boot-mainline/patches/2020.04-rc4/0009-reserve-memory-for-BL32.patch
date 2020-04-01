@@ -1,7 +1,7 @@
-From 246e5749df9f4eaa7761616608cd860be2d1a513 Mon Sep 17 00:00:00 2001
+From c143e683a4b2b80f4587d877bffe8ec537b46cca Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Mon, 6 Jan 2020 16:52:46 +0800
-Subject: [PATCH] reserve memory for BL32
+Subject: [PATCH 09/15] reserve memory for BL32
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---
@@ -10,7 +10,7 @@ Signed-off-by: Nick Xie <nick@khadas.com>
  2 files changed, 11 insertions(+), 7 deletions(-)
 
 diff --git a/arch/arm/mach-rockchip/sdram.c b/arch/arm/mach-rockchip/sdram.c
-index 530644c..0644262 100644
+index 530644c043..064426271e 100644
 --- a/arch/arm/mach-rockchip/sdram.c
 +++ b/arch/arm/mach-rockchip/sdram.c
 @@ -39,8 +39,12 @@ int dram_init_banksize(void)
@@ -29,7 +29,7 @@ index 530644c..0644262 100644
  #else
  #ifdef CONFIG_SPL_OPTEE
 diff --git a/include/configs/rk3399_common.h b/include/configs/rk3399_common.h
-index 127ca1f..8959799 100644
+index 89a8a44bbe..88a736b085 100644
 --- a/include/configs/rk3399_common.h
 +++ b/include/configs/rk3399_common.h
 @@ -47,11 +47,11 @@
@@ -50,5 +50,5 @@ index 127ca1f..8959799 100644
  #ifndef ROCKCHIP_DEVICE_SETTINGS
  #define ROCKCHIP_DEVICE_SETTINGS
 -- 
-2.7.4
+2.17.1
 

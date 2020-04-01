@@ -1,16 +1,15 @@
-From 0ea194052a992627ed3b3e8fd6f02b128830b96b Mon Sep 17 00:00:00 2001
+From ab30fa3b89ef22fefd2fecd128d0547d2513bb54 Mon Sep 17 00:00:00 2001
 From: hyphop <art@khadas.com>
 Date: Wed, 11 Mar 2020 21:20:02 +0900
-Subject: [PATCH] env_fat_auto_detect_source
+Subject: [PATCH 14/15] env_fat_auto_detect_source
 
 parse bootsource var for detect boot source for read env from booted fat partition
-
 ---
  env/fat.c | 57 +++++++++++++++++++++++++++++++++++++++++++++----------
  1 file changed, 47 insertions(+), 10 deletions(-)
 
 diff --git a/env/fat.c b/env/fat.c
-index d2a0864b..245e01ae 100644
+index 1836556f36..2e38c3d4f5 100644
 --- a/env/fat.c
 +++ b/env/fat.c
 @@ -29,15 +29,41 @@
@@ -125,7 +124,7 @@ index d2a0864b..245e01ae 100644
  		       CONFIG_ENV_FAT_INTERFACE, dev, part);
  		goto err_env_relocate;
  	}
-@@ -130,7 +167,7 @@ static int env_fat_load(void)
+@@ -115,7 +152,7 @@ static int env_fat_load(void)
  		 * This printf is embedded in the messages from env_save that
  		 * will calling it. The missing \n is intentional.
  		 */
