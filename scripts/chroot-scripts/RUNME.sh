@@ -64,6 +64,7 @@ EOF
 cd /
 
 # Clean up
+apt-get update
 apt-get -y clean
 apt-get -y autoclean
 #history -c
