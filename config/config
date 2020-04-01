@@ -138,7 +138,7 @@ PACKAGE_LIST="bc bridge-utils build-essential cpufrequtils device-tree-compiler 
 	wireless-regdb ncurses-term python3-apt sysfsutils toilet u-boot-tools unattended-upgrades \
 	usbutils wireless-tools console-setup unicode-data openssh-server initramfs-tools \
 	resolvconf expect iptables mc abootimg wget udev libc6 libdrm2 libgcc1 libstdc++6 libx11-6 \
-	libx11-xcb1 libxcb-dri2-0 libxcb1 rsyslog"
+	libx11-xcb1 libxcb-dri2-0 libxcb1 rsyslog  bison flex"
 
 # development related packages. remove when they are not needed for building packages in chroot
 PACKAGE_LIST+=" automake libwrap0-dev libssl-dev libnl-3-dev libnl-genl-3-dev"
