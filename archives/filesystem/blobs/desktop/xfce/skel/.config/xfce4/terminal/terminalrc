@@ -20,7 +20,6 @@ MiscScrollAlternateScreen=TRUE
 BackgroundDarkness=0.940000
 FontName=Monospace 10
 ColorForeground=#5f5fffff0000
-ScrollingBar=TERMINAL_SCROLLBAR_NONE
 MiscBellUrgent=FALSE
 MiscMouseWheelZoom=TRUE
 MiscMiddleClickOpensUri=FALSE
