@@ -489,32 +489,6 @@ build_rootfs() {
 	# mkimage tool
 	cp $UTILS_DIR/mkimage-$DISTRIB_ARCH $ROOTFS_TEMP/usr/local/bin/mkimage
 
-	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$LINUX" == "mainline" ]; then
-		# Blacklist lima.ko
-		tee $ROOTFS_TEMP/etc/modprobe.d/lima.conf <<-EOF
-		blacklist lima
-		EOF
-	fi
-
-#	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" == "xenial" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_ARCH" == "arm64" ]; then
-#		# install mali KO
-#		VER=$(ls $ROOTFS_TEMP/lib/modules/)
-#		cp $BUILD_IMAGES/meson-gx-mali-450/mali-${VER}.ko $ROOTFS_TEMP/lib/modules/$VER/kernel/mali.ko
-#		# Blacklist lima.ko
-#		tee $ROOTFS_TEMP/etc/modprobe.d/lima.conf <<-EOF
-#		blacklist lima
-#		EOF
-#		depmod -b $ROOTFS_TEMP/ -a $VER
-#
-#		# install xf86-video-armsoc
-#		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/xf86-video-armsoc_s905x/*.deb
-#
-#		# Mali udev rule
-#		tee $ROOTFS_TEMP/etc/udev/rules.d/50-mali.rules <<-EOF
-#		KERNEL=="mali", MODE="0660", GROUP="video"
-#		EOF
-#	fi
-
 	## script executing on chroot
 	cp -r scripts/chroot-scripts/RUNME.sh $ROOTFS_TEMP/
 
