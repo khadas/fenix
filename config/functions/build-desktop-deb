@@ -150,7 +150,7 @@ build_desktop_deb() {
 }
 
 desktop_postinstall() {
-	if [ "$DISTRIB_RELEASE" == "bionic" ] && [ "$DISTRIB_TYPE" == "xfce" ]; then
+	if [ "$DISTRIB_TYPE" == "xfce" ]; then
 		if [ -f $ROOTFS_TEMP/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]; then
 			if [ "$LINUX" == "mainline" ]; then
 				sed -i 's/<property name="box_move" type="bool" value=".*/<property name="box_move" type="bool" value="false"\/>/g' \
