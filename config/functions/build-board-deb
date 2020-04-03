@@ -322,6 +322,14 @@ build_board_deb() {
 		EOF
 	fi
 
+	if [ "$KHADAS_BOARD" == "VIM2" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
+		# Blacklist panfrost.ko
+		mkdir -p $pkgdir/etc/modprobe.d
+		tee $pkgdir/etc/modprobe.d/panfrost.conf <<-EOF
+		blacklist panfrost
+		EOF
+	fi
+
 	# Trigger uInitrd creation after installation, to apply
 	# /etc/initramfs/post-update.d/99-uboot
 	cat <<-EOF > $pkgdir/DEBIAN/triggers
