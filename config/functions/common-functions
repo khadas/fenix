@@ -54,7 +54,7 @@ time_cal() {
 ## Install essential packages
 prepare_host() {
 
-	HOST_ARCH=$(dpkg --print-architecture)
+	HOST_ARCH=$(uname -m)
 	case "${HOST_ARCH}" in
 		amd64|x86-64|x64|x86_64)
 			HOST_ARCH=amd64
@@ -92,19 +92,6 @@ prepare_host() {
 				lib32ncurses5 
 				lib32tinfo5 
 			)
-		fi
-
-		grep -q i386 <(dpkg --print-foreign-architectures) || (warning_msg "Requires root privileges, please enter your passowrd!" && sudo dpkg --add-architecture i386)
-		if systemd-detect-virt -q -c; then
-			info_msg "Running in container: $(systemd-detect-virt)"
-			# disable apt-cacher unless NO_APT_CACHER=no is not specified explicitly
-			if [[ $NO_APT_CACHER != no ]]; then
-				info_msg "apt-cacher is disabled in containers, set NO_APT_CACHER=no to override"
-				NO_APT_CACHER=yes
-			fi
-			CONTAINER_COMPAT="yes"
-			export CONTAINER_COMPAT
-			export NO_APT_CACHER
 		fi
 	fi
 
@@ -200,23 +187,48 @@ prepare_host() {
 		)
 	fi
 
-	# warning: apt-cacher-ng will fail if installed and used both on host and in container/chroot environment with shared network
-	# set NO_APT_CACHER=yes to prevent installation errors in such case
-	if [[ $NO_APT_CACHER != yes ]]; then hostdeps+=( apt-cacher-ng ); fi
+	if ! command -v dpkg &> /dev/null; 
+	then
+		warning_msg "Your build host architecture is not supported,please consider using a ubuntu machine."
+		warning_msg "If you wish to proceed, please install the following debian/ubuntu packages: ${hostdeps[@]}"
+	else
+		# warning: apt-cacher-ng will fail if installed and used both on host and in container/chroot environment with shared network
+		# set NO_APT_CACHER=yes to prevent installation errors in such case
+		if [[ $NO_APT_CACHER != yes ]]; 
+		then 
+			hostdeps+=( apt-cacher-ng ); 
+		fi
 
-	local deps=()
-	local installed=$(dpkg-query -W -f '${db:Status-Abbrev}|${binary:Package}\n' '*' 2>/dev/null | grep '^ii' | awk -F '|' '{print $2}' | cut -d ':' -f 1)
+		if [[ "${HOST_ARCH}" == "amd64" ]];
+		then
+			grep -q i386 <(dpkg --print-foreign-architectures) || (warning_msg "Requires root privileges, please enter your passowrd!" && sudo dpkg --add-architecture i386)
+			if systemd-detect-virt -q -c; then
+				info_msg "Running in container: $(systemd-detect-virt)"
+				# disable apt-cacher unless NO_APT_CACHER=no is not specified explicitly
+				if [[ $NO_APT_CACHER != no ]]; then
+					info_msg "apt-cacher is disabled in containers, set NO_APT_CACHER=no to override"
+					NO_APT_CACHER=yes
+				fi
+				CONTAINER_COMPAT="yes"
+				export CONTAINER_COMPAT
+				export NO_APT_CACHER
+			fi
+		fi
 
-	for packet in "${hostdeps[@]}"; do
-		if ! grep -q -x -e "$packet" <<< "$installed"; then deps+=("$packet"); fi
-	done
+		local deps=()
+		local installed=$(dpkg-query -W -f '${db:Status-Abbrev}|${binary:Package}\n' '*' 2>/dev/null | grep '^ii' | awk -F '|' '{print $2}' | cut -d ':' -f 1)
 
-	if [[ ${#deps[@]} -gt 0 ]]; then
-		info_msg "Installing build dependencies"
-		info_msg "Requires root privileges, please enter your passowrd!"
-		sudo apt-get update
-		sudo apt-get -y --no-install-recommends install "${deps[@]}"
-		sudo update-ccache-symlinks
+		for packet in "${hostdeps[@]}"; do
+			if ! grep -q -x -e "$packet" <<< "$installed"; then deps+=("$packet"); fi
+		done
+
+		if [[ ${#deps[@]} -gt 0 ]]; then
+			info_msg "Installing build dependencies"
+			info_msg "Requires root privileges, please enter your passowrd!"
+			sudo apt-get update
+			sudo apt-get -y --no-install-recommends install "${deps[@]}"
+			sudo update-ccache-symlinks
+		fi
 	fi
 
 	if [[ "${HOST_ARCH}" == "amd64" ]]; then
@@ -236,7 +248,6 @@ prepare_host() {
 			mountpoint -q /proc/sys/fs/binfmt_misc/ || sudo mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
 			test -e /proc/sys/fs/binfmt_misc/qemu-aarch64 || sudo update-binfmts --enable qemu-aarch64
 		fi
-
 	fi
 }
 
@@ -345,33 +356,35 @@ check_loop_device()
 
 ## Prepare toolhains
 prepare_toolchains() {
-	case "$(uname -m)" in
-		arm*|aarch64)
-			# try to find a compiler if none is set on CC
-			CC="$(command -v "${CC}")" || \
-			CC="$(command -v gcc)" || \
-			CC="$(command -v clang)" || \
-				( echo "No compiler found, exiting" && exit 3 )
 
-			# make sure to export it if it was not set
-			export CC=${CC}
-			return 0
-			;;
-		x86_64|amd64)
-			# get the linaro toolchain
-			build_package "gcc-linaro-aarch64-linux-gnu:host"
+	export TRIPLET="aarch64-linux-gnu"
+	export CROSS_COMPILE="${TRIPLET}-"
 
-			# export the toolchain
-			export CROSS_COMPILE="aarch64-linux-gnu-"
-			export PATH="${TOOLCHAINS}/gcc-linaro-aarch64-linux-gnu/bin:${PATH}"
-			export CC="${TOOLCHAINS}/gcc-linaro-aarch64-linux-gnu/bin/aarch64-linux-gnu-gcc"
-			return 0
-			;;
-		*)
-			echo "Unable to prepare a compiler for arm/arm64 on a $(uname -m) host, exiting"
-			exit 3
-			;;
-	esac
+	if ! command -v ${TRIPLET}-gcc &> /dev/null;
+	then
+		case "$(uname -m)" in
+			arm*|aarch64)
+				# we are building natively
+				unset CROSS_COMPILE
+				;;
+			x86_64|amd64)
+				# get the x86 linaro toolchain and add it to the path
+				package_dir=gcc-linaro-aarch64-linux-gnu
+				build_package "${package_dir}:host"
+				export PATH="${TOOLCHAINS}/${package_dir}/bin:${PATH}"
+				;;
+			*)
+				error_msg "Unable to produce a compiler for arm/arm64 on a $(uname -m) host, consider adding one to your path"
+				;;
+		esac
+	fi
+
+	export CC="$(command -v ${TRIPLET}-gcc)"
+	if ! $?;
+	then
+		error_msg "could not find a ${TRIPLET}-gcc compiler in your path"
+	fi
+
 
 }
 

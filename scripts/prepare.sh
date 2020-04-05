@@ -2,10 +2,12 @@
 
 set -xe -o pipefail
 
+## Parameters
+source config/config
+
 ## Functions
 source config/functions/functions
 
 ######################################################################################
 
-prepare_host
-prepare_toolchains
+"prepare_$1"

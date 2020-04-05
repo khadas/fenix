@@ -1,6 +1,7 @@
 *
-!scripts/prepare.sh
-!packages/gcc-linaro-aarch64-linux-gnu/package.mk
-!config/functions
+!scripts/*
+!packages/gcc-*
+# !packages/gcc-linaro-aarch64-linux-gnu/package.mk
+!config/*
 !Makefile
 

@@ -25,24 +25,16 @@ ENV LANGUAGE=$_LANG
 ENV LC_ALL=$_LANG.$_CHARSET
 ENV TERM=screen
 
-WORKDIR /home/$_USER/fenix-tools
-# we add the bare minimum
-# we may want to consider adding more things
-RUN mkdir -p ./scripts
-RUN mkdir -p ./packages/gcc-linaro-aarch64-linux-gnu
-RUN mkdir -p ./config/functions
-ADD ./scripts/prepare.sh ./scripts/
-ADD ./packages/gcc-linaro-aarch64-linux-gnu/package.mk ./packages/gcc-linaro-aarch64-linux-gnu/
-ADD ./config/functions/* ./config/functions/
-ADD ./Makefile ./
+WORKDIR /opt/fenix-tools
 
-RUN dpkg --print-architecture
+# see dockerignore
+COPY . .
 
-# setup the host with the toolchain
-RUN make prepare
+# setup the host
+RUN make prepare_host
 
-# link the toolchain
-RUN CROSS
+# setup up the toochain
+RUN make prepare_toolchains
 
 WORKDIR /home/$_USER/fenix
 
