@@ -36,7 +36,6 @@ RUN make prepare_host
 # setup up the toochain
 RUN make prepare_toolchains
 
-WORKDIR /home/$_USER/fenix
 
 # Switch to normal user
 ARG _USER='khadas'
@@ -50,5 +49,7 @@ RUN sed -i -e '/\%sudo/ c \%sudo ALL=(ALL) NOPASSWD: ALL' /etc/sudoers
 RUN usermod -aG sudo $_USER
 
 USER $_USER
+
+WORKDIR /home/$_USER/fenix
 
 ENTRYPOINT [ "/bin/bash" ]

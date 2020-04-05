@@ -126,7 +126,6 @@ prepare_host() {
 		rsync
 		libssl-dev
 		nfs-kernel-server
-		btrfs-tools
 		ncurses-term
 		p7zip-full
 		kmod
