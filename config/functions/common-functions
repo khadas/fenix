@@ -56,7 +56,7 @@ prepare_host() {
 
 	HOST_ARCH=$(dpkg --print-architecture)
 	case "${HOST_ARCH}" in
-		amd64|x86-64|x64)
+		amd64|x86-64|x64|x86_64)
 			HOST_ARCH=amd64
 			;;
 		arm*|aarch64) 
@@ -75,14 +75,24 @@ prepare_host() {
 		hostdeps+=(
 			lib32stdc++6
 			libc6-i386 
-			lib32ncurses5 
-			lib32tinfo5 
 			gcc-arm-linux-gnueabihf 
 			lib32z1
 			libc6-dev-armhf-cross 
 			systemd-container 
 			binfmt-support
 		)
+
+		if [[ ! -z $build_host || "focal" == "$build_host" ]]; then
+			hostdeps+=(
+				lib32ncurses6
+				lib32tinfo6
+			)
+		else
+			hostdeps+=(
+				lib32ncurses5 
+				lib32tinfo5 
+			)
+		fi
 
 		grep -q i386 <(dpkg --print-foreign-architectures) || (warning_msg "Requires root privileges, please enter your passowrd!" && sudo dpkg --add-architecture i386)
 		if systemd-detect-virt -q -c; then
@@ -175,18 +185,19 @@ prepare_host() {
 		btrfs-progs
 	)
 
-
-	if [[ -z $build_host || "focal" == "$build_host" ]]; then
-		hostdeps="${hostdeps/lib32ncurses5 lib32tinfo5/lib32ncurses6 lib32tinfo6}"
-	fi
-
 	# Getting ready for Ubuntu 20.04
-	if [[ "$build_host" == "focal" ]]; then
-		hostdeps+=" python2 python3"
+	if [[ ! -z "$build_host" ]] && [[ "$build_host" == "focal" ]]; then
+		hostdeps+=(
+			python2 
+			python3
+		)
 		sudo ln -fs /usr/bin/python2.7 /usr/bin/python2
 		sudo ln -fs /usr/bin/python2.7 /usr/bin/python
 	else
-		hostdeps+=" python libpython-dev"
+		hostdeps+=(
+			python 
+			libpython-dev
+		)
 	fi
 
 	# warning: apt-cacher-ng will fail if installed and used both on host and in container/chroot environment with shared network
@@ -203,8 +214,8 @@ prepare_host() {
 	if [[ ${#deps[@]} -gt 0 ]]; then
 		info_msg "Installing build dependencies"
 		info_msg "Requires root privileges, please enter your passowrd!"
-		sudo apt update
-		sudo apt -y --no-install-recommends install "${deps[@]}"
+		sudo apt-get update
+		sudo apt-get -y --no-install-recommends install "${deps[@]}"
 		sudo update-ccache-symlinks
 	fi
 
@@ -385,7 +396,7 @@ get_package_list_hash()
 
 ## create_sources_list <release> <basedir>
 ##
-## <release>: buster|bionic|focal
+## <release>: sid|buster|bionic|focal
 ## <basedir>: path to root directory
 create_sources_list()
 {
@@ -407,6 +418,13 @@ create_sources_list()
 
 	deb http://security.debian.org/ ${release}/updates main contrib non-free
 	#deb-src http://security.debian.org/ ${release}/updates main contrib non-free
+	EOF
+	;;
+
+	sid)
+	cat <<-EOF > $basedir/etc/apt/sources.list
+	deb http://${DEBIAN_MIRROR} $release main contrib non-free
+	#deb-src http://${DEBIAN_MIRROR} $release main contrib non-free
 	EOF
 	;;
 

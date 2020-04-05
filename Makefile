@@ -12,6 +12,9 @@ define help_message
 	@echo "Run 'source env/setenv.sh' to setup environment."
 endef
 
+prepare:
+	./scripts/prepare.sh
+
 release:
 	./scripts/image release
 

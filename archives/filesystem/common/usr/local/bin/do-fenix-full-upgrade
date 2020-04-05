@@ -17,11 +17,11 @@ fi
 
 FENIX_UPDATER=fenix-updater-package-bionic-${BOARD,,}-${LINUX,,}
 
-sudo apt update
-sudo apt full-upgrade -y
+sudo apt-get update
+sudo apt-get full-upgrade -y
 
 echo "Installing Fenix updater: $FENIX_UPDATER ..."
-sudo apt install -y $FENIX_UPDATER
+sudo apt-get install -y $FENIX_UPDATER
 
 sync
 

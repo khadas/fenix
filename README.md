@@ -12,6 +12,7 @@ Supported build host:
 * `Ubuntu 20.04 Focal x64 (Testing)`
   * `Building Ubuntu 18.04 Bionic image`
   * `Building Debian 10 Buster image`
+  * `Building Debian 10 Sid image`
 * `Docker`
 
 ## How to use
@@ -19,7 +20,7 @@ Supported build host:
 * Install essential packages
 
 ```bash
-$ sudo apt-get install git make lsb-release qemu-user-static
+$ sudo apt-get install git make qemu-user-static
 ```
 
 * Clone Fenix repository

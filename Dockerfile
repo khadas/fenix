@@ -1,23 +1,62 @@
-FROM ubuntu:18.04
-RUN dpkg --add-architecture i386
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade && \
-	DEBIAN_FRONTEND=noninteractive apt-get install -y sudo git dialog lsb-release binutils wget ca-certificates device-tree-compiler \
-	pv bc lzop zip binfmt-support build-essential ccache debootstrap ntpdate gawk gcc-arm-linux-gnueabihf \
-	qemu-user-static u-boot-tools uuid-dev zlib1g-dev unzip libusb-1.0-0-dev parted pkg-config libncurses5-dev whiptail \
-	debian-keyring debian-archive-keyring f2fs-tools libfile-fcntllock-perl rsync libssl-dev nfs-kernel-server btrfs-tools \
-	ncurses-term p7zip-full kmod dosfstools libc6-dev-armhf-cross fakeroot \
-	curl patchutils python liblz4-tool libpython2.7-dev linux-base swig libpython-dev aptly acl\
-	systemd-container udev g++-5-arm-linux-gnueabihf lib32stdc++6 \
-	libc6-i386 lib32ncurses5 lib32tinfo5 locales ncurses-base zlib1g:i386 pixz bison libbison-dev flex libfl-dev lib32z1 tzdata cpio
+# use --build-arg VERSION=20.04 to override this if you wish
+ARG _VERSION='18.04'
+FROM ubuntu:$_VERSION
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# install some dev tools to help us out and basic functionality
+RUN apt-get update &&  apt-get install -y \
+	vim \
+	nano \
+	gdb \
+	git \
+	locales \
+	sudo \
+	make
+
 RUN locale-gen en_US.UTF-8
-ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8' TERM=screen
+
+ARG _LANG='en_US'
+ARG _CHARSET='UTF-8'
+
+ENV LANG=$_LANG.$_CHARSET
+#keep just the language, drop the charaterset
+ENV LANGUAGE=$_LANG
+ENV LC_ALL=$_LANG.$_CHARSET
+ENV TERM=screen
+
+WORKDIR /home/$_USER/fenix-tools
+# we add the bare minimum
+# we may want to consider adding more things
+RUN mkdir -p ./scripts
+RUN mkdir -p ./packages/gcc-linaro-aarch64-linux-gnu
+RUN mkdir -p ./config/functions
+ADD ./scripts/prepare.sh ./scripts/
+ADD ./packages/gcc-linaro-aarch64-linux-gnu/package.mk ./packages/gcc-linaro-aarch64-linux-gnu/
+ADD ./config/functions/* ./config/functions/
+ADD ./Makefile ./
+
+RUN dpkg --print-architecture
+
+# setup the host with the toolchain
+RUN make prepare
+
+# link the toolchain
+RUN CROSS
+
+WORKDIR /home/$_USER/fenix
 
 # Switch to normal user
-RUN useradd -c 'khadas' -m -d /home/khadas -s /bin/bash khadas
+ARG _USER='khadas'
+ARG _GROUP='khadas'
+ARG _UID='1000'
+ARG _GID='1000'
+
+RUN groupadd --gid $_GID $_GROUP
+RUN useradd -c $_USER --uid $_UID --gid $_GID -m -d /home/$_USER -s /bin/bash $_USER
 RUN sed -i -e '/\%sudo/ c \%sudo ALL=(ALL) NOPASSWD: ALL' /etc/sudoers
-RUN usermod -a -G sudo khadas
+RUN usermod -aG sudo $_USER
 
-USER khadas
+USER $_USER
 
-WORKDIR /home/khadas/fenix
 ENTRYPOINT [ "/bin/bash" ]

@@ -186,7 +186,7 @@ case $DISTRIB_TYPE in
 esac
 
 case $DISTRIB_RELEASE in
-	buster)
+	buster|sid)
 		DEBOOTSTRAP_COMPONENTS="main"
 		PACKAGE_LIST_RELEASE="man-db less kbd net-tools netcat-openbsd gnupg2 dirmngr command-not-found"
 		PACKAGE_LIST_KODI="libglu1 libmicrohttpd12 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libva-drm2 libcurl4"

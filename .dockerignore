@@ -1,19 +1,6 @@
-# Git repos
-linux/
-u-boot/
+*
+!scripts/prepare.sh
+!packages/gcc-linaro-aarch64-linux-gnu/package.mk
+!config/functions
+!Makefile
 
-# Legacy Git repos
-utils/
-easy_setup_target/
-
-# Generated folders
-build/
-downloads/
-images/
-rootfs/
-
-# Legacy folders
-archives/debs/
-archives/ubuntu-base/
-archives/ubuntu-mate/
-archives/epbox/

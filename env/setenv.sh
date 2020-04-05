@@ -8,7 +8,7 @@ unset SUPPORTED_LINUX
 
 DISTRIBUTION_ARRAY=("Ubuntu" "Debian")
 Ubuntu_RELEASE_ARRAY=("bionic" "focal")
-Debian_RELEASE_ARRAY=("buster")
+Debian_RELEASE_ARRAY=("buster" "sid")
 DISTRIB_ARCH_ARRAY=("arm64" "armhf")
 Ubuntu_TYPE_ARRAY=("server" "xfce" "lxde")
 Debian_TYPE_ARRAY=("server" "xfce" "lxde")
