@@ -74,7 +74,8 @@ prepare_host() {
 				return -1
 			fi
 		;;
-		buster|focal)
+		#buster|focal)
+		focal)
 			if [ "$build_host" != "focal" ]; then
 				error_msg "Building Debian Buster(10)/Ubuntu Focal(20.04) images requires a Ubuntu Focal(20.04) build host, please upgrade your build host or try to build in Docker."
 				return -1
@@ -155,6 +156,10 @@ prepare_host() {
 		test -e /proc/sys/fs/binfmt_misc/qemu-arm || sudo update-binfmts --enable qemu-arm
 		test -e /proc/sys/fs/binfmt_misc/qemu-aarch64 || sudo update-binfmts --enable qemu-aarch64
 	fi
+
+        build_package "qemu:host"
+
+
 }
 
 ## Mount chroot

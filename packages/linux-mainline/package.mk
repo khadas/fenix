@@ -17,10 +17,11 @@ make_target() {
 
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
 
+#	next to string no need 
 #	make ARCH=arm64 distclean
-	make ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} ${LINUX_DEFCONFIG}
+#	make ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} ${LINUX_DEFCONFIG}
 
-	# Apply configuration
+#	# Apply configuration
 	cp $PKGS_DIR/$PKG_NAME/configs/${KHADAS_BOARD}.config .config
 
 	make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} Image modules dtbs

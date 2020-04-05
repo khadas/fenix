@@ -74,8 +74,14 @@ function choose_khadas_board() {
 	i=0
 
 	KHADAS_BOARD_ARRAY=()
-	for board in $ROOT/config/boards/*.conf; do
-		KHADAS_BOARD_ARRAY+=("$(basename $board | cut -d'.' -f1)")
+
+#	for board in $ROOT/config/boards/*.conf; do
+#		KHADAS_BOARD_ARRAY+=("$(basename $board | cut -d'.' -f1)")
+#	done
+
+#	1 VIM1 2 VIM2 ..... 
+	for board in VIM1 VIM2 VIM3 VIM3L Edge; do
+		KHADAS_BOARD_ARRAY+=("$board")
 	done
 
 	KHADAS_BOARD_ARRAY_LEN=${#KHADAS_BOARD_ARRAY[@]}
@@ -89,7 +95,7 @@ function choose_khadas_board() {
 	echo ""
 
 	local DEFAULT_NUM
-	DEFAULT_NUM=2
+	DEFAULT_NUM=1
 
 	export KHADAS_BOARD=
 	local ANSWER

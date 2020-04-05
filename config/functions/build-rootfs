@@ -221,7 +221,17 @@ create_rootfs_cache()
 
 		[[ ${PIPESTATUS[0]} -ne 0 || ! -f $ROOTFS_TEMP/debootstrap/debootstrap ]] && error_msg "Debootstrap base system first stage failed" && return -1
 
-		cp /usr/bin/$QEMU_BINARY $ROOTFS_TEMP/usr/bin/
+#		cp /usr/bin/$QEMU_BINARY $ROOTFS_TEMP/usr/bin/
+
+		# scan qemu
+		for p in "$ROOT/build/qemu/" /usr/bin ; do
+		    Q="$p/$QEMU_BINARY"
+		    [ -f "$Q" ] && {
+			$Q --version || exit 1
+			cp "$Q" "$ROOTFS_TEMP/usr/bin/"
+			break
+		    }
+		done
 
 		mkdir -p $ROOTFS_TEMP/usr/share/keyrings/
 		cp /usr/share/keyrings/debian-archive-keyring.gpg $ROOTFS_TEMP/usr/share/keyrings/
