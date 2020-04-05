@@ -97,6 +97,10 @@ build_gpu_deb() {
 		rm -rf $pkgdir
 	elif [ "$KHADAS_BOARD" == "Edge" ]; then
 
+		if [ "$LINUX" == "mainline" ]; then
+			return
+		fi
+
 		cd $ROOT
 
 		# Remove old debs

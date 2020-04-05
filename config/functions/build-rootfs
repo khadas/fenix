@@ -48,14 +48,16 @@ install_common()
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${LINUX_UBOOT_DEB}_${VERSION}-${UBOOT_VER}_${DISTRIB_ARCH}.deb
 	fi
 
-	# Install GPU deb in chroot
-	if [ -f $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-mali-${GPU_PLATFORM}_${VERSION}-${GPU_VER}_${DISTRIB_ARCH}.deb ]; then
-		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-mali-${GPU_PLATFORM}_${VERSION}-${GPU_VER}_${DISTRIB_ARCH}.deb
-	fi
+	if [ -n "$GPU_VER" ]; then
+		# Install GPU deb in chroot
+		if [ -f $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-mali-${GPU_PLATFORM}_${VERSION}-${GPU_VER}_${DISTRIB_ARCH}.deb ]; then
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-mali-${GPU_PLATFORM}_${VERSION}-${GPU_VER}_${DISTRIB_ARCH}.deb
+		fi
 
-	# Install GPU development deb in chroot
-	if [ -f $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-${VENDOR,,}-dev_${VERSION}_${DISTRIB_ARCH}.deb ]; then
-		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-${VENDOR,,}-dev_${VERSION}_${DISTRIB_ARCH}.deb
+		# Install GPU development deb in chroot
+		if [ -f $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-${VENDOR,,}-dev_${VERSION}_${DISTRIB_ARCH}.deb ]; then
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/linux-gpu-${VENDOR,,}-dev_${VERSION}_${DISTRIB_ARCH}.deb
+		fi
 	fi
 
 	if [ "$DISTRIB_TYPE" != "server" ]; then
