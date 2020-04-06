@@ -136,10 +136,6 @@ build_linux() {
     make $LINUX_DEFCONFIG
 	# go get a coffe :)
 	make -j${JOBS} Image dtbs modules
-	# try to make all the tools but we continue if it fails
-	cd tools
-    make -i -j${JOBS} prefix=/usr/
-
 }
 
 ## Build linux debs

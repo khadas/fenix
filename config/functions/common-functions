@@ -75,9 +75,7 @@ prepare_host() {
 		hostdeps+=(
 			lib32stdc++6
 			libc6-i386 
-			gcc-arm-linux-gnueabihf 
 			lib32z1
-			libc6-dev-armhf-cross 
 			systemd-container 
 			binfmt-support
 		)

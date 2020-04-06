@@ -22,7 +22,6 @@ make_target() {
 	cp $PKGS_DIR/$PKG_NAME/configs/${KHADAS_BOARD}.config .config
 
 	make -j${JOBS} Image modules dtbs 
-	make -i -j${JOBS} tools/all
 }
 
 makeinstall_target() {
