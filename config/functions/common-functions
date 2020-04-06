@@ -377,7 +377,7 @@ prepare_toolchains() {
 	fi
 
 	export CC="$(command -v ${TRIPLET}-gcc)"
-	if ! $?;
+	if [[ ! -z "${CC}" ]];
 	then
 		error_msg "could not find a ${TRIPLET}-gcc compiler in your path"
 	fi
