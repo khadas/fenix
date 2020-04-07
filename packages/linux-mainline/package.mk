@@ -17,8 +17,9 @@ make_target() {
 
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
 
+#	next two sting no need 
 #	make ARCH=arm64 distclean
-	make ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} ${LINUX_DEFCONFIG}
+#	make ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} ${LINUX_DEFCONFIG}
 
 	# Apply configuration
 	cp $PKGS_DIR/$PKG_NAME/configs/${KHADAS_BOARD}.config .config
