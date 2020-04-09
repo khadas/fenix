@@ -11,6 +11,7 @@ Supported build host:
   * `Building Ubuntu 18.04 Bionic image`
 * `Ubuntu 20.04 Focal x64 (Testing)`
   * `Building Ubuntu 18.04 Bionic image`
+  * `Building Ubuntu 20.04 Focal image`
   * `Building Debian 10 Buster image`
 * `Docker`
 
