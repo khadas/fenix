@@ -1,0 +1,155 @@
+From patchwork Mon Apr 20 13:46:01 2020
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Patchwork-Submitter: Neil Armstrong <narmstrong@baylibre.com>
+X-Patchwork-Id: 1273424
+Return-Path: <u-boot-bounces@lists.denx.de>
+X-Original-To: incoming@patchwork.ozlabs.org
+Delivered-To: patchwork-incoming@bilbo.ozlabs.org
+Authentication-Results: ozlabs.org;
+ spf=pass (sender SPF authorized) smtp.mailfrom=lists.denx.de
+ (client-ip=85.214.62.61; helo=phobos.denx.de;
+ envelope-from=u-boot-bounces@lists.denx.de; receiver=<UNKNOWN>)
+Authentication-Results: ozlabs.org;
+ dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: ozlabs.org; dkim=pass (2048-bit key;
+ unprotected) header.d=baylibre-com.20150623.gappssmtp.com
+ header.i=@baylibre-com.20150623.gappssmtp.com header.a=rsa-sha256
+ header.s=20150623 header.b=fRZ6ASfl; dkim-atps=neutral
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits))
+ (No client certificate requested)
+ by ozlabs.org (Postfix) with ESMTPS id 495SfC6ydlz9sSq
+ for <incoming@patchwork.ozlabs.org>; Mon, 20 Apr 2020 23:46:27 +1000 (AEST)
+Received: from h2850616.stratoserver.net (localhost [IPv6:::1])
+ by phobos.denx.de (Postfix) with ESMTP id 4F7BB81CC0;
+ Mon, 20 Apr 2020 15:46:14 +0200 (CEST)
+Authentication-Results: phobos.denx.de;
+ dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: phobos.denx.de;
+ spf=pass smtp.mailfrom=u-boot-bounces@lists.denx.de
+Authentication-Results: phobos.denx.de; dkim=pass (2048-bit key;
+ unprotected) header.d=baylibre-com.20150623.gappssmtp.com
+ header.i=@baylibre-com.20150623.gappssmtp.com header.b="fRZ6ASfl";
+ dkim-atps=neutral
+Received: by phobos.denx.de (Postfix, from userid 109)
+ id 6422D81CBD; Mon, 20 Apr 2020 15:46:11 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on phobos.denx.de
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+ DKIM_VALID,SPF_HELO_NONE,URIBL_BLOCKED autolearn=ham
+ autolearn_force=no version=3.4.2
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
+ [IPv6:2a00:1450:4864:20::344])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+ (No client certificate requested)
+ by phobos.denx.de (Postfix) with ESMTPS id AFDF881CC6
+ for <u-boot@lists.denx.de>; Mon, 20 Apr 2020 15:46:04 +0200 (CEST)
+Authentication-Results: phobos.denx.de;
+ dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: phobos.denx.de;
+ spf=pass smtp.mailfrom=narmstrong@baylibre.com
+Received: by mail-wm1-x344.google.com with SMTP id z6so11486481wml.2
+ for <u-boot@lists.denx.de>; Mon, 20 Apr 2020 06:46:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=F93BLxGkkMH81nwM3A01OVQgk6CwBZaoPz4kfmEz5yU=;
+ b=fRZ6ASfl63AvudrRHItRFYNvGLaEiOtYBvDKOuXwgcWtH8KlHnvL+eSrdZxKfIlHkV
+ JmYbclElK4yTeWciMCLdAmv39ohi1tij5ErSTkXfSQ3+7nAUWbBFb09nfy65T2q53ONy
+ GMzS1uvdirf8xRsflcULBDuhagZ0cO8X39/cSbTIQyhWERRibIIF7Hq/nRuN9UJ6957e
+ SjxCSNRpRqIaM46K7C58AXQ/w+F3J396PxAH0x9nneVjVM7Q3gNAp/KSZL3Wyd9qelrT
+ brTcCRgWp+K3B/+Z0FKNHHl4EKOXBiW+3HeC7sF90uWJzx3SrDb5SWygP2HIu+OkGBLv
+ x64Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=F93BLxGkkMH81nwM3A01OVQgk6CwBZaoPz4kfmEz5yU=;
+ b=jdYJANLZakI2M5FibJwTR53VWHZzmmnU94aZLPNL8ttpgOoE0uTlT6X9uvS0aS6qYR
+ lM054aD3LQWSMjntFdsR85CbvtpYam7VWluQuX9w95PrNiICd9BW/5rGbfRdIjnc6jXu
+ q7VuG/6jc6+ROdHTGmMHBU/3YEOJWG6J2JtFK7b2mmSFXTauKGTDbhsuN3UbnLRqwuLs
+ M22W2qu2xFZfajUbvtCxgjZvxETRMOsIW3Ur9Ao3g8UVntHlbec52JiapDLCG+DqdZhx
+ PvFwcT0X/4am/jt/tkvH3Qy/UQUnSxlKBTXvkNeCl33AafnigPdhKXqfwVs95THdw9RA
+ l0Qg==
+X-Gm-Message-State: AGi0PuZbEuJospCKuMg6FNrAq8p1HwwDLe+8PS93XU3I+M09ipDYQRr8
+ qI+lJadTT6S4dX+JBRbdhggrZg==
+X-Google-Smtp-Source: APiQypLcBhkGhAfS5VLALSfPxsgn0P9hd8WR0wfdqyxq9fI6l+JaHa6IxkDlidjE61JkjmHSLtSCJA==
+X-Received: by 2002:a1c:bb08:: with SMTP id l8mr19455068wmf.168.1587390364142; 
+ Mon, 20 Apr 2020 06:46:04 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:39cc:a07:8b48:cc56])
+ by smtp.gmail.com with ESMTPSA id
+ v10sm1330797wrq.45.2020.04.20.06.46.03
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 20 Apr 2020 06:46:03 -0700 (PDT)
+From: Neil Armstrong <narmstrong@baylibre.com>
+To: u-boot-amlogic@groups.io,
+	marex@denx.de
+Cc: u-boot@lists.denx.de,
+	Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH] usb: dwc3-meson-g12a: add power-on/off of the PHYs
+Date: Mon, 20 Apr 2020 15:46:01 +0200
+Message-Id: <20200420134601.19863-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.22.0
+MIME-Version: 1.0
+X-BeenThere: u-boot@lists.denx.de
+X-Mailman-Version: 2.1.30rc1
+Precedence: list
+List-Id: U-Boot discussion <u-boot.lists.denx.de>
+List-Unsubscribe: <https://lists.denx.de/options/u-boot>,
+ <mailto:u-boot-request@lists.denx.de?subject=unsubscribe>
+List-Archive: <https://lists.denx.de/pipermail/u-boot/>
+List-Post: <mailto:u-boot@lists.denx.de>
+List-Help: <mailto:u-boot-request@lists.denx.de?subject=help>
+List-Subscribe: <https://lists.denx.de/listinfo/u-boot>,
+ <mailto:u-boot-request@lists.denx.de?subject=subscribe>
+Errors-To: u-boot-bounces@lists.denx.de
+Sender: "U-Boot" <u-boot-bounces@lists.denx.de>
+X-Virus-Scanned: clamav-milter 0.102.2 at phobos.denx.de
+X-Virus-Status: Clean
+
+Power on/off the PHYs to enable power to the USB ports, fixing USB support
+on Khadas VIM3/VIM3L boards.
+
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+---
+ drivers/usb/dwc3/dwc3-meson-g12a.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/drivers/usb/dwc3/dwc3-meson-g12a.c b/drivers/usb/dwc3/dwc3-meson-g12a.c
+index d4453f8784..8f4a2f3f82 100644
+--- a/drivers/usb/dwc3/dwc3-meson-g12a.c
++++ b/drivers/usb/dwc3/dwc3-meson-g12a.c
+@@ -408,6 +408,15 @@ static int dwc3_meson_g12a_probe(struct udevice *dev)
+ 			goto err_phy_init;
+ 	}
+ 
++	for (i = 0 ; i < PHY_COUNT ; ++i) {
++		if (!priv->phys[i].dev)
++			continue;
++
++		ret = generic_phy_power_on(&priv->phys[i]);
++		if (ret)
++			goto err_phy_init;
++	}
++
+ 	return 0;
+ 
+ err_phy_init:
+@@ -430,6 +439,13 @@ static int dwc3_meson_g12a_remove(struct udevice *dev)
+ 
+ 	clk_release_all(&priv->clk, 1);
+ 
++	for (i = 0 ; i < PHY_COUNT ; ++i) {
++		if (!priv->phys[i].dev)
++			continue;
++
++		 generic_phy_power_off(&priv->phys[i]);
++	}
++
+ 	for (i = 0 ; i < PHY_COUNT ; ++i) {
+ 		if (!priv->phys[i].dev)
+ 			continue;
