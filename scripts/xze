@@ -40,8 +40,14 @@ OPTS=
 T=4      # threads
 B=90     # in MEGS
 
+META=
 for a in $@; do
+    shift
     case $a in
+	-m)
+	META=1
+	continue
+	;;
 	-T*)
 	T=${a#-T}
 	continue
@@ -91,4 +97,8 @@ XZS=$($xz -l $OUT)
 echo "[i] XZ info
 $XZS">&2
 
+[ "$META" ] && {
+    echo "[i] add meta $@">&2
+
+}
 #echo "[i] pad +$SD">&2
