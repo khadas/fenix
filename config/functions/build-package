@@ -248,6 +248,7 @@ unpack_package() {
 				 $PKG_DIR/patches/$PKG_VERSION/*.patch; do
 
 			if [ -f "$i" ]; then
+				echo "[PATCH] $i">&2
 				if [ -n "$(grep -E '^GIT binary patch$' $i)" ]; then
 					cat $i | git apply --directory=`echo "$PKG_BUILD" | cut -f1 -d\ ` -p1 --verbose --whitespace=nowarn --unsafe-paths
 				else
