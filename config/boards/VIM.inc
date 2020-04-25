@@ -125,8 +125,8 @@ uboot_custom_postprocess() {
 ## Write u-boot
 write_uboot_platform()
 {
-	dd if=$1/u-boot.bin.sd.bin of=$2 conv=fsync bs=1 count=442 > /dev/null 2>&1
-	dd if=$1/u-boot.bin.sd.bin of=$2 conv=fsync bs=512 skip=1 seek=1 > /dev/null 2>&1
+	dd if="$1/u-boot.bin.sd.bin" of="$2" conv=fsync bs=1 count=442 > /dev/null 2>&1
+	dd if="$1/u-boot.bin.sd.bin" of="$2" conv=fsync bs=512 skip=1 seek=1 > /dev/null 2>&1
 }
 
 setup_write_uboot_platform()
@@ -189,7 +189,7 @@ pack_image_platform() {
 
 		check_loop_device "$IMAGE_LOOP_DEV"
 
-		write_uboot_platform ${UBOOT_IMAGE_DIR} ${IMAGE_LOOP_DEV}
+		write_uboot_platform "${UBOOT_IMAGE_DIR}" "${IMAGE_LOOP_DEV}"
 
         losetup -d "${IMAGE_LOOP_DEV}"
     else
