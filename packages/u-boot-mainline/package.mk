@@ -1,14 +1,21 @@
-PKG_NAME="u-boot-mainline"
-PKG_VERSION="2020.01-rc5"
-PKG_SHA256="a48cd9209c36a69b0bdb2184daa752f942fb16628d2d49bb69ed1d8b2236cce8"
-PKG_SOURCE_DIR="u-boot-${PKG_VERSION}*"
-PKG_SITE="ftp://ftp.denx.de/pub/u-boot"
-PKG_URL="ftp://ftp.denx.de/pub/u-boot/u-boot-${PKG_VERSION}.tar.bz2"
+PKG_NAME=u-boot-mainline
+PKG_VERSION=caad316b3165615f1a4848901811a4a084444c9d
+PKG_SHA256=87006eb9e3b070894db2f61b01727c1d5abc7d20f9b5db9e2db1d079474afad1
+PKG_SOURCE_DIR=u-boot-$PKG_VERSION
+PKG_SITE=https://github.com/u-boot/u-boot
+PKG_URL=$PKG_SITE/archive/$PKG_VERSION.tar.gz
+PKG_SHORTDESC="u-boot: Universal Bootloader project"
+PKG_SOURCE_NAME=u-boot-$PKG_VERSION.tar.gz
 PKG_ARCH="arm aarch64"
 PKG_LICENSE="GPL"
-PKG_SHORTDESC="u-boot: Universal Bootloader project"
-PKG_SOURCE_NAME="u-boot-${PKG_VERSION}.tar.bz2"
 PKG_NEED_BUILD="YES"
+
+# PREV
+#PKG_VERSION="2020.01-rc5"
+#PKG_SHA256="a48cd9209c36a69b0bdb2184daa752f942fb16628d2d49bb69ed1d8b2236cce8"
+#PKG_SITE="ftp://ftp.denx.de/pub/u-boot"
+#PKG_URL="ftp://ftp.denx.de/pub/u-boot/u-boot-${PKG_VERSION}.tar.bz2"
+#PKG_SOURCE_NAME="u-boot-${PKG_VERSION}.tar.bz2"
 
 
 make_target() {
