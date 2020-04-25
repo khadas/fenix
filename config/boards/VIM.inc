@@ -125,8 +125,8 @@ uboot_custom_postprocess() {
 ## Write u-boot
 write_uboot_platform()
 {
-	dd if="$1/u-boot.bin.sd.bin" of="$2" conv=fsync bs=1 count=442 > /dev/null 2>&1
-	dd if="$1/u-boot.bin.sd.bin" of="$2" conv=fsync bs=512 skip=1 seek=1 > /dev/null 2>&1
+	dd if="$1/u-boot.bin.sd.bin" of="$2" conv=fsync,notrunc bs=442 count=1 > /dev/null 2>&1
+	dd if="$1/u-boot.bin.sd.bin" of="$2" conv=fsync,notrunc bs=512 skip=1 seek=1 > /dev/null 2>&1
 }
 
 setup_write_uboot_platform()
@@ -179,19 +179,7 @@ pack_image_platform() {
 
 		$UTILS_DIR/aml_image_v2_packer -r $UPGRADE_DIR/Amlogic/package.conf $UPGRADE_DIR/Amlogic $BUILD_IMAGES/${IMAGE_FILE_NAME}
     elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
-
-        IMAGE_LOOP_DEV="$(losetup --show -f ${BUILD_IMAGES}/${IMAGE_FILE_NAME})"
-        if [[ -z $IMAGE_LOOP_DEV ]]; then
-			error_msg "Unable to find free loop device!"
-			return -1
-		fi
-		partprobe "${IMAGE_LOOP_DEV}"
-
-		check_loop_device "$IMAGE_LOOP_DEV"
-
-		write_uboot_platform "${UBOOT_IMAGE_DIR}" "${IMAGE_LOOP_DEV}"
-
-        losetup -d "${IMAGE_LOOP_DEV}"
+		write_uboot_platform "$UBOOT_IMAGE_DIR" "$BUILD_IMAGES/$IMAGE_FILE_NAME"
     else
         error_msg "Unsupported install type: '$INSTALL_TYPE'"
         return -1
