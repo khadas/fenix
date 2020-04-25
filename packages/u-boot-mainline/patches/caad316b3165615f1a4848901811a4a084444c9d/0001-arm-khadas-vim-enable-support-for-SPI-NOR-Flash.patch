@@ -1,0 +1,1494 @@
+From: Neil Armstrong <narmstrong@baylibre.com>
+To: u-boot-amlogic@groups.io
+Cc: u-boot@lists.denx.de,
+Subject: [PATCH 1/5] arm64: dts: meson: sync dt and bindings from v5.7-rc1
+Date: Mon, 20 Apr 2020 15:44:41 +0200
+
+Sync the device tree and dt-bindings from Linux v5.7-rc1 8f3d9f354286
+("Linux 5.7-rc1").
+
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+---
+ arch/arm/dts/meson-axg-s400.dts          |   6 +-
+ arch/arm/dts/meson-g12-common.dtsi       | 136 +++++++++++++++++++++--
+ arch/arm/dts/meson-g12.dtsi              |   1 +
+ arch/arm/dts/meson-g12a-sei510.dts       |   4 +-
+ arch/arm/dts/meson-g12a-u200.dts         |   2 +-
+ arch/arm/dts/meson-g12b-khadas-vim3.dtsi |   4 +-
+ arch/arm/dts/meson-g12b-odroid-n2.dts    |  25 ++++-
+ arch/arm/dts/meson-gx.dtsi               |  52 +++++++++
+ arch/arm/dts/meson-gxbb-odroidc2.dts     |   1 +
+ arch/arm/dts/meson-gxl-s905x-p212.dtsi   |   9 +-
+ arch/arm/dts/meson-gxm-khadas-vim2.dts   |  89 +++------------
+ arch/arm/dts/meson-gxm.dtsi              |  28 +++++
+ arch/arm/dts/meson-khadas-vim3.dtsi      |  24 +++-
+ arch/arm/dts/meson-sm1-khadas-vim3l.dts  |   8 +-
+ arch/arm/dts/meson-sm1-sei610.dts        |   3 +-
+ arch/arm/dts/meson-sm1.dtsi              |   1 +
+ include/dt-bindings/clock/g12a-clkc.h    |   2 +
+ include/dt-bindings/clock/gxbb-clkc.h    |   1 +
+ 18 files changed, 295 insertions(+), 101 deletions(-)
+
+diff --git a/arch/arm/dts/meson-axg-s400.dts b/arch/arm/dts/meson-axg-s400.dts
+index 4cd2d59518..cb1360ae12 100644
+--- a/arch/arm/dts/meson-axg-s400.dts
++++ b/arch/arm/dts/meson-axg-s400.dts
+@@ -313,15 +313,15 @@
+ 			dai-tdm-slot-rx-mask-1 = <1 1>;
+ 			mclk-fs = <256>;
+ 
+-			codec@0 {
++			codec-0 {
+ 				sound-dai = <&lineout>;
+ 			};
+ 
+-			codec@1 {
++			codec-1 {
+ 				sound-dai = <&speaker_amp1>;
+ 			};
+ 
+-			codec@2 {
++			codec-2 {
+ 				sound-dai = <&linein>;
+ 			};
+ 
+diff --git a/arch/arm/dts/meson-g12-common.dtsi b/arch/arm/dts/meson-g12-common.dtsi
+index abe04f4ad7..0882ea215b 100644
+--- a/arch/arm/dts/meson-g12-common.dtsi
++++ b/arch/arm/dts/meson-g12-common.dtsi
+@@ -295,17 +295,9 @@
+ 						};
+ 					};
+ 
+-					emmc_pins: emmc {
++					emmc_ctrl_pins: emmc-ctrl {
+ 						mux-0 {
+-							groups = "emmc_nand_d0",
+-								 "emmc_nand_d1",
+-								 "emmc_nand_d2",
+-								 "emmc_nand_d3",
+-								 "emmc_nand_d4",
+-								 "emmc_nand_d5",
+-								 "emmc_nand_d6",
+-								 "emmc_nand_d7",
+-								 "emmc_cmd";
++							groups = "emmc_cmd";
+ 							function = "emmc";
+ 							bias-pull-up;
+ 							drive-strength-microamp = <4000>;
+@@ -319,6 +311,34 @@
+ 						};
+ 					};
+ 
++					emmc_data_4b_pins: emmc-data-4b {
++						mux-0 {
++							groups = "emmc_nand_d0",
++								 "emmc_nand_d1",
++								 "emmc_nand_d2",
++								 "emmc_nand_d3";
++							function = "emmc";
++							bias-pull-up;
++							drive-strength-microamp = <4000>;
++						};
++					};
++
++					emmc_data_8b_pins: emmc-data-8b {
++						mux-0 {
++							groups = "emmc_nand_d0",
++								 "emmc_nand_d1",
++								 "emmc_nand_d2",
++								 "emmc_nand_d3",
++								 "emmc_nand_d4",
++								 "emmc_nand_d5",
++								 "emmc_nand_d6",
++								 "emmc_nand_d7";
++							function = "emmc";
++							bias-pull-up;
++							drive-strength-microamp = <4000>;
++						};
++					};
++
+ 					emmc_ds_pins: emmc-ds {
+ 						mux {
+ 							groups = "emmc_nand_ds";
+@@ -573,6 +593,17 @@
+ 						};
+ 					};
+ 
++					nor_pins: nor {
++						mux {
++							groups = "nor_d",
++							       "nor_q",
++							       "nor_c",
++							       "nor_cs";
++							function = "nor";
++							bias-disable;
++						};
++					};
++
+ 					pdm_din0_a_pins: pdm-din0-a {
+ 						mux {
+ 							groups = "pdm_din0_a";
+@@ -957,6 +988,57 @@
+ 						};
+ 					};
+ 
++					spicc0_x_pins: spicc0-x {
++						mux {
++							groups = "spi0_mosi_x",
++							       "spi0_miso_x",
++							       "spi0_clk_x";
++							function = "spi0";
++							drive-strength-microamp = <4000>;
++							bias-disable;
++						};
++					};
++
++					spicc0_ss0_x_pins: spicc0-ss0-x {
++						mux {
++							groups = "spi0_ss0_x";
++							function = "spi0";
++							drive-strength-microamp = <4000>;
++							bias-disable;
++						};
++					};
++
++					spicc0_c_pins: spicc0-c {
++						mux {
++							groups = "spi0_mosi_c",
++							       "spi0_miso_c",
++							       "spi0_ss0_c",
++							       "spi0_clk_c";
++							function = "spi0";
++							drive-strength-microamp = <4000>;
++							bias-disable;
++						};
++					};
++
++					spicc1_pins: spicc1 {
++						mux {
++							groups = "spi1_mosi",
++							       "spi1_miso",
++							       "spi1_clk";
++							function = "spi1";
++							drive-strength-microamp = <4000>;
++						};
++					};
++
++					spicc1_ss0_pins: spicc1-ss0 {
++						mux {
++							groups = "spi1_ss0";
++							function = "spi1";
++							drive-strength-microamp = <4000>;
++							bias-disable;
++						};
++					};
++
+ 					tdm_a_din0_pins: tdm-a-din0 {
+ 						mux {
+ 							groups = "tdm_a_din0";
+@@ -2051,6 +2133,39 @@
+ 				amlogic,channel-interrupts = <64 65 66 67 68 69 70 71>;
+ 			};
+ 
++			spicc0: spi@13000 {
++				compatible = "amlogic,meson-g12a-spicc";
++				reg = <0x0 0x13000 0x0 0x44>;
++				interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clkc CLKID_SPICC0>,
++					 <&clkc CLKID_SPICC0_SCLK>;
++				clock-names = "core", "pclk";
++				#address-cells = <1>;
++				#size-cells = <0>;
++				status = "disabled";
++			};
++
++			spicc1: spi@15000 {
++				compatible = "amlogic,meson-g12a-spicc";
++				reg = <0x0 0x15000 0x0 0x44>;
++				interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clkc CLKID_SPICC1>,
++					 <&clkc CLKID_SPICC1_SCLK>;
++				clock-names = "core", "pclk";
++				#address-cells = <1>;
++				#size-cells = <0>;
++				status = "disabled";
++			};
++
++			spifc: spi@14000 {
++				compatible = "amlogic,meson-gxbb-spifc";
++				status = "disabled";
++				reg = <0x0 0x14000 0x0 0x80>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++				clocks = <&clkc CLKID_CLK81>;
++			};
++
+ 			pwm_ef: pwm@19000 {
+ 				compatible = "amlogic,meson-g12a-ee-pwm";
+ 				reg = <0x0 0x19000 0x0 0x20>;
+@@ -2220,6 +2335,7 @@
+ 				dr_mode = "host";
+ 				snps,dis_u2_susphy_quirk;
+ 				snps,quirk-frame-length-adjustment;
++				snps,parkmode-disable-ss-quirk;
+ 			};
+ 		};
+ 
+diff --git a/arch/arm/dts/meson-g12.dtsi b/arch/arm/dts/meson-g12.dtsi
+index 03054c4788..55d39020ec 100644
+--- a/arch/arm/dts/meson-g12.dtsi
++++ b/arch/arm/dts/meson-g12.dtsi
+@@ -56,6 +56,7 @@
+ 			 <&clkc_audio AUD_CLKID_PDM_DCLK>,
+ 			 <&clkc_audio AUD_CLKID_PDM_SYSCLK>;
+ 		clock-names = "pclk", "dclk", "sysclk";
++		resets = <&clkc_audio AUD_RESET_PDM>;
+ 		status = "disabled";
+ 	};
+ 
+diff --git a/arch/arm/dts/meson-g12a-sei510.dts b/arch/arm/dts/meson-g12a-sei510.dts
+index 2ac9e3a43b..b00d0468c7 100644
+--- a/arch/arm/dts/meson-g12a-sei510.dts
++++ b/arch/arm/dts/meson-g12a-sei510.dts
+@@ -269,7 +269,7 @@
+ 			dai-tdm-slot-tx-mask-3 = <1 1>;
+ 			mclk-fs = <256>;
+ 
+-			codec@0 {
++			codec {
+ 				sound-dai = <&tohdmitx TOHDMITX_I2S_IN_B>;
+ 			};
+ 		};
+@@ -472,7 +472,7 @@
+ /* eMMC */
+ &sd_emmc_c {
+ 	status = "okay";
+-	pinctrl-0 = <&emmc_pins>, <&emmc_ds_pins>;
++	pinctrl-0 = <&emmc_ctrl_pins>, <&emmc_data_8b_pins>, <&emmc_ds_pins>;
+ 	pinctrl-1 = <&emmc_clk_gate_pins>;
+ 	pinctrl-names = "default", "clk-gate";
+ 
+diff --git a/arch/arm/dts/meson-g12a-u200.dts b/arch/arm/dts/meson-g12a-u200.dts
+index 2a324f0136..a26bfe7255 100644
+--- a/arch/arm/dts/meson-g12a-u200.dts
++++ b/arch/arm/dts/meson-g12a-u200.dts
+@@ -271,7 +271,7 @@
+ /* eMMC */
+ &sd_emmc_c {
+ 	status = "okay";
+-	pinctrl-0 = <&emmc_pins>, <&emmc_ds_pins>;
++	pinctrl-0 = <&emmc_ctrl_pins>, <&emmc_data_8b_pins>, <&emmc_ds_pins>;
+ 	pinctrl-1 = <&emmc_clk_gate_pins>;
+ 	pinctrl-names = "default", "clk-gate";
+ 
+diff --git a/arch/arm/dts/meson-g12b-khadas-vim3.dtsi b/arch/arm/dts/meson-g12b-khadas-vim3.dtsi
+index 554863429a..c33e85fbda 100644
+--- a/arch/arm/dts/meson-g12b-khadas-vim3.dtsi
++++ b/arch/arm/dts/meson-g12b-khadas-vim3.dtsi
+@@ -8,6 +8,8 @@
+ #include <dt-bindings/sound/meson-g12a-tohdmitx.h>
+ 
+ / {
++	model = "Khadas VIM3";
++
+ 	vddcpu_a: regulator-vddcpu-a {
+ 		/*
+ 		 * MP8756GD Regulator.
+@@ -48,7 +50,7 @@
+ 
+ 	sound {
+ 		compatible = "amlogic,axg-sound-card";
+-		model = "G12A-KHADAS-VIM3";
++		model = "G12B-KHADAS-VIM3";
+ 		audio-aux-devs = <&tdmout_b>;
+ 		audio-routing = "TDMOUT_B IN 0", "FRDDR_A OUT 1",
+ 				"TDMOUT_B IN 1", "FRDDR_B OUT 1",
+diff --git a/arch/arm/dts/meson-g12b-odroid-n2.dts b/arch/arm/dts/meson-g12b-odroid-n2.dts
+index 0e54c1dc28..169ea283d4 100644
+--- a/arch/arm/dts/meson-g12b-odroid-n2.dts
++++ b/arch/arm/dts/meson-g12b-odroid-n2.dts
+@@ -208,7 +208,7 @@
+ 
+ 	sound {
+ 		compatible = "amlogic,axg-sound-card";
+-		model = "G12A-ODROIDN2";
++		model = "G12B-ODROID-N2";
+ 		audio-aux-devs = <&tdmout_b>;
+ 		audio-routing = "TDMOUT_B IN 0", "FRDDR_A OUT 1",
+ 				"TDMOUT_B IN 1", "FRDDR_B OUT 1",
+@@ -435,7 +435,7 @@
+ /* eMMC */
+ &sd_emmc_c {
+ 	status = "okay";
+-	pinctrl-0 = <&emmc_pins>, <&emmc_ds_pins>;
++	pinctrl-0 = <&emmc_ctrl_pins>, <&emmc_data_8b_pins>, <&emmc_ds_pins>;
+ 	pinctrl-1 = <&emmc_clk_gate_pins>;
+ 	pinctrl-names = "default", "clk-gate";
+ 
+@@ -451,6 +451,27 @@
+ 	vqmmc-supply = <&flash_1v8>;
+ };
+ 
++/*
++ * EMMC_D4, EMMC_D5, EMMC_D6 and EMMC_D7 pins are shared between SPI NOR pins
++ * and eMMC Data 4 to 7 pins.
++ * Replace emmc_data_8b_pins to emmc_data_4b_pins from sd_emmc_c pinctrl-0,
++ * and change bus-width to 4 then spifc can be enabled.
++ * The SW1 slide should also be set to the correct position.
++ */
++&spifc {
++	status = "disabled";
++	pinctrl-0 = <&nor_pins>;
++	pinctrl-names = "default";
++
++	mx25u64: spi-flash@0 {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		compatible = "mxicy,mx25u6435f", "jedec,spi-nor";
++		reg = <0>;
++		spi-max-frequency = <104000000>;
++	};
++};
++
+ &tdmif_b {
+ 	status = "okay";
+ };
+diff --git a/arch/arm/dts/meson-gx.dtsi b/arch/arm/dts/meson-gx.dtsi
+index 40db06e28b..03f79fe045 100644
+--- a/arch/arm/dts/meson-gx.dtsi
++++ b/arch/arm/dts/meson-gx.dtsi
+@@ -12,6 +12,7 @@
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/interrupt-controller/irq.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
++#include <dt-bindings/thermal/thermal.h>
+ 
+ / {
+ 	interrupt-parent = <&gic>;
+@@ -83,6 +84,7 @@
+ 			enable-method = "psci";
+ 			next-level-cache = <&l2>;
+ 			clocks = <&scpi_dvfs 0>;
++			#cooling-cells = <2>;
+ 		};
+ 
+ 		cpu1: cpu@1 {
+@@ -92,6 +94,7 @@
+ 			enable-method = "psci";
+ 			next-level-cache = <&l2>;
+ 			clocks = <&scpi_dvfs 0>;
++			#cooling-cells = <2>;
+ 		};
+ 
+ 		cpu2: cpu@2 {
+@@ -101,6 +104,7 @@
+ 			enable-method = "psci";
+ 			next-level-cache = <&l2>;
+ 			clocks = <&scpi_dvfs 0>;
++			#cooling-cells = <2>;
+ 		};
+ 
+ 		cpu3: cpu@3 {
+@@ -110,6 +114,7 @@
+ 			enable-method = "psci";
+ 			next-level-cache = <&l2>;
+ 			clocks = <&scpi_dvfs 0>;
++			#cooling-cells = <2>;
+ 		};
+ 
+ 		l2: l2-cache0 {
+@@ -117,6 +122,53 @@
+ 		};
+ 	};
+ 
++	thermal-zones {
++		cpu-thermal {
++			polling-delay-passive = <250>; /* milliseconds */
++			polling-delay = <1000>; /* milliseconds */
++
++			thermal-sensors = <&scpi_sensors 0>;
++
++			trips {
++				cpu_passive: cpu-passive {
++					temperature = <80000>; /* millicelsius */
++					hysteresis = <2000>; /* millicelsius */
++					type = "passive";
++				};
++
++				cpu_hot: cpu-hot {
++					temperature = <90000>; /* millicelsius */
++					hysteresis = <2000>; /* millicelsius */
++					type = "hot";
++				};
++
++				cpu_critical: cpu-critical {
++					temperature = <110000>; /* millicelsius */
++					hysteresis = <2000>; /* millicelsius */
++					type = "critical";
++				};
++			};
++
++			cpu_cooling_maps: cooling-maps {
++				map0 {
++					trip = <&cpu_passive>;
++					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++							 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++							 <&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++							 <&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++				};
++
++				map1 {
++					trip = <&cpu_hot>;
++					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++							 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++							 <&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++							 <&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++				};
++			};
++		};
++	};
++
+ 	arm-pmu {
+ 		compatible = "arm,cortex-a53-pmu";
+ 		interrupts = <GIC_SPI 137 IRQ_TYPE_LEVEL_HIGH>,
+diff --git a/arch/arm/dts/meson-gxbb-odroidc2.dts b/arch/arm/dts/meson-gxbb-odroidc2.dts
+index 6ded279c40..b46ef985bb 100644
+--- a/arch/arm/dts/meson-gxbb-odroidc2.dts
++++ b/arch/arm/dts/meson-gxbb-odroidc2.dts
+@@ -248,6 +248,7 @@
+ 	status = "okay";
+ 	pinctrl-0 = <&remote_input_ao_pins>;
+ 	pinctrl-names = "default";
++	linux,rc-map-name = "rc-odroid";
+ };
+ 
+ &gpio_ao {
+diff --git a/arch/arm/dts/meson-gxl-s905x-p212.dtsi b/arch/arm/dts/meson-gxl-s905x-p212.dtsi
+index 43eb7d149e..6ac678f88b 100644
+--- a/arch/arm/dts/meson-gxl-s905x-p212.dtsi
++++ b/arch/arm/dts/meson-gxl-s905x-p212.dtsi
+@@ -15,7 +15,6 @@
+ / {
+ 	aliases {
+ 		serial0 = &uart_AO;
+-		serial1 = &uart_A;
+ 		ethernet0 = &ethmac;
+ 	};
+ 
+@@ -180,6 +179,14 @@
+ 	pinctrl-0 = <&uart_a_pins>, <&uart_a_cts_rts_pins>;
+ 	pinctrl-names = "default";
+ 	uart-has-rtscts;
++
++	bluetooth {
++		compatible = "brcm,bcm43438-bt";
++		shutdown-gpios = <&gpio GPIOX_17 GPIO_ACTIVE_HIGH>;
++		max-speed = <2000000>;
++		clocks = <&wifi32k>;
++		clock-names = "lpo";
++	};
+ };
+ 
+ &uart_AO {
+diff --git a/arch/arm/dts/meson-gxm-khadas-vim2.dts b/arch/arm/dts/meson-gxm-khadas-vim2.dts
+index f82f25c1a5..27eeab71ec 100644
+--- a/arch/arm/dts/meson-gxm-khadas-vim2.dts
++++ b/arch/arm/dts/meson-gxm-khadas-vim2.dts
+@@ -8,7 +8,6 @@
+ /dts-v1/;
+ 
+ #include <dt-bindings/input/input.h>
+-#include <dt-bindings/thermal/thermal.h>
+ 
+ #include "meson-gxm.dtsi"
+ 
+@@ -100,49 +99,6 @@
+ 		clock-names = "ext_clock";
+ 	};
+ 
+-	thermal-zones {
+-		cpu-thermal {
+-			polling-delay-passive = <250>; /* milliseconds */
+-			polling-delay = <1000>; /* milliseconds */
+-
+-			thermal-sensors = <&scpi_sensors 0>;
+-
+-			trips {
+-				cpu_alert0: cpu-alert0 {
+-					temperature = <70000>; /* millicelsius */
+-					hysteresis = <2000>; /* millicelsius */
+-					type = "active";
+-				};
+-
+-				cpu_alert1: cpu-alert1 {
+-					temperature = <80000>; /* millicelsius */
+-					hysteresis = <2000>; /* millicelsius */
+-					type = "passive";
+-				};
+-			};
+-
+-			cooling-maps {
+-				map0 {
+-					trip = <&cpu_alert0>;
+-					cooling-device = <&gpio_fan THERMAL_NO_LIMIT 1>;
+-				};
+-
+-				map1 {
+-					trip = <&cpu_alert1>;
+-					cooling-device = <&gpio_fan 2 THERMAL_NO_LIMIT>,
+-							 <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+-							 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+-							 <&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+-							 <&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+-							 <&cpu4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+-							 <&cpu5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+-							 <&cpu6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+-							 <&cpu7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+-				};
+-			};
+-		};
+-	};
+-
+ 	hdmi_5v: regulator-hdmi-5v {
+ 		compatible = "regulator-fixed";
+ 
+@@ -198,36 +154,23 @@
+ 	hdmi-phandle = <&hdmi_tx>;
+ };
+ 
+-&cpu0 {
+-	#cooling-cells = <2>;
+-};
+-
+-&cpu1 {
+-	#cooling-cells = <2>;
+-};
+-
+-&cpu2 {
+-	#cooling-cells = <2>;
+-};
+ 
+-&cpu3 {
+-	#cooling-cells = <2>;
+-};
+-
+-&cpu4 {
+-	#cooling-cells = <2>;
+-};
+-
+-&cpu5 {
+-	#cooling-cells = <2>;
+-};
+-
+-&cpu6 {
+-	#cooling-cells = <2>;
+-};
++&cpu_cooling_maps {
++	map0 {
++		cooling-device = <&gpio_fan THERMAL_NO_LIMIT 1>;
++	};
+ 
+-&cpu7 {
+-	#cooling-cells = <2>;
++	map1 {
++		cooling-device = <&gpio_fan 2 THERMAL_NO_LIMIT>,
++				 <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++	};
+ };
+ 
+ &ethmac {
+@@ -327,7 +270,7 @@
+ 	#size-cells = <0>;
+ 
+ 	bus-width = <4>;
+-	max-frequency = <50000000>;
++	max-frequency = <60000000>;
+ 
+ 	non-removable;
+ 	disable-wp;
+diff --git a/arch/arm/dts/meson-gxm.dtsi b/arch/arm/dts/meson-gxm.dtsi
+index 5ff64a0d2d..b6f89f108e 100644
+--- a/arch/arm/dts/meson-gxm.dtsi
++++ b/arch/arm/dts/meson-gxm.dtsi
+@@ -49,6 +49,7 @@
+ 			enable-method = "psci";
+ 			next-level-cache = <&l2>;
+ 			clocks = <&scpi_dvfs 1>;
++			#cooling-cells = <2>;
+ 		};
+ 
+ 		cpu5: cpu@101 {
+@@ -58,6 +59,7 @@
+ 			enable-method = "psci";
+ 			next-level-cache = <&l2>;
+ 			clocks = <&scpi_dvfs 1>;
++			#cooling-cells = <2>;
+ 		};
+ 
+ 		cpu6: cpu@102 {
+@@ -67,6 +69,7 @@
+ 			enable-method = "psci";
+ 			next-level-cache = <&l2>;
+ 			clocks = <&scpi_dvfs 1>;
++			#cooling-cells = <2>;
+ 		};
+ 
+ 		cpu7: cpu@103 {
+@@ -76,6 +79,7 @@
+ 			enable-method = "psci";
+ 			next-level-cache = <&l2>;
+ 			clocks = <&scpi_dvfs 1>;
++			#cooling-cells = <2>;
+ 		};
+ 	};
+ };
+@@ -124,6 +128,30 @@
+ 	compatible = "amlogic,meson-gxm-aoclkc", "amlogic,meson-gx-aoclkc";
+ };
+ 
++&cpu_cooling_maps {
++	map0 {
++		cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++	};
++
++	map1 {
++		cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++				 <&cpu7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++	};
++};
++
+ &saradc {
+ 	compatible = "amlogic,meson-gxm-saradc", "amlogic,meson-saradc";
+ };
+diff --git a/arch/arm/dts/meson-khadas-vim3.dtsi b/arch/arm/dts/meson-khadas-vim3.dtsi
+index 90815fa25e..094ecf2222 100644
+--- a/arch/arm/dts/meson-khadas-vim3.dtsi
++++ b/arch/arm/dts/meson-khadas-vim3.dtsi
+@@ -9,8 +9,6 @@
+ #include <dt-bindings/gpio/meson-g12a-gpio.h>
+ 
+ / {
+-	model = "Khadas VIM3";
+-
+ 	aliases {
+ 		serial0 = &uart_AO;
+ 		ethernet0 = &ethmac;
+@@ -312,7 +310,7 @@
+ /* eMMC */
+ &sd_emmc_c {
+ 	status = "okay";
+-	pinctrl-0 = <&emmc_pins>, <&emmc_ds_pins>;
++	pinctrl-0 = <&emmc_ctrl_pins>, <&emmc_data_8b_pins>, <&emmc_ds_pins>;
+ 	pinctrl-1 = <&emmc_clk_gate_pins>;
+ 	pinctrl-names = "default", "clk-gate";
+ 
+@@ -328,6 +326,26 @@
+ 	vqmmc-supply = <&emmc_1v8>;
+ };
+ 
++/*
++ * EMMC_D4, EMMC_D5, EMMC_D6 and EMMC_D7 pins are shared between SPI NOR CS
++ * and eMMC Data 4 to 7 pins.
++ * Replace emmc_data_8b_pins to emmc_data_4b_pins from sd_emmc_c pinctrl-0,
++ * and change bus-width to 4 then spifc can be enabled.
++ */
++&spifc {
++	status = "disabled";
++	pinctrl-0 = <&nor_pins>;
++	pinctrl-names = "default";
++
++	w25q32: spi-flash@0 {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		compatible = "winbond,w25q128fw", "jedec,spi-nor";
++		reg = <0>;
++		spi-max-frequency = <104000000>;
++	};
++};
++
+ &uart_A {
+ 	status = "okay";
+ 	pinctrl-0 = <&uart_a_pins>, <&uart_a_cts_rts_pins>;
+diff --git a/arch/arm/dts/meson-sm1-khadas-vim3l.dts b/arch/arm/dts/meson-sm1-khadas-vim3l.dts
+index 1001b376ca..dbbf29a0db 100644
+--- a/arch/arm/dts/meson-sm1-khadas-vim3l.dts
++++ b/arch/arm/dts/meson-sm1-khadas-vim3l.dts
+@@ -72,9 +72,10 @@
+ /*
+  * The VIM3 on-board  MCU can mux the PCIe/USB3.0 shared differential
+  * lines using a FUSB340TMX USB 3.1 SuperSpeed Data Switch between
+- * an USB3.0 Type A connector and a M.2 Key M slot. The PHY driving
+- * these differential lines is shared between the USB3.0 controller
+- * and the PCIe Controller, thus only a single controller can use it.
++ * an USB3.0 Type A connector and a M.2 Key M slot.
++ * The PHY driving these differential lines is shared between
++ * the USB3.0 controller and the PCIe Controller, thus only
++ * a single controller can use it.
+  * If the MCU is configured to mux the PCIe/USB3.0 differential lines
+  * to the M.2 Key M slot, uncomment the following block to disable
+  * USB3.0 from the USB Complex and enable the PCIe controller.
+@@ -82,7 +83,6 @@
+  * testing purposes, but instead rely on the firmware/bootloader to
+  * update these nodes accordingly if PCIe mode is selected by the MCU.
+  */
+-
+ /*
+ &pcie {
+ 	status = "okay";
+diff --git a/arch/arm/dts/meson-sm1-sei610.dts b/arch/arm/dts/meson-sm1-sei610.dts
+index a8bb3fa9fe..dfb2438851 100644
+--- a/arch/arm/dts/meson-sm1-sei610.dts
++++ b/arch/arm/dts/meson-sm1-sei610.dts
+@@ -518,7 +518,7 @@
+ /* eMMC */
+ &sd_emmc_c {
+ 	status = "okay";
+-	pinctrl-0 = <&emmc_pins>, <&emmc_ds_pins>;
++	pinctrl-0 = <&emmc_ctrl_pins>, <&emmc_data_8b_pins>, <&emmc_ds_pins>;
+ 	pinctrl-1 = <&emmc_clk_gate_pins>;
+ 	pinctrl-names = "default", "clk-gate";
+ 
+@@ -593,6 +593,7 @@
+ 		compatible = "brcm,bcm43438-bt";
+ 		interrupt-parent = <&gpio_intc>;
+ 		interrupts = <95 IRQ_TYPE_LEVEL_HIGH>;
++		interrupt-names = "host-wakeup";
+ 		shutdown-gpios = <&gpio GPIOX_17 GPIO_ACTIVE_HIGH>;
+ 		max-speed = <2000000>;
+ 		clocks = <&wifi32k>;
+diff --git a/arch/arm/dts/meson-sm1.dtsi b/arch/arm/dts/meson-sm1.dtsi
+index d847a3fcbc..d4ec735fb1 100644
+--- a/arch/arm/dts/meson-sm1.dtsi
++++ b/arch/arm/dts/meson-sm1.dtsi
+@@ -448,6 +448,7 @@
+ 			 <&clkc_audio AUD_CLKID_PDM_DCLK>,
+ 			 <&clkc_audio AUD_CLKID_PDM_SYSCLK>;
+ 		clock-names = "pclk", "dclk", "sysclk";
++		resets = <&clkc_audio AUD_RESET_PDM>;
+ 		status = "disabled";
+ 	};
+ };
+diff --git a/include/dt-bindings/clock/g12a-clkc.h b/include/dt-bindings/clock/g12a-clkc.h
+index 0837c1a7ae..b0d65d73db 100644
+--- a/include/dt-bindings/clock/g12a-clkc.h
++++ b/include/dt-bindings/clock/g12a-clkc.h
+@@ -143,5 +143,7 @@
+ #define CLKID_CPU1_CLK				253
+ #define CLKID_CPU2_CLK				254
+ #define CLKID_CPU3_CLK				255
++#define CLKID_SPICC0_SCLK			258
++#define CLKID_SPICC1_SCLK			261
+ 
+ #endif /* __G12A_CLKC_H */
+diff --git a/include/dt-bindings/clock/gxbb-clkc.h b/include/dt-bindings/clock/gxbb-clkc.h
+index db0763e961..4073eb7a9d 100644
+--- a/include/dt-bindings/clock/gxbb-clkc.h
++++ b/include/dt-bindings/clock/gxbb-clkc.h
+@@ -146,5 +146,6 @@
+ #define CLKID_CTS_VDAC		201
+ #define CLKID_HDMI_TX		202
+ #define CLKID_HDMI		205
++#define CLKID_ACODEC		206
+ 
+ #endif /* __GXBB_CLKC_H */
+
+From patchwork Mon Apr 20 13:44:42 2020
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Patchwork-Submitter: Neil Armstrong <narmstrong@baylibre.com>
+X-Patchwork-Id: 1273418
+X-Patchwork-Delegate: narmstrong@baylibre.com
+Return-Path: <u-boot-bounces@lists.denx.de>
+X-Original-To: incoming@patchwork.ozlabs.org
+Delivered-To: patchwork-incoming@bilbo.ozlabs.org
+Authentication-Results: ozlabs.org;
+ spf=pass (sender SPF authorized) smtp.mailfrom=lists.denx.de
+ (client-ip=2a01:238:438b:c500:173d:9f52:ddab:ee01; helo=phobos.denx.de;
+ envelope-from=u-boot-bounces@lists.denx.de; receiver=<UNKNOWN>)
+Authentication-Results: ozlabs.org;
+ dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: ozlabs.org; dkim=pass (2048-bit key;
+ unprotected) header.d=baylibre-com.20150623.gappssmtp.com
+ header.i=@baylibre-com.20150623.gappssmtp.com header.a=rsa-sha256
+ header.s=20150623 header.b=14nMyiwz; dkim-atps=neutral
+Received: from phobos.denx.de (phobos.denx.de
+ [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits))
+ (No client certificate requested)
+ by ozlabs.org (Postfix) with ESMTPS id 495Sd45Yrrz9sP7
+ for <incoming@patchwork.ozlabs.org>; Mon, 20 Apr 2020 23:45:28 +1000 (AEST)
+Received: from h2850616.stratoserver.net (localhost [IPv6:::1])
+ by phobos.denx.de (Postfix) with ESMTP id 3665581CC6;
+ Mon, 20 Apr 2020 15:45:14 +0200 (CEST)
+Authentication-Results: phobos.denx.de;
+ dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: phobos.denx.de;
+ spf=pass smtp.mailfrom=u-boot-bounces@lists.denx.de
+Authentication-Results: phobos.denx.de; dkim=pass (2048-bit key;
+ unprotected) header.d=baylibre-com.20150623.gappssmtp.com
+ header.i=@baylibre-com.20150623.gappssmtp.com header.b="14nMyiwz";
+ dkim-atps=neutral
+Received: by phobos.denx.de (Postfix, from userid 109)
+ id 21AD281CA4; Mon, 20 Apr 2020 15:45:06 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on phobos.denx.de
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+ DKIM_VALID,SPF_HELO_NONE,URIBL_BLOCKED autolearn=ham
+ autolearn_force=no version=3.4.2
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
+ [IPv6:2a00:1450:4864:20::444])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+ (No client certificate requested)
+ by phobos.denx.de (Postfix) with ESMTPS id E2C4F81CB3
+ for <u-boot@lists.denx.de>; Mon, 20 Apr 2020 15:44:59 +0200 (CEST)
+Authentication-Results: phobos.denx.de;
+ dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: phobos.denx.de;
+ spf=pass smtp.mailfrom=narmstrong@baylibre.com
+Received: by mail-wr1-x444.google.com with SMTP id b11so12221507wrs.6
+ for <u-boot@lists.denx.de>; Mon, 20 Apr 2020 06:44:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=N1pzCPYFUNXYddjOIDYgg+jtk9SunoZ2EvOVi3qTBec=;
+ b=14nMyiwzKhy0QYJeB+uzQRkTzRviZrD1goPr7asA3CqqRXOq7bLr6AGgAn3s8fBez9
+ OcObA68JElqmxvMbmNgWzwzTTmtuVStfUDaAq1yUin5U90A1pRDqsU5Q5WC+TtJC8O0h
+ 47PFUzNzF/6aSontvJbCYAnfNGecUJN3Tpw+EJGz5kSl5YQHgNmZ5RZwwfs84Zmizv4E
+ WExPbL86ptpyAyDpvXBCLil7WqcgVAvBiNNhnDVtXD82z1wmnsaTaJqh42TzjGmgO9uC
+ 2hCaVPv7xD5+micCHPXd7JJeAy7d1MtkJNRS8zsOpLbVQsAwFguTX45kIWvKXxcKg9H2
+ bxtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=N1pzCPYFUNXYddjOIDYgg+jtk9SunoZ2EvOVi3qTBec=;
+ b=WOC2L2J3f4f1WeqJ7dTPBF0NLZpT5bSkHlehVTOFV8fAnXdz1Ey8Gresp3mYO2HkEY
+ HnN+NIQgFpS51kqBwrwMy1FLt1qT0yh9/3l6BRh5W5VpoUMlqUX31yUYdo9OUuWI/kel
+ dp4r9BFEQo/ZVba9bO0SLUzcP9639/FWlJcVOlxQqDfREJt1chny82e2X+Sfv2tJrBvd
+ 3XyM/pqBUCy5FNaPoMLUB8YMTEFxh7kYbM6aaGOb9As/0m/ffowUYiCh59FZE7Cac4/K
+ NUyaUB74xklTHILrSbd0BE7UC7jBwAW4v51i29nAu/R9xrLEgdNIAE+gYj5KjFTewxe0
+ NTEw==
+X-Gm-Message-State: AGi0PubkbjZw1p6E8MpxtuRiigTGdE+dQOVmYNB/sK0CrEkbaJOWKiLF
+ tWQW/vELkR5meJWXWOjT4ppySw==
+X-Google-Smtp-Source: APiQypLeyXl/NaCPcO5WWv61RKPoU0Sl20L+4JdqyTzDU+7HZ8zaG/qLu96LrlwGjdOkWiNsQO89zw==
+X-Received: by 2002:a5d:52d1:: with SMTP id r17mr17857956wrv.333.1587390299436;
+ Mon, 20 Apr 2020 06:44:59 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:39cc:a07:8b48:cc56])
+ by smtp.gmail.com with ESMTPSA id
+ l5sm1263458wrm.66.2020.04.20.06.44.58
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 20 Apr 2020 06:44:58 -0700 (PDT)
+From: Neil Armstrong <narmstrong@baylibre.com>
+To: u-boot-amlogic@groups.io
+Cc: u-boot@lists.denx.de,
+	Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH 2/5] arm: dts: meson-gxm-khadas-vim2-u-boot: enable SPI NOR
+ flash
+Date: Mon, 20 Apr 2020 15:44:42 +0200
+Message-Id: <20200420134445.19704-3-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.22.0
+In-Reply-To: <20200420134445.19704-1-narmstrong@baylibre.com>
+References: <20200420134445.19704-1-narmstrong@baylibre.com>
+MIME-Version: 1.0
+X-BeenThere: u-boot@lists.denx.de
+X-Mailman-Version: 2.1.30rc1
+Precedence: list
+List-Id: U-Boot discussion <u-boot.lists.denx.de>
+List-Unsubscribe: <https://lists.denx.de/options/u-boot>,
+ <mailto:u-boot-request@lists.denx.de?subject=unsubscribe>
+List-Archive: <https://lists.denx.de/pipermail/u-boot/>
+List-Post: <mailto:u-boot@lists.denx.de>
+List-Help: <mailto:u-boot-request@lists.denx.de?subject=help>
+List-Subscribe: <https://lists.denx.de/listinfo/u-boot>,
+ <mailto:u-boot-request@lists.denx.de?subject=subscribe>
+Errors-To: u-boot-bounces@lists.denx.de
+Sender: "U-Boot" <u-boot-bounces@lists.denx.de>
+X-Virus-Scanned: clamav-milter 0.102.2 at phobos.denx.de
+X-Virus-Status: Clean
+
+Activate the on-board SPI NOR Flash by enabling the SPI controller and
+disabling the DS eMMC pin in the VIM2 u-boot.dtsi file.
+
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+---
+ arch/arm/dts/meson-gxm-khadas-vim2-u-boot.dtsi | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/arch/arm/dts/meson-gxm-khadas-vim2-u-boot.dtsi b/arch/arm/dts/meson-gxm-khadas-vim2-u-boot.dtsi
+index c35158d7e9..bec9e05b09 100644
+--- a/arch/arm/dts/meson-gxm-khadas-vim2-u-boot.dtsi
++++ b/arch/arm/dts/meson-gxm-khadas-vim2-u-boot.dtsi
+@@ -5,3 +5,18 @@
+  */
+ 
+ #include "meson-gx-u-boot.dtsi"
++
++/ {
++	aliases {
++		spi0 = &spifc;
++	};
++};
++
++&sd_emmc_c {
++	status = "okay";
++	pinctrl-0 = <&emmc_pins>;
++};
++
++&spifc {
++	status = "okay";
++};
+
+From patchwork Mon Apr 20 13:44:43 2020
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Patchwork-Submitter: Neil Armstrong <narmstrong@baylibre.com>
+X-Patchwork-Id: 1273419
+X-Patchwork-Delegate: narmstrong@baylibre.com
+Return-Path: <u-boot-bounces@lists.denx.de>
+X-Original-To: incoming@patchwork.ozlabs.org
+Delivered-To: patchwork-incoming@bilbo.ozlabs.org
+Authentication-Results: ozlabs.org;
+ spf=pass (sender SPF authorized) smtp.mailfrom=lists.denx.de
+ (client-ip=85.214.62.61; helo=phobos.denx.de;
+ envelope-from=u-boot-bounces@lists.denx.de; receiver=<UNKNOWN>)
+Authentication-Results: ozlabs.org;
+ dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: ozlabs.org; dkim=pass (2048-bit key;
+ unprotected) header.d=baylibre-com.20150623.gappssmtp.com
+ header.i=@baylibre-com.20150623.gappssmtp.com header.a=rsa-sha256
+ header.s=20150623 header.b=i5vAiZnU; dkim-atps=neutral
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits))
+ (No client certificate requested)
+ by ozlabs.org (Postfix) with ESMTPS id 495SdH4jf8z9s71
+ for <incoming@patchwork.ozlabs.org>; Mon, 20 Apr 2020 23:45:39 +1000 (AEST)
+Received: from h2850616.stratoserver.net (localhost [IPv6:::1])
+ by phobos.denx.de (Postfix) with ESMTP id 5513881CD1;
+ Mon, 20 Apr 2020 15:45:17 +0200 (CEST)
+Authentication-Results: phobos.denx.de;
+ dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: phobos.denx.de;
+ spf=pass smtp.mailfrom=u-boot-bounces@lists.denx.de
+Authentication-Results: phobos.denx.de; dkim=pass (2048-bit key;
+ unprotected) header.d=baylibre-com.20150623.gappssmtp.com
+ header.i=@baylibre-com.20150623.gappssmtp.com header.b="i5vAiZnU";
+ dkim-atps=neutral
+Received: by phobos.denx.de (Postfix, from userid 109)
+ id 1ABB381CCD; Mon, 20 Apr 2020 15:45:06 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on phobos.denx.de
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+ DKIM_VALID,SPF_HELO_NONE,UPPERCASE_50_75,URIBL_BLOCKED autolearn=no
+ autolearn_force=no version=3.4.2
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
+ [IPv6:2a00:1450:4864:20::444])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+ (No client certificate requested)
+ by phobos.denx.de (Postfix) with ESMTPS id 6BE0381CA4
+ for <u-boot@lists.denx.de>; Mon, 20 Apr 2020 15:45:01 +0200 (CEST)
+Authentication-Results: phobos.denx.de;
+ dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: phobos.denx.de;
+ spf=pass smtp.mailfrom=narmstrong@baylibre.com
+Received: by mail-wr1-x444.google.com with SMTP id t14so12186016wrw.12
+ for <u-boot@lists.denx.de>; Mon, 20 Apr 2020 06:45:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=m2dCFZAoj4l+wl/qLoS8mZl7XWYoE2Fwv4BIPZmVxe4=;
+ b=i5vAiZnUoW60kxoeKhFf0eYNmSW8Mr+6YnV68E0A/1JXvhx8NPYtHD1DrG1W0+odyf
+ gVjcUpffEukzZPd5JOC2fszxt0i7wy16Md3p6SLNTjsfy7zTCRgD47Z4/72nVXOwDBpK
+ vHmxae7IvJ3JVCaRvoaWXVzwbr+cf6bi4Mi6KGSqlxiydU0lK5u+k4kgVdIw9goC+hJ7
+ kL3Ht+N6bjC/iHeXqsX299XOV+UtPdPWk8cB2GNTap0Qnl/r4wnLWKQMZioh8Pg+cBdI
+ cmQ0YEOAv1JKN1gzcU0/TfOPiGEABB88hcbP7Xj6Ef2FDLWhMy9JZThsQ/icdroC078A
+ QKdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=m2dCFZAoj4l+wl/qLoS8mZl7XWYoE2Fwv4BIPZmVxe4=;
+ b=idMZC/6tllJCMBi6guRBEFuhqPVUNzxJ6U9veVcIt1ZFWiDFxtgVWaOPOcvMVpIpNN
+ nUrM/nceej3niLRoZ7E93haC0wv1sx3/OyJ0RrQ60XZCZ/06uNVT8jQLOduzEU77/C2h
+ mRwORbd7u+UgsaOJQU24hhxtTxjIPIcJVN+MNXAzTMFMIKaxLXfJc1ZHo2ZSbFbuCrJR
+ LBUrNiMlMbaHIYwzBLeMJNCwaBG1OCu1MPKwfwVS2AHBryrM0Ro0yhYWy7psUsObtIwZ
+ oun1U34TCKZFgaWqOVhMfRu7FaXgeoTtFOMUe1zE9mklRkhcU07mxPv8a+ISvJQgU7WR
+ i/Mw==
+X-Gm-Message-State: AGi0PuatdxY8H2cvUstDdJeNGF1sqKW7e3WN9nCVTAW25PPxo8RvYNC8
+ QH6NRj9XAOtzkl6bjSLApvJMCCJUMWM=
+X-Google-Smtp-Source: APiQypKqgZ9egwvwRn5FHYW7qqiiXG1zxPXzEpdTAsYi68TAWd4Xl+66x7aMQTSOpvKdPvN6WJNQuA==
+X-Received: by 2002:a5d:4b04:: with SMTP id v4mr19939793wrq.358.1587390300857; 
+ Mon, 20 Apr 2020 06:45:00 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:39cc:a07:8b48:cc56])
+ by smtp.gmail.com with ESMTPSA id
+ l5sm1263458wrm.66.2020.04.20.06.44.59
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 20 Apr 2020 06:45:00 -0700 (PDT)
+From: Neil Armstrong <narmstrong@baylibre.com>
+To: u-boot-amlogic@groups.io
+Cc: u-boot@lists.denx.de,
+	Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH 3/5] configs: khadas-vim2: enable support for SPI NOR flash
+Date: Mon, 20 Apr 2020 15:44:43 +0200
+Message-Id: <20200420134445.19704-4-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.22.0
+In-Reply-To: <20200420134445.19704-1-narmstrong@baylibre.com>
+References: <20200420134445.19704-1-narmstrong@baylibre.com>
+MIME-Version: 1.0
+X-BeenThere: u-boot@lists.denx.de
+X-Mailman-Version: 2.1.30rc1
+Precedence: list
+List-Id: U-Boot discussion <u-boot.lists.denx.de>
+List-Unsubscribe: <https://lists.denx.de/options/u-boot>,
+ <mailto:u-boot-request@lists.denx.de?subject=unsubscribe>
+List-Archive: <https://lists.denx.de/pipermail/u-boot/>
+List-Post: <mailto:u-boot@lists.denx.de>
+List-Help: <mailto:u-boot-request@lists.denx.de?subject=help>
+List-Subscribe: <https://lists.denx.de/listinfo/u-boot>,
+ <mailto:u-boot-request@lists.denx.de?subject=subscribe>
+Errors-To: u-boot-bounces@lists.denx.de
+Sender: "U-Boot" <u-boot-bounces@lists.denx.de>
+X-Virus-Scanned: clamav-milter 0.102.2 at phobos.denx.de
+X-Virus-Status: Clean
+
+Add the necessary configs to use the SPI NOR flash.
+
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+---
+ configs/khadas-vim2_defconfig | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/configs/khadas-vim2_defconfig b/configs/khadas-vim2_defconfig
+index a533566410..5633f6da9c 100644
+--- a/configs/khadas-vim2_defconfig
++++ b/configs/khadas-vim2_defconfig
+@@ -19,6 +19,8 @@ CONFIG_CMD_ADC=y
+ CONFIG_CMD_GPIO=y
+ # CONFIG_CMD_LOADS is not set
+ CONFIG_CMD_MMC=y
++CONFIG_CMD_SF_TEST=y
++CONFIG_CMD_SPI=y
+ CONFIG_CMD_USB=y
+ CONFIG_CMD_USB_MASS_STORAGE=y
+ # CONFIG_CMD_SETEXPR is not set
+@@ -30,7 +32,10 @@ CONFIG_NET_RANDOM_ETHADDR=y
+ CONFIG_SARADC_MESON=y
+ CONFIG_DM_MMC=y
+ CONFIG_MMC_MESON_GX=y
++CONFIG_MTD=y
+ CONFIG_DM_MTD=y
++CONFIG_DM_SPI_FLASH=y
++CONFIG_SPI_FLASH_WINBOND=y
+ CONFIG_PHY_REALTEK=y
+ CONFIG_DM_ETH=y
+ CONFIG_ETH_DESIGNWARE=y
+@@ -44,6 +49,9 @@ CONFIG_DEBUG_UART_MESON=y
+ CONFIG_DEBUG_UART_ANNOUNCE=y
+ CONFIG_DEBUG_UART_SKIP_INIT=y
+ CONFIG_MESON_SERIAL=y
++CONFIG_SPI=y
++CONFIG_DM_SPI=y
++CONFIG_MESON_SPIFC=y
+ CONFIG_USB=y
+ CONFIG_DM_USB=y
+ CONFIG_USB_XHCI_HCD=y
+
+From patchwork Mon Apr 20 13:44:44 2020
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Patchwork-Submitter: Neil Armstrong <narmstrong@baylibre.com>
+X-Patchwork-Id: 1273422
+X-Patchwork-Delegate: narmstrong@baylibre.com
+Return-Path: <u-boot-bounces@lists.denx.de>
+X-Original-To: incoming@patchwork.ozlabs.org
+Delivered-To: patchwork-incoming@bilbo.ozlabs.org
+Authentication-Results: ozlabs.org;
+ spf=pass (sender SPF authorized) smtp.mailfrom=lists.denx.de
+ (client-ip=85.214.62.61; helo=phobos.denx.de;
+ envelope-from=u-boot-bounces@lists.denx.de; receiver=<UNKNOWN>)
+Authentication-Results: ozlabs.org;
+ dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: ozlabs.org; dkim=pass (2048-bit key;
+ unprotected) header.d=baylibre-com.20150623.gappssmtp.com
+ header.i=@baylibre-com.20150623.gappssmtp.com header.a=rsa-sha256
+ header.s=20150623 header.b=oISBadZS; dkim-atps=neutral
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits))
+ (No client certificate requested)
+ by ozlabs.org (Postfix) with ESMTPS id 495Sdj5Mm8z9s71
+ for <incoming@patchwork.ozlabs.org>; Mon, 20 Apr 2020 23:46:01 +1000 (AEST)
+Received: from h2850616.stratoserver.net (localhost [IPv6:::1])
+ by phobos.denx.de (Postfix) with ESMTP id AC6CB81CD6;
+ Mon, 20 Apr 2020 15:45:24 +0200 (CEST)
+Authentication-Results: phobos.denx.de;
+ dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: phobos.denx.de;
+ spf=pass smtp.mailfrom=u-boot-bounces@lists.denx.de
+Authentication-Results: phobos.denx.de; dkim=pass (2048-bit key;
+ unprotected) header.d=baylibre-com.20150623.gappssmtp.com
+ header.i=@baylibre-com.20150623.gappssmtp.com header.b="oISBadZS";
+ dkim-atps=neutral
+Received: by phobos.denx.de (Postfix, from userid 109)
+ id 8007381CB3; Mon, 20 Apr 2020 15:45:12 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on phobos.denx.de
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+ DKIM_VALID,SPF_HELO_NONE,URIBL_BLOCKED autolearn=ham
+ autolearn_force=no version=3.4.2
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
+ [IPv6:2a00:1450:4864:20::442])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+ (No client certificate requested)
+ by phobos.denx.de (Postfix) with ESMTPS id E828481CAF
+ for <u-boot@lists.denx.de>; Mon, 20 Apr 2020 15:45:02 +0200 (CEST)
+Authentication-Results: phobos.denx.de;
+ dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: phobos.denx.de;
+ spf=pass smtp.mailfrom=narmstrong@baylibre.com
+Received: by mail-wr1-x442.google.com with SMTP id t14so12186118wrw.12
+ for <u-boot@lists.denx.de>; Mon, 20 Apr 2020 06:45:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=aplaMIaff1OIeYNF7AAHHFJuQuBcuEc4y1Wti1YdShM=;
+ b=oISBadZShr2/KfzV/BMHItr3Ko0Zw4YXj9g1dyTD1zK0Sx/Fq89En6ScXxhYXOXsoo
+ PWs5euT0EhkTJ0LVgOiGVX3gwVy03JISdK+fsbX+bJX1FEFl+Pvx6sZUNYIrJJ8MVKJJ
+ mQMcjcyv1cIrNdrbk97VN7cxuPD3oLhSO/3ormmllhVOjEzJRetAgdBIkd3UgRhUecOx
+ PKz3wcfAcDITBuA/q13B4IOBJy+9OvmiZ2T/ynC+BYKrNf8xtPw4wFCRQ2xTmnC21qSZ
+ nLc8DrtIGOpc0mEl4HakU7OzxQCSOhB3bOv7zIkQbWfCGc6TJcZx+JyD+7CRZrp0aKQN
+ 6HjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=aplaMIaff1OIeYNF7AAHHFJuQuBcuEc4y1Wti1YdShM=;
+ b=HwqXJHQ7tQqAk4SfM0DXPRlfdGVLoswc6Bp+XAJMaphjiJD+WJaqQF8wQn/Qz5IyDy
+ TjErGUwRQ7ks+C8a6nHQNOy6Bjmm6CsO2GrR7XQ/+oRzU2rBi6ofl/PCO7MtXiRbavRS
+ voWh6jGLYez9WK0yu8XQBIdcMDE6c5zS/cB2CquB3k9+8c5QVF423fmuofiqxRn1S3hE
+ fwevUoj1Mr4KhdsQ/q2c2QWyH0ZGrdXt4RbJ0mYq03CuaRi3SdSggNVb59eOvAkgb8k3
+ vQK3eGL8vTNR6lc1J06FFlticABBkDFZA5Dz5KWpwwSKx4dPkNZhPuPfI8gJ6V+n9iby
+ gJwQ==
+X-Gm-Message-State: AGi0Puas6gZ3fLsa0n4NiyleTuv7dwrhcTtooJ73vcLH4pPlZZS4ZZIu
+ 9bZ/c5OboK6UvqFhKB13UTnHdCBHkFk=
+X-Google-Smtp-Source: APiQypI4BusguxHlLHfQQvfxkrpPnM6YGPtrsTiIQpc2J88/ZvHN8OSJQnCG6aexDoudjLs4AYrzrw==
+X-Received: by 2002:adf:d0ca:: with SMTP id z10mr20433621wrh.172.1587390302344;
+ Mon, 20 Apr 2020 06:45:02 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:39cc:a07:8b48:cc56])
+ by smtp.gmail.com with ESMTPSA id
+ l5sm1263458wrm.66.2020.04.20.06.45.01
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 20 Apr 2020 06:45:01 -0700 (PDT)
+From: Neil Armstrong <narmstrong@baylibre.com>
+To: u-boot-amlogic@groups.io
+Cc: u-boot@lists.denx.de,
+	Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH 4/5] arm: dts: meson-khadas-vim3: enable SPI NOR flash
+Date: Mon, 20 Apr 2020 15:44:44 +0200
+Message-Id: <20200420134445.19704-5-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.22.0
+In-Reply-To: <20200420134445.19704-1-narmstrong@baylibre.com>
+References: <20200420134445.19704-1-narmstrong@baylibre.com>
+MIME-Version: 1.0
+X-BeenThere: u-boot@lists.denx.de
+X-Mailman-Version: 2.1.30rc1
+Precedence: list
+List-Id: U-Boot discussion <u-boot.lists.denx.de>
+List-Unsubscribe: <https://lists.denx.de/options/u-boot>,
+ <mailto:u-boot-request@lists.denx.de?subject=unsubscribe>
+List-Archive: <https://lists.denx.de/pipermail/u-boot/>
+List-Post: <mailto:u-boot@lists.denx.de>
+List-Help: <mailto:u-boot-request@lists.denx.de?subject=help>
+List-Subscribe: <https://lists.denx.de/listinfo/u-boot>,
+ <mailto:u-boot-request@lists.denx.de?subject=subscribe>
+Errors-To: u-boot-bounces@lists.denx.de
+Sender: "U-Boot" <u-boot-bounces@lists.denx.de>
+X-Virus-Scanned: clamav-milter 0.102.2 at phobos.denx.de
+X-Virus-Status: Clean
+
+Enable the SPI flash controller and reduce the usable eMMC data pins to 4
+to permit using the on-board SPI NOR Flash.
+
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+---
+ .../meson-g12b-a311d-khadas-vim3-u-boot.dtsi  |  7 +++++++
+ arch/arm/dts/meson-khadas-vim3-u-boot.dtsi    | 21 +++++++++++++++++++
+ .../dts/meson-sm1-khadas-vim3l-u-boot.dtsi    |  7 +++++++
+ 3 files changed, 35 insertions(+)
+ create mode 100644 arch/arm/dts/meson-g12b-a311d-khadas-vim3-u-boot.dtsi
+ create mode 100644 arch/arm/dts/meson-khadas-vim3-u-boot.dtsi
+ create mode 100644 arch/arm/dts/meson-sm1-khadas-vim3l-u-boot.dtsi
+
+diff --git a/arch/arm/dts/meson-g12b-a311d-khadas-vim3-u-boot.dtsi b/arch/arm/dts/meson-g12b-a311d-khadas-vim3-u-boot.dtsi
+new file mode 100644
+index 0000000000..f66eca14b1
+--- /dev/null
++++ b/arch/arm/dts/meson-g12b-a311d-khadas-vim3-u-boot.dtsi
+@@ -0,0 +1,7 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2020 BayLibre, SAS
++ * Author: Neil Armstrong <narmstrong@baylibre.com>
++ */
++
++#include "meson-khadas-vim3-u-boot.dtsi"
+diff --git a/arch/arm/dts/meson-khadas-vim3-u-boot.dtsi b/arch/arm/dts/meson-khadas-vim3-u-boot.dtsi
+new file mode 100644
+index 0000000000..81fd5be378
+--- /dev/null
++++ b/arch/arm/dts/meson-khadas-vim3-u-boot.dtsi
+@@ -0,0 +1,21 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2020 BayLibre, SAS
++ * Author: Neil Armstrong <narmstrong@baylibre.com>
++ */
++
++/ {
++	aliases {
++		spi0 = &spifc;
++	};
++};
++
++&sd_emmc_c {
++	status = "okay";
++	pinctrl-0 = <&emmc_ctrl_pins>, <&emmc_data_4b_pins>, <&emmc_ds_pins>;
++	bus-width = <4>;
++};
++
++&spifc {
++	status = "okay";
++};
+diff --git a/arch/arm/dts/meson-sm1-khadas-vim3l-u-boot.dtsi b/arch/arm/dts/meson-sm1-khadas-vim3l-u-boot.dtsi
+new file mode 100644
+index 0000000000..f66eca14b1
+--- /dev/null
++++ b/arch/arm/dts/meson-sm1-khadas-vim3l-u-boot.dtsi
+@@ -0,0 +1,7 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2020 BayLibre, SAS
++ * Author: Neil Armstrong <narmstrong@baylibre.com>
++ */
++
++#include "meson-khadas-vim3-u-boot.dtsi"
+
+From patchwork Mon Apr 20 13:44:45 2020
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Patchwork-Submitter: Neil Armstrong <narmstrong@baylibre.com>
+X-Patchwork-Id: 1273423
+X-Patchwork-Delegate: narmstrong@baylibre.com
+Return-Path: <u-boot-bounces@lists.denx.de>
+X-Original-To: incoming@patchwork.ozlabs.org
+Delivered-To: patchwork-incoming@bilbo.ozlabs.org
+Authentication-Results: ozlabs.org;
+ spf=pass (sender SPF authorized) smtp.mailfrom=lists.denx.de
+ (client-ip=85.214.62.61; helo=phobos.denx.de;
+ envelope-from=u-boot-bounces@lists.denx.de; receiver=<UNKNOWN>)
+Authentication-Results: ozlabs.org;
+ dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: ozlabs.org; dkim=pass (2048-bit key;
+ unprotected) header.d=baylibre-com.20150623.gappssmtp.com
+ header.i=@baylibre-com.20150623.gappssmtp.com header.a=rsa-sha256
+ header.s=20150623 header.b=xMNoOyKg; dkim-atps=neutral
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits))
+ (No client certificate requested)
+ by ozlabs.org (Postfix) with ESMTPS id 495Sdy5B2Rz9sSm
+ for <incoming@patchwork.ozlabs.org>; Mon, 20 Apr 2020 23:46:14 +1000 (AEST)
+Received: from h2850616.stratoserver.net (localhost [IPv6:::1])
+ by phobos.denx.de (Postfix) with ESMTP id B5DC981CDE;
+ Mon, 20 Apr 2020 15:45:29 +0200 (CEST)
+Authentication-Results: phobos.denx.de;
+ dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: phobos.denx.de;
+ spf=pass smtp.mailfrom=u-boot-bounces@lists.denx.de
+Authentication-Results: phobos.denx.de; dkim=pass (2048-bit key;
+ unprotected) header.d=baylibre-com.20150623.gappssmtp.com
+ header.i=@baylibre-com.20150623.gappssmtp.com header.b="xMNoOyKg";
+ dkim-atps=neutral
+Received: by phobos.denx.de (Postfix, from userid 109)
+ id 8B88B81CB8; Mon, 20 Apr 2020 15:45:11 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on phobos.denx.de
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+ DKIM_VALID,SPF_HELO_NONE,UPPERCASE_50_75,URIBL_BLOCKED autolearn=no
+ autolearn_force=no version=3.4.2
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
+ [IPv6:2a00:1450:4864:20::444])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+ (No client certificate requested)
+ by phobos.denx.de (Postfix) with ESMTPS id 7453A81CC7
+ for <u-boot@lists.denx.de>; Mon, 20 Apr 2020 15:45:05 +0200 (CEST)
+Authentication-Results: phobos.denx.de;
+ dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: phobos.denx.de;
+ spf=pass smtp.mailfrom=narmstrong@baylibre.com
+Received: by mail-wr1-x444.google.com with SMTP id j1so6809154wrt.1
+ for <u-boot@lists.denx.de>; Mon, 20 Apr 2020 06:45:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=fm37ByoF/cfqkPB12ZsdgykHRpZdkVpXIsiM2xODgNk=;
+ b=xMNoOyKgXVFREDmymtaLyjV+MJx1i7UvsjMOOKWkzLujQT73UwCOlkIw0GuQOZxGGn
+ JcFgllwUwjuPp7WZRmeXmVmKbEqItb+Rs971I7nB4LFtFU4DpFWA/khVR3pM6dmam188
+ Mb7pNSwjiCjFSsqiTRaqiyKWeRmeOhD74hkliJVJd4zGTAxTWn6ViGIXd76o0KJp5Zm+
+ BNUmdDAm3oD+iha7vw5sct6/mH+mwbtWwIqcwuNZswqMwvW8ZuenAOz9yuxbngfxzt9L
+ /VtnrG/KE2bH39x2hvSdScsUvDE/lbE0gWE6n52wtIdtfYYCnAHBVvm3az8lBrksDgm9
+ wLpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=fm37ByoF/cfqkPB12ZsdgykHRpZdkVpXIsiM2xODgNk=;
+ b=E7mM/2loleSSvfWt1fex+S4Zvo/d08ZjAWH5PgvCCdJxI5j+v9SCInkMxOndF316yH
+ VTQt+V59JvFd3euJq+qXUBy7a5h/3ZALaA6QBDoU1/ZIE6hTmjsDEAIC62YewJQkbMB/
+ 3hveKAfA3DGmcmO5Mc5A75ZSFNMCsfEG43j5DOwij5/0JJKtcuKz/nAe/GKkUsxZw6ir
+ a9wM7YeQd0VXkad5E5kpJvvQcGZLp91e2wL7rZbngtKaIzkLiwABRousGe1bHhnmpFOk
+ TE/zixjaR7m104XDtElNWa+Wi2XZteV0428WF/pYFjzW6Ms5yQjFI4Ycc9iBDTc5jIiK
+ mDRQ==
+X-Gm-Message-State: AGi0PuZXVYGgGVXUL32LPxVIQJBverKLniQhbM4+IUbTEmednD0HQ64k
+ kPkjtl8COJO/MwMuzZsDMtDSpQ==
+X-Google-Smtp-Source: APiQypI4ApyJdD6I5rgU9jEYFds2pJO9/DwcFIKiQsV+TlT442u0ynjmete7k6qE6zkAl4LfJN4muw==
+X-Received: by 2002:adf:ed07:: with SMTP id a7mr19388442wro.2.1587390304839;
+ Mon, 20 Apr 2020 06:45:04 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:39cc:a07:8b48:cc56])
+ by smtp.gmail.com with ESMTPSA id
+ l5sm1263458wrm.66.2020.04.20.06.45.02
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 20 Apr 2020 06:45:04 -0700 (PDT)
+From: Neil Armstrong <narmstrong@baylibre.com>
+To: u-boot-amlogic@groups.io
+Cc: u-boot@lists.denx.de,
+	Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH 5/5] configs: khadas-vim3: enable support for SPI NOR flash
+Date: Mon, 20 Apr 2020 15:44:45 +0200
+Message-Id: <20200420134445.19704-6-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.22.0
+In-Reply-To: <20200420134445.19704-1-narmstrong@baylibre.com>
+References: <20200420134445.19704-1-narmstrong@baylibre.com>
+MIME-Version: 1.0
+X-BeenThere: u-boot@lists.denx.de
+X-Mailman-Version: 2.1.30rc1
+Precedence: list
+List-Id: U-Boot discussion <u-boot.lists.denx.de>
+List-Unsubscribe: <https://lists.denx.de/options/u-boot>,
+ <mailto:u-boot-request@lists.denx.de?subject=unsubscribe>
+List-Archive: <https://lists.denx.de/pipermail/u-boot/>
+List-Post: <mailto:u-boot@lists.denx.de>
+List-Help: <mailto:u-boot-request@lists.denx.de?subject=help>
+List-Subscribe: <https://lists.denx.de/listinfo/u-boot>,
+ <mailto:u-boot-request@lists.denx.de?subject=subscribe>
+Errors-To: u-boot-bounces@lists.denx.de
+Sender: "U-Boot" <u-boot-bounces@lists.denx.de>
+X-Virus-Scanned: clamav-milter 0.102.2 at phobos.denx.de
+X-Virus-Status: Clean
+
+Enable the necessary configs to make usage of the SPI NOR Flash.
+
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+---
+ configs/khadas-vim3_defconfig  | 9 +++++++++
+ configs/khadas-vim3l_defconfig | 9 +++++++++
+ 2 files changed, 18 insertions(+)
+
+diff --git a/configs/khadas-vim3_defconfig b/configs/khadas-vim3_defconfig
+index 72987d9523..692138eb11 100644
+--- a/configs/khadas-vim3_defconfig
++++ b/configs/khadas-vim3_defconfig
+@@ -18,6 +18,8 @@ CONFIG_MISC_INIT_R=y
+ CONFIG_CMD_GPIO=y
+ # CONFIG_CMD_LOADS is not set
+ CONFIG_CMD_MMC=y
++CONFIG_CMD_SF_TEST=y
++CONFIG_CMD_SPI=y
+ CONFIG_CMD_USB=y
+ CONFIG_CMD_USB_MASS_STORAGE=y
+ # CONFIG_CMD_SETEXPR is not set
+@@ -28,6 +30,10 @@ CONFIG_SYS_RELOC_GD_ENV_ADDR=y
+ CONFIG_NET_RANDOM_ETHADDR=y
+ CONFIG_DM_MMC=y
+ CONFIG_MMC_MESON_GX=y
++CONFIG_MTD=y
++CONFIG_DM_MTD=y
++CONFIG_DM_SPI_FLASH=y
++CONFIG_SPI_FLASH_WINBOND=y
+ CONFIG_PHY_REALTEK=y
+ CONFIG_DM_ETH=y
+ CONFIG_ETH_DESIGNWARE=y
+@@ -41,6 +47,9 @@ CONFIG_DEBUG_UART_MESON=y
+ CONFIG_DEBUG_UART_ANNOUNCE=y
+ CONFIG_DEBUG_UART_SKIP_INIT=y
+ CONFIG_MESON_SERIAL=y
++CONFIG_SPI=y
++CONFIG_DM_SPI=y
++CONFIG_MESON_SPIFC=y
+ CONFIG_USB=y
+ CONFIG_DM_USB=y
+ CONFIG_USB_XHCI_HCD=y
+diff --git a/configs/khadas-vim3l_defconfig b/configs/khadas-vim3l_defconfig
+index 7e2ad41bca..28c20c0d6d 100644
+--- a/configs/khadas-vim3l_defconfig
++++ b/configs/khadas-vim3l_defconfig
+@@ -18,6 +18,8 @@ CONFIG_MISC_INIT_R=y
+ CONFIG_CMD_GPIO=y
+ # CONFIG_CMD_LOADS is not set
+ CONFIG_CMD_MMC=y
++CONFIG_CMD_SF_TEST=y
++CONFIG_CMD_SPI=y
+ CONFIG_CMD_USB=y
+ CONFIG_CMD_USB_MASS_STORAGE=y
+ # CONFIG_CMD_SETEXPR is not set
+@@ -28,6 +30,10 @@ CONFIG_SYS_RELOC_GD_ENV_ADDR=y
+ CONFIG_NET_RANDOM_ETHADDR=y
+ CONFIG_DM_MMC=y
+ CONFIG_MMC_MESON_GX=y
++CONFIG_MTD=y
++CONFIG_DM_MTD=y
++CONFIG_DM_SPI_FLASH=y
++CONFIG_SPI_FLASH_WINBOND=y
+ CONFIG_PHY_REALTEK=y
+ CONFIG_DM_ETH=y
+ CONFIG_ETH_DESIGNWARE=y
+@@ -43,6 +49,9 @@ CONFIG_DEBUG_UART_MESON=y
+ CONFIG_DEBUG_UART_ANNOUNCE=y
+ CONFIG_DEBUG_UART_SKIP_INIT=y
+ CONFIG_MESON_SERIAL=y
++CONFIG_SPI=y
++CONFIG_DM_SPI=y
++CONFIG_MESON_SPIFC=y
+ CONFIG_USB=y
+ CONFIG_DM_USB=y
+ CONFIG_USB_XHCI_HCD=y
