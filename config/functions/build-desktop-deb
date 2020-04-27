@@ -140,7 +140,7 @@ build_desktop_deb() {
 	fi
 
 	# Create desktop deb file
-	echo "Building package: $pkgname"
+	info_msg "Building package: $pkgname"
 	fakeroot dpkg-deb -b $pkgdir ${pkgdir}.deb
 	mkdir -p $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}
 	cp ${pkgdir}.deb $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}

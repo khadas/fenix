@@ -6,56 +6,56 @@
 
 ## Build U-Boot
 build_uboot() {
-    ret=0
+	ret=0
 
-    if [ "$UBOOT" == "mainline" ]; then
+	if [ "$UBOOT" == "mainline" ]; then
 		rm -rf $BUILD/.stamps/u-boot-mainline/
 		build_package "u-boot-mainline:target"
 
-        return 0
-    fi
+		return 0
+	fi
 
-    if [ "$UBOOT_GIT_BRANCH" == "" ]; then
-        error_msg "'UBOOT_GIT_BRANCH' is empty!"
-        return -1
-    fi
+	if [ "$UBOOT_GIT_BRANCH" == "" ]; then
+		error_msg "'UBOOT_GIT_BRANCH' is empty!"
+		return -1
+	fi
 
-    cd ${ROOT}
-    if [ ! -d u-boot/.git ]; then
-        echo "U-boot repository does not exist, clone u-boot repository('$UBOOT_GIT_BRANCH') from '$UBOOT_SOURCE_URL'..."
-        ## Clone u-boot from Khadas GitHub
-        git clone --depth 1 $UBOOT_SOURCE_URL -b $UBOOT_GIT_BRANCH
-        [ $? != 0 ] && error_msg "Failed to clone 'u-boot'" && return -1
-    fi
+	cd ${ROOT}
+	if [ ! -d u-boot/.git ]; then
+		info_msg "U-boot repository does not exist, clone u-boot repository('$UBOOT_GIT_BRANCH') from '$UBOOT_SOURCE_URL'..."
+		## Clone u-boot from Khadas GitHub
+		git clone --depth 1 $UBOOT_SOURCE_URL -b $UBOOT_GIT_BRANCH
+		[ $? != 0 ] && error_msg "Failed to clone 'u-boot'" && return -1
+	fi
 
-    cd u-boot/
+	cd u-boot/
 	touch .scmversion
 
-    if ! git branch | grep "^* $UBOOT_GIT_BRANCH$" > /dev/null; then
-        if ! git branch | grep "^  $UBOOT_GIT_BRANCH$" > /dev/null; then
-            # New branch? Try to fetch it.
-            echo "Fetching '$UBOOT_GIT_BRANCH' from '$UBOOT_SOURCE_URL'..."
-            git fetch origin $UBOOT_GIT_BRANCH:$UBOOT_GIT_BRANCH
-        fi
+	if ! git branch | grep "^* $UBOOT_GIT_BRANCH$" > /dev/null; then
+		if ! git branch | grep "^  $UBOOT_GIT_BRANCH$" > /dev/null; then
+			# New branch? Try to fetch it.
+			info_msg "Fetching '$UBOOT_GIT_BRANCH' from '$UBOOT_SOURCE_URL'..."
+			git fetch origin $UBOOT_GIT_BRANCH:$UBOOT_GIT_BRANCH
+		fi
 
-        echo "U-boot: Switch to branch '$UBOOT_GIT_BRANCH'"
-        make distclean
+		info_msg "U-boot: Switch to branch '$UBOOT_GIT_BRANCH'"
+		make distclean
 		# Check modifications
 		check_modifications || {
 			error_msg "U-boot: can't checkout to branch '$UBOOT_GIT_BRANCH', please commit your modifications and try again!"
 			return -1
 		}
 
-        git checkout $UBOOT_GIT_BRANCH
-        [ $? != 0 ] && error_msg "U-boot: Switch to branch '$UBOOT_GIT_BRANCH' failed." && return -1
-    else
-        echo "U-boot: Already on branch '$UBOOT_GIT_BRANCH'"
-    fi
+		git checkout $UBOOT_GIT_BRANCH
+		[ $? != 0 ] && error_msg "U-boot: Switch to branch '$UBOOT_GIT_BRANCH' failed." && return -1
+	else
+		info_msg "U-boot: Already on branch '$UBOOT_GIT_BRANCH'"
+	fi
 
-    # Update u-boot
-    update_git_repo "$PWD" "$UBOOT_GIT_BRANCH"
+	# Update u-boot
+	update_git_repo "$PWD" "$UBOOT_GIT_BRANCH"
 
-    info_msg "Build u-boot..."
+	info_msg "Build u-boot..."
 	export PATH=$UBOOT_COMPILER_PATH:$PATH
 	if [ "$UBOOT_FORCE_REBUILD" == "yes" ]; then
 		info_msg "U-boot: Force cleaning..."
@@ -63,7 +63,7 @@ build_uboot() {
 	fi
 	rm -rf .config *.bin *.img
 	make $UBOOT_DEFCONFIG
-    make -j${NR_JOBS} CROSS_COMPILE=${UBOOT_COMPILER}
+	make -j${NR_JOBS} CROSS_COMPILE=${UBOOT_COMPILER}
 
 	if [[ $(type -t uboot_custom_postprocess) == function ]]; then
 		uboot_custom_postprocess
@@ -71,46 +71,46 @@ build_uboot() {
 
 	ret=$?
 
-    return $ret
+	return $ret
 }
 
 ## Build Linux
 build_linux() {
-    ret=0
+	ret=0
 
-    if [ "$LINUX" == "mainline" ]; then
+	if [ "$LINUX" == "mainline" ]; then
 		rm -rf $BUILD/.stamps/linux-mainline/
 		build_package "linux-mainline:target"
 
-        return 0
-    fi
+		return 0
+	fi
 
-    if [ "$LINUX_GIT_BRANCH" == "" ] || [ "$LINUX_DTB" == "" ]; then
-        [ "$LINUX_GIT_BRANCH" == "" ] && error_msg "'LINUX_GIT_BRANCH' is empty!"
-        [ "$LINUX_DTB" == "" ] && error_msg "'LINUX_DTB' is empty!"
-        return -1
-    fi
+	if [ "$LINUX_GIT_BRANCH" == "" ] || [ "$LINUX_DTB" == "" ]; then
+		[ "$LINUX_GIT_BRANCH" == "" ] && error_msg "'LINUX_GIT_BRANCH' is empty!"
+		[ "$LINUX_DTB" == "" ] && error_msg "'LINUX_DTB' is empty!"
+		return -1
+	fi
 
-    cd ${ROOT}
-    if [ ! -d linux/.git ]; then
-        echo "Linux repository does not exist, clone linux repository('$LINUX_GIT_BRANCH') from '$LINUX_SOURCE_URL'..."
-        ## Clone linux from Khadas GitHub
-        git clone --depth 1 $LINUX_SOURCE_URL -b $LINUX_GIT_BRANCH
-        [ $? != 0 ] && error_msg "Failed to clone 'linux'" && return -1
-    fi
+	cd ${ROOT}
+	if [ ! -d linux/.git ]; then
+		info_msg "Linux repository does not exist, clone linux repository('$LINUX_GIT_BRANCH') from '$LINUX_SOURCE_URL'..."
+		## Clone linux from Khadas GitHub
+		git clone --depth 1 $LINUX_SOURCE_URL -b $LINUX_GIT_BRANCH
+		[ $? != 0 ] && error_msg "Failed to clone 'linux'" && return -1
+	fi
 
-    cd linux/
-    touch .scmversion
+	cd linux/
+	touch .scmversion
 
-    if ! git branch | grep "^* $LINUX_GIT_BRANCH$" > /dev/null; then
-        if ! git branch | grep "^  $LINUX_GIT_BRANCH$" > /dev/null; then
-            # New branch? Try to fetch it.
-            echo "Fetching '$LINUX_GIT_BRANCH' from '$LINUX_SOURCE_URL'..."
-            git fetch origin $LINUX_GIT_BRANCH:$LINUX_GIT_BRANCH
-        fi
+	if ! git branch | grep "^* $LINUX_GIT_BRANCH$" > /dev/null; then
+		if ! git branch | grep "^  $LINUX_GIT_BRANCH$" > /dev/null; then
+			# New branch? Try to fetch it.
+			info_msg "Fetching '$LINUX_GIT_BRANCH' from '$LINUX_SOURCE_URL'..."
+			git fetch origin $LINUX_GIT_BRANCH:$LINUX_GIT_BRANCH
+		fi
 
-        echo "Linux: Switch to branch '$LINUX_GIT_BRANCH'"
-        make ARCH=arm64 distclean
+		info_msg "Linux: Switch to branch '$LINUX_GIT_BRANCH'"
+		make ARCH=arm64 distclean
 
 		# Walkaround for branch switch
 		if [ -f drivers/gpu/arm/mali400/mali/__malidrv_build_info.c ]; then
@@ -124,19 +124,19 @@ build_linux() {
 			return -1
 		}
 
-        git checkout $LINUX_GIT_BRANCH
-        [ $? != 0 ] && error_msg "Linux: Switch to branch '$LINUX_GIT_BRANCH' failed." && return -1
-    else
-        echo "Linux: Already on branch '$LINUX_GIT_BRANCH'"
-    fi
+		git checkout $LINUX_GIT_BRANCH
+		[ $? != 0 ] && error_msg "Linux: Switch to branch '$LINUX_GIT_BRANCH' failed." && return -1
+	else
+		info_msg "Linux: Already on branch '$LINUX_GIT_BRANCH'"
+	fi
 
-    # Update linux
-    update_git_repo "$PWD" "$LINUX_GIT_BRANCH"
+	# Update linux
+	update_git_repo "$PWD" "$LINUX_GIT_BRANCH"
 
-    info_msg "Build linux..."
-    export PATH=$KERNEL_COMPILER_PATH:$PATH
-    make ARCH=arm64 $LINUX_DEFCONFIG
-    make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} Image dtbs  modules
+	info_msg "Build linux..."
+	export PATH=$KERNEL_COMPILER_PATH:$PATH
+	make ARCH=arm64 $LINUX_DEFCONFIG
+	make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} Image dtbs  modules
 }
 
 ## Build linux debs
@@ -293,7 +293,7 @@ build_uboot_deb() {
 	chmod 755 $pkgdir/DEBIAN/prerm
 
 	# Create board deb file
-	echo "Building package: $pkgname"
+	info_msg "Building package: $pkgname"
 	fakeroot dpkg-deb -b $pkgdir ${pkgdir}.deb
 	mkdir -p $BUILD_DEBS/$VERSION/$KHADAS_BOARD
 	cp ${pkgdir}.deb $BUILD_DEBS/$VERSION/$KHADAS_BOARD

@@ -88,7 +88,7 @@ build_gpu_deb() {
 		EOF
 
 		# Create board deb file
-		echo "Building package: $pkgname"
+		info_msg "Building package: $pkgname"
 		fakeroot dpkg-deb -b $pkgdir ${pkgdir}.deb
 		mkdir -p $BUILD_DEBS/$VERSION/$KHADAS_BOARD
 		cp ${pkgdir}.deb $BUILD_DEBS/$VERSION/$KHADAS_BOARD
@@ -188,7 +188,7 @@ build_gpu_deb() {
 		cd -
 
 		# Create board deb file
-		echo "Building package: $pkgname"
+		info_msg "Building package: $pkgname"
 		fakeroot dpkg-deb -b $pkgdir ${pkgdir}.deb
 		mkdir -p $BUILD_DEBS/$VERSION/$KHADAS_BOARD
 		cp ${pkgdir}.deb $BUILD_DEBS/$VERSION/$KHADAS_BOARD
@@ -258,7 +258,7 @@ build_gpu_deb() {
 		cd -
 
 		# Create board deb file
-		echo "Building package: $pkgname_dev"
+		info_msg "Building package: $pkgname_dev"
 		fakeroot dpkg-deb -b $pkgdir_dev ${pkgdir_dev}.deb
 		mkdir -p $BUILD_DEBS/$VERSION/$KHADAS_BOARD
 		cp ${pkgdir_dev}.deb $BUILD_DEBS/$VERSION/$KHADAS_BOARD
