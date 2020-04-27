@@ -206,15 +206,12 @@ create_rootfs_cache()
 
 		# stage: debootstrap base system
 		if [[ $NO_APT_CACHER != yes ]]; then
-			# apt-cacher-ng apt-get proxy parameter
+			# apt-cacher-ng apt proxy parameter
 			local apt_extra="-o Acquire::http::Proxy=\"http://${APT_PROXY_ADDR:-localhost:3142}\""
 			local apt_mirror="http://${APT_PROXY_ADDR:-localhost:3142}/$APT_MIRROR"
 		else
 			local apt_mirror="http://$APT_MIRROR"
 		fi
-
-		# fancy progress bars
-		local apt_extra_progress="--show-progress -o DPKG::Progress-Fancy=1"
 
 		info_msg "Installing base system - Stage 1/2"
 		eval 'debootstrap --include=${DEBOOTSTRAP_LIST} ${PACKAGE_LIST_EXCLUDE:+ --exclude=${PACKAGE_LIST_EXCLUDE// /,}} \
@@ -284,8 +281,8 @@ create_rootfs_cache()
 		# add armhf arhitecture to arm64
 		if [[ $DISTRIB_ARCH == arm64 ]]; then
 			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "dpkg --add-architecture armhf"'
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "apt-get update"'
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "apt-get -y install libc6:armhf"'
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "apt -y update"'
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "apt -y install libc6:armhf"'
 		fi
 
 		# this should fix resolvconf installation failure in some cases
@@ -293,17 +290,17 @@ create_rootfs_cache()
 
 		# stage: update packages list
 		info_msg "Updating package list $DISTRIB_RELEASE"
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "apt-get -y $apt_extra update"'
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "apt -y $apt_extra update"'
 
 		# stage: upgrade base packages from xxx-updates and xxx-backports repository branches
 		info_msg "Upgrading base packages"
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "DEBIAN_FRONTEND=noninteractive apt-get -y \
-			$apt_extra $apt_extra_progress upgrade"'
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "DEBIAN_FRONTEND=noninteractive apt -y \
+			$apt_extra upgrade"'
 
 		# stage: install additional packages
 		info_msg "Installing packages"
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "DEBIAN_FRONTEND=noninteractive apt-get -y \
-			$apt_extra $apt_extra_progress --no-install-recommends install $PACKAGE_LIST"' \
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "DEBIAN_FRONTEND=noninteractive apt -y \
+			$apt_extra --no-install-recommends install $PACKAGE_LIST"' \
 
 		if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
 			error_msg "Installation of packages failed"
@@ -315,7 +312,7 @@ create_rootfs_cache()
 		eval 'df -h'
 
 		# stage: remove downloaded packages
-		chroot $ROOTFS_TEMP /bin/bash -c "apt-get clean"
+		chroot $ROOTFS_TEMP /bin/bash -c "apt -y clean"
 
 		# this is needed for the build process later since resolvconf generated file in /run is not saved
 		rm $ROOTFS_TEMP/etc/resolv.conf
