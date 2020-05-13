@@ -3,6 +3,9 @@ From: hyphop <art@khadas.com>
 Date: Fri, 24 Apr 2020 21:53:59 +0900
 Subject: [PATCH] add hostname as CONFIG_IDENT_STRING for net boot
 
+add hostname value same as CONFIG_DEFAULT_DEVICE_TREE
+hostname value used as dhcp host name
+
 ---
  include/configs/meson64.h | 2 ++
  1 file changed, 2 insertions(+)

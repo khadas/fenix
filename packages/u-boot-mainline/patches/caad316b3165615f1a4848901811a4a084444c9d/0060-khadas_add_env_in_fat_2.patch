@@ -3,6 +3,8 @@ From: hyphop <art@khadas.com>
 Date: Fri, 24 Apr 2020 02:07:29 +0900
 Subject: [PATCH] khadas_add_env_in_fat_2
 
+enbable env in fat mmc 2nd partition
+
 ---
  configs/khadas-edge-captain-rk3399_defconfig | 5 +++++
  configs/khadas-edge-rk3399_defconfig         | 5 +++++

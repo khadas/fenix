@@ -3,6 +3,7 @@ From: hyphop <art@khadas.com>
 Date: Sat, 25 Apr 2020 00:13:52 +0900
 Subject: [PATCH 2/2] fat_env_more_test_by_boot_source
 
+additional test for env detection source
 ---
  env/fat.c | 19 ++++++++++++++-----
  1 file changed, 14 insertions(+), 5 deletions(-)

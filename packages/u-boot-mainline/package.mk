@@ -19,10 +19,14 @@ make_target() {
 }
 
 post_make_target() {
+
+	# add embed uboot khadas logo
+	cat u-boot-nodtb.bin u-boot.dtb "$PKGS_DIR/$PKG_NAME/files/splash.bmp.gz" > u-boot.bin
+
 	if [ "$VENDOR" == "Amlogic" ]; then
 		# Add firmware
-		rm -rf $BUILD/$PKG_NAME-$PKG_VERSION/fip
-		cp -r $PKGS_DIR/$PKG_NAME/fip/$KHADAS_BOARD $BUILD/$PKG_NAME-$PKG_VERSION/fip
+		rm -rf "$BUILD/$PKG_NAME-$PKG_VERSION/fip"
+		cp -r "$PKGS_DIR/$PKG_NAME/fip/$KHADAS_BOARD" "$BUILD/$PKG_NAME-$PKG_VERSION/fip"
 		cp u-boot.bin fip/bl33.bin
 		if [[ "$KHADAS_BOARD" =~ VIM[12] ]]; then
 			fip/blx_fix.sh fip/bl30.bin fip/zero_tmp fip/bl30_zero.bin fip/bl301.bin fip/bl301_zero.bin fip/bl30_new.bin bl30

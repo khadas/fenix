@@ -1,7 +1,9 @@
 From 97231fcba6f647b02d483f39363014cc2812b385 Mon Sep 17 00:00:00 2001
 From: hyphop <art@khadas.com>
 Date: Fri, 24 Apr 2020 01:39:18 +0900
-Subject: [PATCH] add_kdi_to_defconfig
+Subject: [PATCH] add_kbi_to_defconfig
+
+enable i2c + adc options for KBI
 
 ---
  configs/khadas-edge-captain-rk3399_defconfig | 4 ++++

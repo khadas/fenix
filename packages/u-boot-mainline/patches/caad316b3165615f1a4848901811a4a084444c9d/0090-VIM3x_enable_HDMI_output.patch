@@ -3,7 +3,7 @@ From: hyphop <art@khadas.com>
 Date: Sat, 25 Apr 2020 15:31:09 +0900
 Subject: [PATCH] VIM3x_enable_hdmi_output
 
-not works ;)
+HDMI video output for VIM3 VIM3L
 
 ---
  configs/khadas-vim3_defconfig  | 6 ++++++

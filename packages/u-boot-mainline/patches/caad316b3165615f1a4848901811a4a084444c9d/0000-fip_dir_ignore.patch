@@ -3,6 +3,8 @@ From: hyphop <art@khadas.com>
 Date: Fri, 24 Apr 2020 03:42:36 +0900
 Subject: [PATCH] fip_dir_ignore
 
+just ignore fip dir
+
 ---
  .gitignore | 1 +
  1 file changed, 1 insertion(+)

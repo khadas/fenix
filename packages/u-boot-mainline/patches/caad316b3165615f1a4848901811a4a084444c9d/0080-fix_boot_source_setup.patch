@@ -3,6 +3,8 @@ From: hyphop <art@khadas.com>
 Date: Sat, 25 Apr 2020 00:11:28 +0900
 Subject: [PATCH 1/2] fix_boot_source_setup
 
+fix
+
 ---
  arch/arm/mach-meson/board-common.c | 1 +
  1 file changed, 1 insertion(+)

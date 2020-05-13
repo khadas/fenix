@@ -4,7 +4,7 @@ Date: Mon, 9 Mar 2020 23:02:01 +0900
 Subject: [PATCH] add script cmd similar with source or autoscr and cfgload
 
 script can fully replace all of them
-plus boot sequnce change to boot.cmd -> boot.ini -> boot.scr.uimg -> boot.scr
+default boot sequnce change to boot.cmd -> boot.ini -> boot.scr.uimg -> boot.scr
 
 ---
  cmd/Kconfig      |   6 ++
@@ -147,12 +147,12 @@ index 00000000..02ae9f87
 +
 +// check headers sizes only // its not crc check
 +	    if ( l != l2 + 8 ) {
-+		printf ("[w] Script wrong headers size %u != %u\n", l, l2  ) ;
++		printf ("** Script wrong headers size %u != %u **\n", l, l2  ) ;
 +		return -1;
 +	    }
 +// check zero script
 +	    if ( l2 == 0 ) {
-+		printf ("[w] Script zero size" );
++		printf ("** Script zero size **\n" );
 +		return -1;
 +	    }
 +
@@ -184,7 +184,7 @@ index 00000000..02ae9f87
 +	if ( *n != '#') {
 +	    for (int i=0;1;i++) {
 +		if ( i == 128 || *(n+i) == '\0') {
-+		    printf ("[e] Script wrong header !\n") ;
++		    printf ("** Script wrong header **\n") ;
 +		    return -1;
 +		}
 +		if ( *(n+i) == '\n') {
@@ -242,7 +242,7 @@ index 00000000..02ae9f87
 +    
 +//	printf ("## Script cmd a:%08lx l:%lu c:%lu l:%lu fs:%s\n", addr, leng, hdr, slnt, fs);
 +    rcode = script (addr , leng , hdr, slnt);
-+    
++    if ( slnt ) return 0;
 +    return rcode;
 +}
 +

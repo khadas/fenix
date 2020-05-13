@@ -813,95 +813,6 @@ index db0763e961..4073eb7a9d 100644
  
  #endif /* __GXBB_CLKC_H */
 
-From patchwork Mon Apr 20 13:44:42 2020
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Patchwork-Submitter: Neil Armstrong <narmstrong@baylibre.com>
-X-Patchwork-Id: 1273418
-X-Patchwork-Delegate: narmstrong@baylibre.com
-Return-Path: <u-boot-bounces@lists.denx.de>
-X-Original-To: incoming@patchwork.ozlabs.org
-Delivered-To: patchwork-incoming@bilbo.ozlabs.org
-Authentication-Results: ozlabs.org;
- spf=pass (sender SPF authorized) smtp.mailfrom=lists.denx.de
- (client-ip=2a01:238:438b:c500:173d:9f52:ddab:ee01; helo=phobos.denx.de;
- envelope-from=u-boot-bounces@lists.denx.de; receiver=<UNKNOWN>)
-Authentication-Results: ozlabs.org;
- dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: ozlabs.org; dkim=pass (2048-bit key;
- unprotected) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.a=rsa-sha256
- header.s=20150623 header.b=14nMyiwz; dkim-atps=neutral
-Received: from phobos.denx.de (phobos.denx.de
- [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits))
- (No client certificate requested)
- by ozlabs.org (Postfix) with ESMTPS id 495Sd45Yrrz9sP7
- for <incoming@patchwork.ozlabs.org>; Mon, 20 Apr 2020 23:45:28 +1000 (AEST)
-Received: from h2850616.stratoserver.net (localhost [IPv6:::1])
- by phobos.denx.de (Postfix) with ESMTP id 3665581CC6;
- Mon, 20 Apr 2020 15:45:14 +0200 (CEST)
-Authentication-Results: phobos.denx.de;
- dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: phobos.denx.de;
- spf=pass smtp.mailfrom=u-boot-bounces@lists.denx.de
-Authentication-Results: phobos.denx.de; dkim=pass (2048-bit key;
- unprotected) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="14nMyiwz";
- dkim-atps=neutral
-Received: by phobos.denx.de (Postfix, from userid 109)
- id 21AD281CA4; Mon, 20 Apr 2020 15:45:06 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on phobos.denx.de
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
- DKIM_VALID,SPF_HELO_NONE,URIBL_BLOCKED autolearn=ham
- autolearn_force=no version=3.4.2
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
- (No client certificate requested)
- by phobos.denx.de (Postfix) with ESMTPS id E2C4F81CB3
- for <u-boot@lists.denx.de>; Mon, 20 Apr 2020 15:44:59 +0200 (CEST)
-Authentication-Results: phobos.denx.de;
- dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: phobos.denx.de;
- spf=pass smtp.mailfrom=narmstrong@baylibre.com
-Received: by mail-wr1-x444.google.com with SMTP id b11so12221507wrs.6
- for <u-boot@lists.denx.de>; Mon, 20 Apr 2020 06:44:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=N1pzCPYFUNXYddjOIDYgg+jtk9SunoZ2EvOVi3qTBec=;
- b=14nMyiwzKhy0QYJeB+uzQRkTzRviZrD1goPr7asA3CqqRXOq7bLr6AGgAn3s8fBez9
- OcObA68JElqmxvMbmNgWzwzTTmtuVStfUDaAq1yUin5U90A1pRDqsU5Q5WC+TtJC8O0h
- 47PFUzNzF/6aSontvJbCYAnfNGecUJN3Tpw+EJGz5kSl5YQHgNmZ5RZwwfs84Zmizv4E
- WExPbL86ptpyAyDpvXBCLil7WqcgVAvBiNNhnDVtXD82z1wmnsaTaJqh42TzjGmgO9uC
- 2hCaVPv7xD5+micCHPXd7JJeAy7d1MtkJNRS8zsOpLbVQsAwFguTX45kIWvKXxcKg9H2
- bxtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=N1pzCPYFUNXYddjOIDYgg+jtk9SunoZ2EvOVi3qTBec=;
- b=WOC2L2J3f4f1WeqJ7dTPBF0NLZpT5bSkHlehVTOFV8fAnXdz1Ey8Gresp3mYO2HkEY
- HnN+NIQgFpS51kqBwrwMy1FLt1qT0yh9/3l6BRh5W5VpoUMlqUX31yUYdo9OUuWI/kel
- dp4r9BFEQo/ZVba9bO0SLUzcP9639/FWlJcVOlxQqDfREJt1chny82e2X+Sfv2tJrBvd
- 3XyM/pqBUCy5FNaPoMLUB8YMTEFxh7kYbM6aaGOb9As/0m/ffowUYiCh59FZE7Cac4/K
- NUyaUB74xklTHILrSbd0BE7UC7jBwAW4v51i29nAu/R9xrLEgdNIAE+gYj5KjFTewxe0
- NTEw==
-X-Gm-Message-State: AGi0PubkbjZw1p6E8MpxtuRiigTGdE+dQOVmYNB/sK0CrEkbaJOWKiLF
- tWQW/vELkR5meJWXWOjT4ppySw==
-X-Google-Smtp-Source: APiQypLeyXl/NaCPcO5WWv61RKPoU0Sl20L+4JdqyTzDU+7HZ8zaG/qLu96LrlwGjdOkWiNsQO89zw==
-X-Received: by 2002:a5d:52d1:: with SMTP id r17mr17857956wrv.333.1587390299436;
- Mon, 20 Apr 2020 06:44:59 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:39cc:a07:8b48:cc56])
- by smtp.gmail.com with ESMTPSA id
- l5sm1263458wrm.66.2020.04.20.06.44.58
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 20 Apr 2020 06:44:58 -0700 (PDT)
 From: Neil Armstrong <narmstrong@baylibre.com>
 To: u-boot-amlogic@groups.io
 Cc: u-boot@lists.denx.de,
@@ -909,26 +820,6 @@ Cc: u-boot@lists.denx.de,
 Subject: [PATCH 2/5] arm: dts: meson-gxm-khadas-vim2-u-boot: enable SPI NOR
  flash
 Date: Mon, 20 Apr 2020 15:44:42 +0200
-Message-Id: <20200420134445.19704-3-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20200420134445.19704-1-narmstrong@baylibre.com>
-References: <20200420134445.19704-1-narmstrong@baylibre.com>
-MIME-Version: 1.0
-X-BeenThere: u-boot@lists.denx.de
-X-Mailman-Version: 2.1.30rc1
-Precedence: list
-List-Id: U-Boot discussion <u-boot.lists.denx.de>
-List-Unsubscribe: <https://lists.denx.de/options/u-boot>,
- <mailto:u-boot-request@lists.denx.de?subject=unsubscribe>
-List-Archive: <https://lists.denx.de/pipermail/u-boot/>
-List-Post: <mailto:u-boot@lists.denx.de>
-List-Help: <mailto:u-boot-request@lists.denx.de?subject=help>
-List-Subscribe: <https://lists.denx.de/listinfo/u-boot>,
- <mailto:u-boot-request@lists.denx.de?subject=subscribe>
-Errors-To: u-boot-bounces@lists.denx.de
-Sender: "U-Boot" <u-boot-bounces@lists.denx.de>
-X-Virus-Scanned: clamav-milter 0.102.2 at phobos.denx.de
-X-Virus-Status: Clean
 
 Activate the on-board SPI NOR Flash by enabling the SPI controller and
 disabling the DS eMMC pin in the VIM2 u-boot.dtsi file.
@@ -962,120 +853,12 @@ index c35158d7e9..bec9e05b09 100644
 +	status = "okay";
 +};
 
-From patchwork Mon Apr 20 13:44:43 2020
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Patchwork-Submitter: Neil Armstrong <narmstrong@baylibre.com>
-X-Patchwork-Id: 1273419
-X-Patchwork-Delegate: narmstrong@baylibre.com
-Return-Path: <u-boot-bounces@lists.denx.de>
-X-Original-To: incoming@patchwork.ozlabs.org
-Delivered-To: patchwork-incoming@bilbo.ozlabs.org
-Authentication-Results: ozlabs.org;
- spf=pass (sender SPF authorized) smtp.mailfrom=lists.denx.de
- (client-ip=85.214.62.61; helo=phobos.denx.de;
- envelope-from=u-boot-bounces@lists.denx.de; receiver=<UNKNOWN>)
-Authentication-Results: ozlabs.org;
- dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: ozlabs.org; dkim=pass (2048-bit key;
- unprotected) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.a=rsa-sha256
- header.s=20150623 header.b=i5vAiZnU; dkim-atps=neutral
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits))
- (No client certificate requested)
- by ozlabs.org (Postfix) with ESMTPS id 495SdH4jf8z9s71
- for <incoming@patchwork.ozlabs.org>; Mon, 20 Apr 2020 23:45:39 +1000 (AEST)
-Received: from h2850616.stratoserver.net (localhost [IPv6:::1])
- by phobos.denx.de (Postfix) with ESMTP id 5513881CD1;
- Mon, 20 Apr 2020 15:45:17 +0200 (CEST)
-Authentication-Results: phobos.denx.de;
- dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: phobos.denx.de;
- spf=pass smtp.mailfrom=u-boot-bounces@lists.denx.de
-Authentication-Results: phobos.denx.de; dkim=pass (2048-bit key;
- unprotected) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="i5vAiZnU";
- dkim-atps=neutral
-Received: by phobos.denx.de (Postfix, from userid 109)
- id 1ABB381CCD; Mon, 20 Apr 2020 15:45:06 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on phobos.denx.de
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
- DKIM_VALID,SPF_HELO_NONE,UPPERCASE_50_75,URIBL_BLOCKED autolearn=no
- autolearn_force=no version=3.4.2
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
- (No client certificate requested)
- by phobos.denx.de (Postfix) with ESMTPS id 6BE0381CA4
- for <u-boot@lists.denx.de>; Mon, 20 Apr 2020 15:45:01 +0200 (CEST)
-Authentication-Results: phobos.denx.de;
- dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: phobos.denx.de;
- spf=pass smtp.mailfrom=narmstrong@baylibre.com
-Received: by mail-wr1-x444.google.com with SMTP id t14so12186016wrw.12
- for <u-boot@lists.denx.de>; Mon, 20 Apr 2020 06:45:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=m2dCFZAoj4l+wl/qLoS8mZl7XWYoE2Fwv4BIPZmVxe4=;
- b=i5vAiZnUoW60kxoeKhFf0eYNmSW8Mr+6YnV68E0A/1JXvhx8NPYtHD1DrG1W0+odyf
- gVjcUpffEukzZPd5JOC2fszxt0i7wy16Md3p6SLNTjsfy7zTCRgD47Z4/72nVXOwDBpK
- vHmxae7IvJ3JVCaRvoaWXVzwbr+cf6bi4Mi6KGSqlxiydU0lK5u+k4kgVdIw9goC+hJ7
- kL3Ht+N6bjC/iHeXqsX299XOV+UtPdPWk8cB2GNTap0Qnl/r4wnLWKQMZioh8Pg+cBdI
- cmQ0YEOAv1JKN1gzcU0/TfOPiGEABB88hcbP7Xj6Ef2FDLWhMy9JZThsQ/icdroC078A
- QKdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=m2dCFZAoj4l+wl/qLoS8mZl7XWYoE2Fwv4BIPZmVxe4=;
- b=idMZC/6tllJCMBi6guRBEFuhqPVUNzxJ6U9veVcIt1ZFWiDFxtgVWaOPOcvMVpIpNN
- nUrM/nceej3niLRoZ7E93haC0wv1sx3/OyJ0RrQ60XZCZ/06uNVT8jQLOduzEU77/C2h
- mRwORbd7u+UgsaOJQU24hhxtTxjIPIcJVN+MNXAzTMFMIKaxLXfJc1ZHo2ZSbFbuCrJR
- LBUrNiMlMbaHIYwzBLeMJNCwaBG1OCu1MPKwfwVS2AHBryrM0Ro0yhYWy7psUsObtIwZ
- oun1U34TCKZFgaWqOVhMfRu7FaXgeoTtFOMUe1zE9mklRkhcU07mxPv8a+ISvJQgU7WR
- i/Mw==
-X-Gm-Message-State: AGi0PuatdxY8H2cvUstDdJeNGF1sqKW7e3WN9nCVTAW25PPxo8RvYNC8
- QH6NRj9XAOtzkl6bjSLApvJMCCJUMWM=
-X-Google-Smtp-Source: APiQypKqgZ9egwvwRn5FHYW7qqiiXG1zxPXzEpdTAsYi68TAWd4Xl+66x7aMQTSOpvKdPvN6WJNQuA==
-X-Received: by 2002:a5d:4b04:: with SMTP id v4mr19939793wrq.358.1587390300857; 
- Mon, 20 Apr 2020 06:45:00 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:39cc:a07:8b48:cc56])
- by smtp.gmail.com with ESMTPSA id
- l5sm1263458wrm.66.2020.04.20.06.44.59
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 20 Apr 2020 06:45:00 -0700 (PDT)
 From: Neil Armstrong <narmstrong@baylibre.com>
 To: u-boot-amlogic@groups.io
 Cc: u-boot@lists.denx.de,
 	Neil Armstrong <narmstrong@baylibre.com>
 Subject: [PATCH 3/5] configs: khadas-vim2: enable support for SPI NOR flash
 Date: Mon, 20 Apr 2020 15:44:43 +0200
-Message-Id: <20200420134445.19704-4-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20200420134445.19704-1-narmstrong@baylibre.com>
-References: <20200420134445.19704-1-narmstrong@baylibre.com>
-MIME-Version: 1.0
-X-BeenThere: u-boot@lists.denx.de
-X-Mailman-Version: 2.1.30rc1
-Precedence: list
-List-Id: U-Boot discussion <u-boot.lists.denx.de>
-List-Unsubscribe: <https://lists.denx.de/options/u-boot>,
- <mailto:u-boot-request@lists.denx.de?subject=unsubscribe>
-List-Archive: <https://lists.denx.de/pipermail/u-boot/>
-List-Post: <mailto:u-boot@lists.denx.de>
-List-Help: <mailto:u-boot-request@lists.denx.de?subject=help>
-List-Subscribe: <https://lists.denx.de/listinfo/u-boot>,
- <mailto:u-boot-request@lists.denx.de?subject=subscribe>
-Errors-To: u-boot-bounces@lists.denx.de
-Sender: "U-Boot" <u-boot-bounces@lists.denx.de>
-X-Virus-Scanned: clamav-milter 0.102.2 at phobos.denx.de
-X-Virus-Status: Clean
 
 Add the necessary configs to use the SPI NOR flash.
 
@@ -1119,120 +902,12 @@ index a533566410..5633f6da9c 100644
  CONFIG_DM_USB=y
  CONFIG_USB_XHCI_HCD=y
 
-From patchwork Mon Apr 20 13:44:44 2020
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Patchwork-Submitter: Neil Armstrong <narmstrong@baylibre.com>
-X-Patchwork-Id: 1273422
-X-Patchwork-Delegate: narmstrong@baylibre.com
-Return-Path: <u-boot-bounces@lists.denx.de>
-X-Original-To: incoming@patchwork.ozlabs.org
-Delivered-To: patchwork-incoming@bilbo.ozlabs.org
-Authentication-Results: ozlabs.org;
- spf=pass (sender SPF authorized) smtp.mailfrom=lists.denx.de
- (client-ip=85.214.62.61; helo=phobos.denx.de;
- envelope-from=u-boot-bounces@lists.denx.de; receiver=<UNKNOWN>)
-Authentication-Results: ozlabs.org;
- dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: ozlabs.org; dkim=pass (2048-bit key;
- unprotected) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.a=rsa-sha256
- header.s=20150623 header.b=oISBadZS; dkim-atps=neutral
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits))
- (No client certificate requested)
- by ozlabs.org (Postfix) with ESMTPS id 495Sdj5Mm8z9s71
- for <incoming@patchwork.ozlabs.org>; Mon, 20 Apr 2020 23:46:01 +1000 (AEST)
-Received: from h2850616.stratoserver.net (localhost [IPv6:::1])
- by phobos.denx.de (Postfix) with ESMTP id AC6CB81CD6;
- Mon, 20 Apr 2020 15:45:24 +0200 (CEST)
-Authentication-Results: phobos.denx.de;
- dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: phobos.denx.de;
- spf=pass smtp.mailfrom=u-boot-bounces@lists.denx.de
-Authentication-Results: phobos.denx.de; dkim=pass (2048-bit key;
- unprotected) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="oISBadZS";
- dkim-atps=neutral
-Received: by phobos.denx.de (Postfix, from userid 109)
- id 8007381CB3; Mon, 20 Apr 2020 15:45:12 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on phobos.denx.de
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
- DKIM_VALID,SPF_HELO_NONE,URIBL_BLOCKED autolearn=ham
- autolearn_force=no version=3.4.2
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
- [IPv6:2a00:1450:4864:20::442])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
- (No client certificate requested)
- by phobos.denx.de (Postfix) with ESMTPS id E828481CAF
- for <u-boot@lists.denx.de>; Mon, 20 Apr 2020 15:45:02 +0200 (CEST)
-Authentication-Results: phobos.denx.de;
- dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: phobos.denx.de;
- spf=pass smtp.mailfrom=narmstrong@baylibre.com
-Received: by mail-wr1-x442.google.com with SMTP id t14so12186118wrw.12
- for <u-boot@lists.denx.de>; Mon, 20 Apr 2020 06:45:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=aplaMIaff1OIeYNF7AAHHFJuQuBcuEc4y1Wti1YdShM=;
- b=oISBadZShr2/KfzV/BMHItr3Ko0Zw4YXj9g1dyTD1zK0Sx/Fq89En6ScXxhYXOXsoo
- PWs5euT0EhkTJ0LVgOiGVX3gwVy03JISdK+fsbX+bJX1FEFl+Pvx6sZUNYIrJJ8MVKJJ
- mQMcjcyv1cIrNdrbk97VN7cxuPD3oLhSO/3ormmllhVOjEzJRetAgdBIkd3UgRhUecOx
- PKz3wcfAcDITBuA/q13B4IOBJy+9OvmiZ2T/ynC+BYKrNf8xtPw4wFCRQ2xTmnC21qSZ
- nLc8DrtIGOpc0mEl4HakU7OzxQCSOhB3bOv7zIkQbWfCGc6TJcZx+JyD+7CRZrp0aKQN
- 6HjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=aplaMIaff1OIeYNF7AAHHFJuQuBcuEc4y1Wti1YdShM=;
- b=HwqXJHQ7tQqAk4SfM0DXPRlfdGVLoswc6Bp+XAJMaphjiJD+WJaqQF8wQn/Qz5IyDy
- TjErGUwRQ7ks+C8a6nHQNOy6Bjmm6CsO2GrR7XQ/+oRzU2rBi6ofl/PCO7MtXiRbavRS
- voWh6jGLYez9WK0yu8XQBIdcMDE6c5zS/cB2CquB3k9+8c5QVF423fmuofiqxRn1S3hE
- fwevUoj1Mr4KhdsQ/q2c2QWyH0ZGrdXt4RbJ0mYq03CuaRi3SdSggNVb59eOvAkgb8k3
- vQK3eGL8vTNR6lc1J06FFlticABBkDFZA5Dz5KWpwwSKx4dPkNZhPuPfI8gJ6V+n9iby
- gJwQ==
-X-Gm-Message-State: AGi0Puas6gZ3fLsa0n4NiyleTuv7dwrhcTtooJ73vcLH4pPlZZS4ZZIu
- 9bZ/c5OboK6UvqFhKB13UTnHdCBHkFk=
-X-Google-Smtp-Source: APiQypI4BusguxHlLHfQQvfxkrpPnM6YGPtrsTiIQpc2J88/ZvHN8OSJQnCG6aexDoudjLs4AYrzrw==
-X-Received: by 2002:adf:d0ca:: with SMTP id z10mr20433621wrh.172.1587390302344;
- Mon, 20 Apr 2020 06:45:02 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:39cc:a07:8b48:cc56])
- by smtp.gmail.com with ESMTPSA id
- l5sm1263458wrm.66.2020.04.20.06.45.01
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 20 Apr 2020 06:45:01 -0700 (PDT)
 From: Neil Armstrong <narmstrong@baylibre.com>
 To: u-boot-amlogic@groups.io
 Cc: u-boot@lists.denx.de,
 	Neil Armstrong <narmstrong@baylibre.com>
 Subject: [PATCH 4/5] arm: dts: meson-khadas-vim3: enable SPI NOR flash
 Date: Mon, 20 Apr 2020 15:44:44 +0200
-Message-Id: <20200420134445.19704-5-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20200420134445.19704-1-narmstrong@baylibre.com>
-References: <20200420134445.19704-1-narmstrong@baylibre.com>
-MIME-Version: 1.0
-X-BeenThere: u-boot@lists.denx.de
-X-Mailman-Version: 2.1.30rc1
-Precedence: list
-List-Id: U-Boot discussion <u-boot.lists.denx.de>
-List-Unsubscribe: <https://lists.denx.de/options/u-boot>,
- <mailto:u-boot-request@lists.denx.de?subject=unsubscribe>
-List-Archive: <https://lists.denx.de/pipermail/u-boot/>
-List-Post: <mailto:u-boot@lists.denx.de>
-List-Help: <mailto:u-boot-request@lists.denx.de?subject=help>
-List-Subscribe: <https://lists.denx.de/listinfo/u-boot>,
- <mailto:u-boot-request@lists.denx.de?subject=subscribe>
-Errors-To: u-boot-bounces@lists.denx.de
-Sender: "U-Boot" <u-boot-bounces@lists.denx.de>
-X-Virus-Scanned: clamav-milter 0.102.2 at phobos.denx.de
-X-Virus-Status: Clean
 
 Enable the SPI flash controller and reduce the usable eMMC data pins to 4
 to permit using the on-board SPI NOR Flash.
@@ -1301,120 +976,12 @@ index 0000000000..f66eca14b1
 +
 +#include "meson-khadas-vim3-u-boot.dtsi"
 
-From patchwork Mon Apr 20 13:44:45 2020
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Patchwork-Submitter: Neil Armstrong <narmstrong@baylibre.com>
-X-Patchwork-Id: 1273423
-X-Patchwork-Delegate: narmstrong@baylibre.com
-Return-Path: <u-boot-bounces@lists.denx.de>
-X-Original-To: incoming@patchwork.ozlabs.org
-Delivered-To: patchwork-incoming@bilbo.ozlabs.org
-Authentication-Results: ozlabs.org;
- spf=pass (sender SPF authorized) smtp.mailfrom=lists.denx.de
- (client-ip=85.214.62.61; helo=phobos.denx.de;
- envelope-from=u-boot-bounces@lists.denx.de; receiver=<UNKNOWN>)
-Authentication-Results: ozlabs.org;
- dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: ozlabs.org; dkim=pass (2048-bit key;
- unprotected) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.a=rsa-sha256
- header.s=20150623 header.b=xMNoOyKg; dkim-atps=neutral
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits))
- (No client certificate requested)
- by ozlabs.org (Postfix) with ESMTPS id 495Sdy5B2Rz9sSm
- for <incoming@patchwork.ozlabs.org>; Mon, 20 Apr 2020 23:46:14 +1000 (AEST)
-Received: from h2850616.stratoserver.net (localhost [IPv6:::1])
- by phobos.denx.de (Postfix) with ESMTP id B5DC981CDE;
- Mon, 20 Apr 2020 15:45:29 +0200 (CEST)
-Authentication-Results: phobos.denx.de;
- dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: phobos.denx.de;
- spf=pass smtp.mailfrom=u-boot-bounces@lists.denx.de
-Authentication-Results: phobos.denx.de; dkim=pass (2048-bit key;
- unprotected) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="xMNoOyKg";
- dkim-atps=neutral
-Received: by phobos.denx.de (Postfix, from userid 109)
- id 8B88B81CB8; Mon, 20 Apr 2020 15:45:11 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on phobos.denx.de
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
- DKIM_VALID,SPF_HELO_NONE,UPPERCASE_50_75,URIBL_BLOCKED autolearn=no
- autolearn_force=no version=3.4.2
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
- (No client certificate requested)
- by phobos.denx.de (Postfix) with ESMTPS id 7453A81CC7
- for <u-boot@lists.denx.de>; Mon, 20 Apr 2020 15:45:05 +0200 (CEST)
-Authentication-Results: phobos.denx.de;
- dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: phobos.denx.de;
- spf=pass smtp.mailfrom=narmstrong@baylibre.com
-Received: by mail-wr1-x444.google.com with SMTP id j1so6809154wrt.1
- for <u-boot@lists.denx.de>; Mon, 20 Apr 2020 06:45:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=fm37ByoF/cfqkPB12ZsdgykHRpZdkVpXIsiM2xODgNk=;
- b=xMNoOyKgXVFREDmymtaLyjV+MJx1i7UvsjMOOKWkzLujQT73UwCOlkIw0GuQOZxGGn
- JcFgllwUwjuPp7WZRmeXmVmKbEqItb+Rs971I7nB4LFtFU4DpFWA/khVR3pM6dmam188
- Mb7pNSwjiCjFSsqiTRaqiyKWeRmeOhD74hkliJVJd4zGTAxTWn6ViGIXd76o0KJp5Zm+
- BNUmdDAm3oD+iha7vw5sct6/mH+mwbtWwIqcwuNZswqMwvW8ZuenAOz9yuxbngfxzt9L
- /VtnrG/KE2bH39x2hvSdScsUvDE/lbE0gWE6n52wtIdtfYYCnAHBVvm3az8lBrksDgm9
- wLpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=fm37ByoF/cfqkPB12ZsdgykHRpZdkVpXIsiM2xODgNk=;
- b=E7mM/2loleSSvfWt1fex+S4Zvo/d08ZjAWH5PgvCCdJxI5j+v9SCInkMxOndF316yH
- VTQt+V59JvFd3euJq+qXUBy7a5h/3ZALaA6QBDoU1/ZIE6hTmjsDEAIC62YewJQkbMB/
- 3hveKAfA3DGmcmO5Mc5A75ZSFNMCsfEG43j5DOwij5/0JJKtcuKz/nAe/GKkUsxZw6ir
- a9wM7YeQd0VXkad5E5kpJvvQcGZLp91e2wL7rZbngtKaIzkLiwABRousGe1bHhnmpFOk
- TE/zixjaR7m104XDtElNWa+Wi2XZteV0428WF/pYFjzW6Ms5yQjFI4Ycc9iBDTc5jIiK
- mDRQ==
-X-Gm-Message-State: AGi0PuZXVYGgGVXUL32LPxVIQJBverKLniQhbM4+IUbTEmednD0HQ64k
- kPkjtl8COJO/MwMuzZsDMtDSpQ==
-X-Google-Smtp-Source: APiQypI4ApyJdD6I5rgU9jEYFds2pJO9/DwcFIKiQsV+TlT442u0ynjmete7k6qE6zkAl4LfJN4muw==
-X-Received: by 2002:adf:ed07:: with SMTP id a7mr19388442wro.2.1587390304839;
- Mon, 20 Apr 2020 06:45:04 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:39cc:a07:8b48:cc56])
- by smtp.gmail.com with ESMTPSA id
- l5sm1263458wrm.66.2020.04.20.06.45.02
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 20 Apr 2020 06:45:04 -0700 (PDT)
 From: Neil Armstrong <narmstrong@baylibre.com>
 To: u-boot-amlogic@groups.io
 Cc: u-boot@lists.denx.de,
 	Neil Armstrong <narmstrong@baylibre.com>
 Subject: [PATCH 5/5] configs: khadas-vim3: enable support for SPI NOR flash
 Date: Mon, 20 Apr 2020 15:44:45 +0200
-Message-Id: <20200420134445.19704-6-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20200420134445.19704-1-narmstrong@baylibre.com>
-References: <20200420134445.19704-1-narmstrong@baylibre.com>
-MIME-Version: 1.0
-X-BeenThere: u-boot@lists.denx.de
-X-Mailman-Version: 2.1.30rc1
-Precedence: list
-List-Id: U-Boot discussion <u-boot.lists.denx.de>
-List-Unsubscribe: <https://lists.denx.de/options/u-boot>,
- <mailto:u-boot-request@lists.denx.de?subject=unsubscribe>
-List-Archive: <https://lists.denx.de/pipermail/u-boot/>
-List-Post: <mailto:u-boot@lists.denx.de>
-List-Help: <mailto:u-boot-request@lists.denx.de?subject=help>
-List-Subscribe: <https://lists.denx.de/listinfo/u-boot>,
- <mailto:u-boot-request@lists.denx.de?subject=subscribe>
-Errors-To: u-boot-bounces@lists.denx.de
-Sender: "U-Boot" <u-boot-bounces@lists.denx.de>
-X-Virus-Scanned: clamav-milter 0.102.2 at phobos.denx.de
-X-Virus-Status: Clean
 
 Enable the necessary configs to make usage of the SPI NOR Flash.
 

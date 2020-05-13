@@ -3,6 +3,8 @@ From: hyphop <art@khadas.com>
 Date: Fri, 24 Apr 2020 04:11:17 +0900
 Subject: [PATCH] add_autoscr_alias_for_script
 
+add autoscr alias for script cmd
+
 ---
  cmd/cmd_script.c | 15 +++++++++++----
  1 file changed, 11 insertions(+), 4 deletions(-)
