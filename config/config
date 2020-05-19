@@ -53,6 +53,7 @@ fi
 
 if [ "$UBOOT" == "mainline" ]; then
 	MAINLINE_UBOOT_VER=$(grep "PKG_VERSION=" $PKGS_DIR/u-boot-mainline/package.mk | awk -F '"' '{print $2}')
+	[[ ${#MAINLINE_UBOOT_VER} -eq 40 ]] && MAINLINE_UBOOT_VER=${MAINLINE_UBOOT_VER:0:7}
 	LINUX_UBOOT_DEB="linux-u-boot-${KHADAS_BOARD,,}-mainline"
 else
 	LINUX_UBOOT_DEB="linux-u-boot-${KHADAS_BOARD,,}-vendor"
