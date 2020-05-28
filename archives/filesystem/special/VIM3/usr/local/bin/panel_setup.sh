@@ -42,7 +42,11 @@ if [ $panel_exist -eq 1 ] && [ $display_device = panel ]; then
 	# Blank fb1 to prevent static noise
 	echo 1 > /sys/class/graphics/fb1/blank
 
-	echo 1 > /sys/devices/virtual/graphics/fbcon/cursor_blink
+	if ! which lightdm; then
+		echo 1 > /sys/devices/virtual/graphics/fbcon/cursor_blink
+	else
+		echo 0 > /sys/devices/virtual/graphics/fbcon/cursor_blink
+	fi
 fi
 
 exit

@@ -40,6 +40,13 @@
 # Setup LED: heartbeat if bootup completed
 [ -f /sys/class/leds/sys_led/trigger ] && echo heartbeat > /sys/class/leds/sys_led/trigger
 
+# Setup cursor_blink
+if ! which lightdm; then
+	echo 1 > /sys/devices/virtual/graphics/fbcon/cursor_blink
+else
+	echo 0 > /sys/devices/virtual/graphics/fbcon/cursor_blink
+fi
+
 # Reboot test handle
 if cat /proc/cmdline | grep -q reboot_test > /dev/null; then
 	if ! systemctl is-active reboot-test-khadas | grep "^active$" > /dev/null; then
