@@ -10,7 +10,7 @@ DISTRIBUTION_ARRAY=("Ubuntu" "Debian")
 Ubuntu_RELEASE_ARRAY=("bionic" "focal")
 Debian_RELEASE_ARRAY=("buster")
 DISTRIB_ARCH_ARRAY=("arm64" "armhf")
-Ubuntu_TYPE_ARRAY=("server" "xfce" "lxde")
+Ubuntu_TYPE_ARRAY=("server" "xfce" "lxde" "gnome")
 Debian_TYPE_ARRAY=("server" "xfce" "lxde")
 INSTALL_TYPE_ARRAY=("EMMC" "SD-USB")
 

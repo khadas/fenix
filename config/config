@@ -184,6 +184,11 @@ case $DISTRIB_TYPE in
 		PACKAGE_LIST_DESKTOP+=" lxde lxlauncher lxmusic lxsession-default-apps lxsession-logout lxshortcut lxtask obconf \
 			xfce4-power-manager-plugins lxde-common desktop-base"
 	;;
+	gnome)
+		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_OFFICE"
+		PACKAGE_LIST_DESKTOP+=" desktop-base software-properties-gtk yaru-theme-gtk yaru-theme-icon yaru-theme-sound gnome-terminal gnome-shell-extensions gnome-tweaks gnome-screenshot"
+		[[ $DISTRIBUTION == Ubuntu ]] && PACKAGE_LIST_DESKTOP+=" ubuntu-desktop update-manager"
+	;;
 esac
 
 case $DISTRIB_RELEASE in
