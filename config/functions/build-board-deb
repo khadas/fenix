@@ -330,6 +330,14 @@ build_board_deb() {
 		EOF
 	fi
 
+	# Install asound.state for mainline kernel
+	if [ "$LINUX" == "mainline" ]; then
+		if [ -f $ROOT/archives/filesystem/blobs/asound.state/$KHADAS_BOARD/asound.state ]; then
+			mkdir -p $pkgdir/var/lib/alsa/
+			cp $ROOT/archives/filesystem/blobs/asound.state/$KHADAS_BOARD/asound.state $pkgdir/var/lib/alsa/
+		fi
+	fi
+
 	# Trigger uInitrd creation after installation, to apply
 	# /etc/initramfs/post-update.d/99-uboot
 	cat <<-EOF > $pkgdir/DEBIAN/triggers
