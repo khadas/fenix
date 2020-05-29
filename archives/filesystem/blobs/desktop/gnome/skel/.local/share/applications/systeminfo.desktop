@@ -1,0 +1,17 @@
+[Desktop Entry]
+Version=1.0
+Name=System Information
+Comment=System Information
+Name[zh_CN]=系统信息
+Comment[zh_CN]=系统信息
+Exec=/usr/local/bin/systeminfo.sh
+Icon=/etc/fenix/icons/systeminfo.png
+Terminal=false
+Type=Application
+Categories=GNOME;GTK;System;Settings;
+X-GNOME-Bugzilla-Bugzilla=GNOME
+X-GNOME-Bugzilla-Product=gnome-system-tools
+X-GNOME-Bugzilla-Component=users-admin
+X-GNOME-Bugzilla-Version=3.0.0
+StartupNotify=true
+X-Ubuntu-Gettext-Domain=gnome-system-tools

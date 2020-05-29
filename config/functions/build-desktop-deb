@@ -125,10 +125,12 @@ build_desktop_deb() {
 		rm -f $pkgdir/usr/local/bin/qt5_player
 		if [ "$KHADAS_BOARD" == "VIM1" ] || [ "$KHADAS_BOARD" == "VIM2" ]; then
 			rm -rf $pkgdir/etc/skel/.local/share/applications/xfce-usb3-pcie-settings.desktop
+			rm -rf $pkgdir/etc/skel/.local/share/applications/usb3-pcie-settings.desktop
 		fi
 	elif [ "$VENDOR" == "Rockchip" ]; then
 		# Remove unused menus for Rockchip platform
 		rm -rf $pkgdir/etc/skel/.local/share/applications/xfce-hdmi-resolution-settings.desktop
+		rm -rf $pkgdir/etc/skel/.local/share/applications/hdmi-resolution-settings.desktop
 	fi
 
 	# Install xserver configurations

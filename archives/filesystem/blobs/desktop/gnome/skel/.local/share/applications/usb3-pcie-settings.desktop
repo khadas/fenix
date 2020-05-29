@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Name=USB3.0/PCIe Setting
+Name[zh_CN]=USB3.0/PCIe设置
+Comment=Configure USB3.0/PCIe
+Comment[zh_CN]=USB3.0/PCIe设置
+Exec=/usr/local/bin/usb3_pcie_setup.sh
+Icon=/etc/fenix/icons/usb3_pcie.png
+Terminal=false
+Type=Application
+Categories=GNOME;GTK;Settings;DesktopSettings;
+StartupNotify=true

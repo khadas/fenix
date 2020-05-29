@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Name=FAN Setting
+Name[zh_CN]=风扇设置
+Comment=Configure FAN
+Comment[zh_CN]=风扇设置
+Exec=/usr/local/bin/fan_setup.sh
+Icon=/etc/fenix/icons/fan.png
+Terminal=false
+Type=Application
+Categories=GNOME;GTK;Settings;DesktopSettings;
+StartupNotify=true

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Name=Wake On LAN Setting
+Name[zh_CN]=WOL设置
+Comment=Configure WOL
+Comment[zh_CN]=WOL设置
+Exec=/usr/local/bin/wol_setup.sh
+Icon=/etc/fenix/icons/wol.png
+Terminal=false
+Type=Application
+Categories=GNOME;GTK;Settings;DesktopSettings;
+StartupNotify=true
