@@ -157,7 +157,7 @@ build_desktop_deb() {
 	# Install xserver configurations
 	mkdir -p $pkgdir/etc/X11/xorg.conf.d
 	if [ -d $ROOT/archives/filesystem/blobs/desktop/xorg/${KHADAS_BOARD} ]; then
-		if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" == "buster" ]; then
+		if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" != "bionic" ]; then
 			cp $ROOT/archives/filesystem/blobs/desktop/xorg/${KHADAS_BOARD}/* $pkgdir/etc/X11/xorg.conf.d
 		fi
 	fi

@@ -314,7 +314,7 @@ build_board_deb() {
 	mkdir -p $pkgdir/usr/share/fenix/logo
 	cp $ROOT/archives/logo/bmp/* $pkgdir/usr/share/fenix/logo
 
-	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
+	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$DISTRIB_RELEASE" == "bionic" ]; then
 		# Blacklist lima.ko
 		mkdir -p $pkgdir/etc/modprobe.d
 		tee $pkgdir/etc/modprobe.d/lima.conf <<-EOF
@@ -322,7 +322,7 @@ build_board_deb() {
 		EOF
 	fi
 
-	if [ "$KHADAS_BOARD" == "VIM2" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
+	if [ "$KHADAS_BOARD" == "VIM2" ] && [ "$DISTRIB_RELEASE" == "bionic" ]; then
 		# Blacklist panfrost.ko
 		mkdir -p $pkgdir/etc/modprobe.d
 		tee $pkgdir/etc/modprobe.d/panfrost.conf <<-EOF
