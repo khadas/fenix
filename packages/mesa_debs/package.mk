@@ -1,6 +1,6 @@
 PKG_NAME="mesa_debs"
-PKG_VERSION="b7723c63f899c16622034816a83aa39351be788b"
-PKG_SHA256="8330b197823a217ee4ddb63f5e31d4e4ec92e9466cce5ca5df21e028e9f834fd"
+PKG_VERSION="6da61b64d4fefb6acc7bd67a05c1eb555501d4a5"
+PKG_SHA256="b78b4fc8a26ca08a20cd847db7ed5cf865b4251ff3b89fdbf8b7b07279716aaf"
 PKG_SOURCE_DIR="mesa_debs-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/${PKG_NAME}"
 PKG_URL="https://github.com/numbqq/${PKG_NAME}/archive/$PKG_VERSION.tar.gz"
