@@ -220,7 +220,8 @@ case $DISTRIB_RELEASE in
 		PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9"
 		PACKAGE_LIST_KODI="libcec4"
 		PACKAGE_LIST_SERVER_KODI="libcec4"
-		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_KODI"
+		PACKAGE_LIST_MESA="libclang-cpp9"
+		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_KODI $PACKAGE_LIST_MESA"
 		PACKAGE_LIST_DESKTOP+=" xserver-xorg-input-all pulseaudio-module-gsettings firefox language-selector-gnome viewnior"
 	;;
 esac
