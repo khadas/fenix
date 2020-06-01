@@ -1,0 +1,29 @@
+From 5b9d28e9deec7d13fae186c2f8a4bbb5ddd6c329 Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Mon, 1 Jun 2020 19:57:57 +0900
+Subject: [PATCH] amlogic_vim3_broken_wifi_fix
+
+    fix broken wifi for VIM3 VIM3L
+    sd-uhs-sdr50  options will broke fw load (not need it)
+
+---
+ arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+index d416d7def..899799b97 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+@@ -293,7 +293,8 @@
+ 
+ 	bus-width = <4>;
+ 	cap-sd-highspeed;
+-	sd-uhs-sdr50;
++//	next options will broke fw load (not need it) ## hyphop ##
++//	sd-uhs-sdr50;
+ 	max-frequency = <100000000>;
+ 
+ 	non-removable;
+-- 
+2.17.1
+
