@@ -1,7 +1,0 @@
-#!/bin/bash
-
-/usr/bin/fw_setenv bls libreelec
-sleep 1
-reboot
-
-
