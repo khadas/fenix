@@ -30,7 +30,7 @@ index f3d504c9..9ff4d544 100644
  #define BOOTENV_BOOT_TARGETS \
 -	"boot_targets=" BOOT_TARGET_DEVICES(BOOTENV_DEV_NAME) "\0"
 +	"bootcmd_spi=sf probe && sf read $loadaddr 0x160000 0x008000 && script - - 0 1\0" \
-+	"boot_targets=spi usb0 mmc0 mmc1 mmc2 pxe dhcp \0"
++	"boot_targets=spi usb0 " BOOT_TARGET_MMC(BOOTENV_DEV_NAME) " pxe dhcp \0"
  
  #define BOOTENV_DEV(devtypeu, devtypel, instance) \
  	BOOTENV_DEV_##devtypeu(devtypeu, devtypel, instance)
