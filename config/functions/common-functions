@@ -177,13 +177,26 @@ umount_chroot() {
 		echo "Usage: umount_chroot <target>"
 		return -1
 	fi
-	umount -l $target/dev/pts
-	umount -l $target/dev
-	umount -l $target/proc
+
+	if mount | grep "$target/dev/pts" > /dev/null; then
+		umount -l $target/dev/pts
+	fi
+
+	if mount | grep "$target/dev" > /dev/null; then
+		umount -l $target/dev
+	fi
+
+	if mount | grep "$target/proc" > /dev/null; then
+		umount -l $target/proc
+	fi
+
 	if mount | grep "$target/sys/kernel/security" > /dev/null; then
 		umount $target/sys/kernel/security
 	fi
-	umount -l $target/sys
+
+	if mount | grep "$target/sys" > /dev/null; then
+		umount -l $target/sys
+	fi
 }
 
 ## Install debs in chroot
