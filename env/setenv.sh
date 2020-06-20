@@ -34,6 +34,8 @@ VENDOR=
 CHIP=
 EXPERT=
 
+LOAD_CONFIG_FROM_FILE=
+CONFIG_FILE=
 ###############################################################
 if [ "$1" == "expert" ]; then
 	echo -e -n "\e[33mWarning:\e[0m You choose expert options mode, please make sure you know what you are doing. Switching to Expert mode? [N/y] "
@@ -45,6 +47,15 @@ if [ "$1" == "expert" ]; then
 		echo -e "\e[33mWarning:\e[0m Switching to Normal mode!"
 		EXPERT=""
 	fi
+elif [ "$1" == "config" ]; then
+	if [ ! -f "$2" ]; then
+		echo -e "Configuration file: \e[1;32m$2\e[0m doesn't exist!"
+		echo -e "\e[0;32mCtrl+C\e[0m to abort."
+		hangup
+	fi
+	echo -e "Loading configuration from file: \e[1;32m$2\e[0m"
+	LOAD_CONFIG_FROM_FILE="yes"
+	CONFIG_FILE="$2"
 fi
 
 ## Hangup
@@ -602,15 +613,30 @@ function lunch() {
 	echo ""
 }
 
+function load_config_from_file() {
+	source $CONFIG_FILE
+	export KHADAS_BOARD
+	export LINUX
+	export UBOOT
+	export DISTRIBUTION
+	export DISTRIB_RELEASE
+	export DISTRIB_TYPE
+	export DISTRIB_ARCH
+	export INSTALL_TYPE
+}
+
 #####################################################################3
 export_version
-choose_khadas_board
-choose_uboot_version
-choose_linux_version
-choose_distribution
-choose_distribution_release
-choose_distribution_type
-choose_distribution_architecture
-choose_install_type
+if [ -z "$LOAD_CONFIG_FROM_FILE" ]; then
+	choose_khadas_board
+	choose_uboot_version
+	choose_linux_version
+	choose_distribution
+	choose_distribution_release
+	choose_distribution_type
+	choose_distribution_architecture
+	choose_install_type
+else
+	load_config_from_file
+fi
 lunch
-

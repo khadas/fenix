@@ -34,9 +34,19 @@ $ cd fenix
 
 * Setup build environment
 
+Setup environment manually.
+
 ```bash
 $ source env/setenv.sh
 ```
+
+Or you can load environment configuration from file.
+
+```bash
+$ source env/setenv.sh config config-template.conf
+```
+
+You need to edit `config-template.conf` file to correct variables.
 
 * Build image
 
