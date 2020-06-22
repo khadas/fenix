@@ -47,7 +47,7 @@ build_gpu_deb() {
 			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDOR}/lib/$DISTRIB_ARCH/$GPU_DESC/$GPU_VER/x11"
 		elif [ "$GPU_PLATFORM" == "wayland" ]; then
 			### wayland
-			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDOR}/lib/$DISTRIB_ARCH/GPU_DESC/$GPU_VER/wayland/drm"
+			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDOR}/lib/$DISTRIB_ARCH/$GPU_DESC/$GPU_VER/wayland/drm"
 			# local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDOR}/lib/$DISTRIB_ARCH/GPU_DESC/$GPU_VER/wayland/fbdev"
 		fi
 
