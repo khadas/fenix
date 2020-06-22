@@ -66,11 +66,7 @@ build_gpu_deb() {
 
 		## libMali.so
 		mkdir -p $pkgdir/usr/lib/
-		if [ "$DISTRIB_ARCH" == "arm64" ]; then
-			local gpu_lib_install_dir="$pkgdir/usr/lib/aarch64-linux-gnu"
-		elif [ "$DISTRIB_ARCH" == "armhf" ]; then
-			local gpu_lib_install_dir="$pkgdir/usr/lib/arm-linux-gnueabihf"
-		fi
+		local gpu_lib_install_dir="$pkgdir/usr/lib/aarch64-linux-gnu"
 
 		mkdir -p $gpu_lib_install_dir
 		cp -arf $gpu_lib_dir/libMali.so $gpu_lib_install_dir
@@ -154,11 +150,7 @@ build_gpu_deb() {
 		cp archives/hwpacks/mali/${VENDOR}/include/mali.icd $pkgdir/etc/OpenCL/vendors/
 
 		## libMali.so
-		if [ "$DISTRIB_ARCH" == "arm64" ]; then
-			local gpu_lib_install_dir="$pkgdir/usr/lib/aarch64-linux-gnu"
-		elif [ "$DISTRIB_ARCH" == "armhf" ]; then
-			local gpu_lib_install_dir="$pkgdir/usr/lib/arm-linux-gnueabihf"
-		fi
+		local gpu_lib_install_dir="$pkgdir/usr/lib/aarch64-linux-gnu"
 
 		mkdir -p $gpu_lib_install_dir
 
@@ -236,11 +228,7 @@ build_gpu_deb() {
 		cp -arf archives/hwpacks/mali/${VENDOR}/include/* $pkgdir_dev/usr/include/
 		rm $pkgdir_dev/usr/include/mali.icd
 
-		if [ "$DISTRIB_ARCH" == "arm64" ]; then
-			local gpu_lib_install_dir="$pkgdir_dev/usr/lib/aarch64-linux-gnu"
-		elif [ "$DISTRIB_ARCH" == "armhf" ]; then
-			local gpu_lib_install_dir="$pkgdir_dev/usr/lib/arm-linux-gnueabihf"
-		fi
+		local gpu_lib_install_dir="$pkgdir_dev/usr/lib/aarch64-linux-gnu"
 
 		mkdir -p $gpu_lib_install_dir
 

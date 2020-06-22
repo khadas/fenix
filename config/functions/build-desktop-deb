@@ -61,27 +61,13 @@ build_desktop_deb() {
 	# Get accelerated back for chromium
 	# Ubuntu
 	if [ -d /usr/lib/chromium-browser/ ]; then
-		if [ -d /usr/lib/aarch64-linux-gnu/ ]; then
-			# arm64
-			ln -fs /usr/lib/aarch64-linux-gnu/libGLESv2.so /usr/lib/chromium-browser/libGLESv2.so
-			ln -fs /usr/lib/aarch64-linux-gnu/libEGL.so /usr/lib/chromium-browser/libEGL.so
-		else
-			# armhf
-			ln -fs /usr/lib/arm-linux-gnueabihf/libGLESv2.so /usr/lib/chromium-browser/libGLESv2.so
-			ln -fs /usr/lib/arm-linux-gnueabihf/libEGL.so /usr/lib/chromium-browser/libEGL.so
-		fi
+		ln -fs /usr/lib/aarch64-linux-gnu/libGLESv2.so /usr/lib/chromium-browser/libGLESv2.so
+		ln -fs /usr/lib/aarch64-linux-gnu/libEGL.so /usr/lib/chromium-browser/libEGL.so
 	fi
 	# Debian
 	if [ -d /usr/lib/chromium/ ]; then
-		if [ -d /usr/lib/aarch64-linux-gnu/ ]; then
-			# arm64
-			ln -fs /usr/lib/aarch64-linux-gnu/libGLESv2.so /usr/lib/chromium/libGLESv2.so
-			ln -fs /usr/lib/aarch64-linux-gnu/libEGL.so /usr/lib/chromium/libEGL.so
-		else
-			# armhf
-			ln -fs /usr/lib/arm-linux-gnueabihf/libGLESv2.so /usr/lib/chromium/libGLESv2.so
-			ln -fs /usr/lib/arm-linux-gnueabihf/libEGL.so /usr/lib/chromium/libEGL.so
-		fi
+		ln -fs /usr/lib/aarch64-linux-gnu/libGLESv2.so /usr/lib/chromium/libGLESv2.so
+		ln -fs /usr/lib/aarch64-linux-gnu/libEGL.so /usr/lib/chromium/libEGL.so
 	fi
 
 	# exit if we are running chroot

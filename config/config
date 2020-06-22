@@ -73,16 +73,8 @@ if [ "$DISTRIB_TYPE" != "server" ]; then
 	FENIX_DESKTOP_DEB="fenix-${DISTRIBUTION,,}-${DISTRIB_RELEASE}-${DISTRIB_TYPE}-desktop"
 fi
 
-case $DISTRIB_ARCH in
-	arm64)
-	INITRD_ARCH=arm64
-	QEMU_BINARY="qemu-aarch64-static"
-	;;
-	armhf)
-	INITRD_ARCH=arm
-	QEMU_BINARY="qemu-arm-static"
-	;;
-esac
+INITRD_ARCH=arm64
+QEMU_BINARY="qemu-aarch64-static"
 
 DEST_LANG="en_US.UTF-8"
 CONSOLE_CHAR="UTF-8"

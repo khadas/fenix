@@ -9,7 +9,7 @@ unset SUPPORTED_LINUX
 DISTRIBUTION_ARRAY=("Ubuntu" "Debian")
 Ubuntu_RELEASE_ARRAY=("bionic" "focal")
 Debian_RELEASE_ARRAY=("buster")
-DISTRIB_ARCH_ARRAY=("arm64" "armhf")
+DISTRIB_ARCH_ARRAY=("arm64")
 Ubuntu_TYPE_ARRAY=("server" "xfce" "lxde" "gnome")
 Debian_TYPE_ARRAY=("server" "xfce" "lxde")
 INSTALL_TYPE_ARRAY=("EMMC" "SD-USB")
@@ -32,22 +32,11 @@ INSTALL_TYPE=
 DISTRIB_TYPE=
 VENDOR=
 CHIP=
-EXPERT=
 
 LOAD_CONFIG_FROM_FILE=
 CONFIG_FILE=
 ###############################################################
-if [ "$1" == "expert" ]; then
-	echo -e -n "\e[33mWarning:\e[0m You choose expert options mode, please make sure you know what you are doing. Switching to Expert mode? [N/y] "
-	read result
-	if [ "$result" == "y" -o "$result" == "Y" ]; then
-		echo -e "\e[33mWarning:\e[0m Switching to Expert mode!"
-		EXPERT="yes"
-	else
-		echo -e "\e[33mWarning:\e[0m Switching to Normal mode!"
-		EXPERT=""
-	fi
-elif [ "$1" == "config" ]; then
+if [ "$1" == "config" ]; then
 	if [ ! -f "$2" ]; then
 		echo -e "Configuration file: \e[1;32m$2\e[0m doesn't exist!"
 		echo -e "\e[0;32mCtrl+C\e[0m to abort."
@@ -209,9 +198,7 @@ function choose_linux_version() {
 	if [ "$UBOOT" == "mainline" ]; then
 		SUPPORTED_LINUX=("mainline")
 	else
-		if [ "$EXPERT" != "yes" ]; then
-			SUPPORTED_LINUX=(`echo ${SUPPORTED_LINUX[@]} | sed s/mainline//g`)
-		fi
+		SUPPORTED_LINUX=(`echo ${SUPPORTED_LINUX[@]} | sed s/mainline//g`)
 	fi
 
 	i=0
@@ -450,63 +437,10 @@ function choose_distribution_type() {
 ## Choose distribution arch
 function choose_distribution_architecture() {
 
-	if [ "$EXPERT" != "yes" ]; then
-		echo ""
-		echo "Set architecture to 'arm64' by default."
-		DISTRIB_ARCH="arm64"
-		export DISTRIB_ARCH
-		return
-	fi
-
 	echo ""
-	echo "Choose ${DISTRIBUTION} architecture:"
-	i=0
-	while [[ $i -lt $DISTRIB_ARCH_ARRAY_LEN ]]
-	do
-		echo "$((${i}+1)). ${DISTRIB_ARCH_ARRAY[$i]}"
-		let i++
-	done
-
-	echo ""
-
-	local DEFAULT_NUM
-	DEFAULT_NUM=1
-
-	export DISTRIB_ARCH=
-	local ANSWER
-	while [ -z $DISTRIB_ARCH ]
-	do
-		echo -n "Which ${DISTRIBUTION} architecture would you like? ["$DEFAULT_NUM"] "
-		if [ -z "$1" ]; then
-			read ANSWER
-		else
-			echo $1
-			ANSWER=$1
-		fi
-
-		if [ -z "$ANSWER" ]; then
-			ANSWER="$DEFAULT_NUM"
-		fi
-
-		if [ -n "`echo $ANSWER | sed -n '/^[0-9][0-9]*$/p'`" ]; then
-			if [ $ANSWER -le $DISTRIB_ARCH_ARRAY_LEN ] && [ $ANSWER -gt 0 ]; then
-				index=$((${ANSWER}-1))
-				DISTRIB_ARCH="${DISTRIB_ARCH_ARRAY[$index]}"
-			else
-				echo
-				echo "number not in range. Please try again."
-				echo
-			fi
-		else
-			echo
-			echo "I didn't understand your response.  Please try again."
-			echo
-		fi
-
-		if [ -n "$1" ]; then
-			break
-		fi
-	done
+	echo "Set architecture to 'arm64' by default."
+	DISTRIB_ARCH="arm64"
+	export DISTRIB_ARCH
 }
 
 function choose_install_type() {
