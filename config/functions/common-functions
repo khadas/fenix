@@ -264,7 +264,6 @@ check_loop_device()
 prepare_toolchains() {
 
     build_package "gcc-linaro-aarch64-linux-gnu:host"
-    build_package "gcc-linaro-aarch64-linux-gnu-6.3:host"
     build_package "gcc-linaro-aarch64-none-elf:host"
     build_package "gcc-linaro-arm-none-eabi:host"
     build_package "gcc-arm-none-eabi:host"
