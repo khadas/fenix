@@ -9,7 +9,7 @@ Supported build host:
 
 * `Ubuntu 18.04 Bionic x64`
   * `Building Ubuntu 18.04 Bionic image`
-* `Ubuntu 20.04 Focal x64 (Testing)`
+* `Ubuntu 20.04 Focal x64`
   * `Building Ubuntu 18.04 Bionic image`
   * `Building Ubuntu 20.04 Focal image`
   * `Building Debian 10 Buster image`
@@ -17,13 +17,13 @@ Supported build host:
 
 ## How to use
 
-* Install essential packages
+### Install essential packages
 
 ```bash
 $ sudo apt-get install git make lsb-release qemu-user-static
 ```
 
-* Clone Fenix repository
+### Clone Fenix repository
 
 ```bash
 $ mkdir -p ~/project/khadas
@@ -32,15 +32,15 @@ $ git clone --depth 1 https://github.com/khadas/fenix
 $ cd fenix
 ```
 
-* Setup build environment
+### Setup build environment
 
-Setup environment manually.
+* Setup environment manually.
 
 ```bash
 $ source env/setenv.sh
 ```
 
-Or you can load environment configuration from file.
+* Or you can load environment configuration from file.
 
 ```bash
 $ source env/setenv.sh config config-template.conf
@@ -48,7 +48,7 @@ $ source env/setenv.sh config config-template.conf
 
 You need to edit `config-template.conf` file to correct variables.
 
-* Build image
+### Build image
 
 ```bash
 $ make
@@ -61,7 +61,7 @@ $ DOWNLOAD_MIRROR=china make
 
 ## Somethings with Redhat series
 
-* Close SELinux
+### Disable SELinux
 
 ```bash
 $ vim /etc/selinux/config
@@ -71,14 +71,14 @@ $ sudo reboot
 
 ## Build in Docker
 
-* Build Docker image
+### Build Docker image
 
 ```bash
 $ cd fenix
 $ docker build -t fenix .
 ```
 
-* Build image in Docker
+### Build image in Docker
 
  Run fenix in docker.
 
