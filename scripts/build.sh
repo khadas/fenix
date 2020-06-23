@@ -14,6 +14,7 @@ source config/functions/functions
 ######################################################################################
 TARGET="$1"
 
+prepare_host
 prepare_toolchains
 prepare_packages
 
