@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/khadas/fenix.svg?branch=master)](https://travis-ci.org/khadas/fenix)
+
 # Fenix script set to build Ubuntu/Debian images
 
 [![Documentation](https://img.shields.io/badge/Documentation-Reference-blue.svg)](https://docs.khadas.com/vim1/FenixScript.html)
