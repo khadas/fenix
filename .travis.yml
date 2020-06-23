@@ -1,0 +1,9 @@
+language: c
+cache:
+  directories:
+  - downloads
+dist: focal
+before_install:
+  - sudo apt-get install -y git make lsb-release qemu-user-static
+script:
+  - ".travis/build.sh"
