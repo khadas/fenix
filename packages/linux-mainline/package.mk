@@ -23,7 +23,7 @@ make_target() {
 	# Apply configuration
 	cp $PKGS_DIR/$PKG_NAME/configs/${KHADAS_BOARD}.config .config
 
-	make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} Image modules dtbs
+	make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE="${CCACHE} ${KERNEL_COMPILER}" Image modules dtbs
 }
 
 makeinstall_target() {

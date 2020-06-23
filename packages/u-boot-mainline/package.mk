@@ -15,7 +15,7 @@ make_target() {
 	export PATH=$UBOOT_COMPILER_PATH:$PATH
 	make distclean
 	make ${UBOOT_DEFCONFIG}
-	make -j${NR_JOBS} CROSS_COMPILE=${UBOOT_COMPILER}
+	make -j${NR_JOBS} CROSS_COMPILE="${CCACHE} ${UBOOT_COMPILER}"
 }
 
 post_make_target() {

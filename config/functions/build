@@ -63,7 +63,7 @@ build_uboot() {
 	fi
 	rm -rf .config *.bin *.img
 	make $UBOOT_DEFCONFIG
-	make -j${NR_JOBS} CROSS_COMPILE=${UBOOT_COMPILER}
+	make -j${NR_JOBS} CROSS_COMPILE="${CCACHE} ${UBOOT_COMPILER}"
 
 	if [[ $(type -t uboot_custom_postprocess) == function ]]; then
 		uboot_custom_postprocess
@@ -136,7 +136,7 @@ build_linux() {
 	info_msg "Build linux..."
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
 	make ARCH=arm64 $LINUX_DEFCONFIG
-	make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} Image dtbs  modules
+	make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE="${CCACHE} ${KERNEL_COMPILER}" Image dtbs  modules
 }
 
 ## Build linux debs

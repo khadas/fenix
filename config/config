@@ -47,6 +47,15 @@ else
 	NR_JOBS=${NR_JOBS_MAX}
 fi
 
+## Enable ccache by default
+if [ "$NO_CCACHE" != "yes" ]; then
+	CCACHE=ccache
+	export PATH="/usr/lib/ccache:$PATH"
+else
+	echo "Disable CCACHE ..."
+	CCACHE=""
+fi
+
 if [ "$LINUX" == "mainline" ]; then
 	MAINLINE_LINUX_VER=$(grep "PKG_VERSION=" $PKGS_DIR/linux-mainline/package.mk | awk -F '"' '{print $2}')
 fi
