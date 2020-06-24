@@ -159,8 +159,10 @@ build_linux_debs() {
 
 	if [ "$LINUX" == "mainline" ]; then
 		mv $BUILD/*.deb $BUILD_DEBS/$VERSION
+		rm -rf $BUILD/*.buildinfo $BUILD/*.changes
 	else
 		mv $ROOT/*.deb $BUILD_DEBS/$VERSION
+		rm -rf $ROOT/*.buildinfo $ROOT/*.changes
 	fi
 }
 
