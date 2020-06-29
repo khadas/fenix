@@ -83,14 +83,6 @@ elif [ "$hwver" == "VIM2.V12" ]; then
 	fi
 fi
 
-# Cleanup u-boot upgrading mark
-if [ "$reboot_mode" == "uboot_updated" ]; then
-	echo "cleanup u-boot mark...."
-	if [ -f /usr/lib/u-boot/.UBOOT-NEED-UPDATE ]; then
-		rm -rf /usr/lib/u-boot/.UBOOT-NEED-UPDATE
-	fi
-fi
-
 # Cleanup dtb upgrading mark
 if [ "$reboot_mode" == "dtb_updated" ]; then
 	echo "cleanup dtb mark...."
