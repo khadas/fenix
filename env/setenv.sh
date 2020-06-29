@@ -36,6 +36,13 @@ CHIP=
 LOAD_CONFIG_FROM_FILE=
 CONFIG_FILE=
 ###############################################################
+## Hangup
+function hangup() {
+	while true; do
+		sleep 10
+	done
+}
+
 if [ "$1" == "config" ]; then
 	if [ ! -f "$2" ]; then
 		echo -e "Configuration file: \e[1;32m$2\e[0m doesn't exist!"
@@ -46,13 +53,6 @@ if [ "$1" == "config" ]; then
 	LOAD_CONFIG_FROM_FILE="yes"
 	CONFIG_FILE="$2"
 fi
-
-## Hangup
-hangup() {
-	while true; do
-		sleep 10
-	done
-}
 
 ## Export version
 function export_version() {
