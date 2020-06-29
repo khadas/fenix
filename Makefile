@@ -44,7 +44,7 @@ else
 	./scripts/build.sh debs
 endif
 
-uboot-deb: uboot
+uboot-deb: uboot kernel
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
