@@ -129,6 +129,14 @@ write_uboot_platform()
 	dd if="$1/u-boot.bin.sd.bin" of="$2" conv=fsync,notrunc bs=512 skip=1 seek=1 > /dev/null 2>&1
 }
 
+## Write u-boot for vendor u-boot
+write_uboot_platform_ext()
+{
+	dd if="$1/u-boot.bin" of=/dev/bootloader conv=fsync bs=1 seek=512 > /dev/null 2>&1
+	dd if="$1/u-boot.bin" of=/dev/mmcblk0boot0 conv=fsync bs=1 seek=512 > /dev/null 2>&1
+	dd if="$1/u-boot.bin" of=/dev/mmcblk0boot1 conv=fsync bs=1 seek=512 > /dev/null 2>&1
+}
+
 setup_write_uboot_platform()
 {
 	if grep -q "ubootpart" /proc/cmdline; then

@@ -240,9 +240,8 @@ build_uboot_deb() {
 		if [[ \$DEVICE = VENDOR ]]; then
 			echo "Updating dtb for u-boot ..."
 			[ -c /dev/dtb -a -f /usr/lib/u-boot/dtb.img ] && dd if=/usr/lib/u-boot/dtb.img of=/dev/dtb
-			echo "Create u-boot updating mark, will update u-boot in next bootup cycle."
-			echo "Please reboot the board to update u-boot."
-			touch /usr/lib/u-boot/.UBOOT-NEED-UPDATE
+			echo "Updating u-boot on /dev/mmcblk0 (eMMC)"
+			write_uboot_platform_ext \$DIR
 			sync
 		else
 			if [[ -b \$DEVICE ]]; then
