@@ -239,18 +239,18 @@ build_uboot_deb() {
 		cat <<-EOF >> $pkgdir/DEBIAN/postinst
 		if [[ \$DEVICE = VENDOR ]]; then
 			echo "Updating dtb for u-boot ..."
-			[ -c /dev/dtb -a -f /usr/lib/u-boot/dtb.img ] && dd if=/usr/lib/u-boot/dtb.img of=/dev/dtb
+			[ -c /dev/dtb -a -f /usr/lib/u-boot/dtb.img ] && dd if=/usr/lib/u-boot/dtb.img of=/dev/dtb > /dev/null 2>&1
 			echo "Updating u-boot on /dev/mmcblk0 (eMMC)"
 			write_uboot_platform_ext \$DIR
 			echo "Reseting u-boot environment variables ..."
-			[ -b /dev/env ] && dd if=/dev/zero of=/dev/env bs=1M count=1
+			[ -b /dev/env ] && dd if=/dev/zero of=/dev/env bs=1M count=1 > /dev/null 2>&1
 			sync
 		else
 			if [[ -b \$DEVICE ]]; then
 				echo "Updating u-boot on \$DEVICE"
 				write_uboot_platform \$DIR \$DEVICE
 				echo "Reseting u-boot environment variables ..."
-				[ -b /dev/env ] && dd if=/dev/zero of=/dev/env bs=1M count=1
+				[ -b /dev/env ] && dd if=/dev/zero of=/dev/env bs=1M count=1 > /dev/null 2>&1
 				sync
 			else
 				echo "Device \$DEVICE does not exist, skipping"
