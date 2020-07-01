@@ -4,7 +4,7 @@
 
 [![Documentation](https://img.shields.io/badge/Documentation-Reference-blue.svg)](https://docs.khadas.com/vim1/FenixScript.html)
 [![Licence](https://img.shields.io/badge/Licence-GPL--2.0-brightgreen.svg)](https://github.com/khadas/fenix/blob/master/LICENSE)
-[![Version](https://img.shields.io/badge/Version-v0.9.1-blue.svg)](https://github.com/khadas/fenix/tree/v0.9.1)
+[![Version](https://img.shields.io/badge/Version-v0.9.2-blue.svg)](https://github.com/khadas/fenix/tree/v0.9.2)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/khadas/fenix/pulls)
 [![Debs Download](https://img.shields.io/badge/Weekly%20Build%20Debs-download-blue.svg)](https://github.com/khadas/fenix-debs)
 
