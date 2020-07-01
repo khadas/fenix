@@ -6,6 +6,10 @@ if [[ $EUID != 0 ]]; then
 fi
 
 . /etc/fenix-release
+. /etc/lsb-release
+
+# Only for Ubuntu
+[ $DISTRIB_ID != Ubuntu ] && exit
 
 if linux-version compare `uname -r` ge 4.12; then
 	LINUX=mainline
@@ -15,7 +19,7 @@ else
 	LINUX=${VERSION}.${PATCHLEVEL}
 fi
 
-FENIX_UPDATER=fenix-updater-package-bionic-${BOARD,,}-${LINUX,,}
+FENIX_UPDATER=fenix-updater-package-${DISTRIB_CODENAME}-${BOARD,,}-${LINUX,,}
 
 sudo apt update
 sudo apt full-upgrade -y
