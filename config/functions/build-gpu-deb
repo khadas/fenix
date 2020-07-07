@@ -160,6 +160,7 @@ build_gpu_deb() {
 		cd $gpu_lib_install_dir
 		ln -fs libMali.so libEGL.so.1
 		ln -fs libMali.so libEGL.so.1.0.0
+		ln -fs libMali.so libEGL.so.1.1.0
 		ln -fs libMali.so libEGL.so.1.4
 		ln -fs libMali.so libgbm.so.1
 		ln -fs libMali.so libgbm.so.1.0.0
@@ -169,6 +170,7 @@ build_gpu_deb() {
 		ln -fs libMali.so libGLESv2.so.2
 		ln -fs libMali.so libGLESv2.so.2.0
 		ln -fs libMali.so libGLESv2.so.2.0.0
+		ln -fs libMali.so libGLESv2.so.2.1.0
 		ln -fs libMali.so libMaliOpenCL.so
 		ln -fs libMali.so libmali.so
 #		ln -fs libMali.so libOpenCL.so.1
