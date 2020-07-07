@@ -93,6 +93,14 @@ prepare_host() {
 		CONTAINER_COMPAT="yes"
 		export CONTAINER_COMPAT
 		export NO_APT_CACHER
+
+		if [ $(systemd-detect-virt) == docker ]; then
+			if [ -d ~/toolchains -a ! -d ~/fenix/downloads ]; then
+				info_msg "Copying preinstalled toolchains ..."
+				mkdir -p ~/fenix/downloads
+				cp -r ~/toolchains/* downloads/
+			fi
+		fi
 	fi
 
 	local hostdeps="wget ca-certificates device-tree-compiler pv bc lzop zip binfmt-support build-essential ccache debootstrap ntpdate \
