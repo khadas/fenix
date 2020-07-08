@@ -74,22 +74,28 @@ $ sudo reboot
 
 ## Build in Docker
 
-### Build Docker image
+### Get Docker image
 
 ```bash
 $ cd fenix
-$ docker build -t fenix .
+$ docker pull numbqq/fenix
 ```
 
 ### Build image in Docker
 
- Run fenix in docker.
+Run fenix in docker.
 
 ```bash
-$ docker run -it --name fenix -v $(pwd):/home/khadas/fenix -v /etc/localtime:/etc/localtime:ro -v /etc/timezone:/etc/timezone:ro -v $HOME/.ccache:/home/khadas/.ccache --privileged --device=/dev/loop-control:/dev/loop-control --device=/dev/loop0:/dev/loop0 --cap-add SYS_ADMIN fenix
+$ docker run -it --name fenix -v $(pwd):/home/khadas/fenix \
+             -v /etc/localtime:/etc/localtime:ro \
+             -v /etc/timezone:/etc/timezone:ro \
+             -v $HOME/.ccache:/home/khadas/.ccache --privileged \
+             --device=/dev/loop-control:/dev/loop-control \
+             --device=/dev/loop0:/dev/loop0 --cap-add SYS_ADMIN \
+             numbqq/fenix
 ```
 
- We are in Docker container now, start to build.
+We are in Docker container now, start to build.
 
 ```bash
 khadas@919cab43f66d:~/fenix$ source env/setenv.sh
