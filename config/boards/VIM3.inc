@@ -48,15 +48,22 @@ tweaks_platform() {
 
 ## Build deb packages for platform
 build_deb_packages_platform() {
-	if [ "$LINUX" == "4.9" ] && [ "$DISTRIB_RELEASE" == "bionic" ]; then
+	if [ "$LINUX" == "4.9" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
+
+		if [ "$DISTRIB_RELEASE" == "focal" ]; then
+			info_msg "Building shairplay packages..."
+			# FIXME
+			# remove build stamp to force build for other arch
+			rm -rf $BUILD/.stamps/shairplay_debs
+			build_package "shairplay_debs:target"
+		fi
+
 		info_msg "Building Kodi packages..."
 		# FIXME
 		# remove build stamp to force build for other arch
 		rm -rf $BUILD/.stamps/kodi_aml
 		build_package "kodi_aml:target"
-	fi
 
-	if [ "$LINUX" == "4.9" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
 		info_msg "Building libplayer_aml packages..."
 		# FIXME
 		# remove build stamp to force build for other arch
@@ -109,16 +116,25 @@ build_deb_packages_platform() {
 
 ## Install deb packages for platform
 install_deb_packages_platform() {
-	if [ "$LINUX" == "4.9" ] && [ "$DISTRIB_RELEASE" == "bionic" ]; then
+	if [ "$LINUX" == "4.9" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
 
 		cd $ROOT
+
+		if [ "$DISTRIB_RELEASE" == "focal" ]; then
+			# Install shairplay_debs in chrot
+			info_msg "Installing shairplay_debs packages..."
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/shairplay_debs/*.deb
+		fi
+
 		# Install Kodi in chroot
 		info_msg "Installing Kodi packages..."
-		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi_aml/*.deb
+		if [ $DISTRIB_RELEASE == "bionic" ]; then
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi_aml/*.deb
+		elif [ $DISTRIB_RELEASE == "focal" ]; then
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi_aml/kodi-bin_*.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi_aml/kodi_*.deb
+		fi
 
-	fi
-
-	if [ "$LINUX" == "4.9" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
 		info_msg "Installing libplayer_aml packages..."
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libplayer_aml/*.deb
 

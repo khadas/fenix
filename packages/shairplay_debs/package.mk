@@ -1,0 +1,23 @@
+PKG_NAME="shairplay_debs"
+PKG_VERSION="7104a2290cd9c8f6c3ae4085f417d9cec344e060"
+PKG_SHA256="d8dd6357a88d8de3dd8a34c93ca53b01c49b23bb7075c583b1c1758b8f6cf5a3"
+PKG_SOURCE_DIR="${PKG_NAME}-${PKG_VERSION}*"
+PKG_SITE="https://github.com/numbqq/${PKG_NAME}"
+PKG_URL="https://github.com/numbqq/${PKG_NAME}/archive/$PKG_VERSION.tar.gz"
+PKG_ARCH="arm aarch64"
+PKG_LICENSE="GPL"
+PKG_SHORTDESC="Apple airplay and raop protocol server"
+PKG_SOURCE_NAME="${PKG_NAME}-${PKG_VERSION}.tar.gz"
+PKG_NEED_BUILD="YES"
+
+
+make_target() {
+	:
+}
+
+makeinstall_target() {
+	mkdir -p $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/${PKG_NAME}
+	# Remove old debs
+	rm -rf $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/${PKG_NAME}/*
+	cp ${DISTRIB_RELEASE}/${DISTRIB_ARCH}/*.deb $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/${PKG_NAME}
+}
