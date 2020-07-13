@@ -1,6 +1,6 @@
 PKG_NAME="kodi_rk3399"
-PKG_VERSION="038e3c3be1992f7111d8c4d7b258f3cdb0985c15"
-PKG_SHA256="5b2dc933861fafeb4a5153a12068057ea5d5766e88fff2aa7fb6a0aebf6bc1b9"
+PKG_VERSION="eeee0447fdaecea530bb848cc82cf055896b4e8a"
+PKG_SHA256="58d065905d612da67923a1679c61d64c03dc39a3e91a717f11f8aa73657ad75a"
 PKG_SOURCE_DIR="kodi_rk3399-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/kodi_rk3399"
 PKG_URL="https://github.com/numbqq/kodi_rk3399/archive/$PKG_VERSION.tar.gz"
