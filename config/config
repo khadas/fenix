@@ -187,7 +187,8 @@ case $DISTRIB_TYPE in
 	;;
 	gnome)
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_OFFICE"
-		PACKAGE_LIST_DESKTOP+=" desktop-base software-properties-gtk yaru-theme-gtk yaru-theme-icon yaru-theme-sound gnome-terminal gnome-shell-extensions gnome-tweaks gnome-screenshot"
+		PACKAGE_LIST_DESKTOP+=" desktop-base software-properties-gtk gnome-terminal gnome-shell-extensions gnome-tweaks gnome-screenshot"
+		[[ $DISTRIB_RELEASE == focal ]] && PACKAGE_LIST_DESKTOP+=" yaru-theme-gtk yaru-theme-icon yaru-theme-sound"
 		[[ $DISTRIBUTION == Ubuntu ]] && PACKAGE_LIST_DESKTOP+=" ubuntu-desktop update-manager"
 	;;
 esac
