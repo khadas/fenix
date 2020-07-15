@@ -226,7 +226,7 @@ case $DISTRIB_RELEASE in
 			libxslt1.1 mesa-utils x11-utils fonts-liberation fonts-dejavu-core python-bluez python-pil python-simplejson libgif7 libvorbisfile3 libaacs0 libgnutls30 \
 			libyajl2 libsndio7.0 libcrossguid0 libao-dev libpython2.7"
 		PACKAGE_LIST_MESA="libclang-cpp9"
-		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_KODI $PACKAGE_LIST_MESA"
+		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_XSERVER $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_KODI $PACKAGE_LIST_MESA"
 		PACKAGE_LIST_DESKTOP+=" xserver-xorg-input-all pulseaudio-module-gsettings firefox language-selector-gnome viewnior"
 	;;
 esac
