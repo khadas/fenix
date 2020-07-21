@@ -198,6 +198,12 @@ for dev in ${devs}; do
 									fdt set /pcieA@fc000000 status okay;
 								fi;
 							fi;fi;fi;
+
+							if test "X${khadas_board}" = "XVIM3"; then
+								setenv max_freq "max_freq_a53=${max_freq_a53} max_freq_a73=${max_freq_a73}";
+							else if test "X${khadas_board}" = "XVIM3L"; then
+								setenv max_freq "max_freq_a55=${max_freq_a55}";
+							fi;fi;
 						fi;
 
 						if test "X${imagetype}" = "XEMMC_MBR"; then
@@ -218,7 +224,7 @@ for dev in ${devs}; do
 								setenv hdmiargs "${hdmiargs} hdmimode=${hdmimode}";
 							fi;
 						fi;
-						setenv bootargs "root=${rootdev} rootfstype=ext4 rootflags=data=writeback rw ubootpart=${ubootpartuuid} ${condev} ${log} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ${ddr} ${wol} jtag=disable mac=${eth_mac} ${saveethmac} fan=${fan_mode} khadas_board=${khadas_board} hwver=${hwver} coherent_pool=${dma_size} ${rebootmode} imagetype=${imagetype} uboottype=${uboottype}";
+						setenv bootargs "root=${rootdev} rootfstype=ext4 rootflags=data=writeback rw ubootpart=${ubootpartuuid} ${condev} ${log} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ${ddr} ${wol} ${max_freq} jtag=disable mac=${eth_mac} ${saveethmac} fan=${fan_mode} khadas_board=${khadas_board} hwver=${hwver} coherent_pool=${dma_size} ${rebootmode} imagetype=${imagetype} uboottype=${uboottype}";
 						run boot_start;
 					fi;
 				fi;
