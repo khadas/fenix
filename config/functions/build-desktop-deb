@@ -142,9 +142,16 @@ build_desktop_deb() {
 
 	# Install xserver configurations
 	mkdir -p $pkgdir/etc/X11/xorg.conf.d
-	if [ -d $ROOT/archives/filesystem/blobs/desktop/xorg/${KHADAS_BOARD} ]; then
-		if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" != "bionic" ]; then
-			cp $ROOT/archives/filesystem/blobs/desktop/xorg/${KHADAS_BOARD}/* $pkgdir/etc/X11/xorg.conf.d
+	if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" != "bionic" ]; then
+		if [ -f $ROOT/archives/filesystem/blobs/desktop/xorg/${KHADAS_BOARD}/${MODESETTING_CONF} ]; then
+			cp $ROOT/archives/filesystem/blobs/desktop/xorg/${KHADAS_BOARD}/${MODESETTING_CONF} $pkgdir/etc/X11/xorg.conf.d
+		fi
+	elif [ "$LINUX" != "mainline" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
+		if [ -f $ROOT/archives/filesystem/blobs/desktop/xorg/${KHADAS_BOARD}/${MODESETTING_CONF} ]; then
+			cp $ROOT/archives/filesystem/blobs/desktop/xorg/${KHADAS_BOARD}/${MODESETTING_CONF} $pkgdir/etc/X11/xorg.conf.d
+			if [ "$DISTRIB_RELEASE" == "bionic" ]; then
+				sed -i 's/exa/glamor/g' $pkgdir/etc/X11/xorg.conf.d/${MODESETTING_CONF}
+			fi
 		fi
 	fi
 
