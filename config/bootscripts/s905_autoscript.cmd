@@ -49,7 +49,12 @@ if test "X${uboottype}" = "Xmainline"; then
 	setenv rebootmode "";
 else
 	setenv hdmiargs "logo=${display_layer},loaded,${fb_addr},${outputmode} vout=${outputmode},enable"
-	setenv ddr "ddr_size=${ddr_size}";
+	if env exist ddr_size; then
+		echo "Found ddr_size: $ddr_size";
+		setenv ddr "ddr_size=${ddr_size}";
+	else
+		setenv ddr "";
+	fi;
 	setenv wol "wol_enable=${wol_enable}";
 	setenv rebootmode "reboot_mode=${reboot_mode}"
 fi;
