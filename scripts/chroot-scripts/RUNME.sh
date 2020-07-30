@@ -63,6 +63,10 @@ EOF
 
 cd /
 
+# Build time
+LC_ALL="C" date > /etc/fenix-build-time
+sync
+
 # Clean up
 apt-get update
 apt-get -y clean
