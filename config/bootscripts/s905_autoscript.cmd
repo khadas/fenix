@@ -218,7 +218,7 @@ for dev in ${devs}; do
 								setenv hdmiargs "${hdmiargs} hdmimode=${hdmimode}";
 							fi;
 						fi;
-						setenv bootargs "root=${rootdev} rootfstype=ext4 rootflags=data=writeback rw ubootpart=${ubootpartuuid} ${condev} ${log} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ${ddr} ${wol} jtag=disable mac=${eth_mac} androidboot.mac=${eth_mac} ${saveethmac} fan=${fan_mode} khadas_board=${khadas_board} hwver=${hwver} coherent_pool=${dma_size} ${rebootmode} imagetype=${imagetype} uboottype=${uboottype}";
+						setenv bootargs "root=${rootdev} rootfstype=ext4 rootflags=data=writeback rw ubootpart=${ubootpartuuid} ${condev} ${log} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ${ddr} ${wol} jtag=disable mac=${eth_mac} ${saveethmac} fan=${fan_mode} khadas_board=${khadas_board} hwver=${hwver} coherent_pool=${dma_size} ${rebootmode} imagetype=${imagetype} uboottype=${uboottype}";
 						run boot_start;
 					fi;
 				fi;
