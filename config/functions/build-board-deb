@@ -259,6 +259,10 @@ build_board_deb() {
 	# Copy boot environment
 	if [ -f $BOOT_ENV/$BOOT_ENV_FILE ]; then
 		cp $BOOT_ENV/$BOOT_ENV_FILE $pkgdir/boot/env.txt
+		# Extra boot environment
+		if [ -f $BOOT_ENV/$BOOT_ENV_FILE_EXT ]; then
+			cat $BOOT_ENV/$BOOT_ENV_FILE_EXT >> $pkgdir/boot/env.txt
+		fi
 	fi
 
 	# Copy boot script for Rockchip platform
