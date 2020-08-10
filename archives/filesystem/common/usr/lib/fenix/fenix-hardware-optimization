@@ -86,13 +86,30 @@ prepare_board() {
 
 	# IRQ distribution based on $BOARD
 	case ${BOARD} in
-		"VIM1"|"VIM2") # S905X/S912: both kernels: send eth0 to cpu3, mmc/usb2 to cpu2 and usb1 to cpu1
+		"VIM1"|"VIM2"|"VIM3L") # S905X/S912/S905D3: both kernels: send eth0 to cpu3, mmc/usb2/pcie to cpu2 and usb1 to cpu1
 			for i in $(awk -F':' '/sd_emmc|usb2/{print $1}' </proc/interrupts | sed 's/\ //g'); do
 				echo 1 >/proc/irq/$i/smp_affinity_list
 			done
 			echo 2 >/proc/irq/$(awk -F":" "/usb1/ {print \$1}" </proc/interrupts | sed 's/\ //g')/smp_affinity_list
+			[[ -n $(cat /proc/interrupts | grep "pcie") ]] && echo 2 >/proc/irq/$(awk -F":" "/pcie/ {print \$1}" </proc/interrupts | sed 's/\ //g')/smp_affinity_list
 			echo 3 >/proc/irq/$(awk -F":" "/eth0/ {print \$1}" </proc/interrupts | sed 's/\ //g')/smp_affinity_list
 			echo 7 >/sys/class/net/eth0/queues/rx-0/rps_cpus
+			;;
+		"VIM3")
+			# MMC on cpu1, USB3/PCIe on cpu2, Ethernet on cpu3, rdma on cpu4, vsync on cpu5
+			for i in $(awk -F':' '/mmc/{print $1}' </proc/interrupts | sed 's/\ //g'); do
+				echo 1 >/proc/irq/$i/smp_affinity_list
+			done
+			echo 2 >/proc/irq/$(awk -F":" "/xhci-hcd/ {print \$1}" </proc/interrupts | sed 's/\ //g')/smp_affinity_list
+			echo 2 >/proc/irq/$(awk -F":" "/pcie/ {print \$1}" </proc/interrupts | sed 's/\ //g')/smp_affinity_list
+			echo 3 >/proc/irq/$(awk -F":" "/eth0/ {print \$1}" </proc/interrupts | sed 's/\ //g')/smp_affinity_list
+			# mainline kernel might lack those
+			[[ -n $(cat /proc/interrupts | grep "rdma") ]] && echo 4 >/proc/irq/$(awk -F":" "/rdma/ {print \$1}" </proc/interrupts | sed 's/\ //g')/smp_affinity_list
+			[[ -n $(cat /proc/interrupts | grep "osd-vsync") ]] && {
+				for i in $(awk -F":" "/ osd-vsync/ {print \$1}" </proc/interrupts | sed 's/\ //g'); do
+					echo 5 >/proc/irq/$i/smp_affinity_list
+				done
+			}
 			;;
 		"Edge"|"Edge-V"|"Captain")
 			for i in $(awk -F':' '/gpu/{print $1}' </proc/interrupts | sed 's/\ //g'); do
