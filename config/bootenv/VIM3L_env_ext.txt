@@ -2,3 +2,5 @@
 # 100/250/500/667/1000/1200/1404/1500/1608/1704/1800/1908(default)/2016/2100/2208
 max_freq_a55=1908
 
+# Device Tree Overlays
+overlays=uart3 pwm_f

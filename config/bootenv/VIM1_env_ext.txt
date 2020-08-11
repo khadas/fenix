@@ -1,0 +1,2 @@
+# Device Tree Overlays
+overlays=uart4

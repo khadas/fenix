@@ -6,3 +6,5 @@ max_freq_a53=1800
 # 500/667/1000/1200/1398/1512/1608/1704/1800/1908/2016/2100/2208(default)/2304/2400
 max_freq_a73=2208
 
+# Device Tree Overlays
+overlays=uart3 pwm_f

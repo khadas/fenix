@@ -2,6 +2,7 @@ echo "Starting S905 autoscript..."
 
 setenv kernel_loadaddr "0x11000000"
 setenv dtb_loadaddr "0x1000000"
+setenv dtbo_loadaddr "0x5000000"
 setenv initrd_loadaddr "0x13000000"
 setenv env_loadaddr "0x20000000"
 
@@ -16,27 +17,35 @@ fi;
 if test "X${fdtfile}" = "Xamlogic/meson-gxl-s905x-khadas-vim.dtb"; then
 	setenv uboottype "mainline";
 	setenv khadas_board "VIM1";
+	setenv overlaydir "kvim";
 else if test "X${fdtfile}" = "Xamlogic/meson-gxm-khadas-vim2.dtb"; then
 	setenv uboottype "mainline";
 	setenv khadas_board "VIM2";
+	setenv overlaydir "kvim2";
 else if test "X${fdtfile}" = "Xamlogic/meson-g12b-a311d-khadas-vim3.dtb"; then
 	setenv uboottype "mainline";
 	setenv khadas_board "VIM3";
+	setenv overlaydir "kvim3";
 else if test "X${fdtfile}" = "Xamlogic/meson-sm1-khadas-vim3l.dtb"; then
 	setenv uboottype "mainline";
 	setenv khadas_board "VIM3L";
+	setenv overlaydir "kvim3l";
 else
 	setenv uboottype "vendor";
 	if test "X${maxcpus}" = "X4"; then
 		if test "X${hostname}" = "XKVIM3L"; then
 			setenv khadas_board "VIM3L";
+			setenv overlaydir "kvim3l";
 		else
 			setenv khadas_board "VIM1";
+			setenv overlaydir "kvim";
 		fi;
 	else if test "X${maxcpus}" = "X8"; then
 		setenv khadas_board "VIM2";
+		setenv overlaydir "kvim2";
 	else if test "X${maxcpus}" = "X6"; then
 		setenv khadas_board "VIM3";
+		setenv overlaydir "kvim3";
 	fi;fi;fi;
 fi;fi;fi;fi;
 
@@ -90,7 +99,7 @@ for dev in ${devs}; do
 			echo "Scanning ${dev} ${dev_num}:${distro_bootpart}...";
 			if test "X${distro_bootpart}" = "X5"; then
 				setenv load_method "ext4load";
-				setenv mark_prefix "boot/";
+				setenv mark_prefix "boot";
 				setenv imagetype "EMMC";
 			else
 				setenv load_method "fatload";
@@ -140,7 +149,7 @@ for dev in ${devs}; do
 						if test "X${loglevel}" != "X"; then
 							setenv log "loglevel=${loglevel}"
 						fi
-						if test -e ${dev} ${dev_num}:${distro_bootpart} ${mark_prefix}.next; then
+						if test -e ${dev} ${dev_num}:${distro_bootpart} ${mark_prefix}/.next; then
 							echo "Booting mainline kernel...";
 							setenv condev "console=ttyAML0,115200n8 console=tty0 no_console_suspend consoleblank=0";
 
@@ -205,6 +214,16 @@ for dev in ${devs}; do
 								setenv max_freq "max_freq_a55=${max_freq_a55}";
 							fi;fi;
 						fi;
+
+						# Device Tree Overlays
+						if test "X${overlays}" != "X"; then
+							for overlay in ${overlays}; do
+								echo Apply dtbo ${overlay}
+								if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${dtbo_loadaddr} ${mark_prefix}/dtb/overlays/${overlaydir}/${overlay}.dtbo; then
+									fdt apply ${dtbo_loadaddr}
+								fi
+							done
+						fi
 
 						if test "X${imagetype}" = "XEMMC_MBR"; then
 							echo "Remove eMMC vendor partitions...";
