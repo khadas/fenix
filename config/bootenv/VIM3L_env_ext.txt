@@ -3,4 +3,4 @@
 max_freq_a55=1908
 
 # Device Tree Overlays
-overlays=uart3 pwm_f
+overlays=uart3 pwm_f i2c3
