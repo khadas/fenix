@@ -7,4 +7,4 @@ max_freq_a53=1800
 max_freq_a73=2208
 
 # Device Tree Overlays
-overlays=uart3 pwm_f i2c3
+overlays=uart3 pwm_f i2c3 os08a10
