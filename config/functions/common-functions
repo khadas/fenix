@@ -308,7 +308,7 @@ prepare_packages() {
 ## returns md5 hash for current package list
 get_package_list_hash()
 {
-	( printf '%s\n' $PACKAGE_LIST | sort -u; printf '%s\n' $PACKAGE_LIST_EXCLUDE | sort -u; echo "$ROOTFSCACHE_VERSION" ) | md5sum | cut -d' ' -f 1
+	( printf '%s\n' "$PACKAGE_LIST" | sort -u; printf '%s\n' "$PACKAGE_LIST_EXCLUDE" | sort -u; echo "$ROOTFSCACHE_VERSION" ) | md5sum | cut -d' ' -f 1
 }
 
 ## create_sources_list <release> <basedir>

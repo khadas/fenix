@@ -78,7 +78,7 @@ $ sudo reboot
 
 ```bash
 $ cd fenix
-$ docker pull numbqq/fenix
+$ docker pull numbqq/fenix:latest
 ```
 
 ### Build image in Docker
