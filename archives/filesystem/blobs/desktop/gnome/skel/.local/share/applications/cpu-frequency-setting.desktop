@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Name=CPU Frequency Setting
+Name[zh_CN]=CPU频率设置
+Comment=CPU Frequency Setting
+Comment[zh_CN]=CPU频率设置
+Exec=/usr/local/bin/cpu_freq_setup.sh
+Icon=/etc/fenix/icons/cpu-freq.png
+Terminal=false
+Type=Application
+Categories=GNOME;GTK;Settings;DesktopSettings;
+StartupNotify=true
