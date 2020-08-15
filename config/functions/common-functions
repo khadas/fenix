@@ -100,6 +100,10 @@ prepare_host() {
 				mkdir -p ~/fenix/downloads
 				cp -r ~/toolchains/* downloads/
 			fi
+			# Walkaround for ccache permissions
+			if [ "$(stat -c '%U %G' ~/.ccache/)" != "khadas khadas" ]; then
+				sudo chown khadas:khadas -R ~/.ccache/
+			fi
 		fi
 	fi
 
