@@ -20,14 +20,15 @@ UBOOT_IMAGE_FILES="u-boot.bin u-boot.bin.sd.bin"
 
 UBOOT_FORCE_REBUILD="yes"
 
-KERNEL_COMPILER="aarch64-linux-gnu-"
-KERNEL_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/bin"
-
 case "$LINUX" in
 	mainline)
+		KERNEL_COMPILER="aarch64-none-linux-gnu-"
+		KERNEL_COMPILER_PATH="$TOOLCHAINS/gcc-arm-aarch64-none-linux-gnu/bin"
 		LINUX_DIR="$BUILD/linux-mainline-*"
 		;;
 	4.9)
+		KERNEL_COMPILER="aarch64-linux-gnu-"
+		KERNEL_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/bin"
 		LINUX_DIR="$ROOT/linux"
 		;;
 esac
