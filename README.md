@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/khadas/fenix.svg?branch=master)](https://travis-ci.org/khadas/fenix)
+[![Build Status](https://github.com/nicknumb/fenix/workflows/Build/badge.svg)](https://github.com/nicknumb/fenix/actions?query=workflow%3ABuild)
 
 # Fenix script set to build Ubuntu/Debian images
 

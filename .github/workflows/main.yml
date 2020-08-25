@@ -1,0 +1,65 @@
+name: Build
+on:
+  push:
+  pull_request:
+  release:
+    types: [published]
+
+jobs:
+  build_full_image:
+    name: Build Full Image
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      # Fetch Dependencies
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y make lsb-release qemu-user-static zip
+
+      # Get current date
+      - name: Get Current Date
+        id: date
+        run: echo "::set-output name=date::$(date +%F | sed 's/-//g')"
+
+      # Build
+      - name: Build Image
+        run: |
+          .github/workflows/build.sh
+
+      # Upload Images to GitHub Actions Artifacts
+      - name: 'Upload VIM Ubuntu Server Images to GitHub Artifacts'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM-Ubuntu-Server-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
+
+      - name: 'Upload VIM Ubuntu Desktop Images to GitHub Artifacts'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM-Ubuntu-Desktop-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-gnome-*.img.xz
+
+      - name: 'Upload Edge Ubuntu Server Images to GitHub Artifacts'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Edge-Ubuntu-Server-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/Edge*-server-*.img.xz
+
+      - name: 'Upload Edge Ubuntu Desktop Images to GitHub Artifacts'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Edge-Ubuntu-Desktop-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/Edge*-gnome-*.img.xz
+
+      - name: 'Upload Debian Packages to GitHub Artifacts'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Debian-Packages-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/debs/
