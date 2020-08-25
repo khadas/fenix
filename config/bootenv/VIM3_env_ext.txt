@@ -14,4 +14,5 @@ max_freq_a73=2208
 #   os08a10         -- Enable OS08A10 Camera
 #   onewire         -- Enable onewire bus (PIO Header PIN15)
 #   disable-ts050   -- Disable TS050 LCD
+#   m2x-eth         -- Enable M2X 100M ethernet. Note: 1G ethernet will be disabled.
 overlays=uart3 pwm_f i2c3 os08a10
