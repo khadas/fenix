@@ -14,7 +14,7 @@
 # prepare_packages
 # get_package_list_hash
 # create_sources_list
-
+# compress_image
 
 ## Print error message
 ## $1 - message
@@ -359,4 +359,18 @@ create_sources_list()
 	EOF
 	;;
 	esac
+}
+
+## compress_image
+compress_image()
+{
+	[[ $COMPRESS_IMAGE != yes ]] && exit
+
+	info_msg "Compressing image '$BUILD_IMAGES/$IMAGE_FILE_NAME' to '$BUILD_IMAGES/${IMAGE_FILE_NAME}.xz' ..."
+#	echo "pixz -9 < $BUILD_IMAGES/$IMAGE_FILE_NAME > $BUILD_IMAGES/${IMAGE_FILE_NAME}.xz"
+
+	rm -rf $BUILD_IMAGES/${IMAGE_FILE_NAME}.xz
+	pv $BUILD_IMAGES/$IMAGE_FILE_NAME | xz -T${NR_JOBS} -z > $BUILD_IMAGES/${IMAGE_FILE_NAME}.xz
+
+
 }

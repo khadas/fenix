@@ -14,6 +14,7 @@ source config/functions/functions
 ######################################################################################
 prepare_host
 pack_image_platform
+compress_image
 
 echo -e "\nDone."
 echo -e "\n`date`"
