@@ -31,10 +31,10 @@ build_updater_deb() {
 	elif [ "$LINUX" != "mainline" ] && [ "$DISTRIBUTION" == "Ubuntu" ] && [ "$DISTRIB_RELEASE" == "focal" ]; then
 		case $KHADAS_BOARD in
 			VIM3)
-				updater_deb_dependencies+="python3-wiringpi, kodi, kodi-bin"
+				updater_deb_dependencies+="python3-wiringpi, kodi, kodi-bin, encoder-libs-aml"
 				;;
 			VIM3L)
-				updater_deb_dependencies+="python3-wiringpi, kodi, kodi-bin"
+				updater_deb_dependencies+="python3-wiringpi, kodi, kodi-bin, encoder-libs-aml"
 				;;
 		esac
 	elif [ "$LINUX" == "mainline" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
