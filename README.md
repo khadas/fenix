@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/nicknumb/fenix/workflows/Build/badge.svg)](https://github.com/nicknumb/fenix/actions?query=workflow%3ABuild)
+[![Build Status](https://github.com/khadas/fenix/workflows/Build/badge.svg)](https://github.com/khadas/fenix/actions?query=workflow%3ABuild)
 
 # Fenix script set to build Ubuntu/Debian images
 
