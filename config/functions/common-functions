@@ -370,7 +370,14 @@ compress_image()
 #	echo "pixz -9 < $BUILD_IMAGES/$IMAGE_FILE_NAME > $BUILD_IMAGES/${IMAGE_FILE_NAME}.xz"
 
 	rm -rf $BUILD_IMAGES/${IMAGE_FILE_NAME}.xz
-	pv $BUILD_IMAGES/$IMAGE_FILE_NAME | xz -T${NR_JOBS} -z > $BUILD_IMAGES/${IMAGE_FILE_NAME}.xz
+#	pv $BUILD_IMAGES/$IMAGE_FILE_NAME | xz -T${NR_JOBS} -z > $BUILD_IMAGES/${IMAGE_FILE_NAME}.xz
 
+	"$ROOT"/scripts/xze "$BUILD_IMAGES/$IMAGE_FILE_NAME" \
+	    --meta \
+	    LABEL="$DISTRIBUTION" \
+	    BOARD="$KHADAS_BOARD" \
+	    BUILDER="fenix" \
+	    LINK="https://dl.khadas.com/Firmware/" \
+	    DESC="$DISTRIBUTION $VERSION $DISTRIB_TYPE $DISTRIB_RELEASE - fenix generated images https://github.com/khadas/fenix"
 
 }
