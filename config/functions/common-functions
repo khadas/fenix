@@ -378,6 +378,7 @@ compress_image()
 	    BOARD="$KHADAS_BOARD" \
 	    BUILDER="fenix" \
 	    LINK="https://dl.khadas.com/Firmware/" \
-	    DESC="$DISTRIBUTION $VERSION $DISTRIB_TYPE $DISTRIB_RELEASE - fenix generated images https://github.com/khadas/fenix"
+	    DESC="$DISTRIBUTION $VERSION $DISTRIB_TYPE $DISTRIB_RELEASE - fenix generated images https://github.com/khadas/fenix" \
+	    > "$BUILD_IMAGES/$IMAGE_FILE_NAME.xz"
 
 }
