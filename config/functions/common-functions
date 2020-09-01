@@ -15,6 +15,7 @@
 # get_package_list_hash
 # create_sources_list
 # compress_image
+# check_make_params
 
 ## Print error message
 ## $1 - message
@@ -384,4 +385,15 @@ compress_image()
 	else
 		"$ROOT"/scripts/xze "$BUILD_IMAGES/$IMAGE_FILE_NAME" > "$BUILD_IMAGES/$IMAGE_FILE_NAME.xz"
 	fi
+}
+
+## check_make_params
+check_make_params()
+{
+	echo ""
+	for param in $MAKE_PARAMS
+	do
+		printf "${BOLDCYAN}%s:${ENDCOLOR}\t${BOLDGREEN}%s${ENDCOLOR}\n" $param ${!param}
+	done
+	echo ""
 }

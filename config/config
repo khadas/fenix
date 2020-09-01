@@ -48,6 +48,12 @@ else
 	NR_JOBS=${NR_JOBS_MAX}
 fi
 
+MAKE_PARAMS="BUILD_TYPE NO_CCACHE COMPRESS_IMAGE"
+
+[[ -z $NO_CCACHE ]] && NO_CCACHE=no
+[[ -z $BUILD_TYPE ]] && BUILD_TYPE=develop
+[[ -z $COMPRESS_IMAGE ]] && COMPRESS_IMAGE=no
+
 ## Enable ccache by default
 if [ "$NO_CCACHE" != "yes" ]; then
 	CCACHE=ccache
