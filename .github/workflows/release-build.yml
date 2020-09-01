@@ -1,7 +1,5 @@
-name: Build
+name: Release Build
 on:
-  push:
-  pull_request:
   release:
     types: [published]
 
