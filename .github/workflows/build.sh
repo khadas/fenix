@@ -1,11 +1,12 @@
 #!/bin/bash
 
-CONFIG=.github/workflows/configs/config-github-actions.conf
-
 touch .ignore-update
 
 LINUX=$1
 BOARD=$2
+DISTRIBUTION=$3
+
+CONFIG=.github/workflows/configs/config-${DISTRIBUTION,,}-github-actions.conf
 
 if [ "$BOARD" == "Edge" ]; then
 	INSTALL_TYPES="EMMC SD-USB"
@@ -20,7 +21,11 @@ fi
 if [ "$LINUX" == "mainline" ]; then
 	LINUX_VER="mainline"
 	UBOOT_VER="mainline"
-	DISTRIB_TYPES="server gnome"
+	if [ "$DISTRIBUTION" == "Ubuntu" ]; then
+		DISTRIB_TYPES="server gnome"
+	else
+		DISTRIB_TYPES="server xfce"
+	fi
 else
 	if [ "$BOARD" == "Edge" ]; then
 		LINUX_VER="4.4"
@@ -29,7 +34,11 @@ else
 	else
 		LINUX_VER="4.9"
 		UBOOT_VER="2015.01"
-		DISTRIB_TYPES="server gnome"
+		if [ "$DISTRIBUTION" == "Ubuntu" ]; then
+			DISTRIB_TYPES="server gnome"
+		else
+			DISTRIB_TYPES="server xfce"
+		fi
 	fi
 fi
 

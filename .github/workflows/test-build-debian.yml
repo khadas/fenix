@@ -1,9 +1,6 @@
-name: Test Build
+name: Test Build Debian
 on:
   push:
-  pull_request:
-  release:
-    types: [published]
 
 jobs:
   build_vim1_mainline_kernel_images:
@@ -26,22 +23,22 @@ jobs:
       # Build
       - name: Build Image
         run: |
-          .github/workflows/build.sh mainline VIM1
+          .github/workflows/build.sh mainline VIM1 Debian
 
       # Upload Images to GitHub Actions Artifacts
-      - name: 'Upload VIM1 Ubuntu Server Mainline Kernel Images'
+      - name: 'Upload VIM1 Debian Server Mainline Kernel Images'
         uses: actions/upload-artifact@v2
         with:
-          name: VIM1-Ubuntu-Server-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          name: VIM1-Debian-Server-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
             ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
 
-      - name: 'Upload VIM1 Ubuntu Desktop Mainline Kernel Images'
+      - name: 'Upload VIM1 Debian Desktop Mainline Kernel Images'
         uses: actions/upload-artifact@v2
         with:
-          name: VIM1-Ubuntu-Desktop-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          name: VIM1-Debian-Desktop-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
-            ${{ github.workspace }}/build/images/VIM*-gnome-*.img.xz
+            ${{ github.workspace }}/build/images/VIM*-xfce-*.img.xz
 
       - name: 'Upload VIM1 Debian Packages for Mainline Kernel'
         uses: actions/upload-artifact@v2
@@ -70,22 +67,22 @@ jobs:
       # Build
       - name: Build Image
         run: |
-          .github/workflows/build.sh legacy VIM1
+          .github/workflows/build.sh legacy VIM1 Debian
 
       # Upload Images to GitHub Actions Artifacts
-      - name: 'Upload VIM1 Ubuntu Server Legacy Kernel Images'
+      - name: 'Upload VIM1 Debian Server Legacy Kernel Images'
         uses: actions/upload-artifact@v2
         with:
-          name: VIM1-Ubuntu-Server-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          name: VIM1-Debian-Server-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
             ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
 
-      - name: 'Upload VIM1 Ubuntu Desktop Legacy Kernel Images'
+      - name: 'Upload VIM1 Debian Desktop Legacy Kernel Images'
         uses: actions/upload-artifact@v2
         with:
-          name: VIM1-Ubuntu-Desktop-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          name: VIM1-Debian-Desktop-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
-            ${{ github.workspace }}/build/images/VIM*-gnome-*.img.xz
+            ${{ github.workspace }}/build/images/VIM*-xfce-*.img.xz
 
       - name: 'Upload VIM1 Debian Packages for Legacy Kernel'
         uses: actions/upload-artifact@v2
@@ -114,22 +111,22 @@ jobs:
       # Build
       - name: Build Image
         run: |
-          .github/workflows/build.sh mainline VIM2
+          .github/workflows/build.sh mainline VIM2 Debian
 
       # Upload Images to GitHub Actions Artifacts
-      - name: 'Upload VIM2 Ubuntu Server Mainline Kernel Images'
+      - name: 'Upload VIM2 Debian Server Mainline Kernel Images'
         uses: actions/upload-artifact@v2
         with:
-          name: VIM2-Ubuntu-Server-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          name: VIM2-Debian-Server-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
             ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
 
-      - name: 'Upload VIM2 Ubuntu Desktop Mainline Kernel Images'
+      - name: 'Upload VIM2 Debian Desktop Mainline Kernel Images'
         uses: actions/upload-artifact@v2
         with:
-          name: VIM2-Ubuntu-Desktop-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          name: VIM2-Debian-Desktop-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
-            ${{ github.workspace }}/build/images/VIM*-gnome-*.img.xz
+            ${{ github.workspace }}/build/images/VIM*-xfce-*.img.xz
 
       - name: 'Upload VIM2 Debian Packages for Mainline Kernel'
         uses: actions/upload-artifact@v2
@@ -158,22 +155,22 @@ jobs:
       # Build
       - name: Build Image
         run: |
-          .github/workflows/build.sh legacy VIM2
+          .github/workflows/build.sh legacy VIM2 Debian
 
       # Upload Images to GitHub Actions Artifacts
-      - name: 'Upload VIM2 Ubuntu Server Legacy Kernel Images'
+      - name: 'Upload VIM2 Debian Server Legacy Kernel Images'
         uses: actions/upload-artifact@v2
         with:
-          name: VIM2-Ubuntu-Server-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          name: VIM2-Debian-Server-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
             ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
 
-      - name: 'Upload VIM2 Ubuntu Desktop Legacy Kernel Images'
+      - name: 'Upload VIM2 Debian Desktop Legacy Kernel Images'
         uses: actions/upload-artifact@v2
         with:
-          name: VIM2-Ubuntu-Desktop-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          name: VIM2-Debian-Desktop-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
-            ${{ github.workspace }}/build/images/VIM*-gnome-*.img.xz
+            ${{ github.workspace }}/build/images/VIM*-xfce-*.img.xz
 
       - name: 'Upload VIM2 Debian Packages for Legacy Kernel'
         uses: actions/upload-artifact@v2
@@ -202,22 +199,22 @@ jobs:
       # Build
       - name: Build Image
         run: |
-          .github/workflows/build.sh mainline VIM3
+          .github/workflows/build.sh mainline VIM3 Debian
 
       # Upload Images to GitHub Actions Artifacts
-      - name: 'Upload VIM3 Ubuntu Server Mainline Kernel Images'
+      - name: 'Upload VIM3 Debian Server Mainline Kernel Images'
         uses: actions/upload-artifact@v2
         with:
-          name: VIM3-Ubuntu-Server-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          name: VIM3-Debian-Server-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
             ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
 
-      - name: 'Upload VIM3 Ubuntu Desktop Mainline Kernel Images'
+      - name: 'Upload VIM3 Debian Desktop Mainline Kernel Images'
         uses: actions/upload-artifact@v2
         with:
-          name: VIM3-Ubuntu-Desktop-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          name: VIM3-Debian-Desktop-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
-            ${{ github.workspace }}/build/images/VIM*-gnome-*.img.xz
+            ${{ github.workspace }}/build/images/VIM*-xfce-*.img.xz
 
       - name: 'Upload VIM3 Debian Packages for Mainline Kernel'
         uses: actions/upload-artifact@v2
@@ -246,22 +243,22 @@ jobs:
       # Build
       - name: Build Image
         run: |
-          .github/workflows/build.sh legacy VIM3
+          .github/workflows/build.sh legacy VIM3 Debian
 
       # Upload Images to GitHub Actions Artifacts
-      - name: 'Upload VIM3 Ubuntu Server Legacy Kernel Images'
+      - name: 'Upload VIM3 Debian Server Legacy Kernel Images'
         uses: actions/upload-artifact@v2
         with:
-          name: VIM3-Ubuntu-Server-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          name: VIM3-Debian-Server-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
             ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
 
-      - name: 'Upload VIM3 Ubuntu Desktop Legacy Kernel Images'
+      - name: 'Upload VIM3 Debian Desktop Legacy Kernel Images'
         uses: actions/upload-artifact@v2
         with:
-          name: VIM3-Ubuntu-Desktop-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          name: VIM3-Debian-Desktop-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
-            ${{ github.workspace }}/build/images/VIM*-gnome-*.img.xz
+            ${{ github.workspace }}/build/images/VIM*-xfce-*.img.xz
 
       - name: 'Upload VIM3 Debian Packages for Legacy Kernel'
         uses: actions/upload-artifact@v2
@@ -290,22 +287,22 @@ jobs:
       # Build
       - name: Build Image
         run: |
-          .github/workflows/build.sh mainline VIM3L
+          .github/workflows/build.sh mainline VIM3L Debian
 
       # Upload Images to GitHub Actions Artifacts
-      - name: 'Upload VIM3L Ubuntu Server Mainline Kernel Images'
+      - name: 'Upload VIM3L Debian Server Mainline Kernel Images'
         uses: actions/upload-artifact@v2
         with:
-          name: VIM3L-Ubuntu-Server-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          name: VIM3L-Debian-Server-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
             ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
 
-      - name: 'Upload VIM3L Ubuntu Desktop Mainline Kernel Images'
+      - name: 'Upload VIM3L Debian Desktop Mainline Kernel Images'
         uses: actions/upload-artifact@v2
         with:
-          name: VIM3L-Ubuntu-Desktop-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          name: VIM3L-Debian-Desktop-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
-            ${{ github.workspace }}/build/images/VIM*-gnome-*.img.xz
+            ${{ github.workspace }}/build/images/VIM*-xfce-*.img.xz
 
       - name: 'Upload VIM3L Debian Packages for Mainline Kernel'
         uses: actions/upload-artifact@v2
@@ -334,22 +331,22 @@ jobs:
       # Build
       - name: Build Image
         run: |
-          .github/workflows/build.sh legacy VIM3L
+          .github/workflows/build.sh legacy VIM3L Debian
 
       # Upload Images to GitHub Actions Artifacts
-      - name: 'Upload VIM3L Ubuntu Server Legacy Kernel Images'
+      - name: 'Upload VIM3L Debian Server Legacy Kernel Images'
         uses: actions/upload-artifact@v2
         with:
-          name: VIM3L-Ubuntu-Server-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          name: VIM3L-Debian-Server-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
             ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
 
-      - name: 'Upload VIM3L Ubuntu Desktop Legacy Kernel Images'
+      - name: 'Upload VIM3L Debian Desktop Legacy Kernel Images'
         uses: actions/upload-artifact@v2
         with:
-          name: VIM3L-Ubuntu-Desktop-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          name: VIM3L-Debian-Desktop-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
-            ${{ github.workspace }}/build/images/VIM*-gnome-*.img.xz
+            ${{ github.workspace }}/build/images/VIM*-xfce-*.img.xz
 
       - name: 'Upload VIM3L Debian Packages for Legacy Kernel'
         uses: actions/upload-artifact@v2
@@ -377,21 +374,21 @@ jobs:
       # Build
       - name: Build Image
         run: |
-          .github/workflows/build.sh mainline Edge
+          .github/workflows/build.sh mainline Edge Debian
 
-      - name: 'Upload Edge Ubuntu Server Mainline Kernel Images'
+      - name: 'Upload Edge Debian Server Mainline Kernel Images'
         uses: actions/upload-artifact@v2
         with:
-          name: Edge-Ubuntu-Server-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          name: Edge-Debian-Server-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
             ${{ github.workspace }}/build/images/Edge*-server-*.img.xz
 
-      - name: 'Upload Edge Ubuntu Desktop Mainline Kernel Images'
+      - name: 'Upload Edge Debian Desktop Mainline Kernel Images'
         uses: actions/upload-artifact@v2
         with:
-          name: Edge-Ubuntu-Desktop-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          name: Edge-Debian-Desktop-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
-            ${{ github.workspace }}/build/images/Edge*-gnome-*.img.xz
+            ${{ github.workspace }}/build/images/Edge*-xfce-*.img.xz
 
       - name: 'Upload Edge Debian Packages for Mainline Kernel'
         uses: actions/upload-artifact@v2
@@ -420,19 +417,19 @@ jobs:
       # Build
       - name: Build Image
         run: |
-          .github/workflows/build.sh legacy Edge
+          .github/workflows/build.sh legacy Edge Debian
 
-      - name: 'Upload Edge Ubuntu Server Legacy Kernel Images'
+      - name: 'Upload Edge Debian Server Legacy Kernel Images'
         uses: actions/upload-artifact@v2
         with:
-          name: Edge-Ubuntu-Server-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          name: Edge-Debian-Server-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
             ${{ github.workspace }}/build/images/Edge*-server-*.img.xz
 
-      - name: 'Upload Edge Ubuntu Desktop Legacy Kernel Images'
+      - name: 'Upload Edge Debian Desktop Legacy Kernel Images'
         uses: actions/upload-artifact@v2
         with:
-          name: Edge-Ubuntu-Desktop-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          name: Edge-Debian-Desktop-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
             ${{ github.workspace }}/build/images/Edge*-lxde-*.img.xz
 

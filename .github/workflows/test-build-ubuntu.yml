@@ -1,8 +1,6 @@
-name: Release Build
+name: Test Build Ubuntu
 on:
   push:
-  release:
-    types: [published]
 
 jobs:
   build_vim1_mainline_kernel_images:
