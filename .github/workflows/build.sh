@@ -54,7 +54,7 @@ do
 		sed -i 's/DISTRIB_TYPE=.*/DISTRIB_TYPE=${distrib_type}/g' $CONFIG
 		source env/setenv.sh config $CONFIG
 		sudo rm -rf build/images/.tmp/*
-		BUILD_TYPE=release COMPRESS_IMAGE=yes NO_CCACHE=yes make
+		BUILD_TYPE=release COMPRESS_IMAGE=yes NO_CCACHE=yes make || BUILD_TYPE=release COMPRESS_IMAGE=yes NO_CCACHE=yes make
 		sudo rm -rf build/images/*.img
 	done
 done
