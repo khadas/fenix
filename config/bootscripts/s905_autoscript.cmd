@@ -52,7 +52,7 @@ fi;fi;fi;fi;
 echo "uboot type: $uboottype"
 
 if test "X${uboottype}" = "Xmainline"; then
-	setenv hdmiargs "";
+	setenv hdmiargs "osd12";
 	setenv ddr "";
 	setenv wol "";
 	setenv rebootmode "";
