@@ -367,11 +367,10 @@ compress_image()
 {
 	[[ $COMPRESS_IMAGE != yes ]] && exit
 
+	echo ""
 	info_msg "Compressing image '$BUILD_IMAGES/$IMAGE_FILE_NAME' to '$BUILD_IMAGES/${IMAGE_FILE_NAME}.xz' ..."
-#	echo "pixz -9 < $BUILD_IMAGES/$IMAGE_FILE_NAME > $BUILD_IMAGES/${IMAGE_FILE_NAME}.xz"
 
 	rm -rf $BUILD_IMAGES/${IMAGE_FILE_NAME}.xz
-#	pv $BUILD_IMAGES/$IMAGE_FILE_NAME | xz -T${NR_JOBS} -z > $BUILD_IMAGES/${IMAGE_FILE_NAME}.xz
 
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		"$ROOT"/scripts/xze "$BUILD_IMAGES/$IMAGE_FILE_NAME" \
@@ -385,6 +384,9 @@ compress_image()
 	else
 		"$ROOT"/scripts/xze "$BUILD_IMAGES/$IMAGE_FILE_NAME" > "$BUILD_IMAGES/$IMAGE_FILE_NAME.xz"
 	fi
+
+	echo ""
+	info_msg "COMPRESSED_IMAGE: ${GREEN} $BUILD_IMAGES/$IMAGE_FILE_NAME.xz ${ENDCOLOR} is ready!"
 }
 
 ## check_make_params
