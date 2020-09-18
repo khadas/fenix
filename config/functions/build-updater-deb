@@ -3,6 +3,12 @@
 
 ## Build updater deb package
 build_updater_deb() {
+
+	if [ "$DISTRIB_TYPE" == "minimal" ]; then
+		warning_msg "Ignore build update package for minimal image."
+		return 0
+	fi
+
 	info_msg "Build updater deb..."
 
 	local pkgname="${FENIX_UPDATER_DEB}"
