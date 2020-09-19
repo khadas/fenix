@@ -193,6 +193,8 @@ build_board_deb() {
 			sed -i 's/iv009_isp_sensor//g' /etc/modules
 			sed -i 's/iv009_isp//g' /etc/modules
 		fi
+		# Remove unused files for legacy kernel
+		[ -f /var/lib/alsa/asound.state ] && rm /var/lib/alsa/asound.state
 	fi
 
 	# Fix env.txt
@@ -227,14 +229,6 @@ build_board_deb() {
 
 	# Fixup rc.local permission
 	chmod 755 $pkgdir/etc/rc.local
-
-#	# Copy extlinux configuration file
-#	if [ "$VENDOR" != "Rockchip" ]; then
-#		if [ -f $BOOT_SCRIPTS/extlinux/${KHADAS_BOARD}-${LINUX}.conf ]; then
-#			mkdir -p $pkgdir/boot/extlinux
-#			cp $BOOT_SCRIPTS/extlinux/${KHADAS_BOARD}-${LINUX}.conf $pkgdir/boot/extlinux/extlinux.conf
-#		fi
-#	fi
 
 	# Copy boot scripts
 	mkdir -p $pkgdir/boot
@@ -336,11 +330,9 @@ build_board_deb() {
 	fi
 
 	# Install asound.state for mainline kernel
-	if [ "$LINUX" == "mainline" ]; then
-		if [ -f $ROOT/archives/filesystem/blobs/asound.state/$KHADAS_BOARD/asound.state ]; then
-			mkdir -p $pkgdir/var/lib/alsa/
-			cp $ROOT/archives/filesystem/blobs/asound.state/$KHADAS_BOARD/asound.state $pkgdir/var/lib/alsa/
-		fi
+	if [ -f $ROOT/archives/filesystem/blobs/asound.state/$KHADAS_BOARD/asound.state ]; then
+		mkdir -p $pkgdir/var/lib/alsa/
+		cp $ROOT/archives/filesystem/blobs/asound.state/$KHADAS_BOARD/asound.state $pkgdir/var/lib/alsa/
 	fi
 
 	# Trigger uInitrd creation after installation, to apply
