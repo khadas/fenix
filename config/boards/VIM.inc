@@ -184,6 +184,9 @@ pack_image_platform() {
 		ln -fs "$IMAGE_PACKAGE_CONF" package.conf
 		ln -fs "$IMAGE_PLATFORM_CONF" platform.conf
 
+		## Fixup rootfs.img
+		ln -fs ../../images/rootfs.img rootfs.img
+
 		cd -
 
 		$UTILS_DIR/aml_image_v2_packer -r $UPGRADE_DIR/Amlogic/package.conf $UPGRADE_DIR/Amlogic $BUILD_IMAGES/${IMAGE_FILE_NAME}
