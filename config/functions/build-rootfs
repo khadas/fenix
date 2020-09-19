@@ -347,15 +347,14 @@ prepare_partitions()
 			error_msg "User defined image size is too small - $rootfs_image_size <= $rootfs_size" && return -1
 		fi
 	else
-		# Hardcoded overhead +40% and +128MB for ext4 is needed for desktop images,
-		# for CLI it could be lower. Also add extra 128 MiB for the emergency swap
+		# Hardcoded overhead +30% for ext4 is needed for desktop images,
 		# file creation and align the size up to 4MiB
 		if [[ "$DISTRIB_TYPE" != "server" ]] && [[ "$DISTRIB_TYPE" != "minimal" ]]; then
 			# Desktop image size
-			local rootfs_image_size=$(bc -l <<< "scale=0; ((($rootfs_size * 1.4) / 1 + 128) / 4 + 1) * 4")
+			local rootfs_image_size=$(bc -l <<< "scale=0; ((($rootfs_size * 1.3) / 1 + 0) / 4 + 1) * 4")
 		else
 			# Server image size
-			local rootfs_image_size=$(bc -l <<< "scale=0; ((($rootfs_size * 1.2) / 1 + 128) / 4 + 1) * 4")
+			local rootfs_image_size=$(bc -l <<< "scale=0; ((($rootfs_size * 1.2) / 1 + 0) / 4 + 1) * 4")
 		fi
 	fi
 
