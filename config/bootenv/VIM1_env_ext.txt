@@ -1,0 +1,8 @@
+# Device Tree Overlays
+# Device Tree Overlays
+#   uart4           -- Enable UART4 (uart_AO_B, GPIO Header PIN15 & PIN16)
+#   onewire         -- Enable onewire bus (GPIO Header PIN37)
+#   pwm_ao_a        -- Enable PWM_AO_A (GPIO Header PIN35)
+#   pwm_f           -- Enable PWM_F (GPIO Header PIN39)
+#   i2c0            -- Enable I2C0 (GPIO Header PIN22 & PIN23)
+overlays=uart4 pwm_ao_a pwm_f i2c0

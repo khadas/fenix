@@ -21,5 +21,8 @@ dma_size=2M
 # Specify the initial console log level (0~8)
 loglevel=7
 
+# User kernel args
+# Add customer kernel args here
+user_kernel_args=
 
 

@@ -1,0 +1,443 @@
+name: Test Build Debian
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build_vim1_mainline_kernel_images:
+    name: Build VIM1 Mainline Kernel Images
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      # Fetch Dependencies
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y make lsb-release qemu-user-static zip
+
+      # Get current date
+      - name: Get Current Date
+        id: date
+        run: echo "::set-output name=date::$(date +%F | sed 's/-//g')"
+
+      # Build
+      - name: Build Image
+        run: |
+          .github/workflows/build.sh mainline VIM1 Debian
+
+      # Upload Images to GitHub Actions Artifacts
+      - name: 'Upload VIM1 Debian Server Mainline Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM1-Debian-Server-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
+
+      - name: 'Upload VIM1 Debian Desktop Mainline Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM1-Debian-Desktop-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-xfce-*.img.xz
+
+      - name: 'Upload VIM1 Debian Packages for Mainline Kernel'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM1-Debian-Packages-Mainline-Kernel-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/debs/
+
+  build_vim1_legacy_kernel_images:
+    name: Build VIM1 Legacy Kernel Images
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      # Fetch Dependencies
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y make lsb-release qemu-user-static zip
+
+      # Get current date
+      - name: Get Current Date
+        id: date
+        run: echo "::set-output name=date::$(date +%F | sed 's/-//g')"
+
+      # Build
+      - name: Build Image
+        run: |
+          .github/workflows/build.sh legacy VIM1 Debian
+
+      # Upload Images to GitHub Actions Artifacts
+      - name: 'Upload VIM1 Debian Server Legacy Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM1-Debian-Server-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
+
+      - name: 'Upload VIM1 Debian Desktop Legacy Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM1-Debian-Desktop-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-xfce-*.img.xz
+
+      - name: 'Upload VIM1 Debian Packages for Legacy Kernel'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM1-Debian-Packages-Legacy-Kernel-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/debs/
+
+  build_vim2_mainline_kernel_images:
+    name: Build VIM2 Mainline Kernel Images
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      # Fetch Dependencies
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y make lsb-release qemu-user-static zip
+
+      # Get current date
+      - name: Get Current Date
+        id: date
+        run: echo "::set-output name=date::$(date +%F | sed 's/-//g')"
+
+      # Build
+      - name: Build Image
+        run: |
+          .github/workflows/build.sh mainline VIM2 Debian
+
+      # Upload Images to GitHub Actions Artifacts
+      - name: 'Upload VIM2 Debian Server Mainline Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM2-Debian-Server-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
+
+      - name: 'Upload VIM2 Debian Desktop Mainline Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM2-Debian-Desktop-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-xfce-*.img.xz
+
+      - name: 'Upload VIM2 Debian Packages for Mainline Kernel'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM2-Debian-Packages-Mainline-Kernel-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/debs/
+
+  build_vim2_legacy_kernel_images:
+    name: Build VIM2 Legacy Kernel Images
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      # Fetch Dependencies
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y make lsb-release qemu-user-static zip
+
+      # Get current date
+      - name: Get Current Date
+        id: date
+        run: echo "::set-output name=date::$(date +%F | sed 's/-//g')"
+
+      # Build
+      - name: Build Image
+        run: |
+          .github/workflows/build.sh legacy VIM2 Debian
+
+      # Upload Images to GitHub Actions Artifacts
+      - name: 'Upload VIM2 Debian Server Legacy Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM2-Debian-Server-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
+
+      - name: 'Upload VIM2 Debian Desktop Legacy Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM2-Debian-Desktop-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-xfce-*.img.xz
+
+      - name: 'Upload VIM2 Debian Packages for Legacy Kernel'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM2-Debian-Packages-Legacy-Kernel-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/debs/
+
+  build_vim3_mainline_kernel_images:
+    name: Build VIM3 Mainline Kernel Images
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      # Fetch Dependencies
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y make lsb-release qemu-user-static zip
+
+      # Get current date
+      - name: Get Current Date
+        id: date
+        run: echo "::set-output name=date::$(date +%F | sed 's/-//g')"
+
+      # Build
+      - name: Build Image
+        run: |
+          .github/workflows/build.sh mainline VIM3 Debian
+
+      # Upload Images to GitHub Actions Artifacts
+      - name: 'Upload VIM3 Debian Server Mainline Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM3-Debian-Server-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
+
+      - name: 'Upload VIM3 Debian Desktop Mainline Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM3-Debian-Desktop-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-xfce-*.img.xz
+
+      - name: 'Upload VIM3 Debian Packages for Mainline Kernel'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM3-Debian-Packages-Mainline-Kernel-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/debs/
+
+  build_vim3_legacy_kernel_images:
+    name: Build VIM3 Legacy Kernel Images
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      # Fetch Dependencies
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y make lsb-release qemu-user-static zip
+
+      # Get current date
+      - name: Get Current Date
+        id: date
+        run: echo "::set-output name=date::$(date +%F | sed 's/-//g')"
+
+      # Build
+      - name: Build Image
+        run: |
+          .github/workflows/build.sh legacy VIM3 Debian
+
+      # Upload Images to GitHub Actions Artifacts
+      - name: 'Upload VIM3 Debian Server Legacy Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM3-Debian-Server-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
+
+      - name: 'Upload VIM3 Debian Desktop Legacy Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM3-Debian-Desktop-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-xfce-*.img.xz
+
+      - name: 'Upload VIM3 Debian Packages for Legacy Kernel'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM3-Debian-Packages-Legacy-Kernel-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/debs/
+
+  build_vim3l_mainline_kernel_images:
+    name: Build VIM3L Mainline Kernel Images
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      # Fetch Dependencies
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y make lsb-release qemu-user-static zip
+
+      # Get current date
+      - name: Get Current Date
+        id: date
+        run: echo "::set-output name=date::$(date +%F | sed 's/-//g')"
+
+      # Build
+      - name: Build Image
+        run: |
+          .github/workflows/build.sh mainline VIM3L Debian
+
+      # Upload Images to GitHub Actions Artifacts
+      - name: 'Upload VIM3L Debian Server Mainline Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM3L-Debian-Server-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
+
+      - name: 'Upload VIM3L Debian Desktop Mainline Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM3L-Debian-Desktop-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-xfce-*.img.xz
+
+      - name: 'Upload VIM3L Debian Packages for Mainline Kernel'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM3L-Debian-Packages-Mainline-Kernel-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/debs/
+
+  build_vim3l_legacy_kernel_images:
+    name: Build VIM3L Legacy Kernel Images
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      # Fetch Dependencies
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y make lsb-release qemu-user-static zip
+
+      # Get current date
+      - name: Get Current Date
+        id: date
+        run: echo "::set-output name=date::$(date +%F | sed 's/-//g')"
+
+      # Build
+      - name: Build Image
+        run: |
+          .github/workflows/build.sh legacy VIM3L Debian
+
+      # Upload Images to GitHub Actions Artifacts
+      - name: 'Upload VIM3L Debian Server Legacy Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM3L-Debian-Server-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
+
+      - name: 'Upload VIM3L Debian Desktop Legacy Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM3L-Debian-Desktop-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-xfce-*.img.xz
+
+      - name: 'Upload VIM3L Debian Packages for Legacy Kernel'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM3L-Debian-Packages-Legacy-Kernel-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/debs/
+
+  build_edge_mainline_kernel_images:
+    name: Build Edge Mainline Kernel Images
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      # Fetch Dependencies
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y make lsb-release qemu-user-static zip
+      # Get current date
+      - name: Get Current Date
+        id: date
+        run: echo "::set-output name=date::$(date +%F | sed 's/-//g')"
+
+      # Build
+      - name: Build Image
+        run: |
+          .github/workflows/build.sh mainline Edge Debian
+
+      - name: 'Upload Edge Debian Server Mainline Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Edge-Debian-Server-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/Edge*-server-*.img.xz
+
+      - name: 'Upload Edge Debian Desktop Mainline Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Edge-Debian-Desktop-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/Edge*-xfce-*.img.xz
+
+      - name: 'Upload Edge Debian Packages for Mainline Kernel'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Edge-Debian-Packages-Mainline-Kernel-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/debs/
+
+  build_edge_legacy_kernel_images:
+    name: Build Edge Legacy Kernel Images
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      # Fetch Dependencies
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y make lsb-release qemu-user-static zip
+
+      # Get current date
+      - name: Get Current Date
+        id: date
+        run: echo "::set-output name=date::$(date +%F | sed 's/-//g')"
+
+      # Build
+      - name: Build Image
+        run: |
+          .github/workflows/build.sh legacy Edge Debian
+
+      - name: 'Upload Edge Debian Server Legacy Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Edge-Debian-Server-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/Edge*-server-*.img.xz
+
+      - name: 'Upload Edge Debian Desktop Legacy Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Edge-Debian-Desktop-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/Edge*-lxde-*.img.xz
+
+      - name: 'Upload Edge Debian Packages for Legacy Kernel'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Edge-Debian-Packages-Legacy-Kernel-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/debs/

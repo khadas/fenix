@@ -37,7 +37,8 @@ LINUX_SOURCE_URL="https://github.com/khadas/linux"
 UBOOT_SOURCE_URL="https://github.com/khadas/u-boot"
 
 ROOTFSCACHE_VERSION=6
-IMAGE_RELEASE_VERSION="V${VERSION}-$(date +%F | sed 's/-//g')"
+DATE=$(date +%F | sed 's/-//g')
+IMAGE_RELEASE_VERSION="V${VERSION}-${DATE:2}"
 
 NR_JOBS_MAX=20
 NR_CPUS=$(grep -c processor /proc/cpuinfo)
@@ -46,6 +47,12 @@ if [ ${NR_CPUS} -le ${NR_JOBS_MAX} ]; then
 else
 	NR_JOBS=${NR_JOBS_MAX}
 fi
+
+MAKE_PARAMS="BUILD_TYPE NO_CCACHE COMPRESS_IMAGE"
+
+[[ -z $NO_CCACHE ]] && NO_CCACHE=no
+[[ -z $BUILD_TYPE ]] && BUILD_TYPE=develop
+[[ -z $COMPRESS_IMAGE ]] && COMPRESS_IMAGE=no
 
 ## Enable ccache by default
 if [ "$NO_CCACHE" != "yes" ]; then

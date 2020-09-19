@@ -1,10 +1,8 @@
-IMAGES_DIR=images
-
 all:
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/create_image.sh
+	@./scripts/create_image.sh
 endif
 
 define help_message
@@ -12,85 +10,82 @@ define help_message
 	@echo "Run 'source env/setenv.sh' to setup environment."
 endef
 
-release:
-	./scripts/image release
-
 image:
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
 	@echo "This script requires root privileges, trying to use sudo, please enter your passowrd!"
-	sudo -E ./scripts/make_image.sh
+	@sudo -E ./scripts/make_image.sh
 endif
 
 kernel:
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/build.sh linux
+	@./scripts/build.sh linux
 endif
 
 uboot:
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/build.sh u-boot
+	@./scripts/build.sh u-boot
 endif
 
 debs: uboot kernel
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/build.sh debs
+	@./scripts/build.sh debs
 endif
 
 uboot-deb: uboot kernel
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/build.sh uboot-deb
+	@./scripts/build.sh uboot-deb
 endif
 
 kernel-deb: kernel
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/build.sh linux-deb
+	@./scripts/build.sh linux-deb
 endif
 
 board-deb:
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/build.sh board-deb
+	@./scripts/build.sh board-deb
 endif
 
 gpu-deb:
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/build.sh gpu-deb
+	@./scripts/build.sh gpu-deb
 endif
 
 desktop-deb:
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/build.sh desktop-deb
+	@./scripts/build.sh desktop-deb
 endif
 
 common-deb:
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/build.sh common-deb
+	@./scripts/build.sh common-deb
 endif
 
 updater-deb:
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
-	./scripts/build.sh updater-deb
+	@./scripts/build.sh updater-deb
 endif
 
 info:
@@ -130,8 +125,3 @@ help:
 	@echo "  info          - Display current environment."
 clean:
 	./scripts/clean.sh
-
-## Refs
-# Buildroot
-# Android repo
-# LibreELEC

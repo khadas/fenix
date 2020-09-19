@@ -146,7 +146,7 @@ if test -e ${loglevel}; then
 	setenv log "loglevel=${loglevel}"
 fi
 
-setenv bootargs "${bootargs} ${condev} ${log} rw root=${rootdev} rootfstype=ext4 init=/sbin/init rootwait ubootpart=${ubootpartuuid} board_type=${board_type} board_type_name=${board_type_name} khadas_board=${board_type_name} fan=${fan_mode} mac=${eth_mac} androidboot.mac=${eth_mac} ${saveethmac} coherent_pool=${dma_size} imagetype=${imagetype}"
+setenv bootargs "${bootargs} ${condev} ${log} rw root=${rootdev} rootfstype=ext4 init=/sbin/init rootwait ubootpart=${ubootpartuuid} board_type=${board_type} board_type_name=${board_type_name} khadas_board=${board_type_name} fan=${fan_mode} mac=${eth_mac} androidboot.mac=${eth_mac} ${saveethmac} coherent_pool=${dma_size} imagetype=${imagetype} ${user_kernel_args}"
 
 for distro_bootpart in ${devplist}; do
 	echo "Scanning ${devtype} ${devnum}:${distro_bootpart}..."

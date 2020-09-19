@@ -1,6 +1,6 @@
 PKG_NAME="kodi_aml"
-PKG_VERSION="58348bd09f8acd9b9256b824c0fd3e9d4fd56fc8"
-PKG_SHA256="de8c586c87ed453a37ac189ea095ef48ee3086dbfdbffd6e4c85d7c340f29153"
+PKG_VERSION="075477033bc50e5c4666b9561da3f0f81bedb599"
+PKG_SHA256="3a1de224b2a56ffe579faa248b1a09d1938c5a88278a749fdb872bfac03d7c8f"
 PKG_SOURCE_DIR="kodi_aml-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/kodi_aml"
 PKG_URL="https://github.com/numbqq/kodi_aml/archive/$PKG_VERSION.tar.gz"

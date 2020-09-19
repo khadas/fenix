@@ -1,0 +1,522 @@
+#!/bin/sh
+
+## hyphop ##
+
+#= xze - advanced xz + suitable for mt decompression & padding & meta
+
+USAGE() { echo '
+    xze - advanced xz packer (suitable for mt decompression + padding + meta)
+
+USAGE
+
+    xze [ARGS] FILE
+
+    -3 fast compression
+    -9 max slow compression
+
+    -T#thread
+    -B#blocksize in M
+    -f - rewrite output file
+    -c | -C - ready for krescue check
+
+    -MM | --meta         - krescue meta
+    -mn | --mote-remove  - remove meta
+
+    -p           - add padding
+    --help - full help
+
+META USAGE
+
+    ./xze rootfs_stage.sh -M INFO="any strings" var=VAR
+'; [ "$1" ] && echo '# META USAGE EXAMPLE (Krescue images)
+
+    IN=FreeBSD-aarch64-13.0-Khadas-EDGE-V-361468M-20200528.img
+    ./xze "$IN" \
+	--meta \
+	label=FreeBSD \
+	builder=Serega \
+	date="$(TZ= date)" \
+	match=BOARD=Edge \
+	link=http://dev.kubsu.ru/images/ \
+	duration=60 \
+	desc="FreeBSD 13.0 for Khadas EDGE board aarch64...." \
+
+# META minimal 
+
+    ./xze Manjaro-ARM-xfce-vim1-20.08.img.xz -p -MM LABEL=manjaro BOARD=VIM1
+
+# CHECK META
+
+    ./xze *.xz
+
+# UPDATE/REPLACE META
+
+all prev meta will be replaced by new values
+
+    ./xze *.xz -M newvar=NEWVALUE
+
+# READ META alternative ways
+
+    tail -c4096 FILE.xz | xz -dc
+    # or 
+    curl -s -jkLf -r-4096 https://dl.khadas.com/Firmware/Krescue/images/Edge-FreeBSD-aarch64-13.0-CURRENT-20200620.img.xz | xz -dc
+
+# WHY NOT xz -l
+
+not work in this case xz need full file
+
+    cat *.img.xz | xz -l
+    xz: --list does not support reading from standard input
+'
+
+exit
+}
+
+CLEAN(){
+#   echo "[i] clean $meta*">&2
+    [ -e "$meta" ] && rm $meta*
+}
+
+FAIL(){
+    echo "[e] $@">&2
+    CLEAN
+    exit 1
+}
+
+[ "$xz" ] || xz=$(which xz 2>/dev/null)
+[ $? = 0 ] || {
+    echo "[e] plz install xz">&2
+    echo " sudo apt-get install xz-utils">&2
+    exit 1
+}
+
+#echo "[i] $xz">&2
+
+$xz --help | grep -q threads= || {
+    echo "[i] plz install last xz with MT support">&2
+    exit 1
+}
+
+
+IN=
+#OPTS="-F xz --arm --lzma2"
+OPTS="-F xz -9e"
+OPTS="-F xz --verbose"
+
+BS=4096 # block size
+
+[ $# = 0 ] && USAGE
+
+T=4        # threads
+#T=0       # threads
+T=$(nproc)
+
+
+#T=8      # threads
+B=90     # in MEGS
+
+META=
+FORCE=
+KRESCUE_CHK_END=
+KRESCUE_CHK_MT=
+SHOW_PROGRESS=1
+
+
+
+for a in $@; do
+#    echo "++ $a"
+    shift
+    case $a in
+	-m)
+	META=1
+	break
+	;;
+	-M)
+	META=2
+	break
+	;;
+	-MM|--meta)
+	META=2
+	META_LOW_CASE=1
+	META_PRE="##KRESCUE_META## type:xz "
+	META_POST="##KRESCUE-META## ##KRESCUE##END"
+	break
+	;;
+	-mn|--remove-meta)
+	META_REMOVE=1
+	;;
+	-p)
+	ADD_PAD=1
+	;;
+	-c)
+	KRESCUE_CHK_END=1
+	;;
+	-C)
+	KRESCUE_CHK_END=1
+	KRESCUE_CHK_MT=1
+	;;
+	-f)
+	FORCE=1
+	OPTS="$OPTS $a"
+	continue
+	;;
+	-T*)
+	T=${a#-T}
+	continue
+	;;
+	-B*)
+	B=${a#-B}
+	continue
+	;;
+	-h|--help)
+	USAGE FULL
+	;;
+	*.xz)
+	[ -f "$a" ] || FAIL not found "$a"
+	CIN="$a"
+	continue
+	;;
+	*)
+	[ -f "$a" ] && {
+	    [ "$IN" ] || IN="$a"
+	    continue
+	}
+	OPTS="$OPTS $a"
+	;;
+    esac
+done
+
+
+[ "$T" = 0 ] && T=$(nproc)
+[ "$T" = "" ] && T=4
+[ "$T" -gt 7 ] && T=8	# 8 cores can get too much memory
+
+meta="/tmp/xze.meta.$$"
+
+case $(uname -o) in
+    *BSD*)
+fsize(){
+for s_ in $(stat -L -f "%z" "$1");do
+    break
+done
+echo $s_
+}
+    ;;
+    ## linux gnu
+    *)
+fsize(){
+for s_ in $(stat -L -c%s "$1");do
+    break
+done
+echo $s_
+#echo "fsize $1 = $s_">&2
+}
+    ;;
+
+esac
+
+
+PAD(){
+S=$(fsize "$1")
+S2=$((S/BS*BS))
+[ $S2 = $S ] && {
+    return
+}
+[ $S2 -lt $S ] && S2=$((S2+BS))
+SD=$((S2-S))
+[ "$2" ] && \
+printf %${SD}s "$2" >> "$1"
+[ "$2" ] || \
+dd if=/dev/zero bs=$SD count=1 2>/dev/null >> "$1"
+
+SC=$(fsize "$1")
+
+echo "[i] padded to $S2 from $S + $SD">&2
+
+[ "$SC" = "$S2" ] || FAIL jopa
+
+#echo $S2
+}
+
+REQ_label=
+REQ_match=
+
+ADD_image=
+ADD_builder=
+ADD_date=
+ADD_duration=
+ADD_desc=
+
+REQ="
+    label
+    image
+    builder
+    date
+    duration
+    desc
+"
+
+#    date="$(TZ= date)" \
+#    match=BOARD=Edge \
+#    link=http://dev.kubsu.ru/images/ \
+#    duration=60 \
+#    desc="FreeBSD 13.0 for Khadas EDGE board aarch64...." \
+
+
+META(){
+    echo "
+[i] add meta block
+">&2
+
+    touch $meta
+
+    [ -s $meta ] || {
+    (
+    [ "$S1" ] || {
+	pixz=$(which pixz || which xz)
+	echo "[i] calculating uncompressed size ...">&2
+	S1=$($pixz -dc < "$OUT" | wc --bytes)
+    }
+    echo "##META_FILE##"
+    echo "FILE: $(basename "$OUT")"
+    echo "UNPACKED_SIZE: $S1"
+    echo "PACKED_SIZE: $S2"
+    echo "FILE_SIZE: $((S2+BS))"
+    echo "##META-FILE##"
+    ) >> $meta
+    }
+    echo "$M" >> $meta
+
+    for m in $META_PRE  ; do
+	echo "$m" >> $meta
+    done
+
+    for m in "$@"  ; do
+    M="$m"
+    [ "$META" = "2" ] && {
+#	echo "$m" | grep -q ^\# || {
+	M=$(echo "$m" | sed s/=/:\ /)
+	m1=$(echo "${M%%:*}" | tr '[:upper:]' '[:lower:]' )
+	m2=$(echo ${M#*:})
+#	echo "[=] '$m1' : '$m2'">&2
+	case $m1 in
+	    label)
+	    REQ_label="$m2"
+	    ;;
+	    date)
+	    ADD_date="$m2"
+	    ;;
+	    image)
+	    ADD_image="$m2"
+	    ;;
+	    builder)
+	    ADD_builder="$m2"
+	    ;;
+	    desc)
+	    ADD_desc="$m2"
+	    ;;
+	    duration)
+	    ADD_duration="$m2"
+	    ;;
+	    match)
+	    REQ_match="$m2"
+	    META_POST="asd=asd $META_POST"
+	    ;;
+	    board)
+	    m1=match
+	    m2="BOARD=$m2"
+	    REQ_match="$m2"
+	esac
+
+	M="$m1: $m2"
+	echo "$M" >> $meta
+#	}
+    }
+    
+#   echo "[i] add meta $M">&2
+    done
+
+    [ "$REQ_label" ] || FAIL meta label not defined
+    [ "$REQ_match" ] || FAIL meta match not defined
+
+    [ "$ADD_desc" ] || echo "desc: undescripted image" >> $meta
+    [ "$ADD_duration" ] || echo "duration: 60" >> $meta
+    [ "$ADD_builder" ] || echo "builder: $(uname -n)" >> $meta
+    [ "$ADD_date" ] || echo "date: $(TZ= date)" >> $meta
+    [ "$ADD_image" ] || echo "image: $(basename ${OUT%.*})" >> $meta
+
+    for m in $META_POST  ; do
+	echo "$m" >> $meta
+    done
+
+    [ -s $meta ] && {
+    cat $meta >&2
+#    PAD $meta " "
+    }
+
+    $xz $meta || exit 1
+    PAD $meta.xz || exit 2
+    cat $meta.xz >> "$OUT" || exit 3
+    rm $meta.xz
+
+    CLEAN
+#   echo "[i] DONE">&2
+    exit 0
+}
+
+
+[ "$CIN" ] && {
+
+    # check just header
+    HEADER=$(head -c5 "$CIN" | tail -c4)
+    [ "$HEADER" = "7zXZ" ] || FAIL broken or not xz input file
+
+    # fast scan
+    XZS=$($xz -l "$CIN" 2>/dev/null) || FAIL broken xz
+    echo "$XZS"
+
+    streams=
+    blocks=
+    compressed=
+    uncompressed=
+    cmp1=
+    cmp2=
+    unc1=
+    unc2=
+    i=0
+
+    for v in ${XZS#*Filename}; do
+	case $i in
+	    0) streams=$v;;
+	    1) blocks=$v;;
+	    2) cmp1=$v;;
+	    3) cmp2=$v;;
+	    4) unc1=$v;;
+	    5) unc2=$v;;
+	esac
+	i=$((i+1))
+    done
+
+    echo "[i] blocks: $blocks // $cmp1*$cmp2 // $unc1*$unc2">&2
+
+    [ "$blocks" -lt 2 ] && {
+	echo "[w] its not mt xz">&2
+	#[ "$KRESCUE_CHK_END" ] || FAIL not ready for krescue mt usage
+    }
+
+    CS=$(fsize "$CIN")
+    CSCHK=$((CS/BS*BS))
+
+    [ "$ADD_PADD" ] && 
+    [ "$CSCHK" = "$CS" ] || {
+	PAD "$CIN"
+	CS=$(fsize "$CIN")
+	CSCHK=$((CS/BS*BS))
+    }
+    [ "$CSCHK" = "$CS" ] || FAIL xz size $CS not padded by $BS
+    tail -c4096 "$CIN" | $xz -dc 2>/dev/null | grep -A99 "^##META" | tee $meta
+
+
+    [ -s "$meta" ] || {
+	[ "$META" ] && {
+	OUT="$CIN"
+	#echo "[w] empty meta">&2
+	META "$@"
+	#CLEAN
+	exit
+	}
+	FAIL empty meta
+    }
+
+    [ "$META_REMOVE" ] && {
+	echo "[i] remove meta">&2
+	truncate -s-4096 "$CIN"
+	exit
+    }
+    grep -A99 "##META_FILE" $meta \
+    | grep -B99 "##META-FILE" > $meta.2 || FAIL xz meta broken
+
+    [ "$KRESCUE_CHK_END" ] && {
+    tail -c15 $meta | grep -q "##KRESCUE##END" || FAIL xz meta not finished
+    }
+
+    [ "$META" ] && {
+    OUT="$CIN"
+    mv $meta.2 $meta
+    [ "$S1" ] || {
+#    echo "[i] get size"
+    for S1 in $(grep UNPACKED_SIZE $meta) ; do
+	echo $S1 >/dev/null
+    done
+    }
+    truncate -s-$BS "$OUT"
+    META "$@"
+    }
+    CLEAN
+    exit
+}
+
+[ "$IN" ] || FAIL input file not exist/defined
+
+[ "$OUT" ] || {
+    OUT2="$(readlink /proc/$$/fd/1)"
+
+case $OUT2 in
+    "")
+    OUT="$IN.xz"
+    ;;
+    /dev/pts*)
+    OUT="$IN.xz"
+    ;;
+    /dev/tty*)
+    OUT="$IN.xz"
+    ;;
+    *)
+#    *pipe:*)
+#    OUT=/dev/stdout
+    OUT="$OUT2"
+    ;;
+esac
+
+}
+
+[ -s "$OUT" ] && {
+    echo "[w] $OUT exist already">&2
+    [ "$FORCE" ] || FAIL plz use -f for rewrite it
+}
+
+S1=$(fsize "$IN")
+
+
+S14=$((S1/8))
+
+[ "$T" -gt 0 ] && \
+S14=$((S1/T))
+
+[ $S14 -lt $B ] && B=$S14
+
+B="${B}M"
+
+ARGS="$xz -T$T --block-size $B -k -c $OPTS"
+
+echo "[i] xze compress $IN ($S1 bytes) > $OUT">&2
+echo "# $ARGS ">&2
+
+$ARGS "$IN" > "$OUT" || FAIL xz failed
+
+
+S=
+S2=
+
+PAD "$OUT"
+
+XZS=$($xz -l "$OUT")
+echo "[i] XZ info
+$XZS">&2
+
+[ "$META" ] && {
+META "$@"
+exit 
+}
+
+exit 0

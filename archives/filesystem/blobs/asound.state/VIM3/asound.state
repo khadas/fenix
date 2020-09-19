@@ -1,7 +1,7 @@
-state.G12HDMI {
+state.G12BKHADASVIM3 {
 	control.1 {
 		iface MIXER
-		name 'TDMOUT_B Lane 0 Volume'
+		name 'TDMOUT_A Lane 0 Volume'
 		value.0 0
 		value.1 0
 		comment {
@@ -13,7 +13,7 @@ state.G12HDMI {
 	}
 	control.2 {
 		iface MIXER
-		name 'TDMOUT_B Lane 1 Volume'
+		name 'TDMOUT_A Lane 1 Volume'
 		value.0 0
 		value.1 0
 		comment {
@@ -25,7 +25,7 @@ state.G12HDMI {
 	}
 	control.3 {
 		iface MIXER
-		name 'TDMOUT_B Lane 2 Volume'
+		name 'TDMOUT_A Lane 2 Volume'
 		value.0 0
 		value.1 0
 		comment {
@@ -37,7 +37,7 @@ state.G12HDMI {
 	}
 	control.4 {
 		iface MIXER
-		name 'TDMOUT_B Lane 3 Volume'
+		name 'TDMOUT_A Lane 3 Volume'
 		value.0 0
 		value.1 0
 		comment {
@@ -49,7 +49,7 @@ state.G12HDMI {
 	}
 	control.5 {
 		iface MIXER
-		name 'TDMOUT_B Gain Enable Switch'
+		name 'TDMOUT_A Gain Enable Switch'
 		value false
 		comment {
 			access 'read write'
@@ -80,7 +80,7 @@ state.G12HDMI {
 		iface PCM
 		device 5
 		name ELD
-		value '1000070066200001000000000000000005e30000414f43205456090707150750000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+		value '100008006a10000100000000000000004cf45601416f58696e5975616e200907070000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
 		comment {
 			access 'read volatile'
 			type BYTES
@@ -120,7 +120,7 @@ state.G12HDMI {
 	control.11 {
 		iface MIXER
 		name 'FRDDR_A SINK 1 SEL'
-		value 'OUT 1'
+		value 'OUT 0'
 		comment {
 			access 'read write'
 			type ENUMERATED
@@ -204,7 +204,7 @@ state.G12HDMI {
 	control.17 {
 		iface MIXER
 		name 'FRDDR_B SINK 1 SEL'
-		value 'OUT 1'
+		value 'OUT 0'
 		comment {
 			access 'read write'
 			type ENUMERATED
@@ -288,7 +288,7 @@ state.G12HDMI {
 	control.23 {
 		iface MIXER
 		name 'FRDDR_C SINK 1 SEL'
-		value 'OUT 1'
+		value 'OUT 0'
 		comment {
 			access 'read write'
 			type ENUMERATED
@@ -342,7 +342,7 @@ state.G12HDMI {
 	control.26 {
 		iface MIXER
 		name 'TOHDMITX I2S SRC'
-		value 'I2S B'
+		value 'I2S A'
 		comment {
 			access 'read write'
 			type ENUMERATED
@@ -376,7 +376,7 @@ state.G12HDMI {
 	}
 	control.29 {
 		iface MIXER
-		name 'TDMOUT_B SRC SEL'
+		name 'TDMOUT_A SRC SEL'
 		value 'IN 0'
 		comment {
 			access 'read write'

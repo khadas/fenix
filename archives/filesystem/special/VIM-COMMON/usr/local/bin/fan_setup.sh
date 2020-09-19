@@ -83,6 +83,17 @@ fi
 
 password=$(zenity --password --title 'Password')
 
+if [ $? -ne 0 ]; then
+	exit
+fi
+
+if [ -z $password ]; then
+	zenity --warning --height=100 --width=200 \
+			--text="Password is empty!\nNothing saved!\n\nExit."
+
+	exit
+fi
+
 sudo -k
 if sudo -lS &> /dev/null << EOF
 $password

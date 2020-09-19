@@ -14,7 +14,8 @@
 # prepare_packages
 # get_package_list_hash
 # create_sources_list
-
+# compress_image
+# check_make_params
 
 ## Print error message
 ## $1 - message
@@ -87,7 +88,7 @@ prepare_host() {
 		info_msg "Running in container: $(systemd-detect-virt)"
 		# disable apt-cacher unless NO_APT_CACHER=no is not specified explicitly
 		if [[ $NO_APT_CACHER != no ]]; then
-			info_msg "apt-cacher is disabled in containers, set NO_APT_CACHER=no to override"
+			info_msg "apt-cacher is disabled in containers."
 			NO_APT_CACHER=yes
 		fi
 		CONTAINER_COMPAT="yes"
@@ -99,6 +100,10 @@ prepare_host() {
 				info_msg "Copying preinstalled toolchains ..."
 				mkdir -p ~/fenix/downloads
 				cp -r ~/toolchains/* downloads/
+			fi
+			# Walkaround for ccache permissions
+			if [ "$(stat -c '%U %G' ~/.ccache/)" != "khadas khadas" ]; then
+				sudo chown khadas:khadas -R ~/.ccache/
 			fi
 		fi
 	fi
@@ -284,14 +289,15 @@ check_loop_device()
 ## Prepare toolhains
 prepare_toolchains() {
 
-    build_package "gcc-linaro-aarch64-linux-gnu:host"
-    build_package "gcc-linaro-aarch64-none-elf:host"
-    build_package "gcc-linaro-arm-none-eabi:host"
-    if [ "$UBOOT" == "mainline" ]; then
-        build_package "gcc-linaro-aarch64-elf:host"
-    fi
+	build_package "gcc-linaro-aarch64-linux-gnu:host"
+	build_package "gcc-linaro-aarch64-none-elf:host"
+	build_package "gcc-linaro-arm-none-eabi:host"
+	if [ "$UBOOT" == "mainline" ]; then
+		build_package "gcc-linaro-aarch64-elf:host"
+		build_package "gcc-arm-aarch64-none-linux-gnu:host"
+	fi
 
-    return 0
+	return 0
 }
 
 ## Prepare packages
@@ -354,4 +360,42 @@ create_sources_list()
 	EOF
 	;;
 	esac
+}
+
+## compress_image
+compress_image()
+{
+	[[ $COMPRESS_IMAGE != yes ]] && exit
+
+	echo ""
+	info_msg "Compressing image '$BUILD_IMAGES/$IMAGE_FILE_NAME' to '$BUILD_IMAGES/${IMAGE_FILE_NAME}.xz' ..."
+
+	rm -rf $BUILD_IMAGES/${IMAGE_FILE_NAME}.xz
+
+	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
+		"$ROOT"/scripts/xze "$BUILD_IMAGES/$IMAGE_FILE_NAME" \
+		    --meta \
+		    LABEL="$DISTRIBUTION" \
+		    BOARD="$KHADAS_BOARD" \
+		    BUILDER="fenix" \
+		    LINK="https://dl.khadas.com/Firmware/" \
+		    DESC="$DISTRIBUTION $VERSION $DISTRIB_TYPE $DISTRIB_RELEASE - fenix generated images https://github.com/khadas/fenix" \
+		    > "$BUILD_IMAGES/$IMAGE_FILE_NAME.xz"
+	else
+		"$ROOT"/scripts/xze "$BUILD_IMAGES/$IMAGE_FILE_NAME" > "$BUILD_IMAGES/$IMAGE_FILE_NAME.xz"
+	fi
+
+	echo ""
+	info_msg "COMPRESSED_IMAGE: ${GREEN} $BUILD_IMAGES/$IMAGE_FILE_NAME.xz ${ENDCOLOR} is ready!"
+}
+
+## check_make_params
+check_make_params()
+{
+	echo ""
+	for param in $MAKE_PARAMS
+	do
+		printf "${BOLDCYAN}%s:${ENDCOLOR}\t${BOLDGREEN}%s${ENDCOLOR}\n" $param ${!param}
+	done
+	echo ""
 }

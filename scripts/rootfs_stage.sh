@@ -22,3 +22,4 @@ fi
 prepare_rootfs
 build_rootfs
 pack_image_platform
+compress_image

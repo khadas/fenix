@@ -1,0 +1,13 @@
+# Maximum CPU Frequency of VIM3L Core A55
+# 100/250/500/667/1000/1200/1404/1500/1608/1704/1800/1908(default)/2016/2100/2208
+max_freq_a55=1908
+
+# Device Tree Overlays
+#   uart3           -- Enable UART3 (uart_C, GPIO Header PIN15 & PIN16)
+#   pwm_f           -- Enable PWM_F (GPIO Header PIN35)
+#   i2c3            -- Enable i2c3 (GPIO Header PIN22 & PIN23)
+#   spi1            -- Enable SPI1 (GPIO Header PIN15 & PIN16 & PIN35 & PIN37), pwm_f need to be removed
+#   onewire         -- Enable onewire bus (GPIO Header PIN15)
+#   disable-ts050   -- Disable TS050 LCD
+#   m2x-eth         -- Enable M2X 100M ethernet. Note: 1G ethernet will be disabled.
+overlays=uart3 pwm_f i2c3

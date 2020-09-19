@@ -1,12 +1,13 @@
-[![Build Status](https://travis-ci.org/khadas/fenix.svg?branch=master)](https://travis-ci.org/khadas/fenix)
+[![Release Build](https://github.com/khadas/fenix/workflows/Release%20Build/badge.svg?branch=master)](https://github.com/khadas/fenix/actions?query=workflow%3A%22Release+Build%22)
+[![Test Build Ubuntu](https://github.com/khadas/fenix/workflows/Test%20Build%20Ubuntu/badge.svg?branch=master)](https://github.com/khadas/fenix/actions?query=workflow%3A%22Test+Build+Ubuntu%22)
+[![Test Build Debian](https://github.com/khadas/fenix/workflows/Test%20Build%20Debian/badge.svg?branch=master)](https://github.com/khadas/fenix/actions?query=workflow%3A%22Test+Build+Debian%22)
 
 # Fenix script set to build Ubuntu/Debian images
 
 [![Documentation](https://img.shields.io/badge/Documentation-Reference-blue.svg)](https://docs.khadas.com/vim1/FenixScript.html)
 [![Licence](https://img.shields.io/badge/Licence-GPL--2.0-brightgreen.svg)](https://github.com/khadas/fenix/blob/master/LICENSE)
-[![Version](https://img.shields.io/badge/Version-v0.9.2-blue.svg)](https://github.com/khadas/fenix/tree/v0.9.2)
+[![Version](https://img.shields.io/badge/Version-v0.9.4-blue.svg)](https://github.com/khadas/fenix/tree/v0.9.4)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/khadas/fenix/pulls)
-[![Debs Download](https://img.shields.io/badge/Weekly%20Build%20Debs-download-blue.svg)](https://github.com/khadas/fenix-debs)
 
 Supported build host:
 
