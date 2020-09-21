@@ -365,7 +365,7 @@ create_sources_list()
 ## compress_image
 compress_image()
 {
-	[[ $COMPRESS_IMAGE != yes ]] && exit
+	[[ $COMPRESS_IMAGE != yes ]] && return
 
 	echo ""
 	info_msg "Compressing image '$BUILD_IMAGES/$IMAGE_FILE_NAME' to '$BUILD_IMAGES/${IMAGE_FILE_NAME}.xz' ..."
@@ -373,13 +373,20 @@ compress_image()
 	rm -rf $BUILD_IMAGES/${IMAGE_FILE_NAME}.xz
 
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
+		if [ "$1" == "uboot-image" ]; then
+			label="Uboot"
+			desc="Uboot $VERSION minimal - fenix generated images https://github.com/khadas/fenix"
+		else
+			label="$DISTRIBUTION"
+			desc="$DISTRIBUTION $VERSION $DISTRIB_TYPE $DISTRIB_RELEASE - fenix generated images https://github.com/khadas/fenix"
+		fi
 		"$ROOT"/scripts/xze "$BUILD_IMAGES/$IMAGE_FILE_NAME" \
 		    --meta \
-		    LABEL="$DISTRIBUTION" \
+		    LABEL="$label" \
 		    BOARD="$KHADAS_BOARD" \
 		    BUILDER="fenix" \
 		    LINK="https://dl.khadas.com/Firmware/" \
-		    DESC="$DISTRIBUTION $VERSION $DISTRIB_TYPE $DISTRIB_RELEASE - fenix generated images https://github.com/khadas/fenix" \
+		    DESC="$desc" \
 		    > "$BUILD_IMAGES/$IMAGE_FILE_NAME.xz"
 	else
 		"$ROOT"/scripts/xze "$BUILD_IMAGES/$IMAGE_FILE_NAME" > "$BUILD_IMAGES/$IMAGE_FILE_NAME.xz"
