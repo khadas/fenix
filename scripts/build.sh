@@ -30,7 +30,7 @@ case "$TARGET" in
 		build_uboot_deb
 		;;
 	uboot-image)
-		build_uboot_image
+		pack_image_platform "uboot-image"
 		;;
 	linux-deb)
 		build_linux_debs
