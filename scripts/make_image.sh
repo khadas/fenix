@@ -12,7 +12,6 @@ source ${BOARD_CONFIG}/${KHADAS_BOARD}.conf
 source config/functions/functions
 
 ######################################################################################
-check_make_params
 prepare_host
 pack_image_platform
 compress_image

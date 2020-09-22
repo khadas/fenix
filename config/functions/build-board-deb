@@ -193,6 +193,8 @@ build_board_deb() {
 			sed -i 's/iv009_isp_sensor//g' /etc/modules
 			sed -i 's/iv009_isp//g' /etc/modules
 		fi
+		# Remove unused files for legacy kernel
+		[ -f /var/lib/alsa/asound.state ] && rm /var/lib/alsa/asound.state
 	fi
 
 	# Fix env.txt
@@ -227,14 +229,6 @@ build_board_deb() {
 
 	# Fixup rc.local permission
 	chmod 755 $pkgdir/etc/rc.local
-
-#	# Copy extlinux configuration file
-#	if [ "$VENDOR" != "Rockchip" ]; then
-#		if [ -f $BOOT_SCRIPTS/extlinux/${KHADAS_BOARD}-${LINUX}.conf ]; then
-#			mkdir -p $pkgdir/boot/extlinux
-#			cp $BOOT_SCRIPTS/extlinux/${KHADAS_BOARD}-${LINUX}.conf $pkgdir/boot/extlinux/extlinux.conf
-#		fi
-#	fi
 
 	# Copy boot scripts
 	mkdir -p $pkgdir/boot
@@ -291,6 +285,7 @@ build_board_deb() {
 			## Wi-Fi firmware
 			mv $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag_apsta_ap6398s.bin $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag_apsta.bin
 			mv $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag_ap6398s.bin $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag.bin
+			mv $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag_p2p_ap6398s.bin $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag_p2p.bin
 			mv $pkgdir/lib/firmware/brcm/nvram_ap6398s.txt $pkgdir/lib/firmware/brcm/nvram_ap6359sa.txt
 
 			mv $pkgdir/lib/firmware/brcm/brcmfmac4359-sdio_ap6398s.bin $pkgdir/lib/firmware/brcm/brcmfmac4359-sdio.bin
@@ -335,11 +330,9 @@ build_board_deb() {
 	fi
 
 	# Install asound.state for mainline kernel
-	if [ "$LINUX" == "mainline" ]; then
-		if [ -f $ROOT/archives/filesystem/blobs/asound.state/$KHADAS_BOARD/asound.state ]; then
-			mkdir -p $pkgdir/var/lib/alsa/
-			cp $ROOT/archives/filesystem/blobs/asound.state/$KHADAS_BOARD/asound.state $pkgdir/var/lib/alsa/
-		fi
+	if [ -f $ROOT/archives/filesystem/blobs/asound.state/$KHADAS_BOARD/asound.state ]; then
+		mkdir -p $pkgdir/var/lib/alsa/
+		cp $ROOT/archives/filesystem/blobs/asound.state/$KHADAS_BOARD/asound.state $pkgdir/var/lib/alsa/
 	fi
 
 	# Trigger uInitrd creation after installation, to apply
@@ -363,10 +356,16 @@ build_board_deb() {
 	BOARD=$KHADAS_BOARD
 	VENDOR=$VENDOR
 	VERSION=$VERSION
+	TYPE=$DISTRIB_TYPE
 	ARCH=$DISTRIB_ARCH
 	INITRD_ARCH=arm64
 	INSTALL_TYPE=$INSTALL_TYPE
 	IMAGE_RELEASE_VERSION=$IMAGE_RELEASE_VERSION
+	################ GIT VERSION ################
+	UBOOT_GIT_VERSION=`git -C $ROOT/u-boot describe --abbrev=7 --dirty --always --tags 2> /dev/null`
+	LINUX_GIT_VERSION=`git -C $ROOT/linux describe --abbrev=7 --dirty --always --tags 2> /dev/null`
+	FENIX_GIT_VERSION=`git -C $ROOT describe --abbrev=7 --dirty --always --tags 2> /dev/null`
+	#############################################
 	EOF
 
 	case $DISTRIB_RELEASE in

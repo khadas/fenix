@@ -14,7 +14,6 @@ source config/functions/functions
 ######################################################################################
 TARGET="$1"
 
-check_make_params
 prepare_host
 prepare_toolchains
 prepare_packages
@@ -28,6 +27,10 @@ case "$TARGET" in
 		;;
 	uboot-deb)
 		build_uboot_deb
+		;;
+	uboot-image)
+		pack_image_platform "uboot-image"
+		compress_image "uboot-image"
 		;;
 	linux-deb)
 		build_linux_debs

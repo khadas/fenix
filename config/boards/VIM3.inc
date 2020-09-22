@@ -48,6 +48,12 @@ tweaks_platform() {
 
 ## Build deb packages for platform
 build_deb_packages_platform() {
+
+	if [ "$DISTRIB_TYPE" == "minimal" ]; then
+		warning_msg "Ignore build platform packages for minimal image."
+		return 0
+	fi
+
 	if [ "$LINUX" == "4.9" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
 
 		info_msg "Building Kodi packages..."
@@ -114,6 +120,12 @@ build_deb_packages_platform() {
 
 ## Install deb packages for platform
 install_deb_packages_platform() {
+
+	if [ "$DISTRIB_TYPE" == "minimal" ]; then
+		warning_msg "Ignore install platform packages for minimal image."
+		return 0
+	fi
+
 	if [ "$LINUX" == "4.9" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
 
 		cd $ROOT

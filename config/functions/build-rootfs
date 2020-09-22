@@ -60,7 +60,7 @@ install_common()
 		fi
 	fi
 
-	if [ "$DISTRIB_TYPE" != "server" ]; then
+	if [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_TYPE" != "minimal" ]; then
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/${FENIX_DESKTOP_DEB}_${VERSION}_all.deb
 		desktop_postinstall
 	fi
@@ -78,8 +78,10 @@ install_common()
 	# Install board deb in chroot
 	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/${LINUX_BOARD_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
 
-	# Install updater deb in chroot
-	install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/${FENIX_UPDATER_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
+	if [ "$DISTRIB_TYPE" != "minimal" ]; then
+		# Install updater deb in chroot
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/${FENIX_UPDATER_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
+	fi
 
 	# Tweaks for platform
 	if [[ $(type -t tweaks_platform) == function ]]; then
@@ -92,7 +94,7 @@ install_common()
 	# Disable repeated messages due to xconsole not being installed.
 	[[ -f $ROOTFS_TEMP/etc/rsyslog.d/50-default.conf ]] && sed '/daemon\.\*\;mail.*/,/xconsole/ s/.*/#&/' -i $ROOTFS_TEMP/etc/rsyslog.d/50-default.conf
 	# Disable deprecated parameter
-	sed '/.*$KLogPermitNonKernelFacility.*/,// s/.*/#&/' -i $ROOTFS_TEMP/etc/rsyslog.conf
+	[ -f $ROOTFS_TEMP/etc/rsyslog.conf ] && sed '/.*$KLogPermitNonKernelFacility.*/,// s/.*/#&/' -i $ROOTFS_TEMP/etc/rsyslog.conf
 
 	# Premit root login via SSH for the first boot
 	sed -i 's/#\?PermitRootLogin .*/PermitRootLogin yes/' $ROOTFS_TEMP/etc/ssh/sshd_config
@@ -159,10 +161,12 @@ install_distribution_specific()
 		EOF
 		chmod 755 $ROOTFS_TEMP/etc/rc.local
 
-		# disable watchdog
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable watchdog.service"'
-		# Disable Lirc service
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable lircd.socket lircd.service lircd-setup.service lircd-uinput.service lircmd.service irexec.service"'
+		if [ "$DISTRIB_TYPE" != "minimal" ]; then
+			# disable watchdog
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable watchdog.service"'
+			# Disable Lirc service
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable lircd.socket lircd.service lircd-setup.service lircd-uinput.service lircmd.service irexec.service"'
+		fi
 		;;
 	bionic|focal)
 		# remove doubled uname from motd
@@ -177,11 +181,13 @@ install_distribution_specific()
 		EOF
 		# DNS fix
 		sed -i "s/#DNS=.*/DNS=$NAMESERVER/g" $ROOTFS_TEMP/etc/systemd/resolved.conf
-		# disable watchdog
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable watchdog.service"'
 		chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload mask ondemand.service"
-		# Disable Lirc service
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable lircd.socket lircd.service lircd-setup.service lircd-uinput.service lircmd.service irexec.service"'
+		if [ "$DISTRIB_TYPE" != "minimal" ]; then
+			# disable watchdog
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable watchdog.service"'
+			# Disable Lirc service
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable lircd.socket lircd.service lircd-setup.service lircd-uinput.service lircmd.service irexec.service"'
+		fi
 		# Journal service adjustements
 		sed -i "s/#Storage=.*/Storage=volatile/g" $ROOTFS_TEMP/etc/systemd/journald.conf
 		sed -i "s/#Compress=.*/Compress=yes/g" $ROOTFS_TEMP/etc/systemd/journald.conf
@@ -214,9 +220,8 @@ create_rootfs_cache()
 		fi
 
 		info_msg "Installing base system - Stage 1/2"
-		eval 'debootstrap --include=${DEBOOTSTRAP_LIST} ${PACKAGE_LIST_EXCLUDE:+ --exclude=${PACKAGE_LIST_EXCLUDE// /,}} \
+		eval 'debootstrap --variant=minbase --include=${DEBOOTSTRAP_LIST// /,} ${PACKAGE_LIST_EXCLUDE:+ --exclude=${PACKAGE_LIST_EXCLUDE// /,}} \
 			--arch=$DISTRIB_ARCH --components=${DEBOOTSTRAP_COMPONENTS} --foreign $DISTRIB_RELEASE $ROOTFS_TEMP/ $apt_mirror'
-
 
 		[[ ${PIPESTATUS[0]} -ne 0 || ! -f $ROOTFS_TEMP/debootstrap/debootstrap ]] && error_msg "Debootstrap base system first stage failed" && return -1
 
@@ -342,15 +347,14 @@ prepare_partitions()
 			error_msg "User defined image size is too small - $rootfs_image_size <= $rootfs_size" && return -1
 		fi
 	else
-		# Hardcoded overhead +40% and +128MB for ext4 is needed for desktop images,
-		# for CLI it could be lower. Also add extra 128 MiB for the emergency swap
+		# Hardcoded overhead +30% for ext4 is needed for desktop images,
 		# file creation and align the size up to 4MiB
-		if [[ $DISTRIB_TRPE != server ]]; then
+		if [[ "$DISTRIB_TYPE" != "server" ]] && [[ "$DISTRIB_TYPE" != "minimal" ]]; then
 			# Desktop image size
-			local rootfs_image_size=$(bc -l <<< "scale=0; ((($rootfs_size * 1.4) / 1 + 128) / 4 + 1) * 4")
+			local rootfs_image_size=$(bc -l <<< "scale=0; ((($rootfs_size * 1.3) / 1 + 0) / 4 + 1) * 4")
 		else
 			# Server image size
-			local rootfs_image_size=$(bc -l <<< "scale=0; ((($rootfs_size * 1.2) / 1 + 128) / 4 + 1) * 4")
+			local rootfs_image_size=$(bc -l <<< "scale=0; ((($rootfs_size * 1.2) / 1 + 0) / 4 + 1) * 4")
 		fi
 	fi
 

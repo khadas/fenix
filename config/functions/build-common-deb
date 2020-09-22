@@ -5,6 +5,11 @@
 ## Build common deb package
 build_common_deb() {
 
+	if [ "$DISTRIB_TYPE" == "minimal" ]; then
+		warning_msg "Ignore build common packages for minimal image."
+		return 0
+	fi
+
 	info_msg "Building WiringPi packages..."
 	# FIXME
 	# remove build stamp to force build for other arch
@@ -14,6 +19,11 @@ build_common_deb() {
 
 ## Build common deb package
 install_common_deb() {
+	if [ "$DISTRIB_TYPE" == "minimal" ]; then
+		warning_msg "Ignore install common packages for minimal image."
+		return 0
+	fi
+
 	# Install WiringPi in chroot
 	if [ -n "$(ls $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wiringpi_debs/ -1)" ]; then
 		info_msg "Installing WiringPi packages..."
