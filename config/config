@@ -154,13 +154,13 @@ PACKAGE_LIST="bc cpufrequtils device-tree-compiler fping fake-hwclock psmisc chr
 
 # Non-essential packages
 PACKAGE_LIST_ADDITIONAL="network-manager wireless-tools lsof htop mmc-utils wget nano sysstat net-tools \
-	resolvconf iozone3 jq libcrack2 cracklib-runtime curl rfkill"
+	resolvconf iozone3 jq libcrack2 cracklib-runtime curl rfkill bison flex libssl-dev"
 
 if [[ "$DISTRIB_TYPE" != "minimal" ]]; then
 
 	PACKAGE_LIST+=" bridge-utils build-essential fbset iw wpasupplicant unattended-upgrades unicode-data \
 		expect iptables mc abootimg libc6 libdrm2 libgcc1 libstdc++6 libx11-6 libx11-xcb1 libxcb-dri2-0 \
-		libxcb1 bison flex html2text automake libwrap0-dev libssl-dev libnl-3-dev libnl-genl-3-dev \
+		libxcb1 html2text automake libwrap0-dev libnl-3-dev libnl-genl-3-dev \
 		keyboard-configuration rsyslog"
 
 	PACKAGE_LIST_ADDITIONAL+=" alsa-utils btrfs-progs dosfstools hddtemp iotop stress sysbench screen \
