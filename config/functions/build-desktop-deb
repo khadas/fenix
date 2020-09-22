@@ -5,8 +5,8 @@
 ## Build desktop deb package
 build_desktop_deb() {
 
-	if [ "$DISTRIB_TYPE" == "server" ]; then
-		info_msg "Ignore desktop package for server."
+	if [ "$DISTRIB_TYPE" == "server" ] || [ "$DISTRIB_TYPE" == "minimal" ]; then
+		info_msg "Ignore build desktop package for server/minimal images."
 		return 0
 	fi
 

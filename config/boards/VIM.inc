@@ -160,6 +160,13 @@ setup_write_uboot_platform()
 
 ## Pack image
 pack_image_platform() {
+
+	if [ "$1" == "uboot-image" ]; then
+		PACK_UBOOT_IMAGE="yes"
+	else
+		PACK_UBOOT_IMAGE="no"
+	fi
+
 	cd ${ROOT}
 
 	info_msg "Image install type: $INSTALL_TYPE"
@@ -184,14 +191,28 @@ pack_image_platform() {
 		ln -fs "$IMAGE_PACKAGE_CONF" package.conf
 		ln -fs "$IMAGE_PLATFORM_CONF" platform.conf
 
-		cd -
+		## Fixup rootfs.img
+		if [ "$PACK_UBOOT_IMAGE" != "yes" ]; then
+			ln -fs ../../images/rootfs.img rootfs.img
+		else
+			IMAGE_FILE_NAME="${KHADAS_BOARD}_Uboot_EMMC_${IMAGE_RELEASE_VERSION}.img"
+			ln -fs fake-rootfs.img rootfs.img
+		fi
+
+		cd - > /dev/null
 
 		$UTILS_DIR/aml_image_v2_packer -r $UPGRADE_DIR/Amlogic/package.conf $UPGRADE_DIR/Amlogic $BUILD_IMAGES/${IMAGE_FILE_NAME}
     elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
+		if [ "$PACK_UBOOT_IMAGE" == "yes" ]; then
+			IMAGE_FILE_NAME="${KHADAS_BOARD}_Uboot_SD_${IMAGE_RELEASE_VERSION}.img"
+			info_msg "Create Uboot SD image..."
+			dd if=/dev/zero of=${BUILD_IMAGES}/${IMAGE_FILE_NAME} bs=1M count=0 seek=4 > /dev/null 2>&1
+		fi
+
 		write_uboot_platform "$UBOOT_IMAGE_DIR" "$BUILD_IMAGES/$IMAGE_FILE_NAME"
     else
         error_msg "Unsupported install type: '$INSTALL_TYPE'"
-        return -1
+        return 1
     fi
 
     echo ""

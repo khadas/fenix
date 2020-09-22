@@ -46,6 +46,14 @@ else
 	@./scripts/build.sh uboot-deb
 endif
 
+uboot-image: uboot kernel
+ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
+	$(call help_message)
+else
+	@./scripts/build.sh uboot-image
+endif
+
+
 kernel-deb: kernel
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
@@ -114,6 +122,7 @@ help:
 	@echo "  kernel        - Build linux kernel."
 	@echo "  uboot         - Build u-boot."
 	@echo "  uboot-deb     - Build u-boot debian package."
+	@echo "  uboot-image   - Build minimal image only with u-boot."
 	@echo "  kernel-deb    - Build linux debian package."
 	@echo "  board-deb     - Build board debian package."
 	@echo "  common-deb    - Build common debian package."
