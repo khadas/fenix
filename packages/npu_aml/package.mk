@@ -1,6 +1,6 @@
 PKG_NAME="npu_aml"
-PKG_VERSION="bcb7cf3783b08fad4bfdf81aef5e9b9dc69a05b2"
-PKG_SHA256="ad5c3d0fec1421e6cb960387a8d2a3239976a2060030a86bfed33b589669e478"
+PKG_VERSION="7025eb04c0fe942d21d7b03d77c46dce63f14add"
+PKG_SHA256="a2504f1188a019baffd44c0baa21c0eab78ad99341b24a877966d0fdfe105e6f"
 PKG_SOURCE_DIR="npu_aml-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/npu_aml"
 PKG_URL="https://github.com/numbqq/npu_aml/archive/$PKG_VERSION.tar.gz"
