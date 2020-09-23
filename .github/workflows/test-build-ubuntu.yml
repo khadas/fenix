@@ -35,6 +35,13 @@ jobs:
           path: |
             ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
 
+      - name: 'Upload VIM1 Ubuntu Minimal Mainline Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM1-Ubuntu-Minimal-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-minimal-*.img.xz
+
       - name: 'Upload VIM1 Ubuntu Desktop Mainline Kernel Images'
         uses: actions/upload-artifact@v2
         with:
@@ -78,6 +85,13 @@ jobs:
           name: VIM1-Ubuntu-Server-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
             ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
+
+      - name: 'Upload VIM1 Ubuntu Minimal Legacy Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM1-Ubuntu-Minimal-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-minimal-*.img.xz
 
       - name: 'Upload VIM1 Ubuntu Desktop Legacy Kernel Images'
         uses: actions/upload-artifact@v2
@@ -123,6 +137,13 @@ jobs:
           path: |
             ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
 
+      - name: 'Upload VIM2 Ubuntu Minimal Mainline Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM2-Ubuntu-Minimal-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-minimal-*.img.xz
+
       - name: 'Upload VIM2 Ubuntu Desktop Mainline Kernel Images'
         uses: actions/upload-artifact@v2
         with:
@@ -166,6 +187,13 @@ jobs:
           name: VIM2-Ubuntu-Server-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
             ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
+
+      - name: 'Upload VIM2 Ubuntu Minimal Legacy Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM2-Ubuntu-Minimal-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-minimal-*.img.xz
 
       - name: 'Upload VIM2 Ubuntu Desktop Legacy Kernel Images'
         uses: actions/upload-artifact@v2
@@ -211,6 +239,13 @@ jobs:
           path: |
             ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
 
+      - name: 'Upload VIM3 Ubuntu Minimal Mainline Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM3-Ubuntu-Minimal-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-minimal-*.img.xz
+
       - name: 'Upload VIM3 Ubuntu Desktop Mainline Kernel Images'
         uses: actions/upload-artifact@v2
         with:
@@ -254,6 +289,13 @@ jobs:
           name: VIM3-Ubuntu-Server-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
             ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
+
+      - name: 'Upload VIM3 Ubuntu Minimal Legacy Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM3-Ubuntu-Minimal-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-minimal-*.img.xz
 
       - name: 'Upload VIM3 Ubuntu Desktop Legacy Kernel Images'
         uses: actions/upload-artifact@v2
@@ -299,6 +341,13 @@ jobs:
           path: |
             ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
 
+      - name: 'Upload VIM3L Ubuntu Minimal Mainline Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM3L-Ubuntu-Minimal-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-minimal-*.img.xz
+
       - name: 'Upload VIM3L Ubuntu Desktop Mainline Kernel Images'
         uses: actions/upload-artifact@v2
         with:
@@ -343,6 +392,13 @@ jobs:
           path: |
             ${{ github.workspace }}/build/images/VIM*-server-*.img.xz
 
+      - name: 'Upload VIM3L Ubuntu Minimal Legacy Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: VIM3L-Ubuntu-Minimal-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/VIM*-minimal-*.img.xz
+
       - name: 'Upload VIM3L Ubuntu Desktop Legacy Kernel Images'
         uses: actions/upload-artifact@v2
         with:
@@ -384,6 +440,13 @@ jobs:
           name: Edge-Ubuntu-Server-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
             ${{ github.workspace }}/build/images/Edge*-server-*.img.xz
+
+      - name: 'Upload Edge Ubuntu Manimal Mainline Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Edge-Ubuntu-Minimal-Mainline-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/Edge*-minimal-*.img.xz
 
       - name: 'Upload Edge Ubuntu Desktop Mainline Kernel Images'
         uses: actions/upload-artifact@v2
@@ -427,6 +490,13 @@ jobs:
           name: Edge-Ubuntu-Server-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
           path: |
             ${{ github.workspace }}/build/images/Edge*-server-*.img.xz
+
+      - name: 'Upload Edge Ubuntu Minimal Legacy Kernel Images'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Edge-Ubuntu-Minimal-Legacy-Kernel-Firmware-${{ steps.date.outputs.date }}
+          path: |
+            ${{ github.workspace }}/build/images/Edge*-minimal-*.img.xz
 
       - name: 'Upload Edge Ubuntu Desktop Legacy Kernel Images'
         uses: actions/upload-artifact@v2

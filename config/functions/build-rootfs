@@ -276,8 +276,6 @@ create_rootfs_cache()
 		# add armhf arhitecture to arm64
 		if [[ $DISTRIB_ARCH == arm64 ]]; then
 			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "dpkg --add-architecture armhf"'
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "apt -y update"'
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "apt -y install libc6:armhf"'
 		fi
 
 		# this should fix resolvconf installation failure in some cases
