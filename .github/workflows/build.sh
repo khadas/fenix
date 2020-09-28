@@ -1,88 +1,62 @@
 #!/bin/bash
 
-CONFIG=.github/workflows/configs/config-github-actions.conf
-
 touch .ignore-update
 
-# Malinline u-boot & Mainline linux
+LINUX=$1
+BOARD=$2
+DISTRIBUTION=$3
 
-# Build image for VIM1
-## Server
-sed -i 's/KHADAS_BOARD=.*/KHADAS_BOARD=VIM1/g' $CONFIG
-sed -i 's/DISTRIB_TYPE=.*/DISTRIB_TYPE=server/g' $CONFIG
-source env/setenv.sh config $CONFIG
-sudo rm -rf build/images/.tmp/*
-BUILD_TYPE=release COMPRESS_IMAGE=yes NO_CCACHE=yes make
-sudo rm -rf build/images/*.img
-## Desktop
-sed -i 's/DISTRIB_TYPE=.*/DISTRIB_TYPE=gnome/g' $CONFIG
-source env/setenv.sh config $CONFIG
-sudo rm -rf build/images/.tmp/*
-BUILD_TYPE=release COMPRESS_IMAGE=yes NO_CCACHE=yes make
-sudo rm -rf build/images/*.img
+CONFIG=.github/workflows/configs/config-${DISTRIBUTION,,}-github-actions.conf
 
-# Build image for VIM2
-## Server
-sed -i 's/KHADAS_BOARD=.*/KHADAS_BOARD=VIM2/g' $CONFIG
-sed -i 's/DISTRIB_TYPE=.*/DISTRIB_TYPE=server/g' $CONFIG
-source env/setenv.sh config $CONFIG
-sudo rm -rf build/images/.tmp/*
-BUILD_TYPE=release COMPRESS_IMAGE=yes NO_CCACHE=yes make
-sudo rm -rf build/images/*.img
-## Desktop
-sed -i 's/DISTRIB_TYPE=.*/DISTRIB_TYPE=gnome/g' $CONFIG
-source env/setenv.sh config $CONFIG
-sudo rm -rf build/images/.tmp/*
-BUILD_TYPE=release COMPRESS_IMAGE=yes NO_CCACHE=yes make
-sudo rm -rf build/images/*.img
+if [ "$BOARD" == "Edge" ]; then
+	INSTALL_TYPES="EMMC SD-USB"
+else
+	if [ "$LINUX" == "mainline" ]; then
+		INSTALL_TYPES="SD-USB"
+	else
+		INSTALL_TYPES="EMMC SD-USB"
+	fi
+fi
 
-# Build image for VIM3
-## Server
-sed -i 's/KHADAS_BOARD=.*/KHADAS_BOARD=VIM3/g' $CONFIG
-sed -i 's/DISTRIB_TYPE=.*/DISTRIB_TYPE=server/g' $CONFIG
-source env/setenv.sh config $CONFIG
-sudo rm -rf build/images/.tmp/*
-BUILD_TYPE=release COMPRESS_IMAGE=yes NO_CCACHE=yes make
-sudo rm -rf build/images/*.img
-## Desktop
-sed -i 's/DISTRIB_TYPE=.*/DISTRIB_TYPE=gnome/g' $CONFIG
-source env/setenv.sh config $CONFIG
-sudo rm -rf build/images/.tmp/*
-BUILD_TYPE=release COMPRESS_IMAGE=yes NO_CCACHE=yes make
-sudo rm -rf build/images/*.img
+if [ "$LINUX" == "mainline" ]; then
+	LINUX_VER="mainline"
+	UBOOT_VER="mainline"
+	if [ "$DISTRIBUTION" == "Ubuntu" ]; then
+		DISTRIB_TYPES="minimal server gnome"
+	else
+		DISTRIB_TYPES="minimal server xfce"
+	fi
+else
+	if [ "$BOARD" == "Edge" ]; then
+		LINUX_VER="4.4"
+		UBOOT_VER="2017.09"
+		DISTRIB_TYPES="minimal server lxde"
+	else
+		LINUX_VER="4.9"
+		UBOOT_VER="2015.01"
+		if [ "$DISTRIBUTION" == "Ubuntu" ]; then
+			DISTRIB_TYPES="minimal server gnome"
+		else
+			DISTRIB_TYPES="minimal server xfce"
+		fi
+	fi
+fi
 
-# Build image for VIM3L
-## Server
-sed -i 's/KHADAS_BOARD=.*/KHADAS_BOARD=VIM3L/g' $CONFIG
-sed -i 's/DISTRIB_TYPE=.*/DISTRIB_TYPE=server/g' $CONFIG
-source env/setenv.sh config $CONFIG
-sudo rm -rf build/images/.tmp/*
-BUILD_TYPE=release COMPRESS_IMAGE=yes NO_CCACHE=yes make
-sudo rm -rf build/images/*.img
-## Desktop
-sed -i 's/DISTRIB_TYPE=.*/DISTRIB_TYPE=gnome/g' $CONFIG
-source env/setenv.sh config $CONFIG
-sudo rm -rf build/images/.tmp/*
-BUILD_TYPE=release COMPRESS_IMAGE=yes NO_CCACHE=yes make
-sudo rm -rf build/images/*.img
+sed -i 's/LINUX=.*/LINUX=${LINUX_VER}/g' $CONFIG
+sed -i 's/UBOOT=.*/UBOOT=${UBOOT_VER}/g' $CONFIG
+sed -i 's/KHADAS_BOARD=.*/KHADAS_BOARD=${BOARD}/g' $CONFIG
 
-# Build image for Edge
-## Server
-sed -i 's/KHADAS_BOARD=.*/KHADAS_BOARD=Edge/g' $CONFIG
-sed -i 's/DISTRIB_TYPE=.*/DISTRIB_TYPE=server/g' $CONFIG
-source env/setenv.sh config $CONFIG
-sudo rm -rf build/images/.tmp/*
-BUILD_TYPE=release COMPRESS_IMAGE=yes NO_CCACHE=yes make
-sudo rm -rf build/images/*.img
-## Desktop
-sed -i 's/DISTRIB_TYPE=.*/DISTRIB_TYPE=gnome/g' $CONFIG
-source env/setenv.sh config $CONFIG
-sudo rm -rf build/images/.tmp/*
-BUILD_TYPE=release COMPRESS_IMAGE=yes NO_CCACHE=yes make
-sudo rm -rf build/images/*.img
-
-# Legacy u-boot & Legacy linux
-
-## TODO ##
+for install_type in $INSTALL_TYPES
+do
+	sed -i 's/INSTALL_TYPE=.*/INSTALL_TYPE=${install_type}/g' $CONFIG
+	for distrib_type in $DISTRIB_TYPES
+	do
+		sed -i 's/DISTRIB_TYPE=.*/DISTRIB_TYPE=${distrib_type}/g' $CONFIG
+		source env/setenv.sh config $CONFIG
+		sudo rm -rf build/images/.tmp/*
+		BUILD_TYPE=release COMPRESS_IMAGE=yes NO_CCACHE=yes make || BUILD_TYPE=release COMPRESS_IMAGE=yes NO_CCACHE=yes make
+		sudo rm -rf build/images/*.img
+	done
+done
 
 exit

@@ -48,6 +48,12 @@ tweaks_platform() {
 
 ## Build deb packages for platform
 build_deb_packages_platform() {
+
+	if [ "$DISTRIB_TYPE" == "minimal" ]; then
+		warning_msg "Ignore build platform packages for minimal image."
+		return 0
+	fi
+
 	if [ "$LINUX" == "4.9" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
 
 		info_msg "Building Kodi packages..."
@@ -103,11 +109,23 @@ build_deb_packages_platform() {
 		# remove build stamp to force build for other arch
 		rm -rf $BUILD/.stamps/libcec_debs
 		build_package "libcec_debs:target"
+
+		info_msg "Building encoder..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/encoder_libs_deb_aml
+		build_package "encoder_libs_deb_aml:target"
 	fi
 }
 
 ## Install deb packages for platform
 install_deb_packages_platform() {
+
+	if [ "$DISTRIB_TYPE" == "minimal" ]; then
+		warning_msg "Ignore install platform packages for minimal image."
+		return 0
+	fi
+
 	if [ "$LINUX" == "4.9" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
 
 		cd $ROOT
@@ -157,5 +175,8 @@ install_deb_packages_platform() {
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/libcec4-*.deb
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/python3-libcec_*.deb
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/cec-utils_*.deb
+
+		# Install encoder libriries in chroot
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/encoder/*.deb
 	fi
 }

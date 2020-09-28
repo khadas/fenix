@@ -48,6 +48,12 @@ else
 	NR_JOBS=${NR_JOBS_MAX}
 fi
 
+MAKE_PARAMS="BUILD_TYPE NO_CCACHE COMPRESS_IMAGE"
+
+[[ -z $NO_CCACHE ]] && NO_CCACHE=no
+[[ -z $BUILD_TYPE ]] && BUILD_TYPE=develop
+[[ -z $COMPRESS_IMAGE ]] && COMPRESS_IMAGE=no
+
 ## Enable ccache by default
 if [ "$NO_CCACHE" != "yes" ]; then
 	CCACHE=ccache
@@ -128,36 +134,48 @@ INFO="${GREEN}Info:${ENDCOLOR}"
 
 ################################### Packages ############################################
 # Base system dependencies
-DEBOOTSTRAP_LIST="locales,gnupg,ifupdown,apt-transport-https,ca-certificates"
-if [[ $DISTRIB_TYPE != server ]]; then
-	DEBOOTSTRAP_LIST+=",libgtk2.0-bin"
+DEBOOTSTRAP_LIST="locales gnupg ifupdown apt-utils apt-transport-https ca-certificates bzip2 console-setup \
+	cpio cron dbus init initramfs-tools iputils-ping isc-dhcp-client kmod less libpam-systemd linux-base \
+	logrotate netbase netcat-openbsd systemd sudo ucf udev whiptail wireless-regdb crda dmsetup \
+	rsync tzdata rng-tools fdisk"
+
+if [[ "$DISTRIB_TYPE" != "server" ]] && [[ "$DISTRIB_TYPE" != "minimal" ]]; then
+	DEBOOTSTRAP_LIST+=" libgtk2.0-bin"
 fi
 
 PACKAGE_LIST_EXCLUDE="rsyslog"
 
+DEBOOTSTRAP_LIST=$(echo $DEBOOTSTRAP_LIST | sed -e 's,\\[trn],,g')
+
 # Essential packages
-PACKAGE_LIST="bc bridge-utils build-essential cpufrequtils device-tree-compiler figlet fbset fping \
-	iw fake-hwclock wpasupplicant psmisc chrony parted rsync sudo curl linux-base dialog crda \
-	wireless-regdb ncurses-term python3-apt sysfsutils toilet u-boot-tools unattended-upgrades \
-	usbutils wireless-tools console-setup unicode-data openssh-server initramfs-tools \
-	resolvconf expect iptables mc abootimg udev libc6 libdrm2 libgcc1 libstdc++6 libx11-6 \
-	libx11-xcb1 libxcb-dri2-0 libxcb1 rsyslog  bison flex html2text automake libwrap0-dev \
-	libssl-dev libnl-3-dev libnl-genl-3-dev keyboard-configuration"
+PACKAGE_LIST="bc cpufrequtils device-tree-compiler fping fake-hwclock psmisc chrony parted dialog \
+	ncurses-term sysfsutils toilet figlet u-boot-tools usbutils openssh-server nocache debconf-utils \
+	python3-apt make gcc libc6-dev"
 
 # Non-essential packages
-PACKAGE_LIST_ADDITIONAL="wget nano alsa-utils btrfs-progs dosfstools hddtemp iotop iozone3 stress sysbench screen ntfs-3g vim pciutils \
-	evtest htop mmc-utils pv lsof libfuse2 libdigest-sha-perl libproc-processtable-perl aptitude dnsutils f3 haveged \
-	hdparm rfkill vlan sysstat net-tools bash-completion hostapd git ethtool network-manager unzip ifenslave lirc \
-	libpam-systemd iperf3 software-properties-common libnss-myhostname f2fs-tools avahi-autoipd iputils-arping bluetooth bluez bluez-tools watchdog \
-	i2c-tools qrencode rng-tools clinfo ocl-icd-libopencl1 libatlas3-base p7zip p7zip-full lrzip lzip lzop ncompress unar zstd edid-decode libgtk-3-0 dnsmasq-base \
-	ppp modemmanager mobile-broadband-provider-info"
+PACKAGE_LIST_ADDITIONAL="network-manager wireless-tools lsof htop mmc-utils wget nano sysstat net-tools \
+	resolvconf iozone3 jq libcrack2 cracklib-runtime curl rfkill bison flex libssl-dev"
 
+if [[ "$DISTRIB_TYPE" != "minimal" ]]; then
+
+	PACKAGE_LIST+=" bridge-utils build-essential fbset iw wpasupplicant unattended-upgrades unicode-data \
+		expect iptables mc abootimg libc6 libdrm2 libgcc1 libstdc++6 libx11-6 libx11-xcb1 libxcb-dri2-0 \
+		libxcb1 html2text automake libwrap0-dev libnl-3-dev libnl-genl-3-dev \
+		keyboard-configuration rsyslog"
+
+	PACKAGE_LIST_ADDITIONAL+=" alsa-utils btrfs-progs dosfstools hddtemp iotop stress sysbench screen \
+		ntfs-3g vim pciutils evtest pv libfuse2 libdigest-sha-perl libproc-processtable-perl aptitude \
+		dnsutils f3 haveged hdparm rfkill vlan bash-completion hostapd git ethtool unzip ifenslave lirc \
+		iperf3 software-properties-common libnss-myhostname f2fs-tools avahi-autoipd iputils-arping \
+		bluetooth bluez bluez-tools watchdog i2c-tools qrencode clinfo ocl-icd-libopencl1 libatlas3-base \
+		p7zip p7zip-full lrzip lzip lzop ncompress unar zstd edid-decode libgtk-3-0 dnsmasq-base ppp \
+		modemmanager mobile-broadband-provider-info"
+fi
 
 PACKAGE_LIST_DESKTOP="xserver-xorg xserver-xorg-video-fbdev gvfs-backends gvfs-fuse xfonts-base xinit x11-xserver-utils xterm thunar-volman \
 	network-manager-gnome network-manager-openvpn-gnome gnome-keyring gcr libgck-1-0 p11-kit pasystray pavucontrol pulseaudio \
 	pavumeter pulseaudio-module-bluetooth blueman libpam-gnome-keyring libgl1-mesa-dri gparted synaptic apt-xapian-index \
-	policykit-1 profile-sync-daemon gnome-orca numix-gtk-theme gnome-system-tools lightdm lightdm-gtk-greeter gufw yad zenity guvcview onboard debconf-utils"
-
+	policykit-1 profile-sync-daemon gnome-orca numix-gtk-theme gnome-system-tools lightdm lightdm-gtk-greeter gufw yad zenity guvcview onboard"
 
 PACKAGE_LIST_OFFICE="gedit galculator hexchat mpv gtk2-engines gtk2-engines-murrine gtk2-engines-pixbuf \
 	thunderbird system-config-printer-common system-config-printer paprefs dbus-x11 tango-icon-theme libreoffice libreoffice-style-tango fbi \
@@ -197,7 +215,7 @@ esac
 case $DISTRIB_RELEASE in
 	buster)
 		DEBOOTSTRAP_COMPONENTS="main"
-		PACKAGE_LIST_RELEASE="man-db less kbd netcat-openbsd gnupg2 dirmngr networkd-dispatcher command-not-found"
+		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher command-not-found"
 		PACKAGE_LIST_KODI="libglu1 libmicrohttpd12 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libva-drm2 libcurl4"
 		PACKAGE_LIST_QT+=" libqt5multimediaquick5"
 		PACKAGE_LIST_MESA="libglvnd-dev libx11-dev"
@@ -206,7 +224,7 @@ case $DISTRIB_RELEASE in
 	;;
 	bionic)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
-		PACKAGE_LIST_RELEASE="man-db less kbd netcat-openbsd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found"
+		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found"
 		PACKAGE_LIST_QT+=" libqt5multimediaquick-p5 libqgsttools-p1"
 		PACKAGE_LIST_OFFICE+=" mirage"
 		PACKAGE_LIST_KODI="mesa-utils libglu1 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libcurl4 libcrossguid0 libmariadbclient18 libmicrohttpd12 \
@@ -220,7 +238,7 @@ case $DISTRIB_RELEASE in
 	;;
 	focal)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
-		PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9"
+		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9"
 		PACKAGE_LIST_KODI="mesa-utils libglu1 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libcurl4 libcrossguid0  libmicrohttpd12 libavahi-compat-libdnssd-dev libcec4 \
 			libfstrcmp0 libnfs13 fonts-liberation python-bluez python-pil python-simplejson libaacs0 fonts-dejavu-core libao-dev libpython2.7 libpython2.7-minimal libpython2.7-stdlib x11-utils"
 		PACKAGE_LIST_SERVER_KODI="libao4 libwayland-cursor0 libavahi-compat-libdnssd-dev libass9 libavahi-client3 libavahi-common3 libbluray2 libcdio18 libcec4 \
@@ -248,9 +266,10 @@ else
 	APT_MIRROR=$DEBIAN_MIRROR
 fi
 
-PACKAGE_LIST="$PACKAGE_LIST $PACKAGE_LIST_RELEASE $PACKAGE_LIST_ADDITIONAL"
-if [[ $DISTRIB_TYPE != server ]]; then
+PACKAGE_LIST+=" $PACKAGE_LIST_RELEASE $PACKAGE_LIST_ADDITIONAL"
+
+if [[ "$DISTRIB_TYPE" != "server" ]] && [[ "$DISTRIB_TYPE" != "minimal" ]]; then
 	PACKAGE_LIST+=" $PACKAGE_LIST_DESKTOP"
-else
+elif [[ "$DISTRIB_TYPE" == "server" ]]; then
 	PACKAGE_LIST+=" $PACKAGE_LIST_SERVER_KODI $PACKAGE_LIST_GSTREAMER"
 fi

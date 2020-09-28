@@ -28,6 +28,10 @@ case "$TARGET" in
 	uboot-deb)
 		build_uboot_deb
 		;;
+	uboot-image)
+		pack_image_platform "uboot-image"
+		compress_image "uboot-image"
+		;;
 	linux-deb)
 		build_linux_debs
 		;;
