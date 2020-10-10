@@ -358,12 +358,14 @@ prepare_partitions()
 
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
 		info_msg "Creating eMMC rootfs image..."
+		rm -rf ${BUILD_IMAGES}/rootfs.img
 		dd if=/dev/zero of=$BUILD_IMAGES/rootfs.img bs=1M count=0 seek=$rootfs_image_size
 		mkfs.ext4 $EXT4_MKOPTS $BUILD_IMAGES/rootfs.img
 		rm -rf $ROOTFS && install -d $ROOTFS
 		mount -o loop $BUILD_IMAGES/rootfs.img $ROOTFS
 		local rootfs_uuid="UUID=$(blkid -s UUID -o value $BUILD_IMAGES/rootfs.img)"
 	elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
+		rm -rf ${BUILD_IMAGES}/${IMAGE_FILE_NAME}
 		IMAGE_SIZE=$((rootfs_image_size + 300)) # SD/USB image szie = BOOT(256MB) + ROOTFS
 		info_msg "Create SD/USB image..."
 		dd if=/dev/zero of=${BUILD_IMAGES}/${IMAGE_FILE_NAME} bs=1M count=0 seek=$IMAGE_SIZE
