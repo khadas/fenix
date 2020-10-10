@@ -137,7 +137,7 @@ build_linux() {
 	info_msg "Build linux..."
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
 	make ARCH=arm64 $LINUX_DEFCONFIG
-	make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE="${CCACHE} ${KERNEL_COMPILER}" Image dtbs  modules
+	make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE="${CCACHE} ${KERNEL_COMPILER}" Image dtbs  modules $EXTRA_MAKE_ARGS
 }
 
 ## Build linux debs

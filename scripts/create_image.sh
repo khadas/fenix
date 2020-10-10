@@ -38,6 +38,8 @@ display_parameters() {
 	echo "Distribution Arch:     $DISTRIB_ARCH"
 	echo "Install Type:          $INSTALL_TYPE"
 	echo "Final Image:           $IMAGE_FILE_NAME"
+	[ "$COMPRESS_IMAGE" ] && \
+	echo "Compress_Image:        $IMAGE_FILE_NAME.xz"
 	echo "*********************************************************"
 	echo ""
 }
