@@ -150,24 +150,25 @@ prepare_host() {
 	fi
 
 	# enable arm binary format so that the cross-architecture chroot environment will work
-	if ! grep -q binfmt_misc <(lsmod); then
-		info_msg "Module 'binfmt_misc' not installed, try to install it!"
-		warning_msg "Requires root privileges, please enter your passowrd!"
-		sudo modprobe -q binfmt_misc || {
-			# FIXME 'binfmt_misc' should be installed on host PC manually
-			# https://github.com/khadas/fenix/issues/35#issuecomment-492326880
-			if systemd-detect-virt -q -c; then
+	if [ ! -f /proc/sys/fs/binfmt_misc/status ]; then
+		if ! grep -q binfmt_misc <(lsmod); then
+			info_msg "Module 'binfmt_misc' not installed, try to install it!"
+			warning_msg "Requires root privileges, please enter your passowrd!"
+			sudo modprobe -q binfmt_misc || {
+				# FIXME 'binfmt_misc' should be installed on host PC manually
+				# https://github.com/khadas/fenix/issues/35#issuecomment-492326880
+				if systemd-detect-virt -q -c; then
 				error_msg "You are built in container: $(systemd-detect-virt), but the module 'binfmt_misc' is not installed, please exit the container to execute 'sudo modprobe binfmt_misc' on your host PC and try again!"
-			fi
+				fi
 
-			exit -1
-		}
+				exit -1
+			}
+		fi
 	fi
-	if  grep -q binfmt_misc <(lsmod); then
-		mountpoint -q /proc/sys/fs/binfmt_misc/ || sudo mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
-		test -e /proc/sys/fs/binfmt_misc/qemu-arm || sudo update-binfmts --enable qemu-arm
-		test -e /proc/sys/fs/binfmt_misc/qemu-aarch64 || sudo update-binfmts --enable qemu-aarch64
-	fi
+
+	mountpoint -q /proc/sys/fs/binfmt_misc/ || sudo mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
+	test -e /proc/sys/fs/binfmt_misc/qemu-arm || sudo update-binfmts --enable qemu-arm
+	test -e /proc/sys/fs/binfmt_misc/qemu-aarch64 || sudo update-binfmts --enable qemu-aarch64
 }
 
 ## Mount chroot
