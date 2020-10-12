@@ -96,6 +96,9 @@ else
 	@./scripts/build.sh updater-deb
 endif
 
+get-make-params:
+	@./scripts/param.sh make_params
+
 info:
 	@echo ""
 	@echo "Version: ${VERSION}"
@@ -118,19 +121,20 @@ info:
 
 help:
 	@echo "Fenix scripts help messages:"
-	@echo "  all           - Create image according to environment."
-	@echo "  kernel        - Build linux kernel."
-	@echo "  uboot         - Build u-boot."
-	@echo "  uboot-deb     - Build u-boot debian package."
-	@echo "  uboot-image   - Build minimal image only with u-boot."
-	@echo "  kernel-deb    - Build linux debian package."
-	@echo "  board-deb     - Build board debian package."
-	@echo "  common-deb    - Build common debian package."
-	@echo "  desktop-deb   - Build desktop debian package."
-	@echo "  gpu-deb       - Build gpu debian package."
-	@echo "  debs          - Build all debian packages."
-	@echo "  image         - Pack update image."
-	@echo "  clean         - Cleanup."
-	@echo "  info          - Display current environment."
+	@echo "  all               - Create image according to environment."
+	@echo "  kernel            - Build linux kernel."
+	@echo "  uboot             - Build u-boot."
+	@echo "  uboot-deb         - Build u-boot debian package."
+	@echo "  uboot-image       - Build minimal image only with u-boot."
+	@echo "  kernel-deb        - Build linux debian package."
+	@echo "  board-deb         - Build board debian package."
+	@echo "  common-deb        - Build common debian package."
+	@echo "  desktop-deb       - Build desktop debian package."
+	@echo "  gpu-deb           - Build gpu debian package."
+	@echo "  debs              - Build all debian packages."
+	@echo "  image             - Pack update image."
+	@echo "  clean             - Cleanup."
+	@echo "  info              - Display current environment."
+	@echo "  get-make-params   - Get available make parameters."
 clean:
 	./scripts/clean.sh

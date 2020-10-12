@@ -50,6 +50,14 @@ fi
 
 MAKE_PARAMS="BUILD_TYPE DOWNLOAD_MIRROR NO_CCACHE COMPRESS_IMAGE INSTALL_TYPE_RAW"
 
+## Available values
+BUILD_TYPE_VALUES="develop | release"
+DOWNLOAD_MIRROR_VALUES="default | china"
+NO_CCACHE_VALUES="no | yes"
+COMPRESS_IMAGE_VALUES="no | yes"
+INSTALL_TYPE_RAW_VALUES="no | yes"
+
+## Default values
 [[ -z $NO_CCACHE ]] && NO_CCACHE=no
 [[ -z $BUILD_TYPE ]] && BUILD_TYPE=develop
 [[ -z $DOWNLOAD_MIRROR ]] && DOWNLOAD_MIRROR=default

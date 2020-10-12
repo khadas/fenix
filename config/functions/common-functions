@@ -16,6 +16,7 @@
 # create_sources_list
 # compress_image
 # check_make_params
+# get_available_make_params
 
 ## Print error message
 ## $1 - message
@@ -363,8 +364,7 @@ create_sources_list()
 }
 
 ## compress_image
-compress_image()
-{
+compress_image() {
 	[[ $COMPRESS_IMAGE != yes ]] && return
 
 	echo ""
@@ -397,12 +397,25 @@ compress_image()
 }
 
 ## check_make_params
-check_make_params()
-{
+check_make_params() {
 	echo ""
 	for param in $MAKE_PARAMS
 	do
 		printf "${BOLDCYAN}%-20s:${ENDCOLOR}${BOLDGREEN}%10s${ENDCOLOR}\n" $param ${!param}
+	done
+	echo ""
+}
+
+## get_available_make_params
+get_available_make_params() {
+	echo ""
+	printf "${BOLDYELLOW}%-20s${ENDCOLOR}${BOLDYELLOW}%15s${ENDCOLOR}\n" "Parameter" "Value"
+	printf "===============================================\n"
+	for param in $MAKE_PARAMS
+	do
+		key=$param
+		value=${param}_VALUES
+		printf "${BOLDCYAN}%-20s:${ENDCOLOR}${BOLDGREEN}%20s${ENDCOLOR}\n" "$key" "${!value}"
 	done
 	echo ""
 }
