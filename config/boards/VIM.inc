@@ -1,4 +1,3 @@
-#!/bin/bash
 ##########################
 ## VIM series common part
 ##########################
@@ -161,55 +160,52 @@ setup_write_uboot_platform()
 
 ## Pack image
 
-pack_image_platform_raw(){
+pack_image_platform_raw() {
 
-# ABOUT 
+	# ABOUT
 
-# this simple raw image suitable for dd write to eMMC
-# same for Krescue usage
-# simple alternative for amlogic image
+	# this simple raw image suitable for dd write to eMMC
+	# same for Krescue usage
+	# simple alternative for amlogic image
 
-# USAGE
-#
-# INSTALL_TYPE_RAW=1 make image
-#
-# INSTALL_TYPE_RAW=1 COMPRESS_IMAGE=yes make image
+	# USAGE
+	#
+	# INSTALL_TYPE_RAW=yes make
+	#
+	# INSTALL_TYPE_RAW=yes COMPRESS_IMAGE=yes make
 
-IMAGE_FILE_NAME="${KHADAS_BOARD}_${DISTRIBUTION}-${DISTRIB_TYPE}\
--${DISTRIB_RELEASE}_Linux-${LINUX/mainline/$MAINLINE_LINUX_VER}\
-_${DISTRIB_ARCH}_emmc_${IMAGE_RELEASE_VERSION}.raw.img"
+	[ "$INSTALL_TYPE_RAW" != "yes" ] && return
 
-info_msg "Simple raw image suitable for dd write -> $IMAGE_FILE_NAME"
+	info_msg "Simple raw image suitable for dd write -> $IMAGE_FILE_NAME"
 
-BS=512
+	BS=512
 
-ROOT_OFFSET=0x0b400000
-DTB1_OFFSET=0x02800000
-DTB2_OFFSET=0x02840000
-LOGO_OFFSET=0x07c00000
+	ROOT_OFFSET=0x0b400000
+	DTB1_OFFSET=0x02800000
+	DTB2_OFFSET=0x02840000
+	LOGO_OFFSET=0x07c00000
 
-PATH_BOOT="u-boot/fip/_tmp/u-boot.bin.sd.bin"
-PATH_DTB0="linux/$LINUX_DTB"
-PATH_ROOT="$BUILD_IMAGES/rootfs.img"
-PATH_LOGO="$BUILD_IMAGES/logo.img"
+	PATH_BOOT="u-boot/fip/_tmp/u-boot.bin.sd.bin"
+	PATH_DTB0="linux/$LINUX_DTB"
+	PATH_ROOT="$BUILD_IMAGES/rootfs.img"
+	PATH_LOGO="$BUILD_IMAGES/logo.img"
 
-F="conv=fsync,notrunc status=noxfer"
-F1="$F,none"
-F2="$F,progress"
+	F="conv=fsync,notrunc status=noxfer"
+	F1="$F,none"
+	F2="$F,progress"
 
-IMG="$BUILD_IMAGES/$IMAGE_FILE_NAME"
+	IMG="$BUILD_IMAGES/$IMAGE_FILE_NAME"
 
-rm -rf $IMG
+	rm -rf $IMG
 
-(
-dd of="$IMG" if=/dev/null    $F1 seek=$((ROOT_OFFSET/BS))
-dd of="$IMG" if="$PATH_BOOT" $F1
-dd of="$IMG" if="$PATH_DTB0" $F1 seek=$((DTB1_OFFSET/BS))
-dd of="$IMG" if="$PATH_DTB0" $F1 seek=$((DTB2_OFFSET/BS))
-dd of="$IMG" if="$PATH_LOGO" $F1 seek=$((LOGO_OFFSET/BS))
-dd of="$IMG" if="$PATH_ROOT" $F2 seek=$((ROOT_OFFSET/BS))
-)
-
+	(
+		dd of="$IMG" if=/dev/null    $F1 seek=$((ROOT_OFFSET/BS))
+		dd of="$IMG" if="$PATH_BOOT" $F1
+		dd of="$IMG" if="$PATH_DTB0" $F1 seek=$((DTB1_OFFSET/BS))
+		dd of="$IMG" if="$PATH_DTB0" $F1 seek=$((DTB2_OFFSET/BS))
+		dd of="$IMG" if="$PATH_LOGO" $F1 seek=$((LOGO_OFFSET/BS))
+		dd of="$IMG" if="$PATH_ROOT" $F2 seek=$((ROOT_OFFSET/BS))
+	)
 }
 
 pack_image_platform() {
@@ -224,8 +220,6 @@ pack_image_platform() {
 
 	info_msg "Image install type: $INSTALL_TYPE"
 
-	[ "$INSTALL_TYPE_RAW" ] && pack_image_platform_raw
-	[ "$INSTALL_TYPE_RAW" ] || \
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
 		## Fixup upgrade dtb link
 		cd $UPGRADE_DIR/Amlogic

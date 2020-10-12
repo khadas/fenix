@@ -21,5 +21,9 @@ fi
 
 prepare_rootfs
 build_rootfs
-pack_image_platform
+if [ "$INSTALL_TYPE_RAW" == "yes" ]; then
+	pack_image_platform_raw
+else
+	pack_image_platform
+fi
 compress_image

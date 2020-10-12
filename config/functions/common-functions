@@ -394,7 +394,7 @@ compress_image()
 	fi
 
 	echo ""
-	info_msg "COMPRESSED_IMAGE: ${GREEN} $BUILD_IMAGES/$IMAGE_FILE_NAME.xz ${ENDCOLOR} is ready!"
+	info_msg "COMPRESSED IMAGE: ${GREEN} $BUILD_IMAGES/$IMAGE_FILE_NAME.xz ${ENDCOLOR} is ready!"
 }
 
 ## check_make_params
@@ -403,7 +403,7 @@ check_make_params()
 	echo ""
 	for param in $MAKE_PARAMS
 	do
-		printf "${BOLDCYAN}%s:${ENDCOLOR}\t${BOLDGREEN}%s${ENDCOLOR}\n" $param ${!param}
+		printf "${BOLDCYAN}%-20s:${ENDCOLOR}${BOLDGREEN}%10s${ENDCOLOR}\n" $param ${!param}
 	done
 	echo ""
 }
