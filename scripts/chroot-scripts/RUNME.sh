@@ -1,19 +1,6 @@
 #!/bin/sh
-#
-# Commands for ROM release
-#
 
 #set -e -o pipefail
-
-DISTRIBUTION=$1
-DISTRIB_RELEASE=$2
-DISTRIB_TYPE=$3
-DISTRIB_ARCH=$4
-KHADAS_BOARD=$5
-LINUX=$6
-UBOOT=$7
-INSTALL_TYPE=$8
-VENDOR=$9
 
 export LC_ALL=C
 export LANG=C

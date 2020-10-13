@@ -499,7 +499,7 @@ build_rootfs() {
 	echo "NOTE: ENTER CHROOT AND EXECUTE SCRIPT 'RUNME.sh'."
 	echo
 	mount_chroot "$ROOTFS_TEMP"
-	chroot $ROOTFS_TEMP/ bash "/RUNME.sh" $DISTRIBUTION $DISTRIB_RELEASE $DISTRIB_TYPE $DISTRIB_ARCH $KHADAS_BOARD $LINUX $UBOOT $INSTALL_TYPE $VENDOR
+	chroot $ROOTFS_TEMP/ bash "/RUNME.sh"
 
 	## Logo
 	cp archives/logo/${VENDOR}/logo.img $BUILD_IMAGES
