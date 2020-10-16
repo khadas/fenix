@@ -156,7 +156,7 @@ build_desktop_deb() {
 			rm -rf $pkgdir/etc/skel/.local/share/applications/cpu-frequency-setting.desktop
 		fi
 		if [ "$LINUX" == "mainline" ]; then
-			rm -rf /lib/systemd/system/hdmi_resolution.service
+			rm -rf $pkgdir/lib/systemd/system/hdmi_resolution.service
 			rm -rf $pkgdir/etc/skel/.local/share/applications/cpu-frequency-setting.desktop
 			rm -rf $pkgdir/etc/skel/.local/share/applications/fan-settings.desktop
 			rm -rf $pkgdir/etc/skel/.local/share/applications/hdmi-resolution-settings.desktop
