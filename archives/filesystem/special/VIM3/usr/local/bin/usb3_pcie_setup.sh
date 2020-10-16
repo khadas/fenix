@@ -5,6 +5,10 @@ if ! which lightdm; then
 	exit
 fi
 
+if linux-version compare `uname -r` ge 4.12; then
+	IS_MAINLINE_KERNEL=yes
+fi
+
 USB3_PCIE_NODE="/sys/class/mcu/usb_pcie_switch_mode"
 POWEROFF_NODE="/sys/class/mcu/poweroff"
 
@@ -13,7 +17,18 @@ LIST_MENU_VALUE=(FALSE FALSE)
 
 index=0
 
-default_value=$(cat $USB3_PCIE_NODE)
+if [ "$IS_MAINLINE_KERNEL" != "yes" ]; then
+	default_value=$(cat $USB3_PCIE_NODE)
+else
+	if [ `i2cget -f -y 0 0x18 0x33 b` == "0x00" ]; then
+		default_value=0
+	elif [ `i2cget -f -y 0 0x18 0x33 b` == "0x01" ]; then
+		default_value=1
+	else
+		echo "Unknow value!"
+		exit
+	fi
+fi
 
 if [ $default_value -eq 0 ]; then
 	index=0
@@ -61,13 +76,15 @@ if [ $? -ne 0 ]; then
 	exit
 fi
 
-# Change USB3.0/PCIe mode
-echo $index > $USB3_PCIE_NODE
-
-sync
-
-# Poweroff
-echo 1 > $POWEROFF_NODE
-
+if [ "$IS_MAINLINE_KERNEL" != "yes" ]; then
+	# Change USB3.0/PCIe mode
+	echo $index > $USB3_PCIE_NODE
+	sync
+	# Poweroff
+	echo 1 > $POWEROFF_NODE
+else
+	i2cset -f -y 0 0x18 0x33 $index b
+	i2cset -f -y 0 0x18 0x80 1 b
+fi
 
 exit
