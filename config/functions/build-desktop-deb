@@ -78,7 +78,27 @@ build_desktop_deb() {
 		chown khadas:khadas /home/khadas/.* -R
 	fi
 
-	systemctl --no-reload enable hdmi_resolution.service >/dev/null 2>&1
+	if [ "\$(stat -c %d:%i /)" != "\$(stat -c %d:%i /proc/1/root/.)" ]; then
+		# In chroot
+		if [ -f /boot/.next ]; then
+			IS_MAINLINE_KERNEL="yes"
+		fi
+	else
+		linux_ver=\`uname -r\`
+		if linux-version compare \$linux_ver ge 4.12; then
+			IS_MAINLINE_KERNEL="yes"
+		fi
+	fi
+
+	if [ "\$IS_MAINLINE_KERNEL" == "yes" ]; then
+		[ -f /lib/systemd/system/hdmi_resolution.service ] && rm /lib/systemd/system/hdmi_resolution.service
+		[ -f /home/khadas/.local/share/applications/cpu-frequency-setting.desktop ] && rm /home/khadas/.local/share/applications/cpu-frequency-setting.desktop
+		[ -f /home/khadas/.local/share/applications/fan-settings.desktop ] && rm /home/khadas/.local/share/applications/fan-settings.desktop
+		[ -f /home/khadas/.local/share/applications/hdmi-resolution-settings.desktop ] && rm /home/khadas/.local/share/applications/hdmi-resolution-settings.desktop
+		[ -f /home/khadas/.local/share/applications/wol-settings.desktop ] && rm /home/khadas/.local/share/applications/wol-settings.desktop
+	else
+		systemctl --no-reload enable hdmi_resolution.service >/dev/null 2>&1
+	fi
 
 	# For GNOME desktop
 	# Set default desktop manager
@@ -134,6 +154,13 @@ build_desktop_deb() {
 			rm -rf $pkgdir/etc/skel/.local/share/applications/xfce-usb3-pcie-settings.desktop
 			rm -rf $pkgdir/etc/skel/.local/share/applications/usb3-pcie-settings.desktop
 			rm -rf $pkgdir/etc/skel/.local/share/applications/cpu-frequency-setting.desktop
+		fi
+		if [ "$LINUX" == "mainline" ]; then
+			rm -rf /lib/systemd/system/hdmi_resolution.service
+			rm -rf $pkgdir/etc/skel/.local/share/applications/cpu-frequency-setting.desktop
+			rm -rf $pkgdir/etc/skel/.local/share/applications/fan-settings.desktop
+			rm -rf $pkgdir/etc/skel/.local/share/applications/hdmi-resolution-settings.desktop
+			rm -rf $pkgdir/etc/skel/.local/share/applications/wol-settings.desktop
 		fi
 	elif [ "$VENDOR" == "Rockchip" ]; then
 		# Remove unused menus for Rockchip platform
