@@ -372,7 +372,7 @@ compress_image() {
 
 	rm -rf $BUILD_IMAGES/${IMAGE_FILE_NAME}.xz
 
-	if [ "$INSTALL_TYPE" == "SD-USB" -o "$INSTALL_TYPE_RAW" ]; then
+	if [ "$INSTALL_TYPE" == "SD-USB" -o "$INSTALL_TYPE_RAW" == "yes" ]; then
 		if [ "$1" == "uboot-image" ]; then
 			label="Uboot"
 			desc="Uboot $VERSION minimal - fenix generated images https://github.com/khadas/fenix"

@@ -13,7 +13,11 @@ source config/functions/functions
 
 ######################################################################################
 prepare_host
-pack_image_platform
+if [ "$INSTALL_TYPE_RAW" == "yes" ]; then
+	pack_image_platform_raw
+else
+	pack_image_platform
+fi
 compress_image
 
 echo -e "\nDone."
