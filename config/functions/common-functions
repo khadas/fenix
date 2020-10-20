@@ -103,8 +103,10 @@ prepare_host() {
 				cp -r ~/toolchains/* downloads/
 			fi
 			# Walkaround for ccache permissions
-			if [ "$(stat -c '%U %G' ~/.ccache/)" != "khadas khadas" ]; then
-				sudo chown khadas:khadas -R ~/.ccache/
+			if [ -d ~/.ccache ]; then
+				if [ "$(stat -c '%U %G' ~/.ccache/)" != "khadas khadas" ]; then
+					sudo chown khadas:khadas -R ~/.ccache/
+				fi
 			fi
 		fi
 	fi
