@@ -403,7 +403,7 @@ check_make_params() {
 	echo ""
 	for param in $MAKE_PARAMS
 	do
-		printf "${BOLDCYAN}%-20s:${ENDCOLOR}${BOLDGREEN}%10s${ENDCOLOR}\n" $param ${!param}
+		printf "${BOLDCYAN}%-25s:${ENDCOLOR}${BOLDGREEN}%10s${ENDCOLOR}\n" $param ${!param}
 	done
 	echo ""
 }
@@ -417,7 +417,7 @@ get_available_make_params() {
 	do
 		key=$param
 		value=${param}_VALUES
-		printf "${BOLDCYAN}%-20s:${ENDCOLOR}${BOLDGREEN}%20s${ENDCOLOR}\n" "$key" "${!value}"
+		printf "${BOLDCYAN}%-25s:${ENDCOLOR}${BOLDGREEN}%20s${ENDCOLOR}\n" "$key" "${!value}"
 	done
 	echo ""
 }

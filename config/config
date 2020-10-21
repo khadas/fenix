@@ -31,10 +31,30 @@ UTILS_DIR="$BUILD/utils-[0-9a-f]*"
 UPGRADE_DIR="$BUILD/images_upgrade-[0-9a-f]*"
 
 ##################################### Configurations ##################################
+MAKE_PARAMS="BUILD_TYPE DOWNLOAD_MIRROR NO_CCACHE COMPRESS_IMAGE INSTALL_TYPE_RAW CLONE_FULL_COMMIT_LOG"
+
+## Available values
+BUILD_TYPE_VALUES="develop | release"
+DOWNLOAD_MIRROR_VALUES="default | china"
+NO_CCACHE_VALUES="no | yes"
+COMPRESS_IMAGE_VALUES="no | yes"
+INSTALL_TYPE_RAW_VALUES="no | yes"
+CLONE_FULL_COMMIT_LOG_VALUES="no | yes"
+
+## Default values
+[[ -z $NO_CCACHE ]] && NO_CCACHE=no
+[[ -z $BUILD_TYPE ]] && BUILD_TYPE=develop
+[[ -z $DOWNLOAD_MIRROR ]] && DOWNLOAD_MIRROR=default
+[[ -z $COMPRESS_IMAGE ]] && COMPRESS_IMAGE=no
+[[ -z $INSTALL_TYPE_RAW ]] && INSTALL_TYPE_RAW=no
+[[ -z $CLONE_FULL_COMMIT_LOG ]] && CLONE_FULL_COMMIT_LOG=no
+
+
 FENIX_BRANCH="master"
 ## U-boot & Linux GitHub URL
 LINUX_SOURCE_URL="https://github.com/khadas/linux"
 UBOOT_SOURCE_URL="https://github.com/khadas/u-boot"
+[[ "$CLONE_FULL_COMMIT_LOG" == "no" ]] && GIT_CLONE_OPTIONS="--depth=1"
 
 ROOTFSCACHE_VERSION=6
 DATE=$(date +%F | sed 's/-//g')
@@ -47,22 +67,6 @@ if [ ${NR_CPUS} -le ${NR_JOBS_MAX} ]; then
 else
 	NR_JOBS=${NR_JOBS_MAX}
 fi
-
-MAKE_PARAMS="BUILD_TYPE DOWNLOAD_MIRROR NO_CCACHE COMPRESS_IMAGE INSTALL_TYPE_RAW"
-
-## Available values
-BUILD_TYPE_VALUES="develop | release"
-DOWNLOAD_MIRROR_VALUES="default | china"
-NO_CCACHE_VALUES="no | yes"
-COMPRESS_IMAGE_VALUES="no | yes"
-INSTALL_TYPE_RAW_VALUES="no | yes"
-
-## Default values
-[[ -z $NO_CCACHE ]] && NO_CCACHE=no
-[[ -z $BUILD_TYPE ]] && BUILD_TYPE=develop
-[[ -z $DOWNLOAD_MIRROR ]] && DOWNLOAD_MIRROR=default
-[[ -z $COMPRESS_IMAGE ]] && COMPRESS_IMAGE=no
-[[ -z $INSTALL_TYPE_RAW ]] && INSTALL_TYPE_RAW=no
 
 ## Enable ccache by default
 if [ "$NO_CCACHE" != "yes" ]; then
