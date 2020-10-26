@@ -1,6 +1,6 @@
 # Device Tree Overlays
-# i2c2 		-- Enable I2C2 (GPIO header PIN25 && PIN26)
-# spi3 		-- Enable SPI3 (GPIO header PIN15 && PIN16 && PIN22 && PIN23)
-# i2s0 		-- Enable I2s0 (GPIO header PIN29 && PIN31 && PIN32 && PIN33 && PIN35 && PIN36 && PIN37 && PIN38)
-# onewire 	-- Enable onewire bus (GPIO header PIN30)
+# i2c2		-- Enable I2C2 (GPIO header PIN25 && PIN26)
+# spi3		-- Enable SPI3 (GPIO header PIN15 && PIN16 && PIN22 && PIN23)
+# i2s0		-- Enable I2s0 (GPIO header PIN29 && PIN31 && PIN32 && PIN33 && PIN35 && PIN36 && PIN37 && PIN38)
+# onewire	-- Enable onewire bus (GPIO header PIN30)
 overlays=i2c2 spi3 i2s0 onewire

@@ -81,10 +81,10 @@ if test -e mmc ${devnum}:${boot_env_part} ${mark_prefix}.next; then
 		setenv boot_dtb "rk3399-khadas-edge.dtb";
 	else if test ${board_type} = ${BOARD_TYPE_EDGE_V}; then
 		setenv boot_dtb "rk3399-khadas-edge-v.dtb";
-        setenv overlaydir "edgev";
+		setenv overlaydir "edgev";
 	else if test ${board_type} = ${BOARD_TYPE_CAPTAIN}; then
 		setenv boot_dtb "rk3399-khadas-edge-captain.dtb";
-        setenv overlaydir "captain";
+		setenv overlaydir "captain";
 	fi;fi;fi
 else
 	if test ${board_type} = ${BOARD_TYPE_EDGE}; then
@@ -160,14 +160,14 @@ for distro_bootpart in ${devplist}; do
 	if load ${devtype} ${devnum}:${distro_bootpart} ${ramdisk_addr_r} uInitrd; then
 		if load ${devtype} ${devnum}:${distro_bootpart} ${kernel_addr_r} zImage; then
 			if load ${devtype} ${devnum}:${distro_bootpart} ${fdt_addr_r} ${dtb_prefix}${boot_dtb}; then
-			fdt addr ${fdt_addr_r};
-			fdt resize 65536;
+				fdt addr ${fdt_addr_r};
+				fdt resize 65536;
 				if test "X${overlays}" != "X"; then
 				    for overlay in ${overlays}; do
 						echo Apply dtbo ${overlay}
 						if load ${devtype} ${devnum}:${distro_bootpart} ${dtbo_loadaddr} ${mark_prefix}dtb/overlays/${overlaydir}/${overlay}.dtbo; then
 							fdt apply ${dtbo_loadaddr}
-							fi
+						fi
 					done
 				fi;
 				run boot_start;
