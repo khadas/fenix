@@ -1,0 +1,26 @@
+From e7c4d16caba652bcf3a3a1fae06394da6e14e05a Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Wed, 18 Nov 2020 11:36:10 +0800
+Subject: [PATCH 31/53] reserv_mem_for_logo
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ common/board_f.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/common/board_f.c b/common/board_f.c
+index 2ec5dbaa..bf94f9f4 100644
+--- a/common/board_f.c
++++ b/common/board_f.c
+@@ -557,7 +557,7 @@ static int reserve_fdt(void)
+ 	 * will be relocated with other data.
+ 	 */
+ 	if (gd->fdt_blob) {
+-		gd->fdt_size = ALIGN(fdt_totalsize(gd->fdt_blob) + 0x1000, 32);
++		gd->fdt_size = ALIGN(fdt_totalsize(gd->fdt_blob) + 0x10000, 32);
+ 
+ 		gd->start_addr_sp = reserve_stack_aligned(gd->fdt_size);
+ 		gd->new_fdt = map_sysmem(gd->start_addr_sp, gd->fdt_size);
+-- 
+2.17.1
+

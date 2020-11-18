@@ -1,0 +1,25 @@
+From 5ee3b86a56ac7930a51b7dc970fb1d80ebefee5e Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Wed, 18 Nov 2020 13:42:23 +0800
+Subject: [PATCH 47/53] VIM3L enable FUSB302
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ configs/khadas-vim3l_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/configs/khadas-vim3l_defconfig b/configs/khadas-vim3l_defconfig
+index dd5d958a..67c28daf 100644
+--- a/configs/khadas-vim3l_defconfig
++++ b/configs/khadas-vim3l_defconfig
+@@ -58,6 +58,7 @@ CONFIG_PINCTRL_MESON_G12A=y
+ CONFIG_POWER_DOMAIN=y
+ CONFIG_MESON_EE_POWER_DOMAIN=y
+ CONFIG_DM_REGULATOR_FIXED=y
++CONFIG_POWER_FUSB302=y
+ CONFIG_DM_RESET=y
+ CONFIG_DEBUG_UART_MESON=y
+ CONFIG_DEBUG_UART_ANNOUNCE=y
+-- 
+2.17.1
+
