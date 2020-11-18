@@ -1,0 +1,41 @@
+From af3bd898e29a4eba72678b180f4d4fd936422496 Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Wed, 18 Nov 2020 11:33:53 +0800
+Subject: [PATCH 21/53] add_autoscr_alias_for_script
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ cmd/cmd_script.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/cmd/cmd_script.c b/cmd/cmd_script.c
+index cf9ebb96..c3de4877 100644
+--- a/cmd/cmd_script.c
++++ b/cmd/cmd_script.c
+@@ -196,12 +196,19 @@ int do_script (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+     return rcode;
+ }
+ 
+-U_BOOT_CMD(
+-   script, 5, 0,   do_script,
+-   "# run plain script from memory",
++static char script_help_text[] =
+    "[addr|check] [bytes] [no_chk] [silent] - run script starting at addr\n"
+    "   bytes - read bytes (hex) limit\n"
+    "   no_chk - no check header not ignore 1st line\n"
+-   "   silent - be silent\n"
++   "   silent - be silent\n";
++
++U_BOOT_CMD(
++   script, 5, 0,   do_script,
++   "# run plain script from memory", script_help_text
++);
++
++U_BOOT_CMD(
++   autoscr, 5, 0,  do_script,
++   "# run plain script from memory", script_help_text
+ );
+ 
+-- 
+2.17.1
+

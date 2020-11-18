@@ -1,0 +1,63 @@
+From 25d4a3880f32bf9294312886b28501d89b92f793 Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Tue, 12 May 2020 20:01:15 +0900
+Subject: [PATCH 43/53] edge_spi_config
+
+enable SPI for EDGE
+---
+ configs/khadas-edge-captain-rk3399_defconfig | 5 +++++
+ configs/khadas-edge-rk3399_defconfig         | 5 +++++
+ configs/khadas-edge-v-rk3399_defconfig       | 5 +++++
+ 3 files changed, 15 insertions(+)
+
+diff --git a/configs/khadas-edge-captain-rk3399_defconfig b/configs/khadas-edge-captain-rk3399_defconfig
+index 10897531..e5ec376d 100644
+--- a/configs/khadas-edge-captain-rk3399_defconfig
++++ b/configs/khadas-edge-captain-rk3399_defconfig
+@@ -28,6 +28,11 @@ CONFIG_DISPLAY_BOARDINFO_LATE=y
+ CONFIG_SPL_STACK_R=y
+ CONFIG_SPL_STACK_R_MALLOC_SIMPLE_LEN=0x10000
+ CONFIG_TPL=y
++CONFIG_SPI_FLASH_WINBOND=y
++CONFIG_ROCKCHIP_SPI=y
++# CONFIG_SPL_SPI_FLASH_SUPPORT=y
++# CONFIG_SPL_SPI_SUPPORT=y
++# CONFIG_SPL_SPI_LOAD=y
+ CONFIG_SYS_PROMPT="kedge# "
+ CONFIG_USE_PREBOOT=y
+ CONFIG_CMD_BOOTZ=y
+diff --git a/configs/khadas-edge-rk3399_defconfig b/configs/khadas-edge-rk3399_defconfig
+index 7b7659f3..7e5e93c5 100644
+--- a/configs/khadas-edge-rk3399_defconfig
++++ b/configs/khadas-edge-rk3399_defconfig
+@@ -28,6 +28,11 @@ CONFIG_DISPLAY_BOARDINFO_LATE=y
+ CONFIG_SPL_STACK_R=y
+ CONFIG_SPL_STACK_R_MALLOC_SIMPLE_LEN=0x10000
+ CONFIG_TPL=y
++CONFIG_SPI_FLASH_WINBOND=y
++CONFIG_ROCKCHIP_SPI=y
++# CONFIG_SPL_SPI_FLASH_SUPPORT=y
++# CONFIG_SPL_SPI_SUPPORT=y
++# CONFIG_SPL_SPI_LOAD=y
+ CONFIG_SYS_PROMPT="kedge# "
+ CONFIG_USE_PREBOOT=y
+ CONFIG_CMD_BOOTZ=y
+diff --git a/configs/khadas-edge-v-rk3399_defconfig b/configs/khadas-edge-v-rk3399_defconfig
+index 1c58bc17..31b86e72 100644
+--- a/configs/khadas-edge-v-rk3399_defconfig
++++ b/configs/khadas-edge-v-rk3399_defconfig
+@@ -28,6 +28,11 @@ CONFIG_DISPLAY_BOARDINFO_LATE=y
+ CONFIG_SPL_STACK_R=y
+ CONFIG_SPL_STACK_R_MALLOC_SIMPLE_LEN=0x10000
+ CONFIG_TPL=y
++CONFIG_SPI_FLASH_WINBOND=y
++CONFIG_ROCKCHIP_SPI=y
++# CONFIG_SPL_SPI_FLASH_SUPPORT=y
++# CONFIG_SPL_SPI_SUPPORT=y
++# CONFIG_SPL_SPI_LOAD=y
+ CONFIG_SYS_PROMPT="kedge# "
+ CONFIG_USE_PREBOOT=y
+ CONFIG_CMD_BOOTZ=y
+-- 
+2.17.1
+

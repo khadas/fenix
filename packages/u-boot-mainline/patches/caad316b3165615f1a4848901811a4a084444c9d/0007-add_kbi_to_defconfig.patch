@@ -1,0 +1,107 @@
+From 33d29870a510a2731ef84786eede085a86195af0 Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Fri, 24 Apr 2020 01:39:18 +0900
+Subject: [PATCH 07/53] add_kbi_to_defconfig
+
+enable i2c + adc options for KBI
+---
+ configs/khadas-edge-captain-rk3399_defconfig | 4 ++++
+ configs/khadas-edge-rk3399_defconfig         | 4 ++++
+ configs/khadas-edge-v-rk3399_defconfig       | 4 ++++
+ configs/khadas-vim2_defconfig                | 5 +++++
+ configs/khadas-vim3_defconfig                | 5 +++++
+ configs/khadas-vim3l_defconfig               | 5 +++++
+ configs/khadas-vim_defconfig                 | 5 +++++
+ 7 files changed, 32 insertions(+)
+
+diff --git a/configs/khadas-edge-captain-rk3399_defconfig b/configs/khadas-edge-captain-rk3399_defconfig
+index 8668917e..25f98318 100644
+--- a/configs/khadas-edge-captain-rk3399_defconfig
++++ b/configs/khadas-edge-captain-rk3399_defconfig
+@@ -58,3 +58,7 @@ CONFIG_USB_ETHER_RTL8152=y
+ CONFIG_USB_ETHER_SMSC95XX=y
+ CONFIG_SPL_TINY_MEMSET=y
+ CONFIG_ERRNO_STR=y
++CONFIG_CMD_I2C=y
++CONFIG_CMD_KHADAS_KBI=y
++CONFIG_DM_I2C=y
++CONFIG_CMD_ADC=y
+diff --git a/configs/khadas-edge-rk3399_defconfig b/configs/khadas-edge-rk3399_defconfig
+index ed4429d2..a5b007f7 100644
+--- a/configs/khadas-edge-rk3399_defconfig
++++ b/configs/khadas-edge-rk3399_defconfig
+@@ -57,3 +57,7 @@ CONFIG_USB_ETHER_RTL8152=y
+ CONFIG_USB_ETHER_SMSC95XX=y
+ CONFIG_SPL_TINY_MEMSET=y
+ CONFIG_ERRNO_STR=y
++CONFIG_CMD_I2C=y
++CONFIG_CMD_KHADAS_KBI=y
++CONFIG_DM_I2C=y
++CONFIG_CMD_ADC=y
+diff --git a/configs/khadas-edge-v-rk3399_defconfig b/configs/khadas-edge-v-rk3399_defconfig
+index 37706044..db6de45b 100644
+--- a/configs/khadas-edge-v-rk3399_defconfig
++++ b/configs/khadas-edge-v-rk3399_defconfig
+@@ -58,3 +58,7 @@ CONFIG_USB_ETHER_RTL8152=y
+ CONFIG_USB_ETHER_SMSC95XX=y
+ CONFIG_SPL_TINY_MEMSET=y
+ CONFIG_ERRNO_STR=y
++CONFIG_CMD_I2C=y
++CONFIG_CMD_KHADAS_KBI=y
++CONFIG_DM_I2C=y
++CONFIG_CMD_ADC=y
+diff --git a/configs/khadas-vim2_defconfig b/configs/khadas-vim2_defconfig
+index 5633f6da..1532c6f8 100644
+--- a/configs/khadas-vim2_defconfig
++++ b/configs/khadas-vim2_defconfig
+@@ -65,3 +65,8 @@ CONFIG_USB_GADGET_PRODUCT_NUM=0xfada
+ CONFIG_USB_GADGET_DWC2_OTG=y
+ CONFIG_USB_GADGET_DOWNLOAD=y
+ CONFIG_OF_LIBFDT_OVERLAY=y
++CONFIG_CMD_I2C=y
++CONFIG_CMD_KHADAS_KBI=y
++CONFIG_DM_I2C=y
++CONFIG_SYS_I2C_MESON=y
++CONFIG_CMD_ADC=y
+diff --git a/configs/khadas-vim3_defconfig b/configs/khadas-vim3_defconfig
+index 692138eb..fa50b249 100644
+--- a/configs/khadas-vim3_defconfig
++++ b/configs/khadas-vim3_defconfig
+@@ -64,3 +64,8 @@ CONFIG_USB_GADGET_DWC2_OTG=y
+ CONFIG_USB_GADGET_DWC2_OTG_PHY_BUS_WIDTH_8=y
+ CONFIG_USB_GADGET_DOWNLOAD=y
+ CONFIG_OF_LIBFDT_OVERLAY=y
++CONFIG_CMD_I2C=y
++CONFIG_CMD_KHADAS_KBI=y
++CONFIG_DM_I2C=y
++CONFIG_SYS_I2C_MESON=y
++CONFIG_CMD_ADC=y
+diff --git a/configs/khadas-vim3l_defconfig b/configs/khadas-vim3l_defconfig
+index 28c20c0d..b1419207 100644
+--- a/configs/khadas-vim3l_defconfig
++++ b/configs/khadas-vim3l_defconfig
+@@ -69,3 +69,8 @@ CONFIG_DM_VIDEO=y
+ CONFIG_VIDEO_MESON=y
+ CONFIG_VIDEO_DT_SIMPLEFB=y
+ CONFIG_OF_LIBFDT_OVERLAY=y
++CONFIG_CMD_I2C=y
++CONFIG_CMD_KHADAS_KBI=y
++CONFIG_DM_I2C=y
++CONFIG_SYS_I2C_MESON=y
++CONFIG_CMD_ADC=y
+diff --git a/configs/khadas-vim_defconfig b/configs/khadas-vim_defconfig
+index 8a0af5ce..d2cd8f04 100644
+--- a/configs/khadas-vim_defconfig
++++ b/configs/khadas-vim_defconfig
+@@ -58,3 +58,8 @@ CONFIG_USB_GADGET_PRODUCT_NUM=0xfada
+ CONFIG_USB_GADGET_DWC2_OTG=y
+ CONFIG_USB_GADGET_DOWNLOAD=y
+ CONFIG_OF_LIBFDT_OVERLAY=y
++CONFIG_CMD_I2C=y
++CONFIG_CMD_KHADAS_KBI=y
++CONFIG_DM_I2C=y
++CONFIG_SYS_I2C_MESON=y
++CONFIG_CMD_ADC=y
+-- 
+2.17.1
+

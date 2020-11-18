@@ -1,0 +1,150 @@
+From ed155bfaf5b611e3a0258b93ba0d8c733288adfe Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Sat, 25 Apr 2020 23:02:57 +0900
+Subject: [PATCH 29/53] khadas_logo
+
++ logo + preboot
++ PREBOOT => load_logo + usb_start + kbi_init + sleep 1 sec
++ add missed $loadaddr value
++ bmp logo file can be compressed by gzip
++ load LOGO seq
+	 -> SPI
+	 -> MMC|SD /splash.bmp
+	 -> MMC|SD /usr/share/fenix/logo/logo.bmp
+	 -> embeded logo $fdtcontroladdr_end
+---
+ configs/khadas-edge-captain-rk3399_defconfig |  1 +
+ configs/khadas-edge-rk3399_defconfig         |  1 +
+ configs/khadas-edge-v-rk3399_defconfig       |  1 +
+ configs/khadas-vim2_defconfig                |  1 +
+ configs/khadas-vim3_defconfig                |  1 +
+ configs/khadas-vim3l_defconfig               |  1 +
+ configs/khadas-vim_defconfig                 |  1 +
+ include/configs/meson64.h                    | 21 ++++++++++++++++++++
+ 8 files changed, 28 insertions(+)
+
+diff --git a/configs/khadas-edge-captain-rk3399_defconfig b/configs/khadas-edge-captain-rk3399_defconfig
+index e8fa008f..7d3f6a87 100644
+--- a/configs/khadas-edge-captain-rk3399_defconfig
++++ b/configs/khadas-edge-captain-rk3399_defconfig
+@@ -19,6 +19,7 @@ CONFIG_SPL_STACK_R=y
+ CONFIG_SPL_STACK_R_MALLOC_SIMPLE_LEN=0x10000
+ CONFIG_TPL=y
+ CONFIG_SYS_PROMPT="kedge# "
++CONFIG_USE_PREBOOT=y
+ CONFIG_CMD_BOOTZ=y
+ CONFIG_CMD_GPT=y
+ CONFIG_CMD_MMC=y
+diff --git a/configs/khadas-edge-rk3399_defconfig b/configs/khadas-edge-rk3399_defconfig
+index 4c7ec3c6..558fc95c 100644
+--- a/configs/khadas-edge-rk3399_defconfig
++++ b/configs/khadas-edge-rk3399_defconfig
+@@ -19,6 +19,7 @@ CONFIG_SPL_STACK_R=y
+ CONFIG_SPL_STACK_R_MALLOC_SIMPLE_LEN=0x10000
+ CONFIG_TPL=y
+ CONFIG_SYS_PROMPT="kedge# "
++CONFIG_USE_PREBOOT=y
+ CONFIG_CMD_BOOTZ=y
+ CONFIG_CMD_GPT=y
+ CONFIG_CMD_MMC=y
+diff --git a/configs/khadas-edge-v-rk3399_defconfig b/configs/khadas-edge-v-rk3399_defconfig
+index 445e4289..971bf92a 100644
+--- a/configs/khadas-edge-v-rk3399_defconfig
++++ b/configs/khadas-edge-v-rk3399_defconfig
+@@ -19,6 +19,7 @@ CONFIG_SPL_STACK_R=y
+ CONFIG_SPL_STACK_R_MALLOC_SIMPLE_LEN=0x10000
+ CONFIG_TPL=y
+ CONFIG_SYS_PROMPT="kedge# "
++CONFIG_USE_PREBOOT=y
+ CONFIG_CMD_BOOTZ=y
+ CONFIG_CMD_GPT=y
+ CONFIG_CMD_MMC=y
+diff --git a/configs/khadas-vim2_defconfig b/configs/khadas-vim2_defconfig
+index 8a79673b..29cd91ae 100644
+--- a/configs/khadas-vim2_defconfig
++++ b/configs/khadas-vim2_defconfig
+@@ -13,6 +13,7 @@ CONFIG_NR_DRAM_BANKS=1
+ CONFIG_DEBUG_UART_BASE=0xc81004c0
+ CONFIG_DEBUG_UART_CLOCK=24000000
+ CONFIG_IDENT_STRING=" khadas-vim2"
++CONFIG_USE_PREBOOT=y
+ CONFIG_DEBUG_UART=y
+ CONFIG_OF_BOARD_SETUP=y
+ CONFIG_MISC_INIT_R=y
+diff --git a/configs/khadas-vim3_defconfig b/configs/khadas-vim3_defconfig
+index b6387ee6..4cd5e2a2 100644
+--- a/configs/khadas-vim3_defconfig
++++ b/configs/khadas-vim3_defconfig
+@@ -21,6 +21,7 @@ CONFIG_NR_DRAM_BANKS=1
+ CONFIG_DEBUG_UART_BASE=0xff803000
+ CONFIG_DEBUG_UART_CLOCK=24000000
+ CONFIG_IDENT_STRING=" khadas-vim3"
++CONFIG_USE_PREBOOT=y
+ CONFIG_DEBUG_UART=y
+ CONFIG_OF_BOARD_SETUP=y
+ CONFIG_MISC_INIT_R=y
+diff --git a/configs/khadas-vim3l_defconfig b/configs/khadas-vim3l_defconfig
+index 169e073f..3598a8af 100644
+--- a/configs/khadas-vim3l_defconfig
++++ b/configs/khadas-vim3l_defconfig
+@@ -21,6 +21,7 @@ CONFIG_NR_DRAM_BANKS=1
+ CONFIG_DEBUG_UART_BASE=0xff803000
+ CONFIG_DEBUG_UART_CLOCK=24000000
+ CONFIG_IDENT_STRING=" khadas-vim3l"
++CONFIG_USE_PREBOOT=y
+ CONFIG_DEBUG_UART=y
+ CONFIG_OF_BOARD_SETUP=y
+ CONFIG_MISC_INIT_R=y
+diff --git a/configs/khadas-vim_defconfig b/configs/khadas-vim_defconfig
+index f728fe40..1afe9395 100644
+--- a/configs/khadas-vim_defconfig
++++ b/configs/khadas-vim_defconfig
+@@ -13,6 +13,7 @@ CONFIG_NR_DRAM_BANKS=1
+ CONFIG_DEBUG_UART_BASE=0xc81004c0
+ CONFIG_DEBUG_UART_CLOCK=24000000
+ CONFIG_IDENT_STRING=" khadas-vim"
++CONFIG_USE_PREBOOT=y
+ CONFIG_DEBUG_UART=y
+ CONFIG_OF_BOARD_SETUP=y
+ CONFIG_MISC_INIT_R=y
+diff --git a/include/configs/meson64.h b/include/configs/meson64.h
+index 87ffc7c9..8c2f4af8 100644
+--- a/include/configs/meson64.h
++++ b/include/configs/meson64.h
+@@ -75,12 +75,33 @@
+ 	func(DHCP, dhcp, na)
+ #endif
+ 
++#define CONFIG_SYS_VIDEO_LOGO_MAX_SIZE 8192000
++#define CONFIG_VIDEO_BMP_GZIP 1
++
++#define CONSOLE_FONT_COLOR 14
++
++#define PREBOOT_LOAD_LOGO \
++	"ll=0; test $boot_source = spi && sf probe && sf read $loadaddr 0x170000 0x10000 && ll=1; " \
++	"test $ll = 0 && ll=1 && " \
++	"load mmc 1 $loadaddr splash.bmp || " \
++	"load mmc 2 $loadaddr splash.bmp || " \
++	"load mmc 1:2 $loadaddr /usr/share/fenix/logo/logo.bmp || " \
++	"load mmc 2:2 $loadaddr /usr/share/fenix/logo/logo.bmp || " \
++	"ll=0; " \
++	"test $ll = 1 && bmp display $loadaddr m m || ll=0; " \
++	"test $ll = 0 && bmp display $fdtcontroladdr_end m m; "
++
++#define PREBOOT_CMD "run load_logo; usb start; kbi init; sleep 1;"
++
+ #ifndef CONFIG_EXTRA_ENV_SETTINGS
+ #define CONFIG_EXTRA_ENV_SETTINGS \
++       "load_logo=" PREBOOT_LOAD_LOGO "\0" \
++       "preboot=" PREBOOT_CMD "\0" \
+ 	"stdin=" STDIN_CFG "\0" \
+ 	"stdout=" STDOUT_CFG "\0" \
+ 	"stderr=" STDOUT_CFG "\0" \
+ 	"fdt_addr_r=0x08008000\0" \
++	"loadaddr=0x01000000\0" \
+ 	"scriptaddr=0x08000000\0" \
+ 	"kernel_addr_r=0x08080000\0" \
+ 	"pxefile_addr_r=0x01080000\0" \
+-- 
+2.17.1
+

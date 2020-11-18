@@ -1,0 +1,78 @@
+From 9e1042fa1dae0789ba23e23a0164cdc44332c6b5 Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Tue, 12 May 2020 19:08:15 +0900
+Subject: [PATCH 41/53] edge_hdmi_display
+
+!!! VIDEO scrambled !!! patch disabled
+---
+ configs/khadas-edge-captain-rk3399_defconfig | 10 ++++++++++
+ configs/khadas-edge-rk3399_defconfig         | 10 ++++++++++
+ configs/khadas-edge-v-rk3399_defconfig       | 10 ++++++++++
+ 3 files changed, 30 insertions(+)
+
+diff --git a/configs/khadas-edge-captain-rk3399_defconfig b/configs/khadas-edge-captain-rk3399_defconfig
+index 7d3f6a87..10897531 100644
+--- a/configs/khadas-edge-captain-rk3399_defconfig
++++ b/configs/khadas-edge-captain-rk3399_defconfig
+@@ -7,6 +7,16 @@ CONFIG_ENV_SIZE=0x8000
+ CONFIG_ARCH_ROCKCHIP=y
+ CONFIG_SYS_TEXT_BASE=0x00200000
+ CONFIG_ROCKCHIP_RK3399=y
++CONFIG_DM_VIDEO=y
++CONFIG_CMD_BMP=y
++# CONFIG_VIDEO_BPP8 is not set
++CONFIG_DISPLAY=y
++CONFIG_VIDEO_ROCKCHIP=y
++# CONFIG_VIDEO_ROCKCHIP_MAX_XRES=1920
++# CONFIG_VIDEO_ROCKCHIP_MAX_YRES=1080
++# CONFIG_DISPLAY_ROCKCHIP_MIPI=y
++CONFIG_DISPLAY_ROCKCHIP_HDMI=y
++# CONFIG_DISPLAY_ROCKCHIP_EDP=y
+ CONFIG_TARGET_EVB_RK3399=y
+ CONFIG_NR_DRAM_BANKS=1
+ CONFIG_DEBUG_UART_BASE=0xFF1A0000
+diff --git a/configs/khadas-edge-rk3399_defconfig b/configs/khadas-edge-rk3399_defconfig
+index 558fc95c..7b7659f3 100644
+--- a/configs/khadas-edge-rk3399_defconfig
++++ b/configs/khadas-edge-rk3399_defconfig
+@@ -7,6 +7,16 @@ CONFIG_ENV_SIZE=0x8000
+ CONFIG_ARCH_ROCKCHIP=y
+ CONFIG_SYS_TEXT_BASE=0x00200000
+ CONFIG_ROCKCHIP_RK3399=y
++CONFIG_DM_VIDEO=y
++CONFIG_CMD_BMP=y
++# CONFIG_VIDEO_BPP8 is not set
++CONFIG_DISPLAY=y
++CONFIG_VIDEO_ROCKCHIP=y
++# CONFIG_VIDEO_ROCKCHIP_MAX_XRES=1920
++# CONFIG_VIDEO_ROCKCHIP_MAX_YRES=1080
++# CONFIG_DISPLAY_ROCKCHIP_MIPI=y
++CONFIG_DISPLAY_ROCKCHIP_HDMI=y
++# CONFIG_DISPLAY_ROCKCHIP_EDP=y
+ CONFIG_TARGET_EVB_RK3399=y
+ CONFIG_NR_DRAM_BANKS=1
+ CONFIG_DEBUG_UART_BASE=0xFF1A0000
+diff --git a/configs/khadas-edge-v-rk3399_defconfig b/configs/khadas-edge-v-rk3399_defconfig
+index 971bf92a..1c58bc17 100644
+--- a/configs/khadas-edge-v-rk3399_defconfig
++++ b/configs/khadas-edge-v-rk3399_defconfig
+@@ -7,6 +7,16 @@ CONFIG_ENV_SIZE=0x8000
+ CONFIG_ARCH_ROCKCHIP=y
+ CONFIG_SYS_TEXT_BASE=0x00200000
+ CONFIG_ROCKCHIP_RK3399=y
++CONFIG_DM_VIDEO=y
++CONFIG_CMD_BMP=y
++# CONFIG_VIDEO_BPP8 is not set
++CONFIG_DISPLAY=y
++CONFIG_VIDEO_ROCKCHIP=y
++# CONFIG_VIDEO_ROCKCHIP_MAX_XRES=1920
++# CONFIG_VIDEO_ROCKCHIP_MAX_YRES=1080
++# CONFIG_DISPLAY_ROCKCHIP_MIPI=y
++CONFIG_DISPLAY_ROCKCHIP_HDMI=y
++# CONFIG_DISPLAY_ROCKCHIP_EDP=y
+ CONFIG_TARGET_EVB_RK3399=y
+ CONFIG_NR_DRAM_BANKS=1
+ CONFIG_DEBUG_UART_BASE=0xFF1A0000
+-- 
+2.17.1
+
