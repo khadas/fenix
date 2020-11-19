@@ -1,0 +1,27 @@
+From 036c47268605d5b1c4e31e30006a3cf003d11274 Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Wed, 18 Nov 2020 15:22:21 +0800
+Subject: [PATCH 53/53] VIM3: configiure with autoboot
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ configs/khadas-vim3_defconfig | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/configs/khadas-vim3_defconfig b/configs/khadas-vim3_defconfig
+index ffeccc37..c7311fdf 100644
+--- a/configs/khadas-vim3_defconfig
++++ b/configs/khadas-vim3_defconfig
+@@ -13,6 +13,9 @@ CONFIG_DEBUG_UART=y
+ CONFIG_OF_BOARD_SETUP=y
+ CONFIG_MISC_INIT_R=y
+ # CONFIG_DISPLAY_CPUINFO is not set
++CONFIG_AUTOBOOT_KEYED=y
++CONFIG_AUTOBOOT_DELAY_STR="2"
++CONFIG_AUTOBOOT_STOP_STR=" "
+ # CONFIG_CMD_BDI is not set
+ # CONFIG_CMD_IMI is not set
+ CONFIG_CMD_MD5SUM=y
+-- 
+2.17.1
+

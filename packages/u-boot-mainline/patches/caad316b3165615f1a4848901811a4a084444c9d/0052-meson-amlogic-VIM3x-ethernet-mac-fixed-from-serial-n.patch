@@ -1,0 +1,35 @@
+From 5434c5ba683a0ef319d536cd54e416ad212705a3 Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Thu, 10 Sep 2020 14:03:11 +0800
+Subject: [PATCH 52/53] meson amlogic VIM3x ethernet mac fixed from serial
+ number
+
+---
+ board/amlogic/w400/w400.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/board/amlogic/w400/w400.c b/board/amlogic/w400/w400.c
+index 1f341113..2748920f 100644
+--- a/board/amlogic/w400/w400.c
++++ b/board/amlogic/w400/w400.c
+@@ -12,7 +12,17 @@
+ 
+ int misc_init_r(void)
+ {
++	u8 mac_addr[6];
+ 	meson_eth_init(PHY_INTERFACE_MODE_RGMII, 0);
++
++	if (!eth_env_get_enetaddr("ethaddr", mac_addr)) {
++		meson_generate_serial_ethaddr();
++		eth_env_get_enetaddr("ethaddr", mac_addr);
++		printf("[i] serial eth mac %02X:%02X:%02X:%02X:%02X:%02X\n",
++		 mac_addr[0],mac_addr[1],mac_addr[2],
++		 mac_addr[3],mac_addr[4],mac_addr[5]);
++	}
++
+ #if defined CONFIG_POWER_FUSB302
+ 	fusb302_init();
+ #endif
+-- 
+2.17.1
+

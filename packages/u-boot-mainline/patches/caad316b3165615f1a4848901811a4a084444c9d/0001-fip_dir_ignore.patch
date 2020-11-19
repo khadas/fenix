@@ -1,0 +1,23 @@
+From ce1e55f3af34c5129e0422f825c3372bf3da6b8a Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Fri, 24 Apr 2020 03:42:36 +0900
+Subject: [PATCH 01/53] fip_dir_ignore
+
+just ignore fip dir
+---
+ .gitignore | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/.gitignore b/.gitignore
+index 2e1c8bf2..6bec6b7c 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -92,3 +92,4 @@ GTAGS
+ *.orig
+ *~
+ \#*#
++/fip/
+\ No newline at end of file
+-- 
+2.17.1
+

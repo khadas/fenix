@@ -1,0 +1,50 @@
+From 5509e6e83221d08654d1c029617878ebbbf7fb52 Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Sat, 25 Apr 2020 15:31:09 +0900
+Subject: [PATCH 26/53] VIM3x_enable_hdmi_output
+
+HDMI video output for VIM3 VIM3L
+---
+ configs/khadas-vim3_defconfig  | 7 +++++++
+ configs/khadas-vim3l_defconfig | 7 +++++++
+ 2 files changed, 14 insertions(+)
+
+diff --git a/configs/khadas-vim3_defconfig b/configs/khadas-vim3_defconfig
+index e50cacbf..b6387ee6 100644
+--- a/configs/khadas-vim3_defconfig
++++ b/configs/khadas-vim3_defconfig
+@@ -6,6 +6,13 @@ CONFIG_ENV_FAT_FILE="uboot.env"
+ CONFIG_ENV_SIZE=0x8000
+ CONFIG_SYS_BOARD="w400"
+ CONFIG_ARCH_MESON=y
++CONFIG_CMD_BMP=y
++CONFIG_POWER_DOMAIN=y
++#CONFIG_MESON_GX_VPU_POWER_DOMAIN=y
++CONFIG_MESON_EE_POWER_DOMAIN=y
++CONFIG_DM_VIDEO=y
++CONFIG_SYS_WHITE_ON_BLACK=y
++CONFIG_VIDEO_MESON=y
+ CONFIG_SYS_TEXT_BASE=0x01000000
+ CONFIG_ENV_SIZE=0x2000
+ CONFIG_DM_GPIO=y
+diff --git a/configs/khadas-vim3l_defconfig b/configs/khadas-vim3l_defconfig
+index 00e2f08f..169e073f 100644
+--- a/configs/khadas-vim3l_defconfig
++++ b/configs/khadas-vim3l_defconfig
+@@ -6,6 +6,13 @@ CONFIG_ENV_FAT_FILE="uboot.env"
+ CONFIG_ENV_SIZE=0x8000
+ CONFIG_SYS_BOARD="w400"
+ CONFIG_ARCH_MESON=y
++CONFIG_CMD_BMP=y
++CONFIG_POWER_DOMAIN=y
++#CONFIG_MESON_GX_VPU_POWER_DOMAIN=y
++CONFIG_MESON_EE_POWER_DOMAIN=y
++CONFIG_DM_VIDEO=y
++CONFIG_SYS_WHITE_ON_BLACK=y
++CONFIG_VIDEO_MESON=y
+ CONFIG_SYS_TEXT_BASE=0x01000000
+ CONFIG_ENV_SIZE=0x2000
+ CONFIG_DM_GPIO=y
+-- 
+2.17.1
+
