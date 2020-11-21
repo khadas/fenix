@@ -1,17 +1,18 @@
-From ff35b97d9a707eb98fe6b262b2839a7c90de44a0 Mon Sep 17 00:00:00 2001
+From 3bc3e9719f708c88da972c14022d4bab0bc486a9 Mon Sep 17 00:00:00 2001
 From: yan <yan-wyb@foxmail.com>
-Date: Wed, 18 Nov 2020 11:21:57 +0800
-Subject: [PATCH 15/53] add script cmd similar with source or autoscr and
- cfgload
+Date: Sat, 21 Nov 2020 10:21:13 +0800
+Subject: [PATCH 1/2] add script cmd similar with source or autoscr and cfgload
 
 Signed-off-by: yan <yan-wyb@foxmail.com>
 ---
  cmd/Kconfig                     |   6 +
  cmd/Makefile                    |   1 +
- cmd/cmd_script.c                | 207 ++++++++++++++++++++++++++++++++
+ cmd/cmd_script.c                | 206 ++++++++++++++++++++++++++++++++
+ cmd/script.c                    |   1 +
  include/config_distro_bootcmd.h |  10 +-
- 4 files changed, 220 insertions(+), 4 deletions(-)
+ 5 files changed, 220 insertions(+), 4 deletions(-)
  create mode 100644 cmd/cmd_script.c
+ create mode 100644 cmd/script.c
 
 diff --git a/cmd/Kconfig b/cmd/Kconfig
 index 03d311a9..628e6baf 100644
@@ -42,10 +43,11 @@ index 67383b7d..55ad39df 100644
  obj-$(CONFIG_CMD_AVB) += avb.o
 diff --git a/cmd/cmd_script.c b/cmd/cmd_script.c
 new file mode 100644
-index 00000000..cf9ebb96
+index 00000000..d5595d04
 --- /dev/null
 +++ b/cmd/cmd_script.c
-@@ -0,0 +1,207 @@
+@@ -0,0 +1,206 @@
++
 +// ## hyphop ## for khadas
 +
 +/*
@@ -89,11 +91,11 @@ index 00000000..cf9ebb96
 +
 +## uboot usage  examples
 +
-+    script 0x1000000               - simple run from addr 0x1000000 s
-+    script 0x1000000 32            - same but only fist 32 bytes
-+    script 0x1000000 $filesize             - same but limited by file size value 
-+    script 0x1000000 $filesize 1       - same but no header
-+    script 0x1000000 $filesize 0 1     - silent
++    script 0x1000000				- simple run from addr 0x1000000 s
++    script 0x1000000 32 			- same but only fist 32 bytes
++    script 0x1000000 $filesize 			- same but limited by file size value 
++    script 0x1000000 $filesize 1 		- same but no header
++    script 0x1000000 $filesize 0 1		- silent
 +
 +    # tftp script usage
 +    ADDR=0x1000000; tftp $ADDR test.script && script $ADDR 
@@ -120,100 +122,99 @@ index 00000000..cf9ebb96
 +int
 +script (ulong addr , ulong leng,  ulong no_hdr_chk , ulong silent)
 +{
-+   ulong  len = leng;
-+   void *buf;
-+
-+   buf = map_sysmem(addr, 0);
-+
-+   char *data;
-+   char *n;
-+
-+   data = (char *)buf;
-+   n = data;
++	ulong  len = leng;
++	void *buf;
++	
++	buf = map_sysmem(addr, 0);
++	
++	char *data;
++	char *n;
++	
++	data = (char *)buf;
++	n = data;
 +
 +// simple mkimage header parser
-+   if ( *(n+0) == 0x27 &&
-+        *(n+1) == 0x05 &&
-+        *(n+2) == 0x19 &&
-+        *(n+3) == 0x56
-+        ) {
++	if ( *(n+0) == 0x27 &&
++	     *(n+1) == 0x05 &&
++	     *(n+2) == 0x19 &&
++	     *(n+3) == 0x56
++	     ) {
 +
 +// sizes calculate
-+       unsigned int l  = (*(n+14))*256 + *(n+15);
-+       unsigned int l2 = (*(n+66))*256 + *(n+67);
++	    unsigned int l  = (*(n+14))*256 + *(n+15);
++	    unsigned int l2 = (*(n+66))*256 + *(n+67);
 +
 +// check headers sizes only // its not crc check
-+       if ( l != l2 + 8 ) {
-+       printf ("** Script wrong headers size %u != %u **\n", l, l2  ) ;
-+       return -1;
-+       }
++	    if ( l != l2 + 8 ) {
++		printf ("** Script wrong headers size %u != %u **\n", l, l2  ) ;
++		return -1;
++	    }
 +// check zero script
-+       if ( l2 == 0 ) {
-+       printf ("** Script zero size **\n" );
-+       return -1;
-+       }
++	    if ( l2 == 0 ) {
++		printf ("** Script zero size **\n" );
++		return -1;
++	    }
 +
 +// fix offest
-+       data+=72;
++	    data+=72;
 +
 +// fix len
-+       len=l2;
++	    len=l2;
 +
 +// ignore after marker
-+   char *p = strstr( data , "\n##END##" );
-+   if (p != NULL) {
-+       len = p - data;
-+   }
++	char *p = strstr( data , "\n##END##" );
++	if (p != NULL) {
++	    len = p - data;
++	}
 +
 +// info
-+       if (!silent)
-+       printf ("## mkimage Script run a:%08lx l:%lu\n", addr, len) ;
++	    if (!silent)
++		printf ("## mkimage Script run a:%08lx l:%lu\n", addr, len) ;
 +
 +// run
-+       return run_command_list(data, len, 0);
++	    return run_command_list(data, len, 0);
 +
 +// mkimage script end
 +
-+   }
-+
++	}
++	
 +// simple script header parser skip first line if not comment
-+   if ( !no_hdr_chk ){
-+   if ( *n != '#') {
-+       for (int i=0;1;i++) {
-+       if ( i == 128 || *(n+i) == '\0') {
-+           printf ("** Script wrong header **\n") ;
-+           return -1;
-+       }
-+       if ( *(n+i) == '\n') {
-+           data+=i;
-+           len-=i;
-+           break;
-+       }
-+       }
-+   }
-+   }
++	if ( !no_hdr_chk ){
++	if ( *n != '#') {
++	    for (int i=0;1;i++) {
++		if ( i == 128 || *(n+i) == '\0') {
++		    printf ("** Script wrong header **\n") ;
++		    return -1;
++		}
++		if ( *(n+i) == '\n') {
++		    data+=i;
++		    len-=i;
++		    break;
++		}
++	    }
++	}
++	}
 +
 +// OK
 +
-+
 +// truncate long script
 +
-+   if (len > MAX_SCRIPT_SIZE ) {
-+       len = MAX_SCRIPT_SIZE;
-+       *(data + MAX_SCRIPT_SIZE) = '\0';
-+   }
++	if (len > MAX_SCRIPT_SIZE ) {
++	    len = MAX_SCRIPT_SIZE;
++	    *(data + MAX_SCRIPT_SIZE) = '\0';
++	}
 +
 +// ignore after marker
-+   char *p = strstr( data , "\n##END##" );
-+   if (p != NULL) {
-+       len = p - data;
-+   }
++	char *p = strstr( data , "\n##END##" );
++	if (p != NULL) {
++	    len = p - data;
++	}
 +
-+   if (!silent)
-+       printf ("## Script run a:%08lx l:%lu c:%lu\n", addr, len, no_hdr_chk ) ;
++	if (!silent)
++	    printf ("## Script run a:%08lx l:%lu c:%lu\n", addr, len, no_hdr_chk ) ;
 +
-+   return run_command_list(data, len, 0);
-+   return 0;
++	return run_command_list(data, len, 0);
++	return 0;
 +
 +}
 +
@@ -228,7 +229,7 @@ index 00000000..cf9ebb96
 +    if ( argc > 1 && *argv[1] == 'c' && *argv[1] == 'h' ) return 0;
 +    
 +    addr = simple_strtoul( argc < 2 || *argv[1] == '-' ?
-+   env_get("loadaddr") : argv[1], NULL, 16);
++	env_get("loadaddr") : argv[1], NULL, 16);
 +    
 +    leng = MAX_SCRIPT_SIZE;
 +    leng = 0;
@@ -238,21 +239,20 @@ index 00000000..cf9ebb96
 +    hdr  = argc < 4 ? 0 : simple_strtoul( argv[3], NULL, 10);
 +    slnt = argc < 5 ? 0 : simple_strtoul( argv[4], NULL, 10);
 +    
-+// printf ("## Script cmd a:%08lx l:%lu c:%lu l:%lu fs:%s\n", addr, leng, hdr, slnt, fs);
++//	printf ("## Script cmd a:%08lx l:%lu c:%lu l:%lu fs:%s\n", addr, leng, hdr, slnt, fs);
 +    rcode = script (addr , leng , hdr, slnt);
 +    if ( slnt ) return 0;
 +    return rcode;
 +}
 +
 +U_BOOT_CMD(
-+   script, 5, 0,   do_script,
-+   "# run plain script from memory",
-+   "[addr|check] [bytes] [no_chk] [silent] - run script starting at addr\n"
-+   "   bytes - read bytes (hex) limit\n"
-+   "   no_chk - no check header not ignore 1st line\n"
-+   "   silent - be silent\n"
++	script, 5, 0,	do_script,
++	"# run plain script from memory",
++	"[addr|check] [bytes] [no_chk] [silent] - run script starting at addr\n"
++	"	bytes - read bytes (hex) limit\n"
++	"	no_chk - no check header not ignore 1st line\n"
++	"	silent - be silent\n"
 +);
-+
 diff --git a/cmd/script.c b/cmd/script.c
 new file mode 120000
 index 00000000..a64fc45a
@@ -262,7 +262,7 @@ index 00000000..a64fc45a
 +cmd_script.c
 \ No newline at end of file
 diff --git a/include/config_distro_bootcmd.h b/include/config_distro_bootcmd.h
-index fc0935fa..094c1b6f 100644
+index fc0935fa..f3d504c9 100644
 --- a/include/config_distro_bootcmd.h
 +++ b/include/config_distro_bootcmd.h
 @@ -367,7 +367,7 @@
@@ -285,13 +285,12 @@ index fc0935fa..094c1b6f 100644
  	"boot_script_dhcp=boot.scr.uimg\0" \
  	BOOTENV_BOOT_TARGETS \
  	\
-@@ -437,9 +439,9 @@
- 		"fi\0"                                                    \
+@@ -438,8 +440,8 @@
  	\
  	"boot_a_script="                                                  \
--		"load ${devtype} ${devnum}:${distro_bootpart} "           \
+ 		"load ${devtype} ${devnum}:${distro_bootpart} "           \
 -			"${scriptaddr} ${prefix}${script}; "              \
- 		"source ${scriptaddr}\0"                                  \
+-		"source ${scriptaddr}\0"                                  \
 +			"${scriptaddr} ${prefix}${script} && "            \
 +		"script ${scriptaddr} \0"                                 \
  	\
