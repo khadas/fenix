@@ -7,6 +7,9 @@ KERNEL=="HevcEnc", MODE="0666"
 # ge2d
 KERNEL=="ge2d", MODE="0666"
 
+# ion
+KERNEL=="ion", MODE="0666"
+
 # GPIO Mem
 KERNEL=="gpiomem*", MODE="0660"
 
