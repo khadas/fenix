@@ -1,6 +1,6 @@
 PKG_NAME="libplayer_aml"
-PKG_VERSION="e58206a06ecf817c4b7f156512d6ab75c0123031"
-PKG_SHA256="8021ee928781b7d15571303e0f5cf547f9e5ec1fb669b3f1b4736e084b0c6636"
+PKG_VERSION="9ade50781955918df66acb3caa56c79d82d71a6c"
+PKG_SHA256="41e78617003238855008c2661c6eb2688d94919c91ce1adfe10bda9f4abc39d6"
 PKG_SOURCE_DIR="libplayer_aml-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/libplayer_aml"
 PKG_URL="https://github.com/numbqq/libplayer_aml/archive/$PKG_VERSION.tar.gz"
