@@ -20,6 +20,13 @@
 [ -f /sys/class/graphics/fb0/blank ] && chmod 777 /sys/class/graphics/fb0/blank
 [ -f /sys/class/graphics/fb0/osd_clear ] && chmod 777 /sys/class/graphics/fb0/osd_clear
 
+# For kplayer
+[ -f /sys/class/tsync/vpause_flag ] && sudo chmod 777 /sys/class/tsync/vpause_flag
+[ -f /sys/class/tsync/startsync_mode ] && sudo chmod 777 /sys/class/tsync/startsync_mode
+[ -f /sys/class/tsync/slowsync_enable ] && sudo chmod 777 /sys/class/tsync/slowsync_enable
+[ -f /sys/class/video/slowsync_repeat_enable ] && sudo chmod 777 /sys/class/video/slowsync_repeat_enable
+[ -f /sys/class/video/vsync_slow_factor ] && sudo chmod 777 /sys/class/video/vsync_slow_factor
+
 # For MCU
 [ -f /sys/class/mcu/poweroff ] && chmod 777 /sys/class/mcu/poweroff
 [ -f /sys/class/mcu/usb_pcie_switch_mode ] && chmod 777 /sys/class/mcu/usb_pcie_switch_mode
