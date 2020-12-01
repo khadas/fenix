@@ -285,7 +285,6 @@ build_board_deb() {
 			## Wi-Fi firmware
 			mv $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag_apsta_ap6398s.bin $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag_apsta.bin
 			mv $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag_ap6398s.bin $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag.bin
-			mv $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag_p2p_ap6398s.bin $pkgdir/lib/firmware/brcm/fw_bcm4359c0_ag_p2p.bin
 			mv $pkgdir/lib/firmware/brcm/nvram_ap6398s.txt $pkgdir/lib/firmware/brcm/nvram_ap6359sa.txt
 
 			mv $pkgdir/lib/firmware/brcm/brcmfmac4359-sdio_ap6398s.bin $pkgdir/lib/firmware/brcm/brcmfmac4359-sdio.bin
