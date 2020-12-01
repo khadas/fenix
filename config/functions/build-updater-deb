@@ -16,19 +16,19 @@ build_updater_deb() {
 	rm -rf $pkgdir
 	mkdir -p $pkgdir/DEBIAN
 
-	if [ "$LINUX" != "mainline" ] && [ "$DISTRIBUTION" == "Ubuntu" ] && [ "$DISTRIB_RELEASE" != "focal" ]; then
+	if [ "$LINUX" != "mainline" ] && [ "$DISTRIBUTION" == "Ubuntu" ] && [ "$DISTRIB_RELEASE" == "bionic" ]; then
 		case $KHADAS_BOARD in
 			VIM1)
-				updater_deb_dependencies+="gstreamer-aml, libplayer-aml, opencv3, python3-wiringpi"
+				updater_deb_dependencies+="gstreamer-aml, libplayer-aml, opencv3, python3-wiringpi, encoder-libs-aml"
 				;;
 			VIM2)
-				updater_deb_dependencies+="gstreamer-aml, libplayer-aml, opencv3, python3-wiringpi"
+				updater_deb_dependencies+="gstreamer-aml, libplayer-aml, opencv3, python3-wiringpi, encoder-libs-aml"
 				;;
 			VIM3)
-				updater_deb_dependencies+="aml-npu, gstreamer-aml, libplayer-aml, opencv3, python3-wiringpi"
+				updater_deb_dependencies+="aml-npu, gstreamer-aml, libplayer-aml, opencv3, python3-wiringpi, encoder-libs-aml"
 				;;
 			VIM3L)
-				updater_deb_dependencies+="aml-npu, gstreamer-aml, libplayer-aml, opencv3, python3-wiringpi"
+				updater_deb_dependencies+="aml-npu, gstreamer-aml, libplayer-aml, opencv3, python3-wiringpi, encoder-libs-aml"
 				;;
 			Edge)
 				updater_deb_dependencies+="python3-wiringpi"
