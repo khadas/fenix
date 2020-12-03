@@ -1,0 +1,30 @@
+From ba198c123f571a93cd73febecff69edd2cfa15a4 Mon Sep 17 00:00:00 2001
+From: Nick Xie <nick@khadas.com>
+Date: Sat, 23 May 2020 15:29:11 +0800
+Subject: [PATCH 2/3] VIM3: hack for PCIe
+
+Signed-off-by: Nick Xie <nick@khadas.com>
+---
+ drivers/pci/controller/dwc/pci-meson.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/pci/controller/dwc/pci-meson.c b/drivers/pci/controller/dwc/pci-meson.c
+index 1913dc2c8..789529c0d 100644
+--- a/drivers/pci/controller/dwc/pci-meson.c
++++ b/drivers/pci/controller/dwc/pci-meson.c
+@@ -492,11 +492,8 @@ static int meson_pcie_probe(struct platform_device *pdev)
+ 		goto err_phy;
+ 	}
+ 
+-	return 0;
+-
+ err_phy:
+-	meson_pcie_power_off(mp);
+-	return ret;
++	return 0;
+ }
+ 
+ static const struct of_device_id meson_pcie_of_match[] = {
+-- 
+2.17.1
+
