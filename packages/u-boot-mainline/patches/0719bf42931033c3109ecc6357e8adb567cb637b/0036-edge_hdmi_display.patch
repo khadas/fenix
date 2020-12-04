@@ -1,0 +1,108 @@
+From 42c64b01723cf5cdcccc0d80253b952a12023f5b Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Fri, 4 Dec 2020 11:42:07 +0800
+Subject: [PATCH 36/43] edge_hdmi_display
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ configs/khadas-edge-captain-rk3399_defconfig | 6 ++++++
+ configs/khadas-edge-rk3399_defconfig         | 6 ++++++
+ configs/khadas-edge-v-rk3399_defconfig       | 6 ++++++
+ 3 files changed, 18 insertions(+)
+
+diff --git a/configs/khadas-edge-captain-rk3399_defconfig b/configs/khadas-edge-captain-rk3399_defconfig
+index 9e6787f1..8c29a572 100644
+--- a/configs/khadas-edge-captain-rk3399_defconfig
++++ b/configs/khadas-edge-captain-rk3399_defconfig
+@@ -11,6 +11,7 @@ CONFIG_DEFAULT_DEVICE_TREE="rk3399-khadas-edge-captain"
+ CONFIG_DEBUG_UART=y
+ CONFIG_USE_PREBOOT=y
+ CONFIG_DEFAULT_FDT_FILE="rockchip/rk3399-khadas-edge-captain.dtb"
++# CONFIG_CONSOLE_MUX is not set
+ # CONFIG_SYS_DEVICE_NULLDEV is not set
+ CONFIG_DISPLAY_BOARDINFO_LATE=y
+ # CONFIG_SPL_RAW_IMAGE_SUPPORT is not set
+@@ -27,6 +28,7 @@ CONFIG_CMD_MMC=y
+ CONFIG_CMD_USB=y
+ # CONFIG_CMD_SETEXPR is not set
+ CONFIG_CMD_DNS=y
++CONFIG_CMD_BMP=y
+ CONFIG_CMD_TIME=y
+ CONFIG_CMD_FS_UUID=y
+ CONFIG_CMD_KHADAS_KBI=y
+@@ -69,6 +71,10 @@ CONFIG_USB_ETHER_ASIX88179=y
+ CONFIG_USB_ETHER_MCS7830=y
+ CONFIG_USB_ETHER_RTL8152=y
+ CONFIG_USB_ETHER_SMSC95XX=y
++CONFIG_DM_VIDEO=y
++CONFIG_DISPLAY=y
++CONFIG_VIDEO_ROCKCHIP=y
++CONFIG_DISPLAY_ROCKCHIP_HDMI=y
+ CONFIG_SPL_TINY_MEMSET=y
+ CONFIG_LZO=y
+ CONFIG_ZSTD=y
+diff --git a/configs/khadas-edge-rk3399_defconfig b/configs/khadas-edge-rk3399_defconfig
+index 88e6d3b5..6cbaa8f5 100644
+--- a/configs/khadas-edge-rk3399_defconfig
++++ b/configs/khadas-edge-rk3399_defconfig
+@@ -11,6 +11,7 @@ CONFIG_DEFAULT_DEVICE_TREE="rk3399-khadas-edge"
+ CONFIG_DEBUG_UART=y
+ CONFIG_USE_PREBOOT=y
+ CONFIG_DEFAULT_FDT_FILE="rockchip/rk3399-khadas-edge.dtb"
++# CONFIG_CONSOLE_MUX is not set
+ # CONFIG_SYS_DEVICE_NULLDEV is not set
+ CONFIG_DISPLAY_BOARDINFO_LATE=y
+ # CONFIG_SPL_RAW_IMAGE_SUPPORT is not set
+@@ -27,6 +28,7 @@ CONFIG_CMD_MMC=y
+ CONFIG_CMD_USB=y
+ # CONFIG_CMD_SETEXPR is not set
+ CONFIG_CMD_DNS=y
++CONFIG_CMD_BMP=y
+ CONFIG_CMD_TIME=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_SPL_OF_CONTROL=y
+@@ -67,6 +69,10 @@ CONFIG_USB_ETHER_ASIX88179=y
+ CONFIG_USB_ETHER_MCS7830=y
+ CONFIG_USB_ETHER_RTL8152=y
+ CONFIG_USB_ETHER_SMSC95XX=y
++CONFIG_DM_VIDEO=y
++CONFIG_DISPLAY=y
++CONFIG_VIDEO_ROCKCHIP=y
++CONFIG_DISPLAY_ROCKCHIP_HDMI=y
+ CONFIG_SPL_TINY_MEMSET=y
+ CONFIG_LZO=y
+ CONFIG_ZSTD=y
+diff --git a/configs/khadas-edge-v-rk3399_defconfig b/configs/khadas-edge-v-rk3399_defconfig
+index 7892cfee..49c41679 100644
+--- a/configs/khadas-edge-v-rk3399_defconfig
++++ b/configs/khadas-edge-v-rk3399_defconfig
+@@ -11,6 +11,7 @@ CONFIG_DEFAULT_DEVICE_TREE="rk3399-khadas-edge-v"
+ CONFIG_DEBUG_UART=y
+ CONFIG_USE_PREBOOT=y
+ CONFIG_DEFAULT_FDT_FILE="rockchip/rk3399-khadas-edge-v.dtb"
++# CONFIG_CONSOLE_MUX is not set
+ # CONFIG_SYS_DEVICE_NULLDEV is not set
+ CONFIG_DISPLAY_BOARDINFO_LATE=y
+ # CONFIG_SPL_RAW_IMAGE_SUPPORT is not set
+@@ -27,6 +28,7 @@ CONFIG_CMD_MMC=y
+ CONFIG_CMD_USB=y
+ # CONFIG_CMD_SETEXPR is not set
+ CONFIG_CMD_DNS=y
++CONFIG_CMD_BMP=y
+ CONFIG_CMD_TIME=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_SPL_OF_CONTROL=y
+@@ -68,6 +70,10 @@ CONFIG_USB_ETHER_ASIX88179=y
+ CONFIG_USB_ETHER_MCS7830=y
+ CONFIG_USB_ETHER_RTL8152=y
+ CONFIG_USB_ETHER_SMSC95XX=y
++CONFIG_DM_VIDEO=y
++CONFIG_DISPLAY=y
++CONFIG_VIDEO_ROCKCHIP=y
++CONFIG_DISPLAY_ROCKCHIP_HDMI=y
+ CONFIG_SPL_TINY_MEMSET=y
+ CONFIG_LZO=y
+ CONFIG_ZSTD=y
+-- 
+2.17.1
+

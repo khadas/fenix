@@ -1,0 +1,44 @@
+From 39c52af8b59ad208bb4430ebf3bb28d9df1273b3 Mon Sep 17 00:00:00 2001
+From: Artem Lapkin <art@khadas.com>
+Date: Tue, 20 Oct 2020 18:46:43 +0800
+Subject: [PATCH 33/43] fix_kbi_warnings
+
+---
+ cmd/kbi.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/cmd/kbi.c b/cmd/kbi.c
+index bb6e0fda..6b71df47 100644
+--- a/cmd/kbi.c
++++ b/cmd/kbi.c
+@@ -360,11 +360,11 @@ static int get_hw_version(void)
+ #if defined (CONFIG_MESON_GXM)
+ 	ret = adc_channel_single_shot("adc@8680", 1, &val);
+ 	if (ret) {
+-		printf("%s adc_channel_single_shot fail! ret=%d\n", __func__, ret);
++		printf("%s adc_channel_single_shot fail! ret=%ud\n", __func__, ret);
+ 		return -1;
+ 	}
+ 
+-	debug("%s SARADC: %d\n", __func__, val);
++	debug("%s SARADC: %ud\n", __func__, val);
+ 
+ 	if ((val >= HW_VERSION_ADC_VAL_VIM2_V12 - HW_VERSION_ADC_VALUE_TOLERANCE) && (val <= HW_VERSION_ADC_VAL_VIM2_V12 + HW_VERSION_ADC_VALUE_TOLERANCE)) {
+ 		hw_ver = HW_VERSION_VIM2_V12;
+@@ -376,11 +376,11 @@ static int get_hw_version(void)
+ #elif defined (CONFIG_MESON_GXL)
+ 	ret = adc_channel_single_shot("adc@8680", 1, &val);
+ 	if (ret) {
+-		printf("%s adc_channel_single_shot fail! ret=%d\n", __func__, ret);
++		printf("%s adc_channel_single_shot fail! ret=%ud\n", __func__, ret);
+ 		return -1;
+ 	}
+ 
+-	debug("%s SARADC: %d\n", __func__, val);
++	debug("%s SARADC: %ud\n", __func__, val);
+ 
+ 	if ((val >= HW_VERSION_ADC_VAL_VIM1_V14 - HW_VERSION_ADC_VALUE_TOLERANCE) && (val <= HW_VERSION_ADC_VAL_VIM1_V14 + HW_VERSION_ADC_VALUE_TOLERANCE)) {
+ 		hw_ver = HW_VERSION_VIM1_V14;
+-- 
+2.17.1
+

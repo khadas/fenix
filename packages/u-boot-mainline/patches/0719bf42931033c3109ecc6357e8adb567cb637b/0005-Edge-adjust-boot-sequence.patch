@@ -1,0 +1,28 @@
+From 1964da2920576c59d5dc6ba09f85eeddf4f3902e Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Thu, 3 Dec 2020 14:03:42 +0800
+Subject: [PATCH 05/43] Edge: adjust boot sequence
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ include/configs/rockchip-common.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/configs/rockchip-common.h b/include/configs/rockchip-common.h
+index 0b9e24d1..6610f95b 100644
+--- a/include/configs/rockchip-common.h
++++ b/include/configs/rockchip-common.h
+@@ -17,8 +17,8 @@
+ /* First try to boot from SD (index 0), then eMMC (index 1) */
+ #if CONFIG_IS_ENABLED(CMD_MMC)
+ 	#define BOOT_TARGET_MMC(func) \
+-		func(MMC, mmc, 0) \
+-		func(MMC, mmc, 1)
++		func(MMC, mmc, 1) \
++		func(MMC, mmc, 0)
+ #else
+ 	#define BOOT_TARGET_MMC(func)
+ #endif
+-- 
+2.17.1
+

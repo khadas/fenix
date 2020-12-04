@@ -1,0 +1,49 @@
+From 33106fcea025a8852624d566b175b7d388027aef Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Tue, 10 Mar 2020 23:21:40 +0900
+Subject: [PATCH 12/43] meson board_init changes
+
+small changes from board_late_init to boarg_init
+---
+ arch/arm/mach-meson/board-common.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm/mach-meson/board-common.c b/arch/arm/mach-meson/board-common.c
+index 7ea0ed47..fb93182c 100644
+--- a/arch/arm/mach-meson/board-common.c
++++ b/arch/arm/mach-meson/board-common.c
+@@ -28,10 +28,6 @@
+ 
+ DECLARE_GLOBAL_DATA_PTR;
+ 
+-__weak int board_init(void)
+-{
+-	return 0;
+-}
+ 
+ int dram_init(void)
+ {
+@@ -144,10 +140,19 @@ __weak int meson_board_late_init(void)
+ 	return 0;
+ }
+ 
+-int board_late_init(void)
++__weak int board_init(void)
+ {
++	//env init there 
++	env_set_default(NULL, 0);
++	//set env boot_source
+ 	meson_set_boot_source();
+ 
++	return 0;
++
++}
++
++int board_late_init(void)
++{
+ 	return meson_board_late_init();
+ }
+ 
+-- 
+2.17.1
+
