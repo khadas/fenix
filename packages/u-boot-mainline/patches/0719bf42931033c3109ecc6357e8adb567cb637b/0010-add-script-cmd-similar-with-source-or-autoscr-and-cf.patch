@@ -1,0 +1,302 @@
+From cf12954dd9bf8bc6e16aaf8c1d5e71f1b9c7ca11 Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Sat, 21 Nov 2020 10:21:13 +0800
+Subject: [PATCH 10/43] add script cmd similar with source or autoscr and
+ cfgload
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ cmd/Kconfig                     |   6 +
+ cmd/Makefile                    |   1 +
+ cmd/cmd_script.c                | 206 ++++++++++++++++++++++++++++++++
+ cmd/script.c                    |   1 +
+ include/config_distro_bootcmd.h |  10 +-
+ 5 files changed, 220 insertions(+), 4 deletions(-)
+ create mode 100644 cmd/cmd_script.c
+ create mode 120000 cmd/script.c
+
+diff --git a/cmd/Kconfig b/cmd/Kconfig
+index ea276bfb..42284c1e 100644
+--- a/cmd/Kconfig
++++ b/cmd/Kconfig
+@@ -2307,4 +2307,10 @@ config CMD_KHADAS_KBI
+ 	help
+ 	  Khadas Bootloader Instructions
+ 
++config CMD_SCRIPT
++	bool "simple plain script run from mem without mkimage wrappers"
++	default y
++	help
++	  simple plain script run from mem without mkimage wrappers
++
+ endmenu
+diff --git a/cmd/Makefile b/cmd/Makefile
+index 18fa505d..b101e533 100644
+--- a/cmd/Makefile
++++ b/cmd/Makefile
+@@ -189,6 +189,7 @@ obj-$(CONFIG_CMD_REGULATOR) += regulator.o
+ obj-$(CONFIG_CMD_BLOB) += blob.o
+ 
+ obj-$(CONFIG_CMD_KHADAS_KBI) += kbi.o
++obj-$(CONFIG_CMD_SCRIPT) += script.o
+ 
+ # Android Verified Boot 2.0
+ obj-$(CONFIG_CMD_AVB) += avb.o
+diff --git a/cmd/cmd_script.c b/cmd/cmd_script.c
+new file mode 100644
+index 00000000..f063e7e6
+--- /dev/null
++++ b/cmd/cmd_script.c
+@@ -0,0 +1,206 @@
++
++// ## hyphop ## for khadas
++
++/*
++
++## script
++
++simple plain script run from mem without mkimage wrappers
++
++`script` is cool alternative for `autoscript` and `source` , we can
++ use one `script` command for plain script and wrapped scripts!
++
+++ https://github.com/hyphop/uboot-extra
+++ https://raw.githubusercontent.com/hyphop/uboot-extra/master/cmd_script.c
++
++## sintax and parsing
++
++```
++#!script - fist script line skip if no_chk == 0
++72bytes  - mkimage script header same skip
++##END##  - its end marker - after this lines all strings ignored
++'\0'     - its same end marker
++
++```
++
++script parsed by run_command_list
++
++## how to install it 
++
++just add next line to Makefile
++
++    obj-y += cmd_script.o
++
++## uboot usage
++
++    script [addr|check] [bytes] [no_chk] [silent] - run script starting at addr
++        bytes - read bytes (hex) limit
++        no_chk - no check script header dont igrnore 1st line
++        silent - be silent
++
++    script check && echo ok # check script cmd
++
++## uboot usage  examples
++
++    script 0x1000000				- simple run from addr 0x1000000 s
++    script 0x1000000 32 			- same but only fist 32 bytes
++    script 0x1000000 $filesize 			- same but limited by file size value 
++    script 0x1000000 $filesize 1 		- same but no header
++    script 0x1000000 $filesize 0 1		- silent
++
++    # tftp script usage
++    ADDR=0x1000000; tftp $ADDR test.script && script $ADDR 
++
++    # usage as files
++    ADDR=100000; ext4load mmc 1:5 $ADDR dhcp.cmd_test.script; script $ADDR $filesize
++
++    # spi flash usage
++    ADDR=100000; sf read $ADDR $SCRIPT_OFFSET $SCRIPT_BYTES; script $ADDR
++
++*/
++
++
++#include <common.h>
++#include <command.h>
++//#include <image.h>
++#include <malloc.h>
++//mainline
++#include <mapmem.h>
++//#include <asm/byteorder.h>
++
++#define MAX_SCRIPT_SIZE 32768
++
++int
++script (ulong addr , ulong leng,  ulong no_hdr_chk , ulong silent)
++{
++	ulong  len = leng;
++	void *buf;
++	
++	buf = map_sysmem(addr, 0);
++	
++	char *data;
++	char *n;
++	
++	data = (char *)buf;
++	n = data;
++
++// simple mkimage header parser
++	if ( *(n+0) == 0x27 &&
++	     *(n+1) == 0x05 &&
++	     *(n+2) == 0x19 &&
++	     *(n+3) == 0x56
++	     ) {
++
++// sizes calculate
++	    unsigned int l  = (*(n+14))*256 + *(n+15);
++	    unsigned int l2 = (*(n+66))*256 + *(n+67);
++
++// check headers sizes only // its not crc check
++	    if ( l != l2 + 8 ) {
++		printf ("** Script wrong headers size %u != %u **\n", l, l2  ) ;
++		return -1;
++	    }
++// check zero script
++	    if ( l2 == 0 ) {
++		printf ("** Script zero size **\n" );
++		return -1;
++	    }
++
++// fix offest
++	    data+=72;
++
++// fix len
++	    len=l2;
++
++// ignore after marker
++	char *p = strstr( data , "\n##END##" );
++	if (p != NULL) {
++	    len = p - data;
++	}
++
++// info
++	    if (!silent)
++		printf ("## mkimage Script run a:%08lx l:%lu\n", addr, len) ;
++
++// run
++	    return run_command_list(data, len, 0);
++
++// mkimage script end
++
++	}
++	
++// simple script header parser skip first line if not comment
++	if ( !no_hdr_chk ){
++	if ( *n != '#') {
++	    for (int i=0;1;i++) {
++		if ( i == 128 || *(n+i) == '\0') {
++		    printf ("** Script wrong header **\n") ;
++		    return -1;
++		}
++		if ( *(n+i) == '\n') {
++		    data+=i;
++		    len-=i;
++		    break;
++		}
++	    }
++	}
++	}
++
++// OK
++
++// truncate long script
++
++	if (len > MAX_SCRIPT_SIZE ) {
++	    len = MAX_SCRIPT_SIZE;
++	    *(data + MAX_SCRIPT_SIZE) = '\0';
++	}
++
++// ignore after marker
++	char *p = strstr( data , "\n##END##" );
++	if (p != NULL) {
++	    len = p - data;
++	}
++
++	if (!silent)
++	    printf ("## Script run a:%08lx l:%lu c:%lu\n", addr, len, no_hdr_chk ) ;
++
++	return run_command_list(data, len, 0);
++	return 0;
++
++}
++
++/**************************************************/
++
++int do_script (struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[])
++{
++    int rcode;
++    ulong addr, leng, hdr, slnt;
++    char *fs;
++    // just check
++    if ( argc > 1 && *argv[1] == 'c' && *argv[1] == 'h' ) return 0;
++    
++    addr = simple_strtoul( argc < 2 || *argv[1] == '-' ?
++	env_get("loadaddr") : argv[1], NULL, 16);
++    
++    leng = MAX_SCRIPT_SIZE;
++    leng = 0;
++    fs = env_get("filesize");
++    if ( fs ) leng = simple_strtoul( fs , NULL, 16);
++    leng = argc < 3 ? leng : *argv[2] == '-' ? leng : simple_strtoul(argv[2], NULL, 16);
++    hdr  = argc < 4 ? 0 : simple_strtoul( argv[3], NULL, 10);
++    slnt = argc < 5 ? 0 : simple_strtoul( argv[4], NULL, 10);
++    
++//	printf ("## Script cmd a:%08lx l:%lu c:%lu l:%lu fs:%s\n", addr, leng, hdr, slnt, fs);
++    rcode = script (addr , leng , hdr, slnt);
++    if ( slnt ) return 0;
++    return rcode;
++}
++
++U_BOOT_CMD(
++	script, 5, 0,	do_script,
++	"# run plain script from memory",
++	"[addr|check] [bytes] [no_chk] [silent] - run script starting at addr\n"
++	"	bytes - read bytes (hex) limit\n"
++	"	no_chk - no check header not ignore 1st line\n"
++	"	silent - be silent\n"
++);
+diff --git a/cmd/script.c b/cmd/script.c
+new file mode 120000
+index 00000000..a64fc45a
+--- /dev/null
++++ b/cmd/script.c
+@@ -0,0 +1 @@
++cmd_script.c
+\ No newline at end of file
+diff --git a/include/config_distro_bootcmd.h b/include/config_distro_bootcmd.h
+index ff29ef5a..761eabb8 100644
+--- a/include/config_distro_bootcmd.h
++++ b/include/config_distro_bootcmd.h
+@@ -370,7 +370,7 @@
+ 		BOOTENV_RUN_NET_USB_START \
+ 		BOOTENV_RUN_PCI_ENUM \
+ 		"if dhcp ${scriptaddr} ${boot_script_dhcp}; then " \
+-			"source ${scriptaddr}; " \
++			"script ${scriptaddr}; " \
+ 		"fi;" \
+ 		BOOTENV_EFI_RUN_DHCP \
+ 		"\0"
+@@ -421,7 +421,9 @@
+ 	BOOTENV_SHARED_EFI \
+ 	BOOTENV_SHARED_VIRTIO \
+ 	"boot_prefixes=/ /boot/\0" \
+-	"boot_scripts=boot.scr.uimg boot.scr\0" \
++	"loadaddr=0x01000000\0" \
++	"bootfile=boot.scr.uimg\0" \
++	"boot_scripts=boot.cmd boot.ini boot.scr.uimg boot.scr\0" \
+ 	"boot_script_dhcp=boot.scr.uimg\0" \
+ 	BOOTENV_BOOT_TARGETS \
+ 	\
+@@ -441,8 +443,8 @@
+ 	\
+ 	"boot_a_script="                                                  \
+ 		"load ${devtype} ${devnum}:${distro_bootpart} "           \
+-			"${scriptaddr} ${prefix}${script}; "              \
+-		"source ${scriptaddr}\0"                                  \
++			"${scriptaddr} ${prefix}${script} && "            \
++		"script ${scriptaddr} \0"                                 \
+ 	\
+ 	"scan_dev_for_scripts="                                           \
+ 		"for script in ${boot_scripts}; do "                      \
+-- 
+2.17.1
+
