@@ -72,6 +72,9 @@ uboot_custom_postprocess() {
 
 	source ${FIP_FOLDER}${CUR_SOC}/variable_soc.sh
 
+	# compile fip tools for ddr_parse and map_tool
+	prepare_tools > /dev/null 2>&1 || true
+
 	# source soc package script
 	source ${FIP_FOLDER}${CUR_SOC}/build.sh
 
