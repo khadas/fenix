@@ -1,0 +1,41 @@
+From 109ac2e138077e545dc7597f66d3578f3d08203f Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Tue, 10 Mar 2020 23:21:40 +0900
+Subject: [PATCH 14/43] env_save_default_to_fat
+
+if uboot env file not found we can try to save default env for next usage
+there we just define env_need_save env var like a flag
+for post save on last init stage before run_main_loop
+---
+ env/fat.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/env/fat.c b/env/fat.c
+index ab719a58..e8f60d8a 100644
+--- a/env/fat.c
++++ b/env/fat.c
+@@ -171,6 +171,21 @@ static int env_fat_load(void)
+ 	}
+ 
+ 	err = file_fat_read(CONFIG_ENV_FAT_FILE, buf, CONFIG_ENV_SIZE);
++
++#define CONFIG_ENV_FAT_CREATE 1
++
++#ifdef CONFIG_ENV_FAT_CREATE
++//	env_set("env_source", env_get("boot_source"));
++//	printf("env_fat_load error: %d\n", err);
++//	file not found
++	if (err == -2) {
++		printf("\"%s\" not found on %s-%d:%d... ",
++			CONFIG_ENV_FAT_FILE, CONFIG_ENV_FAT_INTERFACE, dev, part );
++	    	env_set("env_need_save", "1");
++		return 0;
++	}
++#endif
++
+ 	if (err == -1) {
+ 		/*
+ 		 * This printf is embedded in the messages from env_save that
+-- 
+2.17.1
+

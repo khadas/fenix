@@ -1,0 +1,26 @@
+From 956e652db02cff0edca56cc403ba012af734b871 Mon Sep 17 00:00:00 2001
+From: Artem Lapkin <art@khadas.com>
+Date: Tue, 20 Oct 2020 18:46:31 +0800
+Subject: [PATCH 32/43] modify_gitignore_list
+
+---
+ .gitignore | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/.gitignore b/.gitignore
+index 2ba9ce43..d2a07ebf 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -5,6 +5,9 @@
+ #
+ # Normal rules (sorted alphabetically)
+ #
++
++/bl31.c
++
+ .*
+ *.a
+ *.asn1.[ch]
+-- 
+2.17.1
+

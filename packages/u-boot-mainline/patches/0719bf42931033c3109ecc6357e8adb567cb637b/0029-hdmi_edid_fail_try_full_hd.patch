@@ -1,0 +1,38 @@
+From 65c78f0c286de1c4619c0757867b1515f386b560 Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Tue, 5 May 2020 14:52:44 +0900
+Subject: [PATCH 29/43] hdmi_edid_fail_try_full_hd
+
+try failsave - full hd mode timing - 4K displays
+---
+ drivers/video/meson/meson_vpu.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/video/meson/meson_vpu.c b/drivers/video/meson/meson_vpu.c
+index 4868839f..bf4524b1 100644
+--- a/drivers/video/meson/meson_vpu.c
++++ b/drivers/video/meson/meson_vpu.c
+@@ -52,8 +52,18 @@ static int meson_vpu_setup_mode(struct udevice *dev, struct udevice *disp)
+ 	if (disp) {
+ 		ret = display_read_timing(disp, &timing);
+ 		if (ret) {
+-			debug("%s: Failed to read timings\n", __func__);
+-			goto cvbs;
++			debug("%s: try failsave - full hd mode timing\n", __func__);
++			timing.pixelclock.typ = 148500000;
++			timing.hactive.typ = 1920;
++			timing.hfront_porch.typ = 88;
++			timing.hback_porch.typ = 148;
++			timing.hsync_len.typ = 44;
++			timing.vactive.typ = 1080;
++			timing.vfront_porch.typ = 4;
++			timing.vback_porch.typ = 36;
++			timing.vsync_len.typ = 5;
++			timing.flags = 10;
++			timing.hdmi_monitor = true;
+ 		}
+ 
+ 		uc_priv->xsize = timing.hactive.typ;
+-- 
+2.17.1
+

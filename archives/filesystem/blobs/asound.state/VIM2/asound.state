@@ -1,4 +1,4 @@
-state.GXLKHADASVIM1 {
+state.GXMKHADASVIM2 {
 	control.1 {
 		iface MIXER
 		name 'AIU ACODEC I2S Lane Select'

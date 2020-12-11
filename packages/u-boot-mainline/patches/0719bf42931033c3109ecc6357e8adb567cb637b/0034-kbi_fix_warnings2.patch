@@ -1,0 +1,25 @@
+From f7c3bd5a3fd89e3588dd4ad6951780188ebefe73 Mon Sep 17 00:00:00 2001
+From: Artem Lapkin <art@khadas.com>
+Date: Tue, 20 Oct 2020 18:52:56 +0800
+Subject: [PATCH 34/43] kbi_fix_warnings2
+
+---
+ cmd/kbi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/cmd/kbi.c b/cmd/kbi.c
+index 6b71df47..d5d159a1 100644
+--- a/cmd/kbi.c
++++ b/cmd/kbi.c
+@@ -991,7 +991,7 @@ static int do_kbi(struct cmd_tbl * cmdtp, int flag, int argc, char * const argv[
+ 
+ #if defined (CONFIG_MESON_GXL)
+ 	int hw_ver = 0;
+-	int val = 0;
++	unsigned int val = 0;
+ 	int ret = 0;
+ 
+ 	ret = adc_channel_single_shot("adc@8680", 1, &val);
+-- 
+2.17.1
+
