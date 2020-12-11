@@ -1,6 +1,6 @@
 PKG_NAME="encoder_libs_deb_aml"
-PKG_VERSION="087dd5487b0bdb2fc3de85076183fa2710b8d6eb"
-PKG_SHA256="6d9a4ce605f3a6f513fe5febc0967f049ddc7832f7194bc87b1ce0845d83f10f"
+PKG_VERSION="9b347c8801aa79eb887f3c9cff5f65653d40cbfe"
+PKG_SHA256="c522dd69580a8344f8f27fb28c714e8aa33088d7bc0addfff1a5697fee3cd2c7"
 PKG_SOURCE_DIR="${PKG_NAME}-${PKG_VERSION}*"
 PKG_SITE="https://github.com/numbqq/${PKG_NAME}"
 PKG_URL="https://github.com/numbqq/${PKG_NAME}/archive/$PKG_VERSION.tar.gz"
