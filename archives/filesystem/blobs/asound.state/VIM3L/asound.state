@@ -1,4 +1,4 @@
-state.SM1KHADASVIM3L {
+state.G12BKHADASVIM3 {
 	control.1 {
 		iface MIXER
 		name 'TDMOUT_A Lane 0 Volume'
@@ -385,8 +385,6 @@ state.SM1KHADASVIM3L {
 			item.0 'IN 0'
 			item.1 'IN 1'
 			item.2 'IN 2'
-			item.3 'IN 3'
-			item.4 'IN 4'
 		}
 	}
 }

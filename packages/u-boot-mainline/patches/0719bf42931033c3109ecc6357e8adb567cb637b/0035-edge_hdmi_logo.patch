@@ -1,0 +1,53 @@
+From d341405d2b0ff32084b7892be2f0775dac293c33 Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Fri, 4 Dec 2020 11:15:46 +0800
+Subject: [PATCH 35/43] edge_hdmi_logo
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ include/configs/rk3399_common.h | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
+
+diff --git a/include/configs/rk3399_common.h b/include/configs/rk3399_common.h
+index d0fc5983..72bdda67 100644
+--- a/include/configs/rk3399_common.h
++++ b/include/configs/rk3399_common.h
+@@ -60,6 +60,24 @@
+ #define ROCKCHIP_DEVICE_SETTINGS
+ #endif
+ 
++#define CONFIG_SYS_VIDEO_LOGO_MAX_SIZE 8192000
++#define CONFIG_VIDEO_BMP_GZIP 1
++
++#define CONSOLE_FONT_COLOR 14
++
++#define PREBOOT_LOAD_LOGO \
++   "ll=0; test $boot_source = spi && sf probe && sf read $loadaddr 0x170000 0x10000 && ll=1; " \
++   "test $ll = 0 && ll=1 && " \
++   "load mmc 1 $loadaddr splash.bmp || " \
++   "load mmc 2 $loadaddr splash.bmp || " \
++   "load mmc 1:2 $loadaddr /usr/share/fenix/logo/logo.bmp || " \
++   "load mmc 2:2 $loadaddr /usr/share/fenix/logo/logo.bmp || " \
++   "ll=0; " \
++   "test $ll = 1 && bmp display $loadaddr m m || ll=0; " \
++   "test $ll = 0 && bmp display $fdtcontroladdr_end m m; "
++
++#define PREBOOT_CMD "run load_logo; usb start; kbi init; sleep 1;"
++
+ #include <config_distro_bootcmd.h>
+ #include <environment/distro/sf.h>
+ #define CONFIG_EXTRA_ENV_SETTINGS \
+@@ -71,7 +89,9 @@
+ 	BOOTENV_SF \
+ 	"altbootcmd=" \
+ 		"setenv boot_syslinux_conf extlinux/extlinux-rollback.conf;" \
+-		"run distro_bootcmd\0"
++		"run distro_bootcmd\0" \
++		"load_logo=" PREBOOT_LOAD_LOGO "\0" \
++		"preboot=" PREBOOT_CMD "\0"
+ 
+ #endif
+ 
+-- 
+2.17.1
+

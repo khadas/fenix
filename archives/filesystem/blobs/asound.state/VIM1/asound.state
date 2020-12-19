@@ -1,4 +1,4 @@
-state.GXHDMI {
+state.GXLKHADASVIM1 {
 	control.1 {
 		iface MIXER
 		name 'AIU ACODEC I2S Lane Select'

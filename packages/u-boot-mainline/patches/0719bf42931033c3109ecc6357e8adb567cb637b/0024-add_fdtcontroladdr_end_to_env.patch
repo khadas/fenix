@@ -1,0 +1,33 @@
+From 78168a2d31512da394eca98f9fd83bc3aec186a2 Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Fri, 4 Dec 2020 11:10:24 +0800
+Subject: [PATCH 24/43] add_fdtcontroladdr_end_to_env
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ common/board_r.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/common/board_r.c b/common/board_r.c
+index da18df8a..3b4c0a1d 100644
+--- a/common/board_r.c
++++ b/common/board_r.c
+@@ -533,9 +533,12 @@ static int initr_env(void)
+ 	else
+ 		env_set_default(NULL, 0);
+ 
+-	if (IS_ENABLED(CONFIG_OF_CONTROL))
+-		env_set_hex("fdtcontroladdr",
+-			    (unsigned long)map_to_sysmem(gd->fdt_blob));
++	if (IS_ENABLED(CONFIG_OF_CONTROL)){
++		ulong fdt_begin = (unsigned long)map_to_sysmem(gd->fdt_blob);
++		env_set_hex("fdtcontroladdr", fdt_begin );
++		ulong fdt_size = (unsigned long)fdt_totalsize(gd->fdt_blob);
++		env_set_hex("fdtcontroladdr_end", fdt_begin + fdt_size );
++	}
+ 
+ 	/* Initialize from environment */
+ 	image_load_addr = env_get_ulong("loadaddr", 16, image_load_addr);
+-- 
+2.17.1
+

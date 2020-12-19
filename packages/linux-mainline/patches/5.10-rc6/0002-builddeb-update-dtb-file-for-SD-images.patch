@@ -1,0 +1,55 @@
+From 361ba4de7a9b0f265501e36311b3287dcd16c015 Mon Sep 17 00:00:00 2001
+From: Nick Xie <nick@khadas.com>
+Date: Thu, 20 Aug 2020 22:08:10 +0800
+Subject: [PATCH 02/91] builddeb: update dtb file for SD images
+
+Signed-off-by: Nick Xie <nick@khadas.com>
+---
+ scripts/package/builddeb | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
+diff --git a/scripts/package/builddeb b/scripts/package/builddeb
+index 3792c57a2..fde4e34fa 100755
+--- a/scripts/package/builddeb
++++ b/scripts/package/builddeb
+@@ -55,8 +55,37 @@ create_package() {
+ 	EOF
+ 
+ 	cat >> $pdir/DEBIAN/postinst <<-EOF
++	#!/bin/bash
+ 	cd /boot
+ 	ln -sfT dtb-$version dtb 2> /dev/null || mv dtb-$version dtb
++	if [ -f /etc/fenix-release ]; then
++		source /etc/fenix-release
++		case \$BOARD in
++			VIM1)
++				DTB=meson-gxl-s905x-khadas-vim.dtb
++				;;
++			VIM2)
++				DTB=meson-gxm-khadas-vim2.dtb
++				;;
++			VIM3)
++				DTB=meson-g12b-a311d-khadas-vim3.dtb
++				;;
++			VIM3L)
++				DTB=meson-sm1-khadas-vim3l.dtb
++				;;
++			Edge)
++				DTB=rk3399-khadas-edge.dtb
++				;;
++			Edge-V)
++				DTB=rk3399-khadas-edge-v.dtb
++				;;
++			Captain)
++				DTB=rk3399-khadas-edge-captain.dtb
++				;;
++		esac
++		cp /boot/dtb/\${VENDOR,,}/\$DTB /boot/dtb.img
++		cd - > /dev/null
++	fi
+ 	exit 0
+ 	EOF
+ 
+-- 
+2.17.1
+

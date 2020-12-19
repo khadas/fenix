@@ -1,0 +1,43 @@
+From 73918896eacf784fd1951ff2bfeda92b6b0731dc Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Thu, 3 Dec 2020 15:28:32 +0800
+Subject: [PATCH 11/43] additional run_env_save sub for common board init
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ common/board_r.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/common/board_r.c b/common/board_r.c
+index 29dd7d26..da18df8a 100644
+--- a/common/board_r.c
++++ b/common/board_r.c
+@@ -686,6 +686,17 @@ static int run_main_loop(void)
+ 	return 0;
+ }
+ 
++static int run_env_save(void)
++{
++	if ( env_get("env_need_save") ){
++		printf("[i] env_need_save... ");
++		env_set("env_need_save",NULL);
++		run_command("saveenv",1);
++	}
++	return 0;
++}
++
++
+ /*
+  * We hope to remove most of the driver-related init and do it if/when
+  * the driver is later used.
+@@ -895,6 +906,7 @@ static init_fnc_t init_sequence_r[] = {
+ #ifdef CONFIG_EFI_SETUP_EARLY
+ 	(init_fnc_t)efi_init_obj_list,
+ #endif
++	run_env_save,
+ 	run_main_loop,
+ };
+ 
+-- 
+2.17.1
+

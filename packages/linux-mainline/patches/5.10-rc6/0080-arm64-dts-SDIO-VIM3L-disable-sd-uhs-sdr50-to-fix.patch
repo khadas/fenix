@@ -1,0 +1,36 @@
+From f77d2b9f0c8da64ff95393174f441bea3ee7e6fe Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Tue, 1 Dec 2020 16:13:53 +0800
+Subject: [PATCH 80/91] arm64: dts: SDIO: VIM3L: disable 'sd-uhs-sdr50' to fix
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+index 4b517ca72..2e63e847a 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+@@ -84,15 +84,15 @@
+  * testing purposes, but instead rely on the firmware/bootloader to
+  * update these nodes accordingly if PCIe mode is selected by the MCU.
+  */
+-/*
++
+ &pcie {
+-	status = "okay";
++	status = "disable";
+ };
+ 
+ &sd_emmc_a {
+ 	sd-uhs-sdr50;
+ };
+-
++/*
+ &usb {
+ 	phys = <&usb2_phy0>, <&usb2_phy1>;
+ 	phy-names = "usb2-phy0", "usb2-phy1";
+-- 
+2.17.1
+

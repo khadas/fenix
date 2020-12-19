@@ -1,0 +1,108 @@
+From a3d0608e07a91d6b77df9546fa54b37a2b18f399 Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Sat, 9 May 2020 15:27:37 +0900
+Subject: [PATCH 31/43] kbi_fix_errors
+
++ fix gcc warnings
++ fix i2c problems
+---
+ cmd/kbi.c | 48 +++++++++++-------------------------------------
+ 1 file changed, 11 insertions(+), 37 deletions(-)
+
+diff --git a/cmd/kbi.c b/cmd/kbi.c
+index 75df8661..bb6e0fda 100644
+--- a/cmd/kbi.c
++++ b/cmd/kbi.c
+@@ -252,7 +252,8 @@ static void get_mac(void)
+ 	if (mode == 1) {
+ 		kbi_i2c_read_block(REG_MAC, MAC_LENGHT, mac_addr);
+ 	} else {
+-		int ret;
++	    ;;
++//		int ret;
+ //		ret = vendor_storage_init();
+ //		if (ret) {
+ //			printf("KBI: vendor_storage_init failed %d\n", ret);
+@@ -352,7 +353,7 @@ static char detect_board(void)
+ #else
+ static int get_hw_version(void)
+ {
+-	int val = 0;
++	unsigned int val = 0;
+ 	int ret = 0;
+ 	int hw_ver = 0;
+ 
+@@ -472,39 +473,9 @@ static void get_power_state(void)
+ 
+ static void set_poweroff(void)
+ {
+-	char devctrl_reg = 0x4b;
+-
+-#ifdef CONFIG_DM_I2C
+-	struct udevice *dev;
+-	u8 val;
+-	int ret = 0;
+-
+-	cmd_i2c_set_bus_num(4);
+-	ret = i2c_get_cur_bus_chip(0x1b, &dev);
+-	if (!ret)
+-		ret = dm_i2c_read(dev, devctrl_reg, &val, 1);
+-
+-	if (ret) {
+-		printf("%s: read reg 0x%02x failed, ret=%d\n", __func__, devctrl_reg, ret);
+-		goto error;
+-	}
+-
+-	val |= (1 << 3);
+-	ret = dm_i2c_write(dev, devctrl_reg, &val, 1);
+-	if (ret) {
+-		printf("%s: write reg 0x%02x failed, ret=%d\n", __func__, devctrl_reg, ret);
+-		goto error;
+-	}
+-error:
+-	cmd_i2c_set_bus_num(8);
+-#else
+-	u8 reg;
+-
+-	i2c_set_bus_num(4);
+-	reg = i2c_reg_read(0x1b, devctrl_reg);
+-	i2c_reg_write(0x1b, devctrl_reg, (reg |(0x1 <<3)));
+-	i2c_set_bus_num(8);
+-#endif
++	char cmd[64];
++	sprintf(cmd, "i2c mw 0x18 0x80 0x1");
++	run_command(cmd, 0);
+ }
+ 
+ static void set_bootmode(int mode)
+@@ -625,6 +596,7 @@ static void set_key(int enable)
+ 	run_command(cmd, 0);
+ }
+ 
++/*
+ static int get_forcereset_gpio(bool is_print)
+ {
+ 	int enable;
+@@ -633,6 +605,7 @@ static int get_forcereset_gpio(bool is_print)
+ 	printf("gpio forcereset: %s\n", enable&0x02 ? "enable" : "disable" );
+ 	return enable;
+ }
++*/
+ 
+ static int get_gpio(bool is_print)
+ {
+@@ -717,8 +690,9 @@ static int set_blue_led_mode(int type, int mode)
+ 
+ static int do_kbi_init(struct cmd_tbl * cmdtp, int flag, int argc, char * const argv[])
+ {
+-	run_command("i2c dev 0", 0);
+-
++	char cmd[64];
++	sprintf(cmd, "i2c dev %d", MCU_I2C_BUS_NUM);
++	run_command(cmd, 0);
+ 	return 0;
+ }
+ 
+-- 
+2.17.1
+
