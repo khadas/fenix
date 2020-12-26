@@ -261,7 +261,7 @@ case $DISTRIB_RELEASE in
 			libfreetype6 libfstrcmp0 libinput10 liblcms2-2 libmicrohttpd12 libnfs13 libpcrecpp0v5 libpulse0 libsmbclient libtag1v5 libtinyxml2.6.2v5 libxkbcommon0 \
 			libxslt1.1 mesa-utils x11-utils fonts-liberation fonts-dejavu-core python-bluez python-pil python-simplejson libgif7 libvorbisfile3 libaacs0 libgnutls30 \
 			libyajl2 libsndio7.0 libcrossguid0 libao-dev libpython2.7"
-		PACKAGE_LIST_MESA="libclang-cpp9"
+		PACKAGE_LIST_MESA="libclang-cpp9 libclc-r600 libclc-amdgcn"
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_XSERVER $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_KODI $PACKAGE_LIST_MESA"
 		PACKAGE_LIST_DESKTOP+=" xserver-xorg-input-all pulseaudio-module-gsettings firefox language-selector-gnome viewnior"
 	;;
