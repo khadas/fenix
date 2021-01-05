@@ -1,0 +1,38 @@
+From b10d983672df4872cd4f00ba72d0762b441cef7c Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Tue, 5 Jan 2021 13:50:38 +0800
+Subject: [PATCH] VIM3/VIM3L : enable BMP command
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ configs/khadas-vim3_defconfig  | 1 +
+ configs/khadas-vim3l_defconfig | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/configs/khadas-vim3_defconfig b/configs/khadas-vim3_defconfig
+index 9fb3e382..478685a0 100644
+--- a/configs/khadas-vim3_defconfig
++++ b/configs/khadas-vim3_defconfig
+@@ -33,6 +33,7 @@ CONFIG_CMD_USB=y
+ CONFIG_CMD_USB_MASS_STORAGE=y
+ # CONFIG_CMD_SETEXPR is not set
+ CONFIG_CMD_DNS=y
++CONFIG_CMD_BMP=y
+ CONFIG_CMD_REGULATOR=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_OF_CONTROL=y
+diff --git a/configs/khadas-vim3l_defconfig b/configs/khadas-vim3l_defconfig
+index 02bae1d5..c30af863 100644
+--- a/configs/khadas-vim3l_defconfig
++++ b/configs/khadas-vim3l_defconfig
+@@ -33,6 +33,7 @@ CONFIG_CMD_USB=y
+ CONFIG_CMD_USB_MASS_STORAGE=y
+ # CONFIG_CMD_SETEXPR is not set
+ CONFIG_CMD_DNS=y
++CONFIG_CMD_BMP=y
+ CONFIG_CMD_REGULATOR=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_OF_CONTROL=y
+-- 
+2.17.1
+
