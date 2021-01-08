@@ -29,5 +29,8 @@ KERNEL=="galcore", MODE="0777"
 # spi
 KERNEL=="spidev*", MODE="0660"
 
+# vfm_grabber
+KERNEL=="vfm_grabber", MODE="0666"
+
 # Others
 KERNEL=="env", MODE="0666"
