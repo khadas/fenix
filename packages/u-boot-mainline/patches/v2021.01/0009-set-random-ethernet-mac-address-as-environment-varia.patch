@@ -1,0 +1,25 @@
+From 67f297c726d75689d4f8a500bce4d358f3f10fd8 Mon Sep 17 00:00:00 2001
+From: Nick Xie <nick@khadas.com>
+Date: Wed, 25 Dec 2019 14:39:17 +0800
+Subject: [PATCH 09/43] set random ethernet mac address as environment variable
+
+Signed-off-by: Nick Xie <nick@khadas.com>
+---
+ net/eth-uclass.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/net/eth-uclass.c b/net/eth-uclass.c
+index e14695c0..08068f9d 100644
+--- a/net/eth-uclass.c
++++ b/net/eth-uclass.c
+@@ -569,6 +569,7 @@ static int eth_post_probe(struct udevice *dev)
+ 		net_random_ethaddr(pdata->enetaddr);
+ 		printf("\nWarning: %s (eth%d) using random MAC address - %pM\n",
+ 		       dev->name, dev->seq, pdata->enetaddr);
++		eth_env_set_enetaddr_by_index("eth", dev->seq, pdata->enetaddr);
+ #else
+ 		printf("\nError: %s address not set.\n",
+ 		       dev->name);
+-- 
+2.17.1
+

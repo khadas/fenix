@@ -1,0 +1,39 @@
+From 0ac3492a4a1d02a3a265864fb714b9e3803065ed Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Fri, 29 May 2020 18:53:53 +0900
+Subject: [PATCH 26/43] amlogic_mmc_boot_seq_improve
+
+---
+ include/configs/meson64.h | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/include/configs/meson64.h b/include/configs/meson64.h
+index 79338426..3a3c3c78 100644
+--- a/include/configs/meson64.h
++++ b/include/configs/meson64.h
+@@ -58,12 +58,19 @@
+ #define BOOT_TARGET_DEVICES_USB(func)
+ #endif
+ 
++#if CONFIG_IS_ENABLED(CMD_MMC)
++    #define BOOT_TARGET_MMC(func) \
++	func(MMC, mmc, 0) \
++	func(MMC, mmc, 1) \
++	func(MMC, mmc, 2)
++#else
++    #define BOOT_TARGET_MMC(func)
++#endif
++
+ #ifndef BOOT_TARGET_DEVICES
+ #define BOOT_TARGET_DEVICES(func) \
+ 	func(ROMUSB, romusb, na)  \
+-	func(MMC, mmc, 0) \
+-	func(MMC, mmc, 1) \
+-	func(MMC, mmc, 2) \
++	BOOT_TARGET_MMC(func) \
+ 	BOOT_TARGET_DEVICES_USB(func) \
+ 	func(PXE, pxe, na) \
+ 	func(DHCP, dhcp, na)
+-- 
+2.17.1
+
