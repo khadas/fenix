@@ -1,0 +1,25 @@
+From 78ceb68e96fbb4b9b951877a284966873f662726 Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Sat, 25 Apr 2020 00:11:28 +0900
+Subject: [PATCH 19/43] fix_boot_source_setup
+
+fix
+---
+ arch/arm/mach-meson/board-common.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/mach-meson/board-common.c b/arch/arm/mach-meson/board-common.c
+index fb93182c..f1936556 100644
+--- a/arch/arm/mach-meson/board-common.c
++++ b/arch/arm/mach-meson/board-common.c
+@@ -137,6 +137,7 @@ static void meson_set_boot_source(void)
+ 
+ __weak int meson_board_late_init(void)
+ {
++	meson_set_boot_source();
+ 	return 0;
+ }
+ 
+-- 
+2.17.1
+

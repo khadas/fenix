@@ -1,0 +1,29 @@
+From 1a8b8b6c83d67f150274c8b2d6f941f5519b2fc8 Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Thu, 7 May 2020 22:53:17 +0900
+Subject: [PATCH 30/43] vim2_spifc_fix_freq_and_id
+
+change chip name for spi and  max freq to 104Mhz
+---
+ arch/arm/dts/meson-gxm-khadas-vim2.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/dts/meson-gxm-khadas-vim2.dts b/arch/arm/dts/meson-gxm-khadas-vim2.dts
+index bff8ec2c..06126f04 100644
+--- a/arch/arm/dts/meson-gxm-khadas-vim2.dts
++++ b/arch/arm/dts/meson-gxm-khadas-vim2.dts
+@@ -339,9 +339,9 @@
+ 	w25q32: spi-flash@0 {
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+-		compatible = "winbond,w25q16", "jedec,spi-nor";
++		compatible = "winbond,w25q128fw", "jedec,spi-nor";
+ 		reg = <0>;
+-		spi-max-frequency = <3000000>;
++		spi-max-frequency = <104000000>;
+ 	};
+ };
+ 
+-- 
+2.17.1
+

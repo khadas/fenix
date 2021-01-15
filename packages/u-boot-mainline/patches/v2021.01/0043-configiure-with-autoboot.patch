@@ -1,0 +1,124 @@
+From 67e0a22301a8d87adff5a77205be1dae727541eb Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Fri, 4 Dec 2020 14:16:44 +0800
+Subject: [PATCH 43/43] configiure with autoboot
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ configs/khadas-edge-captain-rk3399_defconfig | 4 ++++
+ configs/khadas-edge-rk3399_defconfig         | 4 ++++
+ configs/khadas-edge-v-rk3399_defconfig       | 4 ++++
+ configs/khadas-vim2_defconfig                | 4 ++++
+ configs/khadas-vim3_defconfig                | 4 ++++
+ configs/khadas-vim3l_defconfig               | 4 ++++
+ configs/khadas-vim_defconfig                 | 4 ++++
+ 7 files changed, 28 insertions(+)
+
+diff --git a/configs/khadas-edge-captain-rk3399_defconfig b/configs/khadas-edge-captain-rk3399_defconfig
+index e2c92aaa..08950126 100644
+--- a/configs/khadas-edge-captain-rk3399_defconfig
++++ b/configs/khadas-edge-captain-rk3399_defconfig
+@@ -9,6 +9,10 @@ CONFIG_DEBUG_UART_BASE=0xFF1A0000
+ CONFIG_DEBUG_UART_CLOCK=24000000
+ CONFIG_DEFAULT_DEVICE_TREE="rk3399-khadas-edge-captain"
+ CONFIG_DEBUG_UART=y
++CONFIG_AUTOBOOT_KEYED=y
++CONFIG_AUTOBOOT_PROMPT="Hit SPACE in %d seconds to stop autoboot"
++CONFIG_AUTOBOOT_DELAY_STR="2"
++CONFIG_AUTOBOOT_STOP_STR=" "
+ CONFIG_USE_PREBOOT=y
+ CONFIG_DEFAULT_FDT_FILE="rockchip/rk3399-khadas-edge-captain.dtb"
+ # CONFIG_CONSOLE_MUX is not set
+diff --git a/configs/khadas-edge-rk3399_defconfig b/configs/khadas-edge-rk3399_defconfig
+index 912149dd..b1fc1d40 100644
+--- a/configs/khadas-edge-rk3399_defconfig
++++ b/configs/khadas-edge-rk3399_defconfig
+@@ -9,6 +9,10 @@ CONFIG_DEBUG_UART_BASE=0xFF1A0000
+ CONFIG_DEBUG_UART_CLOCK=24000000
+ CONFIG_DEFAULT_DEVICE_TREE="rk3399-khadas-edge"
+ CONFIG_DEBUG_UART=y
++CONFIG_AUTOBOOT_KEYED=y
++CONFIG_AUTOBOOT_PROMPT="Hit SPACE in %d seconds to stop autoboot"
++CONFIG_AUTOBOOT_DELAY_STR="2"
++CONFIG_AUTOBOOT_STOP_STR=" "
+ CONFIG_USE_PREBOOT=y
+ CONFIG_DEFAULT_FDT_FILE="rockchip/rk3399-khadas-edge.dtb"
+ # CONFIG_CONSOLE_MUX is not set
+diff --git a/configs/khadas-edge-v-rk3399_defconfig b/configs/khadas-edge-v-rk3399_defconfig
+index 33457694..11ff03bb 100644
+--- a/configs/khadas-edge-v-rk3399_defconfig
++++ b/configs/khadas-edge-v-rk3399_defconfig
+@@ -9,6 +9,10 @@ CONFIG_DEBUG_UART_BASE=0xFF1A0000
+ CONFIG_DEBUG_UART_CLOCK=24000000
+ CONFIG_DEFAULT_DEVICE_TREE="rk3399-khadas-edge-v"
+ CONFIG_DEBUG_UART=y
++CONFIG_AUTOBOOT_KEYED=y
++CONFIG_AUTOBOOT_PROMPT="Hit SPACE in %d seconds to stop autoboot"
++CONFIG_AUTOBOOT_DELAY_STR="2"
++CONFIG_AUTOBOOT_STOP_STR=" "
+ CONFIG_USE_PREBOOT=y
+ CONFIG_DEFAULT_FDT_FILE="rockchip/rk3399-khadas-edge-v.dtb"
+ # CONFIG_CONSOLE_MUX is not set
+diff --git a/configs/khadas-vim2_defconfig b/configs/khadas-vim2_defconfig
+index c05b3beb..f6a52834 100644
+--- a/configs/khadas-vim2_defconfig
++++ b/configs/khadas-vim2_defconfig
+@@ -11,6 +11,10 @@ CONFIG_IDENT_STRING=" khadas-vim2"
+ CONFIG_DEFAULT_DEVICE_TREE="meson-gxm-khadas-vim2"
+ CONFIG_DEBUG_UART=y
+ CONFIG_OF_BOARD_SETUP=y
++CONFIG_AUTOBOOT_KEYED=y
++CONFIG_AUTOBOOT_PROMPT="Hit SPACE in %d seconds to stop autoboot"
++CONFIG_AUTOBOOT_DELAY_STR="2"
++CONFIG_AUTOBOOT_STOP_STR=" "
+ CONFIG_USE_PREBOOT=y
+ # CONFIG_SYS_DEVICE_NULLDEV is not set
+ # CONFIG_DISPLAY_CPUINFO is not set
+diff --git a/configs/khadas-vim3_defconfig b/configs/khadas-vim3_defconfig
+index 979b6f5c..9fb3e382 100644
+--- a/configs/khadas-vim3_defconfig
++++ b/configs/khadas-vim3_defconfig
+@@ -12,6 +12,10 @@ CONFIG_IDENT_STRING=" khadas-vim3"
+ CONFIG_DEFAULT_DEVICE_TREE="meson-g12b-a311d-khadas-vim3"
+ CONFIG_DEBUG_UART=y
+ CONFIG_OF_BOARD_SETUP=y
++CONFIG_AUTOBOOT_KEYED=y
++CONFIG_AUTOBOOT_PROMPT="Hit SPACE in %d seconds to stop autoboot"
++CONFIG_AUTOBOOT_DELAY_STR="2"
++CONFIG_AUTOBOOT_STOP_STR=" "
+ CONFIG_USE_PREBOOT=y
+ # CONFIG_DISPLAY_CPUINFO is not set
+ CONFIG_MISC_INIT_R=y
+diff --git a/configs/khadas-vim3l_defconfig b/configs/khadas-vim3l_defconfig
+index 5806a92a..02bae1d5 100644
+--- a/configs/khadas-vim3l_defconfig
++++ b/configs/khadas-vim3l_defconfig
+@@ -12,6 +12,10 @@ CONFIG_IDENT_STRING=" khadas-vim3l"
+ CONFIG_DEFAULT_DEVICE_TREE="meson-sm1-khadas-vim3l"
+ CONFIG_DEBUG_UART=y
+ CONFIG_OF_BOARD_SETUP=y
++CONFIG_AUTOBOOT_KEYED=y
++CONFIG_AUTOBOOT_PROMPT="Hit SPACE in %d seconds to stop autoboot"
++CONFIG_AUTOBOOT_DELAY_STR="2"
++CONFIG_AUTOBOOT_STOP_STR=" "
+ CONFIG_USE_PREBOOT=y
+ # CONFIG_DISPLAY_CPUINFO is not set
+ CONFIG_MISC_INIT_R=y
+diff --git a/configs/khadas-vim_defconfig b/configs/khadas-vim_defconfig
+index 198006ca..29e9f854 100644
+--- a/configs/khadas-vim_defconfig
++++ b/configs/khadas-vim_defconfig
+@@ -11,6 +11,10 @@ CONFIG_IDENT_STRING=" khadas-vim"
+ CONFIG_DEFAULT_DEVICE_TREE="meson-gxl-s905x-khadas-vim"
+ CONFIG_DEBUG_UART=y
+ CONFIG_OF_BOARD_SETUP=y
++CONFIG_AUTOBOOT_KEYED=y
++CONFIG_AUTOBOOT_PROMPT="Hit SPACE in %d seconds to stop autoboot"
++CONFIG_AUTOBOOT_DELAY_STR="2"
++CONFIG_AUTOBOOT_STOP_STR=" "
+ CONFIG_USE_PREBOOT=y
+ # CONFIG_DISPLAY_CPUINFO is not set
+ CONFIG_MISC_INIT_R=y
+-- 
+2.17.1
+
