@@ -10,4 +10,5 @@ max_freq_a55=1908
 #   onewire         -- Enable onewire bus (GPIO Header PIN15)
 #   disable-ts050   -- Disable TS050 LCD
 #   m2x-eth         -- Enable M2X 100M ethernet. Note: 1G ethernet will be disabled.
+#   otg-device      -- Enable USB OTG Device
 overlays=uart3 pwm_f i2c3
