@@ -32,8 +32,8 @@ else if test "X${fdtfile}" = "Xamlogic/meson-sm1-khadas-vim3l.dtb"; then
 	setenv overlaydir "kvim3l";
 else
 	setenv uboottype "vendor";
-	if test "X${maxcpus}" = "X4"; then
-		if test "X${hostname}" = "XKVIM3L"; then
+	if test "X${maxcpus}" = "X4" || test "X${board_defined_bootup}" = "Xbootup_D3"; then
+		if test "X${board_defined_bootup}" = "Xbootup_D3"; then
 			setenv khadas_board "VIM3L";
 			setenv overlaydir "kvim3l";
 		else
