@@ -185,7 +185,7 @@ if [[ "$DISTRIB_TYPE" != "minimal" ]]; then
 		iperf3 software-properties-common libnss-myhostname f2fs-tools avahi-autoipd iputils-arping \
 		bluetooth bluez bluez-tools watchdog i2c-tools qrencode clinfo ocl-icd-libopencl1 libatlas3-base \
 		p7zip p7zip-full lrzip lzip lzop ncompress unar zstd edid-decode libgtk-3-0 dnsmasq-base ppp \
-		modemmanager mobile-broadband-provider-info"
+		modemmanager mobile-broadband-provider-info zlib1g-dev"
 fi
 
 PACKAGE_LIST_DESKTOP="xserver-xorg xserver-xorg-video-fbdev gvfs-backends gvfs-fuse xfonts-base xinit x11-xserver-utils xterm thunar-volman \
