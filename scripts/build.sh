@@ -31,6 +31,12 @@ case "$TARGET" in
 	linux-clean)
 		clean_linux
 		;;
+	linux-config)
+		config_linux
+		;;
+	linux-saveconfig)
+		save_linux_config
+		;;
 	uboot-deb)
 		build_uboot_deb
 		;;

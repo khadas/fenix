@@ -6,6 +6,8 @@
 # build_uboot_image
 # clean_linux
 # clean_uboot
+# config_linux
+# save_linux_config
 
 ## Build U-Boot
 build_uboot() {
@@ -325,6 +327,47 @@ clean_uboot() {
 
 	info_msg "Clean u-boot..."
 	make distclean
+
+	cd - > /dev/null
+}
+
+# Config linux
+config_linux() {
+	if [ "$LINUX" == "mainline" ]; then
+		cd $BUILD/linux-mainline-*
+	else
+		cd $ROOT/linux/
+	fi
+
+	info_msg "Config linux..."
+	export PATH=$KERNEL_COMPILER_PATH:$PATH
+	if [ "$LINUX" == "mainline" ]; then
+		cp $PKGS_DIR/linux-mainline/configs/${KHADAS_BOARD}.config .config
+	else
+		make ARCH=arm64 $LINUX_DEFCONFIG
+	fi
+
+	make ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} menuconfig
+
+	cd - > /dev/null
+}
+
+# Save linux config
+save_linux_config() {
+	if [ "$LINUX" == "mainline" ]; then
+		cd $BUILD/linux-mainline-*
+	else
+		cd $ROOT/linux/
+	fi
+
+	info_msg "Save linux config..."
+	export PATH=$KERNEL_COMPILER_PATH:$PATH
+	if [ "$LINUX" == "mainline" ]; then
+		cp .config $PKGS_DIR/linux-mainline/configs/${KHADAS_BOARD}.config
+	else
+		make ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} savedefconfig
+		mv defconfig arch/arm64/configs/$LINUX_DEFCONFIG
+	fi
 
 	cd - > /dev/null
 }
