@@ -5,6 +5,7 @@
 # build_uboot_deb
 # build_uboot_image
 # clean_linux
+# clean_uboot
 
 ## Build U-Boot
 build_uboot() {
@@ -310,6 +311,20 @@ clean_linux() {
 	info_msg "Clean linux..."
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
 	make ARCH=arm64 distclean
+
+	cd - > /dev/null
+}
+
+# Clean u-boot
+clean_uboot() {
+	if [ "$UBOOT" == "mainline" ]; then
+		cd $BUILD/u-boot-mainline-*
+	else
+		cd $ROOT/u-boot
+	fi
+
+	info_msg "Clean u-boot..."
+	make distclean
 
 	cd - > /dev/null
 }

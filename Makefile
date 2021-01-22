@@ -39,6 +39,13 @@ else
 	@./scripts/build.sh u-boot
 endif
 
+uboot-clean:
+ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
+	$(call help_message)
+else
+	@./scripts/build.sh u-boot-clean
+endif
+
 debs: uboot kernel
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
@@ -132,6 +139,7 @@ help:
 	@echo "  kernel            - Build linux kernel."
 	@echo "  kernel-clean      - Clean linux source tree."
 	@echo "  uboot             - Build u-boot."
+	@echo "  uboot-clean       - Clean u-boot source tree."
 	@echo "  uboot-deb         - Build u-boot debian package."
 	@echo "  uboot-image       - Build minimal image only with u-boot."
 	@echo "  kernel-deb        - Build linux debian package."

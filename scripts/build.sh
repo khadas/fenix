@@ -22,6 +22,9 @@ case "$TARGET" in
 	u-boot)
 		build_uboot
 		;;
+	u-boot-clean)
+		clean_uboot
+		;;
 	linux)
 		build_linux
 		;;
