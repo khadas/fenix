@@ -4,6 +4,7 @@
 # build_linux_debs
 # build_uboot_deb
 # build_uboot_image
+# clean_linux
 
 ## Build U-Boot
 build_uboot() {
@@ -295,4 +296,20 @@ build_uboot_deb() {
 	# Cleanup
 	rm -rf ${pkgdir}.deb
 	rm -rf $pkgdir
+}
+
+# Clean linux
+clean_linux() {
+
+	if [ "$LINUX" == "mainline" ]; then
+		cd $BUILD/linux-mainline-*
+	else
+		cd $ROOT/linux/
+	fi
+
+	info_msg "Clean linux..."
+	export PATH=$KERNEL_COMPILER_PATH:$PATH
+	make ARCH=arm64 distclean
+
+	cd - > /dev/null
 }

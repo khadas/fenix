@@ -25,6 +25,13 @@ else
 	@./scripts/build.sh linux
 endif
 
+kernel-clean:
+ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
+	$(call help_message)
+else
+	@./scripts/build.sh linux-clean
+endif
+
 uboot:
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
@@ -123,6 +130,7 @@ help:
 	@echo "Fenix scripts help messages:"
 	@echo "  all               - Create image according to environment."
 	@echo "  kernel            - Build linux kernel."
+	@echo "  kernel-clean      - Clean linux source tree."
 	@echo "  uboot             - Build u-boot."
 	@echo "  uboot-deb         - Build u-boot debian package."
 	@echo "  uboot-image       - Build minimal image only with u-boot."

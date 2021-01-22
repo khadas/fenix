@@ -25,6 +25,9 @@ case "$TARGET" in
 	linux)
 		build_linux
 		;;
+	linux-clean)
+		clean_linux
+		;;
 	uboot-deb)
 		build_uboot_deb
 		;;
