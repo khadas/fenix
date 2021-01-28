@@ -1,6 +1,0 @@
-#!/bin/sh
-#
-# Start adb daemon service....
-#
-
-exit 0

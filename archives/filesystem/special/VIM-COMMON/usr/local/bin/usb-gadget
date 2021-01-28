@@ -1,0 +1,87 @@
+#!/bin/sh
+#
+# Create USB Gadget
+#
+
+. /etc/fenix-release
+
+GADGET=/sys/kernel/config/usb_gadget/khadas
+if [ -d $GADGET ]; then
+	echo "Exiting... Gadget exists"
+	exit 0
+fi
+
+# Setup RNDIS Gadget
+F_RNDIS=$GADGET/functions/rndis.0
+SERIAL="$(grep Serial /proc/cpuinfo | grep -o -P '.{0,12}$')"
+MAC="$(echo ${SERIAL} | sed 's/\(\w\w\)/:\1/g' | cut -b 2-)"
+MAC_HOST="12$(echo ${MAC} | cut -b 3-)"
+MAC_DEV="02$(echo ${MAC} | cut -b 3-)"
+UDC="$(ls /sys/class/udc/| awk '{print $1}')"
+
+mkdir -p $GADGET
+
+echo "0x18D1" > $GADGET/idVendor
+echo "0x4e26" > $GADGET/idProduct
+echo "0x0100" > $GADGET/bcdDevice
+echo "0x0200" > $GADGET/bcdUSB
+
+echo "0xEF" > $GADGET/bDeviceClass
+echo "0x04" > $GADGET/bDeviceSubClass
+echo "0x01" > $GADGET/bDeviceProtocol
+
+# Set Strings
+mkdir -p $GADGET/strings/0x409
+echo $SERIAL  > $GADGET/strings/0x409/serialnumber
+echo "Khadas" > $GADGET/strings/0x409/manufacturer
+echo $BOARD   > $GADGET/strings/0x409/product
+
+# Create Config
+mkdir -p $GADGET/configs/c.1
+mkdir -p $GADGET/configs/c.1/strings/0x409
+echo "RNDIS Gadget" > $GADGET/configs/c.1/strings/0x409/configuration
+echo "500" > $GADGET/configs/c.1/MaxPower
+echo "0x80" > $GADGET/configs/c.1/bmAttributes #  USB_OTG_SRP | USB_OTG_HNP
+
+# Create RNDIS function
+mkdir -p $F_RNDIS
+echo $MAC_HOST > $F_RNDIS/host_addr
+echo $MAC_DEV > $F_RNDIS/dev_addr
+
+# OS Descriptors
+echo "1" > $GADGET/os_desc/use
+echo "0xbc" > $GADGET/os_desc/b_vendor_code
+echo "MSFT100" > $GADGET/os_desc/qw_sign
+mkdir -p $F_RNDIS/os_desc/interface.rndis
+echo "RNDIS" > $F_RNDIS/os_desc/interface.rndis/compatible_id
+echo "5162001" > $F_RNDIS/os_desc/interface.rndis/sub_compatible_id
+
+# Bind function to configuration
+ln -s $F_RNDIS $GADGET/configs/c.1/
+ln -s $GADGET/configs/c.1/ $GADGET/os_desc
+
+# Enable the Gadget
+#echo $UDC > $GADGET/UDC
+
+echo "Done creating RNDIS USB Gadget...$(cat $F_RNDIS/ifname)"
+
+# Setup adb
+
+export service_adb_tcp_port=5555
+echo "Configuring ADB USB gadget driver…"
+mkdir /dev/usb-ffs -m 0770
+mkdir /dev/usb-ffs/adb -m 0770
+
+mkdir $GADGET/functions/ffs.adb
+
+echo "adb" > $GADGET/configs/c.1/strings/0x409/configuration
+mount -t functionfs adb /dev/usb-ffs/adb
+
+ln -s $GADGET/functions/ffs.adb $GADGET/configs/c.1/ffs.adb
+
+adbd &
+sleep 1
+
+echo $UDC > $GADGET/UDC
+
+exit 0
