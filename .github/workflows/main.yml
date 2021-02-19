@@ -1,0 +1,41 @@
+# Name of this Workflow
+name: Build Firmware
+
+# When to run this Workflow...
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  release:
+    types: [published]
+
+jobs:
+  job_1:
+    name: config-template
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      # Fetch Dependencies
+      - name: Dependencies / Build config-template.conf
+        run: |
+          sudo apt update
+          sudo apt install -y make lsb-release qemu-user-static zip
+          
+      # Build
+      - name: Build
+        run: |
+          source env/setenv.sh config config-template.conf
+          COMPRESS_IMAGE=yes make
+     
+     # Upload to GH Actions Artifacts
+     #${{ github.workspace }}/build/images/*.img.xz
+      - name: 'Upload To GH Artifacts'
+        uses: actions/upload-artifact@v2
+        with:
+          name: 'firmware-Package'
+          path: |
+            ${{ github.workspace }}/build/images/*.img.xz
+            !${{ github.workspace }}/build/images/logo.img
+            !${{ github.workspace }}/build/images/rootfs.img
