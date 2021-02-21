@@ -82,8 +82,6 @@ setenv mmc_devnums "0 1 2"
 setenv usb_devplist "1"
 setenv usb_devnums "0 1 2 3"
 
-setenv boot_start booti ${kernel_loadaddr} ${initrd_loadaddr} ${dtb_loadaddr}
-
 ## First, boot from mmc
 ## Second, boot from USB storage
 for dev in ${devs}; do
@@ -120,6 +118,10 @@ for dev in ${devs}; do
 			fi;
 			if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${initrd_loadaddr} uInitrd; then
 				if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${kernel_loadaddr} zImage; then
+					if test -e ${dev} ${dev_num}:${distro_bootpart} ${mark_prefix}/.next; then
+						# Update dtb load address for mainline kernel
+						setenv dtb_loadaddr "0x4080000"
+					fi;
 					if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${dtb_loadaddr} dtb.img; then
 						if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${env_loadaddr} /boot/env.txt || ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${env_loadaddr} env.txt; then
 							echo "Import env.txt"; env import -t ${env_loadaddr} ${filesize};
@@ -243,8 +245,9 @@ for dev in ${devs}; do
 								setenv hdmiargs "${hdmiargs} hdmimode=${hdmimode}";
 							fi;
 						fi;
+
 						setenv bootargs "root=${rootdev} rootfstype=ext4 rootflags=data=writeback rw ubootpart=${ubootpartuuid} ${condev} ${log} ${hdmiargs} ${panelargs} fsck.repair=yes net.ifnames=0 ${ddr} ${wol} ${max_freq} jtag=disable mac=${eth_mac} ${saveethmac} fan=${fan_mode} khadas_board=${khadas_board} hwver=${hwver} coherent_pool=${dma_size} ${rebootmode} imagetype=${imagetype} uboottype=${uboottype} ${user_kernel_args}";
-						run boot_start;
+						booti ${kernel_loadaddr} ${initrd_loadaddr} ${dtb_loadaddr};
 					fi;
 				fi;
 			fi;
