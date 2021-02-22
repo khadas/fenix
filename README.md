@@ -1,7 +1,7 @@
-[![Release Build](https://github.com/khadas/fenix/workflows/Release%20Build/badge.svg)](https://github.com/khadas/fenix/actions?query=workflow%3A%22Release+Build%22)
-[![Test Build Ubuntu](https://github.com/khadas/fenix/workflows/Test%20Build%20Ubuntu/badge.svg?branch=master)](https://github.com/khadas/fenix/actions?query=workflow%3A%22Test+Build+Ubuntu%22)
-[![Test Build Debian](https://github.com/khadas/fenix/workflows/Test%20Build%20Debian/badge.svg?branch=master)](https://github.com/khadas/fenix/actions?query=workflow%3A%22Test+Build+Debian%22)
-[![Remove Old Artifacts](https://github.com/khadas/fenix/workflows/Remove%20old%20artifacts/badge.svg?branch=master)](https://github.com/khadas/fenix/actions?query=workflow%3A%22Remove+old+artifacts%22)
+[![Release Build](https://github.com/khadas/fenix/actions/workflows/release-build.yml/badge.svg)](https://github.com/khadas/fenix/actions/workflows/release-build.yml)
+[![Test Build Ubuntu](https://github.com/khadas/fenix/actions/workflows/test-build-ubuntu.yml/badge.svg?branch=master)](https://github.com/khadas/fenix/actions/workflows/test-build-ubuntu.yml)
+[![Test Build Debian](https://github.com/khadas/fenix/actions/workflows/test-build-debian.yml/badge.svg)](https://github.com/khadas/fenix/actions/workflows/test-build-debian.yml)
+[![Remove Old Artifacts](https://github.com/khadas/fenix/actions/workflows/remove-old-artifacts.yml/badge.svg?branch=master)](https://github.com/khadas/fenix/actions/workflows/remove-old-artifacts.yml)
 
 # Fenix script set to build Ubuntu/Debian images
 
