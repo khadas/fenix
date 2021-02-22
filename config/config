@@ -16,6 +16,9 @@ DOWNLOAD_PKG_DIR="$ROOT/downloads"
 PKGS_DIR="$ROOT/packages"
 ## Packages build directory
 BUILD="$ROOT/build"
+## ccache build directory
+[ "$CCACHE_DIR" ] || \
+export CCACHE_DIR="$BUILD/ccache"
 ## Build images
 BUILD_IMAGES="$BUILD/images"
 ## Build debs
