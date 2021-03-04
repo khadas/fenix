@@ -27,3 +27,4 @@ else
 	pack_image_platform
 fi
 compress_image
+post_create_image
