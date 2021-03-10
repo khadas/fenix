@@ -22,7 +22,8 @@ build_board_deb() {
 	Replaces: alsa-utils, linux-firmware, watchdog, base-files, mpv, zram-config, haveged, initramfs-tools-core, ppp, linux-board-package-${DISTRIB_RELEASE,,}-vim1, linux-board-package-${DISTRIB_RELEASE,,}-vim2, linux-board-package-${DISTRIB_RELEASE,,}-vim3, linux-board-package-${DISTRIB_RELEASE,,}-vim3l
 	Section: kernel
 	Priority: optional
-	Depends: ${board_deb_dependencies}
+	Recommends: ${board_deb_dependencies}
+	Depends: bash, linux-base, u-boot-tools, initramfs-tools, lsb-release, fping
 	Description: Fenix tweaks for ${DISTRIBUTION}-${DISTRIB_RELEASE} on $KHADAS_BOARD
 	EOF
 
@@ -381,6 +382,11 @@ build_board_deb() {
 		;;
 
 	esac
+
+	# Add dependencies file
+	cat <<-EOF > $pkgdir/etc/fenix-board-dependencis
+	FENIX_BOARD_DEPENDENCIES="$(echo $PACKAGE_LIST_ADDITIONAL)"
+	EOF
 
 	# Create board deb file
 	info_msg "Building package: $pkgname"
