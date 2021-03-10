@@ -36,10 +36,13 @@
 [ -f /sys/devices/virtual/graphics/fbcon/cursor_blink ] && chmod 777 /sys/devices/virtual/graphics/fbcon/cursor_blink
 [ -f /sys/class/ppmgr/ppscaler ] && chmod 777 /sys/class/ppmgr/ppscaler
 
-# For FAN
+# For Kernel 4.9 FAN
 [ -f /sys/class/fan/mode ] && chmod 777 /sys/class/fan/mode
 [ -f /sys/class/fan/level ] && chmod 777 /sys/class/fan/level
 [ -f /sys/class/fan/enable ] && chmod 777 /sys/class/fan/enable
+
+# For Kernel mainline FAN
+[ -f /sys/class/thermal/thermal_zone0/trip_point_3_temp ] && chmod 777 /sys/class/thermal/thermal_zone0/trip_point_3_temp
 
 # For Freq-overclocking
 [ -f /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq ] && chmod 777 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq

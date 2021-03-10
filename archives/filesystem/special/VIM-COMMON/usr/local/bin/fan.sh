@@ -1,12 +1,19 @@
-#!/bin/sh
+#!/bin/bash
 
 RC=0
 FAN_INPUT="${1:-"boot"}"
 
-FAN_MODE_NODE="/sys/class/fan/mode"
-FAN_LEVEL_NODE="/sys/class/fan/level"
-FAN_ENABLE_NODE="/sys/class/fan/enable"
-FAN_TEMP_NODE="/sys/class/fan/temp"
+LINUX_VER=$(uname -r)
+LINUX_VER="${LINUX_VER::3}"
+
+if [ "${LINUX_VER}" == "4.9" ]; then
+	FAN_MODE_NODE="/sys/class/fan/mode"
+	FAN_LEVEL_NODE="/sys/class/fan/level"
+	FAN_ENABLE_NODE="/sys/class/fan/enable"
+	FAN_TEMP_NODE="/sys/class/fan/temp"
+else
+	FAN_CONTROL_NODE="/sys/class/thermal/thermal_zone0/trip_point_3_temp"
+fi
 
 AUTO_MODE=1
 MANUAL_MODE=0
@@ -17,11 +24,15 @@ LEVEL_HIGH=3
 
 usage() {
 	echo ""
-	echo "Usage: $0 [on|auto|off]  :: Set fan mode"
-	echo "       $0 [low|mid|high] :: Set fan level"
-	echo "       $0 [temp]         :: Query cpu temperature"
-	echo "       $0 [trig]         :: Query fan trigger temperature"
-	echo "       $0 [mode]         :: Query fan mode/level"
+	if [ "${LINUX_VER}" == "4.9" ]; then
+		echo "Usage: $0 [on|auto|off]  :: Set fan mode"
+		echo "       $0 [low|mid|high] :: Set fan level"
+		echo "       $0 [temp]         :: Query cpu temperature"
+		echo "       $0 [trig]         :: Query fan trigger temperature"
+		echo "       $0 [mode]         :: Query fan mode/level"
+	else
+		echo "Usage: $0 [manual|auto]  :: Set fan mode"
+	fi
 	echo "       $0 [--help|-h]    :: This text"
 	echo ""
 	echo "Examp: $0 auto"
@@ -60,23 +71,33 @@ elif [ "$FAN_INPUT" = "trig" ]; then
 elif [ "$FAN_INPUT" = "mode" ]; then
 	mode=$FAN_INPUT
 
-	FAN_MODE=$(cat $FAN_MODE_NODE | awk '{print $3}')
-	FAN_LEVEL=$(cat $FAN_LEVEL_NODE | awk '{print $3}')
-	FAN_STATE=$(cat $FAN_ENABLE_NODE | awk '{print $3}')
-	
-	if [ $FAN_MODE -eq 0 ]; then FAN_MODE=manual; else FAN_MODE=auto; fi
-	
-	case $FAN_STATE in
-		0) FAN_STATE=inactive; mode=mode-off; ;;
-		1) FAN_STATE=active ;;
-	esac
+	if [ ${LINUX_VER} == "4.9" ]; then
+		FAN_MODE=$(cat $FAN_MODE_NODE | awk '{print $3}')
+		FAN_LEVEL=$(cat $FAN_LEVEL_NODE | awk '{print $3}')
+		FAN_STATE=$(cat $FAN_ENABLE_NODE | awk '{print $3}')
 
-	case $FAN_LEVEL in
-		0) FAN_LEVEL=off ;;
-		1) FAN_LEVEL=low ;;
-		2) FAN_LEVEL=mid ;;
-		3) FAN_LEVEL=high ;;
-	esac
+		if [ $FAN_MODE -eq 0 ]; then FAN_MODE=manual; else FAN_MODE=auto; fi
+	
+		case $FAN_STATE in
+			0) FAN_STATE=inactive; mode=mode-off; ;;
+			1) FAN_STATE=active ;;
+		esac
+
+		case $FAN_LEVEL in
+			0) FAN_LEVEL=off ;;
+			1) FAN_LEVEL=low ;;
+			2) FAN_LEVEL=mid ;;
+			3) FAN_LEVEL=high ;;
+		esac
+	else
+		TEMP_VER=$(cat $FAN_CONTROL_NODE)
+		if [ $TEMP_VER == "50000" ]; then
+			FAN_MODE="auto"
+		else
+			FAN_MODE="manual"
+		fi
+	fi
+
 elif [ "$FAN_INPUT" != "boot" ]; then
 	mode=$FAN_INPUT
 else {	
@@ -108,17 +129,32 @@ case $mode in
 		echo $MANUAL_MODE > $FAN_MODE_NODE
 		echo $LEVEL_HIGH > $FAN_LEVEL_NODE
 		;;
-	auto|on)
+	on)
 		echo $AUTO_MODE > $FAN_MODE_NODE
 		echo 1 > $FAN_ENABLE_NODE
+		;;
+	auto)
+		if [ "${LINUX_VER}" == "4.9" ]; then
+			echo $AUTO_MODE > $FAN_MODE_NODE
+			echo 1 > $FAN_ENABLE_NODE
+		else
+			echo 50000 > $FAN_CONTROL_NODE
+		fi
+		;;
+	manual)
+		echo 20000 > $FAN_CONTROL_NODE
 		;;
 	mode-off)
 		echo "Fan state: $FAN_STATE"
 		;;
 	mode)
-		echo "Fan mode: $FAN_MODE"
-		echo "Fan level: $FAN_LEVEL"
-		echo "Fan state: $FAN_STATE"
+		if [ "${LINUX_VER}" == "4.9" ]; then
+			echo "Fan mode: $FAN_MODE"
+			echo "Fan level: $FAN_LEVEL"
+			echo "Fan state: $FAN_STATE"
+		else
+			echo "Fan mode: $FAN_MODE"
+		fi
 		;;
 	temp)
 		echo "Fan temp: $FAN_TEMP"

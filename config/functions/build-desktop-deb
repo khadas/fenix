@@ -93,7 +93,7 @@ build_desktop_deb() {
 	if [ "\$IS_MAINLINE_KERNEL" == "yes" ]; then
 		[ -f /lib/systemd/system/hdmi_resolution.service ] && rm /lib/systemd/system/hdmi_resolution.service
 		[ -f /home/khadas/.local/share/applications/cpu-frequency-setting.desktop ] && rm /home/khadas/.local/share/applications/cpu-frequency-setting.desktop
-		[ -f /home/khadas/.local/share/applications/fan-settings.desktop ] && rm /home/khadas/.local/share/applications/fan-settings.desktop
+#		[ -f /home/khadas/.local/share/applications/fan-settings.desktop ] && rm /home/khadas/.local/share/applications/fan-settings.desktop
 		[ -f /home/khadas/.local/share/applications/hdmi-resolution-settings.desktop ] && rm /home/khadas/.local/share/applications/hdmi-resolution-settings.desktop
 		[ -f /home/khadas/.local/share/applications/wol-settings.desktop ] && rm /home/khadas/.local/share/applications/wol-settings.desktop
 	else
@@ -158,7 +158,7 @@ build_desktop_deb() {
 		if [ "$LINUX" == "mainline" ]; then
 			rm -rf $pkgdir/lib/systemd/system/hdmi_resolution.service
 			rm -rf $pkgdir/etc/skel/.local/share/applications/cpu-frequency-setting.desktop
-			rm -rf $pkgdir/etc/skel/.local/share/applications/fan-settings.desktop
+#			rm -rf $pkgdir/etc/skel/.local/share/applications/fan-settings.desktop
 			rm -rf $pkgdir/etc/skel/.local/share/applications/hdmi-resolution-settings.desktop
 			rm -rf $pkgdir/etc/skel/.local/share/applications/wol-settings.desktop
 		fi
