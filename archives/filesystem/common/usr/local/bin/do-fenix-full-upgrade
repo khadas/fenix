@@ -7,6 +7,7 @@ fi
 
 . /etc/fenix-release
 . /etc/fenix-board-dependencis
+[ -f /etc/fenix-desktop-dependencis ] && . /etc/fenix-desktop-dependencis
 . /etc/lsb-release
 
 # Only for Ubuntu
@@ -26,7 +27,7 @@ sudo apt update
 sudo apt full-upgrade -y
 
 echo "Installing basic denpendencies ..."
-sudo apt install -y $FENIX_BOARD_DEPENDENCIES
+sudo apt install -y $FENIX_BOARD_DEPENDENCIES $FENIX_DESKTOP_DEPENDENCIES
 
 echo "Installing Fenix updater: $FENIX_UPDATER ..."
 sudo apt install -y $FENIX_UPDATER
