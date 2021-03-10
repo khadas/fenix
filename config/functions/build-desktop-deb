@@ -10,8 +10,8 @@ build_desktop_deb() {
 		return 0
 	fi
 
-	PACKAGE_LIST_DESKTOP=$(echo $PACKAGE_LIST_DESKTOP)
-	PACKAGE_LIST_DESKTOP=${PACKAGE_LIST_DESKTOP// /,}
+	desktop_deb_dependencies=$(echo $PACKAGE_LIST_DESKTOP)
+	desktop_deb_dependencies=${desktop_deb_dependencies// /,}
 
 	local pkgname="${FENIX_DESKTOP_DEB}"
 	local pkgdir="$BUILD_IMAGES/.tmp/${pkgname}_${VERSION}_all"
@@ -28,7 +28,7 @@ build_desktop_deb() {
 	Installed-Size: 1
 	Section: xorg
 	Priority: optional
-	Depends: ${PACKAGE_LIST_DESKTOP}
+	Recommends: ${desktop_deb_dependencies}
 	Provides: fenix-desktop-package
 	Description: Fenix desktop for ${DISTRIBUTION}-${DISTRIB_RELEASE} on $KHADAS_BOARD
 	EOF
@@ -183,6 +183,11 @@ build_desktop_deb() {
 			fi
 		fi
 	fi
+
+	# Add dependencies file
+	cat <<-EOF > $pkgdir/etc/fenix-desktop-dependencis
+	FENIX_DESKTOP_DEPENDENCIES="$(echo $PACKAGE_LIST_DESKTOP)"
+	EOF
 
 	# Create desktop deb file
 	info_msg "Building package: $pkgname"
