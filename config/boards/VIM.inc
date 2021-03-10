@@ -178,6 +178,7 @@ pack_image_platform_raw() {
 	#
 	# INSTALL_TYPE_RAW=yes COMPRESS_IMAGE=yes make
 
+	[ "$INSTALL_TYPE" != "EMMC" ] && return
 	[ "$INSTALL_TYPE_RAW" != "yes" ] && return
 
 	info_msg "Simple raw image suitable for dd write -> $IMAGE_FILE_NAME"

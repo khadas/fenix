@@ -21,9 +21,10 @@ fi
 
 prepare_rootfs
 build_rootfs
-if [ "$INSTALL_TYPE_RAW" == "yes" ]; then
+if [ "$INSTALL_TYPE_RAW" == "yes" -a "$INSTALL_TYPE" == "EMMC" ]; then
 	pack_image_platform_raw
 else
 	pack_image_platform
 fi
 compress_image
+post_create_image

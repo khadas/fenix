@@ -17,6 +17,7 @@
 # compress_image
 # check_make_params
 # get_available_make_params
+# post_create_image
 
 ## Print error message
 ## $1 - message
@@ -420,4 +421,10 @@ get_available_make_params() {
 		printf "${BOLDCYAN}%-25s:${ENDCOLOR}${BOLDGREEN}%20s${ENDCOLOR}\n" "$key" "${!value}"
 	done
 	echo ""
+}
+
+## post_create_image
+post_create_image() {
+	rm -rf $BUILD_IMAGES/rootfs.img
+	rm -rf $BUILD_IMAGES/.tmp
 }
