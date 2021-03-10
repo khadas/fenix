@@ -7,24 +7,34 @@ fi
 
 FAN="/usr/local/bin/fan.sh"
 
-_fan_mode=$(${FAN} mode | grep "Fan mode:" | awk '{print $3}')
-_fan_level=$(${FAN} mode | grep "Fan level:" | awk '{print $3}')
-_fan_state=$(${FAN} mode | grep "Fan state:" | awk '{print $3}')
+LINUX_VER=`uname -r`
 
-if [ "${_fan_state}" != "inactive" ]; then
-	if [ "$_fan_mode" == "auto" ]; then
-		fan_mode="auto"
+if [ ${LINUX_VER::3} == "4.9" ];then
+	_fan_mode=$(${FAN} mode | grep "Fan mode:" | awk '{print $3}')
+	_fan_level=$(${FAN} mode | grep "Fan level:" | awk '{print $3}')
+	_fan_state=$(${FAN} mode | grep "Fan state:" | awk '{print $3}')
+
+	if [ "${_fan_state}" != "inactive" ]; then
+		if [ "$_fan_mode" == "auto" ]; then
+			fan_mode="auto"
+		else
+			fan_mode=${_fan_level}
+		fi
 	else
-		fan_mode=${_fan_level}
+		fan_mode="off"
 	fi
 else
-	fan_mode="off"
+	fan_mode=$(${FAN} mode | grep "Fan mode:" | awk '{print $3}')
 fi
-
 DEFAULT_FAN_MODE=${fan_mode}
 
-LIST_MENU=(off low mid high auto)
-LIST_MENU_VALUE=(FALSE FALSE FALSE FALSE FALSE)
+if [ ${LINUX_VER::3} == "4.9" ];then
+	LIST_MENU=(off low mid high auto)
+	LIST_MENU_VALUE=(FALSE FALSE FALSE FALSE FALSE)
+else
+	LIST_MENU=(manual auto)
+	LIST_MENU_VALUE=(FALSE FALSE)
+fi
 
 index=0
 for i in ${LIST_MENU[@]}
@@ -37,6 +47,7 @@ done
 
 LIST_MENU_VALUE[$index]=TRUE
 
+if [ ${LINUX_VER::3} == "4.9" ];then
 selected_mode=$(zenity --height=275 \
 				--list --radiolist \
 				--title 'FAN Setting' \
@@ -49,6 +60,17 @@ selected_mode=$(zenity --height=275 \
 				${LIST_MENU_VALUE[2]} ${LIST_MENU[2]} \
 				${LIST_MENU_VALUE[3]} ${LIST_MENU[3]} \
 				${LIST_MENU_VALUE[4]} ${LIST_MENU[4]})
+else
+selected_mode=$(zenity --height=275 \
+				--list --radiolist \
+				--title 'FAN Setting' \
+				--text 'Select FAN Mode' \
+				--window-icon /etc/fenix/icons/fan.png \
+				--column 'Select' \
+				--column 'Mode' \
+				${LIST_MENU_VALUE[0]} ${LIST_MENU[0]} \
+				${LIST_MENU_VALUE[1]} ${LIST_MENU[1]})
+fi
 
 index=0
 for i in ${LIST_MENU[@]}
