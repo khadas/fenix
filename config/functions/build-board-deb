@@ -224,8 +224,10 @@ build_board_deb() {
 
 	if [ "$DISTRIBUTION" == "Ubuntu" ] && [ "$DISTRIB_TYPE" != "minimal" ]; then
 		# Add fenix repository
-		mkdir -p $pkgdir/etc/apt/sources.list.d
-		echo "deb https://dl.khadas.com/repos/${KHADAS_BOARD,,}/ ${DISTRIB_RELEASE} main" > $pkgdir/etc/apt/sources.list.d/fenix.list
+		if [ "$BUILD_TYPE" == "release" ]; then
+			mkdir -p $pkgdir/etc/apt/sources.list.d
+			echo "deb https://dl.khadas.com/repos/${KHADAS_BOARD,,}/ ${DISTRIB_RELEASE} main" > $pkgdir/etc/apt/sources.list.d/fenix.list
+		fi
 	fi
 
 	# Fixup rc.local permission
