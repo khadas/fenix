@@ -452,8 +452,9 @@ function choose_distribution() {
 		let i++
 	done
 
+
 	[ "$NOASK" -o "$AUTOFILL" ] || DISTRIBUTION=
-	[ "$DISTRIBUTION" ] && return 0
+	[ "$DISTRIBUTION" ] && return 1
 
 	echo_
 
