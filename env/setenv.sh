@@ -111,7 +111,7 @@ for a in "$@"; do
 esac
 done
 
-[ "$REUSE" ] || unset_vars $CONFIG_ARGS
+[ "$REUSE" ] || unset_vars $CONFIG_ARGS $CONFIG_ADDS
 
 for a in "$@"; do
     case $a in
@@ -749,24 +749,26 @@ ask_yes_no(){
 	N|n|No|NO|0)       a=no;  n=y; A=N ;;
     esac
     echo_
+    eval v=\$$1
     while [ "1" ] ; do
+    #[ "$v" ] || \
     echo_ -n "$2 [$A|$n] "
-    v=$A
-    [ "$AUTOFILL" ] || {
-	[ "$NOASK" ] && {
-	    echo_ "skip..."
-	    [ "$REUSE" ] || unset_vars $1
-	    return
-	}
-	read $SHORT_READ v
-    }
+
+    [ "$AUTOFILL" ] && v=${v:-$A}
+    [ "$NOASK" ] || [ "$v" ] || read $SHORT_READ v
+
     case $v in
 	y|Y|Yes|YES|yes) export $1=yes; break ;;
 	n|N|No|NO|no)    export $1=no ; break ;;
-	"")              export $1=$a ; break ;;
+	"")
+	[ "$NOASK" ] ||  export $1=$a ; break ;;
 	*)
-	echo_ "
-Please press Y or N! or Enter for default choose!"
+	echo_
+	[ ! "$NOASK" ] || DIE "$1 have wrong value: $v" || return 1
+	echo_ "Please press Y or N or Enter for default choose!"
+	echo_
+	unset v
+	sleep 1
     esac
     done
     echo_
@@ -775,9 +777,9 @@ Please press Y or N! or Enter for default choose!"
 
 choose_image_types(){
     ask_yes_no COMPRESS_IMAGE \
-	"Compress image?" Y
+	"Compress image?" Y || return 1
     ask_yes_no INSTALL_TYPE_RAW \
-	"Generate RAW image (suitable for dd and krescue usage)?" N
+	"Generate RAW image (suitable for dd and krescue usage)?" N || return 1
 }
 #for e in $CONFIG_ARGS ; do
 #	eval t_=\$$e
@@ -837,7 +839,7 @@ oky DISTRIB_ARCH
 choose_install_type              || err INSTALL_TYPE    || return 1
 oky INSTALL_TYPE
 
-choose_image_types
+choose_image_types || return 1
 
 lunch
 
