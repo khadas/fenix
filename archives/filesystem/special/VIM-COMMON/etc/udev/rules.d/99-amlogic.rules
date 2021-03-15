@@ -32,5 +32,8 @@ KERNEL=="spidev*", MODE="0660"
 # vfm_grabber
 KERNEL=="vfm_grabber", MODE="0666"
 
+# gsensor
+KERNEL=="accel", MODE="0666"
+
 # Others
 KERNEL=="env", MODE="0666"
