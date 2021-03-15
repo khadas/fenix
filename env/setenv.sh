@@ -108,10 +108,20 @@ for a in "$@"; do
     USAGE
     RETURN || return
     ;;
+    -q|--quit)
+    QUITMODE=$((QUITMODE+1))
+    ;;
+    -qq)
+    QUITMODE=2
+    ;;
 esac
 done
 
 [ "$REUSE" ] || unset_vars $CONFIG_ARGS $CONFIG_ADDS
+
+echo_(){
+	[ "$QUITMODE" ] || echo "$@"
+}
 
 for a in "$@"; do
     case $a in
@@ -121,11 +131,7 @@ for a in "$@"; do
     -1|--short-read)
     SHORT_READ=-n1
     ;;
-    -q|--quit)
-    QUITMODE=$((QUITMODE+1))
-    ;;
-    -qq)
-    QUITMODE=2
+    -q|--quit|-qq)
     ;;
     -s|--noask)
     NOASK=1
@@ -202,9 +208,6 @@ Debian_TYPE_ARRAY_LEN=${#Debian_TYPE_ARRAY[@]}
 INSTALL_TYPE_ARRAY_LEN=${#INSTALL_TYPE_ARRAY[@]}
 
 
-echo_(){
-	[ "$QUITMODE" ] || echo "$@"
-}
 
 echo2(){
 	[ "$QUITMODE" = 2 ] || echo "$@"
@@ -737,7 +740,7 @@ VERSION=$VERSION\
 ${p_// /$'\n'}
 
 == ONE LINE CONFIG ==================
-source $BASH_SOURCE$p_ -s
+source -q -s $BASH_SOURCE$p_
 "
 	echo2 "Environment setup done. Type 'make' to build."
 }
