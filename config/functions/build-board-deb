@@ -23,7 +23,7 @@ build_board_deb() {
 	Section: kernel
 	Priority: optional
 	Recommends: ${board_deb_dependencies}
-	Depends: bash, linux-base, u-boot-tools, initramfs-tools, lsb-release, fping
+	Depends: bash, linux-base, u-boot-tools, initramfs-tools, fping
 	Description: Fenix tweaks for ${DISTRIBUTION}-${DISTRIB_RELEASE} on $KHADAS_BOARD
 	EOF
 
