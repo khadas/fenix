@@ -527,7 +527,7 @@ function choose_distribution_release() {
 		DISTRIB_RELEASE=$DISTRIBUTION_RELEASE && return 0
 
 	local DEFAULT_NUM
-	DEFAULT_NUM=1
+	DEFAULT_NUM=2
 
 	export DISTRIB_RELEASE=
 	local ANSWER
