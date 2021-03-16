@@ -49,6 +49,7 @@ update_git_repo() {
         fi
 
         git pull origin $2
+		[ "$NO_ASK" ] || \
 		if [ $HAVE_MODIFYCATIONS -ne 0 ]; then
 			echo -e "Press $YELLOW<Ctrl-C>$ENDCOLOR to abort compilation, $YELLOW<Enter>$ENDCOLOR to ignore and continue"
 			read
