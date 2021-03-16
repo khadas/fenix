@@ -775,7 +775,7 @@ Please press Y or N! or Enter for default choose!"
 
 choose_image_types(){
     ask_yes_no COMPRESS_IMAGE \
-	"Compress image?" Y
+	"Compress image?" N
     ask_yes_no INSTALL_TYPE_RAW \
 	"Generate RAW image (suitable for dd and krescue usage)?" N
 }
