@@ -108,10 +108,20 @@ for a in "$@"; do
     USAGE
     RETURN || return
     ;;
+    -q|--quit)
+    QUITMODE=$((QUITMODE+1))
+    ;;
+    -qq)
+    QUITMODE=2
+    ;;
 esac
 done
 
-[ "$REUSE" ] || unset_vars $CONFIG_ARGS
+[ "$REUSE" ] || unset_vars $CONFIG_ARGS $CONFIG_ADDS
+
+echo_(){
+	[ "$QUITMODE" ] || echo "$@"
+}
 
 for a in "$@"; do
     case $a in
@@ -121,11 +131,7 @@ for a in "$@"; do
     -1|--short-read)
     SHORT_READ=-n1
     ;;
-    -q|--quit)
-    QUITMODE=$((QUITMODE+1))
-    ;;
-    -qq)
-    QUITMODE=2
+    -q|--quit|-qq)
     ;;
     -s|--noask)
     NOASK=1
@@ -202,9 +208,6 @@ Debian_TYPE_ARRAY_LEN=${#Debian_TYPE_ARRAY[@]}
 INSTALL_TYPE_ARRAY_LEN=${#INSTALL_TYPE_ARRAY[@]}
 
 
-echo_(){
-	[ "$QUITMODE" ] || echo "$@"
-}
 
 echo2(){
 	[ "$QUITMODE" = 2 ] || echo "$@"
@@ -737,7 +740,7 @@ VERSION=$VERSION\
 ${p_// /$'\n'}
 
 == ONE LINE CONFIG ==================
-source $BASH_SOURCE$p_ -s
+source -q -s $BASH_SOURCE$p_
 "
 	echo2 "Environment setup done. Type 'make' to build."
 }
@@ -749,24 +752,26 @@ ask_yes_no(){
 	N|n|No|NO|0)       a=no;  n=y; A=N ;;
     esac
     echo_
+    eval v=\$$1
     while [ "1" ] ; do
+    #[ "$v" ] || \
     echo_ -n "$2 [$A|$n] "
-    v=$A
-    [ "$AUTOFILL" ] || {
-	[ "$NOASK" ] && {
-	    echo_ "skip..."
-	    [ "$REUSE" ] || unset_vars $1
-	    return
-	}
-	read $SHORT_READ v
-    }
+
+    [ "$AUTOFILL" ] && v=${v:-$A}
+    [ "$NOASK" ] || [ "$v" ] || read $SHORT_READ v
+
     case $v in
 	y|Y|Yes|YES|yes) export $1=yes; break ;;
 	n|N|No|NO|no)    export $1=no ; break ;;
-	"")              export $1=$a ; break ;;
+	"")
+	[ "$NOASK" ] ||  export $1=$a ; break ;;
 	*)
-	echo_ "
-Please press Y or N! or Enter for default choose!"
+	echo_
+	[ ! "$NOASK" ] || DIE "$1 have wrong value: $v" || return 1
+	echo_ "Please press Y or N or Enter for default choose!"
+	echo_
+	unset v
+	sleep 1
     esac
     done
     echo_
@@ -775,9 +780,9 @@ Please press Y or N! or Enter for default choose!"
 
 choose_image_types(){
     ask_yes_no COMPRESS_IMAGE \
-	"Compress image?" N
+	"Compress image?" N || return 1
     ask_yes_no INSTALL_TYPE_RAW \
-	"Generate RAW image (suitable for dd and krescue usage)?" N
+	"Generate RAW image (suitable for dd and krescue usage)?" N || return 1
 }
 #for e in $CONFIG_ARGS ; do
 #	eval t_=\$$e
@@ -837,7 +842,7 @@ oky DISTRIB_ARCH
 choose_install_type              || err INSTALL_TYPE    || return 1
 oky INSTALL_TYPE
 
-choose_image_types
+choose_image_types || return 1
 
 lunch
 
