@@ -128,6 +128,18 @@ else
 	TZDATA=`cat /etc/timezone` # Timezone for target is taken from host or defined here.
 fi
 
+# All command-line software which outputs text with ANSI color added should
+# check for the presence of a NO_COLOR environment variable that, when
+# present (regardless of its value), prevents the addition of ANSI color.
+# https://no-color.org/ ;-)
+#
+
+# USAGE: NO_COLOR=1 make
+[ "$NO_COLOR" ] && \
+unset BLACK BOLDBLACK RED BOLDRED GREEN BOLDGREEN YELLOW BOLDYELLOW BLUE \
+    BOLDBLUE MAGENTA BOLDMAGENTA CYAN BOLDCYAN WHITE BOLDWHITE ENDCOLOR
+
+[ "$NO_COLOR" ] || {
 ## Define colors
 BLACK="\e[0;30m"
 BOLDBLACK="\e[1;30m"
@@ -146,6 +158,7 @@ BOLDCYAN="\e[1;36m"
 WHITE="\e[0;37m"
 BOLDWHITE="\e[1;37m"
 ENDCOLOR="\e[0m"
+}
 
 ##
 ERROR="${RED}Error:${ENDCOLOR}"
