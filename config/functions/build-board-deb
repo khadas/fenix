@@ -23,7 +23,7 @@ build_board_deb() {
 	Section: kernel
 	Priority: optional
 	Recommends: ${board_deb_dependencies}
-	Depends: bash, linux-base, u-boot-tools, initramfs-tools, lsb-release, fping
+	Depends: bash, linux-base, u-boot-tools, initramfs-tools, fping
 	Description: Fenix tweaks for ${DISTRIBUTION}-${DISTRIB_RELEASE} on $KHADAS_BOARD
 	EOF
 
@@ -224,8 +224,10 @@ build_board_deb() {
 
 	if [ "$DISTRIBUTION" == "Ubuntu" ] && [ "$DISTRIB_TYPE" != "minimal" ]; then
 		# Add fenix repository
-		mkdir -p $pkgdir/etc/apt/sources.list.d
-		echo "deb https://dl.khadas.com/repos/${KHADAS_BOARD,,}/ ${DISTRIB_RELEASE} main" > $pkgdir/etc/apt/sources.list.d/fenix.list
+		if [ "$BUILD_TYPE" == "release" ]; then
+			mkdir -p $pkgdir/etc/apt/sources.list.d
+			echo "deb https://dl.khadas.com/repos/${KHADAS_BOARD,,}/ ${DISTRIB_RELEASE} main" > $pkgdir/etc/apt/sources.list.d/fenix.list
+		fi
 	fi
 
 	# Fixup rc.local permission
@@ -360,7 +362,7 @@ build_board_deb() {
 	ARCH=$DISTRIB_ARCH
 	INITRD_ARCH=arm64
 	INSTALL_TYPE=$INSTALL_TYPE
-	IMAGE_RELEASE_VERSION=$IMAGE_RELEASE_VERSION
+	IMAGE_VERSION=$IMAGE_VERSION
 	################ GIT VERSION ################
 	UBOOT_GIT_VERSION=`git -C $ROOT/u-boot describe --abbrev=7 --dirty --always --tags 2> /dev/null`
 	LINUX_GIT_VERSION=`git -C $ROOT/linux describe --abbrev=7 --dirty --always --tags 2> /dev/null`

@@ -61,7 +61,8 @@ UBOOT_SOURCE_URL="https://github.com/khadas/u-boot"
 
 ROOTFSCACHE_VERSION=6
 DATE=$(date +%F | sed 's/-//g')
-IMAGE_RELEASE_VERSION="V${VERSION}-${DATE:2}"
+IMAGE_VERSION="V${VERSION}-${DATE:2}"
+[[ "$BUILD_TYPE" != "release" ]] && IMAGE_VERSION=${IMAGE_VERSION}-develop
 
 NR_JOBS_MAX=20
 NR_CPUS=$(grep -c processor /proc/cpuinfo)
@@ -94,7 +95,7 @@ fi
 
 UBOOT_VER=${UBOOT/mainline/$MAINLINE_UBOOT_VER}
 
-IMAGE_FILE_NAME="${KHADAS_BOARD}_${DISTRIBUTION}-${DISTRIB_TYPE}-${DISTRIB_RELEASE}_Linux-${LINUX/mainline/$MAINLINE_LINUX_VER}_${DISTRIB_ARCH}_${INSTALL_TYPE}_${IMAGE_RELEASE_VERSION}.img"
+IMAGE_FILE_NAME="${KHADAS_BOARD}_${DISTRIBUTION}-${DISTRIB_TYPE}-${DISTRIB_RELEASE}_Linux-${LINUX/mainline/$MAINLINE_LINUX_VER}_${DISTRIB_ARCH}_${INSTALL_TYPE}_${IMAGE_VERSION}.img"
 IMAGE_FILE_NAME_RAW=${IMAGE_FILE_NAME:0:-4}.raw.img
 [[ "$INSTALL_TYPE_RAW" == "yes" ]] && IMAGE_FILE_NAME=$IMAGE_FILE_NAME_RAW
 LINUX_IMAGE_DEB="linux-image-${VENDOR,,}-${LINUX}"
@@ -127,6 +128,18 @@ else
 	TZDATA=`cat /etc/timezone` # Timezone for target is taken from host or defined here.
 fi
 
+# All command-line software which outputs text with ANSI color added should
+# check for the presence of a NO_COLOR environment variable that, when
+# present (regardless of its value), prevents the addition of ANSI color.
+# https://no-color.org/ ;-)
+#
+
+# USAGE: NO_COLOR=1 make
+[ "$NO_COLOR" ] && \
+unset BLACK BOLDBLACK RED BOLDRED GREEN BOLDGREEN YELLOW BOLDYELLOW BLUE \
+    BOLDBLUE MAGENTA BOLDMAGENTA CYAN BOLDCYAN WHITE BOLDWHITE ENDCOLOR
+
+[ "$NO_COLOR" ] || {
 ## Define colors
 BLACK="\e[0;30m"
 BOLDBLACK="\e[1;30m"
@@ -145,6 +158,7 @@ BOLDCYAN="\e[1;36m"
 WHITE="\e[0;37m"
 BOLDWHITE="\e[1;37m"
 ENDCOLOR="\e[0m"
+}
 
 ##
 ERROR="${RED}Error:${ENDCOLOR}"

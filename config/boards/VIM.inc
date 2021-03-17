@@ -250,7 +250,7 @@ pack_image_platform() {
 		if [ "$PACK_UBOOT_IMAGE" != "yes" ]; then
 			ln -fs ../../images/rootfs.img rootfs.img
 		else
-			IMAGE_FILE_NAME="${KHADAS_BOARD}_Uboot_EMMC_${IMAGE_RELEASE_VERSION}.img"
+			IMAGE_FILE_NAME="${KHADAS_BOARD}_Uboot_EMMC_${IMAGE_VERSION}.img"
 			ln -fs fake-rootfs.img rootfs.img
 		fi
 
@@ -259,7 +259,7 @@ pack_image_platform() {
 		$UTILS_DIR/aml_image_v2_packer -r $UPGRADE_DIR/Amlogic/package.conf $UPGRADE_DIR/Amlogic $BUILD_IMAGES/${IMAGE_FILE_NAME}
     elif [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		if [ "$PACK_UBOOT_IMAGE" == "yes" ]; then
-			IMAGE_FILE_NAME="${KHADAS_BOARD}_Uboot_SD_${IMAGE_RELEASE_VERSION}.img"
+			IMAGE_FILE_NAME="${KHADAS_BOARD}_Uboot_SD_${IMAGE_VERSION}.img"
 			info_msg "Create Uboot SD image..."
 			dd if=/dev/zero of=${BUILD_IMAGES}/${IMAGE_FILE_NAME} bs=1M count=0 seek=4 > /dev/null 2>&1
 		fi
