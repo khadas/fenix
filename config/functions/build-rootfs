@@ -220,6 +220,7 @@ create_rootfs_cache()
 		fi
 
 		# fancy progress bars
+		[ "$NO_COLOR" -o "$NO_PROGRESS" ] || \
 		local apt_extra_progress="--show-progress -o DPKG::Progress-Fancy=1"
 
 		info_msg "Installing base system - Stage 1/2"

@@ -6,7 +6,7 @@ check_modifications() {
 	# Check modifications
 	CHANGED_FILES=$(git diff --name-only)
 	if [ -n "$CHANGED_FILES" ]; then
-		echo -e "$WARNING: Repo[$(pwd)] You made some modifications to file(s): \n[ \e[0;32m\n${CHANGED_FILES}\x1B[0m \n]"
+		echo -e "$WARNING: Repo[$(pwd)] You made some modifications to file(s): \n[ $GREEN\n${CHANGED_FILES}$ENDCOLOR \n]"
 		return -1
 	fi
 
@@ -49,8 +49,9 @@ update_git_repo() {
         fi
 
         git pull origin $2
+		[ "$NO_ASK" ] || \
 		if [ $HAVE_MODIFYCATIONS -ne 0 ]; then
-			echo -e "Press \e[0;33m<Ctrl-C>\x1B[0m to abort compilation, \e[0;33m<Enter>\x1B[0m to ignore and continue"
+			echo -e "Press $YELLOW<Ctrl-C>$ENDCOLOR to abort compilation, $YELLOW<Enter>$ENDCOLOR to ignore and continue"
 			read
 		fi
 
