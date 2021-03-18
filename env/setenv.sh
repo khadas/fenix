@@ -740,7 +740,7 @@ VERSION=$VERSION\
 ${p_// /$'\n'}
 
 == ONE LINE CONFIG ==================
-source -q -s $BASH_SOURCE$p_
+source $BASH_SOURCE -q -s $p_
 "
 	echo2 "Environment setup done. Type 'make' to build."
 }
