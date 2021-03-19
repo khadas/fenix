@@ -18,8 +18,11 @@ fan_mode=auto
 # Don't touch unless you know what you are doing
 dma_size=2M
 
-# Specify the initial console log level (0~8)
-loglevel=7
+# Specify the log level
+# 2 - default, output both kernel logs & system logs
+# 1 - only output system logs
+# 0 - disable all output logs
+loglevel=2
 
 # User kernel args
 # Add customer kernel args here

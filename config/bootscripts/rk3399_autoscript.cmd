@@ -123,9 +123,9 @@ fi;fi;
 echo DTB: ${dtb_prefix}${boot_dtb}
 
 if test -e mmc ${devnum}:${boot_env_part} ${mark_prefix}.next; then
-	setenv condev "earlyprintk console=ttyS2,1500000n8 console=tty0"
+	setenv uart_tty "ttyS2";
 else
-	setenv condev "earlyprintk console=ttyFIQ0,1500000n8 console=tty0"
+	setenv uart_tty "ttyFIQ0";
 fi
 
 setenv boot_start booti ${kernel_addr_r} ${ramdisk_addr_r} ${fdt_addr_r}
@@ -149,10 +149,22 @@ if test "X${eth_mac}" = "X" || test "X${eth_mac}" = "X00:00:00:00:00:00"; then
 fi;
 
 if test -e ${loglevel}; then
-	setenv log "loglevel=${loglevel}"
+	if test ${loglevel} = 0; then
+		setenv kernel_log "loglevel=0";
+		setenv tty_console "";
+	else if test ${loglevel} = 1; then
+		setenv kernel_log "loglevel=0";
+		setenv tty_console "console=tty0";
+	else
+		setenv tty_console "console=tty0";
+	fi;fi;
+else
+	setenv tty_console "console=tty0";
 fi
 
-setenv bootargs "${bootargs} ${condev} ${log} rw root=${rootdev} rootfstype=ext4 init=/sbin/init rootwait ubootpart=${ubootpartuuid} board_type=${board_type} board_type_name=${board_type_name} khadas_board=${board_type_name} fan=${fan_mode} mac=${eth_mac} androidboot.mac=${eth_mac} ${saveethmac} coherent_pool=${dma_size} imagetype=${imagetype} ${user_kernel_args}"
+setenv condev "earlyprintk console=${uart_tty},1500000n8 ${tty_console}"
+
+setenv bootargs "${bootargs} ${condev} ${kernel_log} rw root=${rootdev} rootfstype=ext4 init=/sbin/init rootwait ubootpart=${ubootpartuuid} board_type=${board_type} board_type_name=${board_type_name} khadas_board=${board_type_name} fan=${fan_mode} mac=${eth_mac} androidboot.mac=${eth_mac} ${saveethmac} coherent_pool=${dma_size} imagetype=${imagetype} ${user_kernel_args}"
 
 for distro_bootpart in ${devplist}; do
 	echo "Scanning ${devtype} ${devnum}:${distro_bootpart}..."
