@@ -148,6 +148,11 @@ if test "X${eth_mac}" = "X" || test "X${eth_mac}" = "X00:00:00:00:00:00"; then
 	setenv saveethmac "save_ethmac=yes";
 fi;
 
+if test "X${enable_splash}" = "Xtrue"; then
+	setenv loglevel 0;
+	setenv splashargs "splash quiet plymouth.ignore-serial-consoles vt.handoff=7";
+fi;
+
 if test -e ${loglevel}; then
 	if test ${loglevel} = 0; then
 		setenv kernel_log "loglevel=0";
@@ -164,7 +169,7 @@ fi
 
 setenv condev "earlyprintk console=${uart_tty},1500000n8 ${tty_console}"
 
-setenv bootargs "${bootargs} ${condev} ${kernel_log} rw root=${rootdev} rootfstype=ext4 init=/sbin/init rootwait ubootpart=${ubootpartuuid} board_type=${board_type} board_type_name=${board_type_name} khadas_board=${board_type_name} fan=${fan_mode} mac=${eth_mac} androidboot.mac=${eth_mac} ${saveethmac} coherent_pool=${dma_size} imagetype=${imagetype} ${user_kernel_args}"
+setenv bootargs "${bootargs} ${condev} ${kernel_log} rw root=${rootdev} rootfstype=ext4 init=/sbin/init rootwait ubootpart=${ubootpartuuid} board_type=${board_type} board_type_name=${board_type_name} khadas_board=${board_type_name} fan=${fan_mode} mac=${eth_mac} androidboot.mac=${eth_mac} ${saveethmac} coherent_pool=${dma_size} imagetype=${imagetype} ${splashargs} ${user_kernel_args}"
 
 for distro_bootpart in ${devplist}; do
 	echo "Scanning ${devtype} ${devnum}:${distro_bootpart}..."

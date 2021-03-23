@@ -24,6 +24,11 @@ dma_size=2M
 # 0 - disable all output logs
 loglevel=2
 
+# Setup splash
+# true  - enable splash
+# false - disable splash
+enable_splash=true
+
 # User kernel args
 # Add customer kernel args here
 user_kernel_args=

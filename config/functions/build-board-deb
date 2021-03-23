@@ -204,6 +204,30 @@ build_board_deb() {
 
 	systemctl --no-reload enable fenix-zram-config.service fenix-hardware-optimize.service >/dev/null 2>&1
 
+	# Setup plymouth
+	case "\$1" in
+		configure)
+		update-alternatives \
+			--install /usr/share/plymouth/themes/default.plymouth default.plymouth \
+			/usr/share/plymouth/themes/fenix/fenix.plymouth 150
+
+		ln -fs /usr/share/plymouth/themes/fenix/fenix.plymouth /etc/alternatives/default.plymouth
+
+		if which update-initramfs >/dev/null 2>&1
+		then
+			update-initramfs -u
+		fi
+		;;
+
+		abort-upgrade|abort-deconfigure|abort-remove)
+		;;
+
+		*)
+		echo "\$0 called with unknown argument '\$1'" 1>&2
+		exit 1
+		;;
+	esac
+
 	exit 0
 	EOF
 
