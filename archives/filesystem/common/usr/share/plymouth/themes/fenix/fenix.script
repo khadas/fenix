@@ -55,10 +55,10 @@ fsck_progress_fade_image = Image("fsck-fade.png");
  * Sprites */
 
 ratio = screen_height / screen_width;
-background_ratio = logo_image.GetHeight() / logo_image.GetWidth();
+logo_ratio = logo_image.GetHeight() / logo_image.GetWidth();
 factor = 0;
 
-if (ratio > background_ratio) {
+if (ratio > logo_ratio) {
 
 	factor = screen_height / logo_image.GetHeight();
 
@@ -73,11 +73,11 @@ else {
 factor = 1;
 
 scaled = logo_image.Scale(logo_image.GetWidth() * factor, logo_image.GetHeight() * factor);
-background_sprite = Sprite(scaled);
-background_sprite.SetX(screen_x + screen_width / 2 - scaled.GetWidth() / 2);
-background_sprite.SetY(screen_y + screen_height / 2 - scaled.GetHeight() / 2);
+logo_sprite = Sprite(scaled);
+logo_sprite.SetX(screen_x + screen_width / 2 - scaled.GetWidth() / 2);
+logo_sprite.SetY(screen_y + screen_height / 2 - scaled.GetHeight() / 2);
 
-logotype_sprite = Sprite(watermark_image);
+watermark_sprite = Sprite(watermark_image);
 
 fsck_progress_meter_sprite = Sprite(fsck_progress_meter_image);
 fsck_progress_fade_sprite = Sprite(fsck_progress_fade_image.Scale(1, fsck_progress_fade_image.GetHeight()));
@@ -129,7 +129,7 @@ fun debugOutput(str) {
 
 /*
  * Setup the graphics properties */
-logotype_sprite.SetPosition(screen_x + (screen_width / 2) - (watermark_image.GetWidth() / 2), screen_y + (screen_height) - (watermark_image.GetHeight() + 20));
+watermark_sprite.SetPosition(screen_x + (screen_width / 2) - (watermark_image.GetWidth() / 2), screen_y + (screen_height) - (watermark_image.GetHeight() + 20));
 
 fsck_progress_meter_sprite.SetPosition(screen_x + (screen_width / 2) - (progress_meter_image.GetWidth() / 2), screen_y + (screen_height / 2) + (watermark_image.GetHeight() / 2) + 25);
 fsck_progress_fade_sprite.SetPosition(screen_x + (screen_width / 2) - (progress_meter_image.GetWidth() / 2), screen_y + (screen_height / 2) + (watermark_image.GetHeight() / 2) + 25);

@@ -339,6 +339,8 @@ build_board_deb() {
 	# Install bmp logo
 	mkdir -p $pkgdir/usr/share/fenix/logo
 	cp $ROOT/archives/logo/bmp/* $pkgdir/usr/share/fenix/logo
+	# Install png logo
+	cp $ROOT/archives/logo/png/*.png $pkgdir/usr/share/fenix/logo
 
 	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$DISTRIB_RELEASE" == "bionic" ]; then
 		# Blacklist lima.ko
