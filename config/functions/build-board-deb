@@ -19,7 +19,7 @@ build_board_deb() {
 	Architecture: $DISTRIB_ARCH
 	Maintainer: Khadas <hello@khadas.com>
 	Installed-Size: 1
-	Replaces: alsa-utils, linux-firmware, watchdog, base-files, mpv, zram-config, haveged, initramfs-tools-core, ppp, linux-board-package-${DISTRIB_RELEASE,,}-vim1, linux-board-package-${DISTRIB_RELEASE,,}-vim2, linux-board-package-${DISTRIB_RELEASE,,}-vim3, linux-board-package-${DISTRIB_RELEASE,,}-vim3l
+	Replaces: alsa-utils, linux-firmware, watchdog, base-files, mpv, zram-config, haveged, initramfs-tools-core, ppp, linux-board-package-${DISTRIB_RELEASE,,}-vim1, linux-board-package-${DISTRIB_RELEASE,,}-vim2, linux-board-package-${DISTRIB_RELEASE,,}-vim3, linux-board-package-${DISTRIB_RELEASE,,}-vim3l, plymouth
 	Section: kernel
 	Priority: optional
 	Recommends: ${board_deb_dependencies}
