@@ -3,7 +3,7 @@ run_watchdog=1
 # Start wd_keepalive after stopping watchdog? 0 or 1
 run_wd_keepalive=1
 # Load module before starting watchdog
-Watchdog_module=gxbb_wdt
+watchdog_module="none"
 # Specify additional watchdog options here (see manpage).
 watchdog_options="-s -v -c /etc/watchdog.conf"
 
