@@ -4,5 +4,6 @@
 #   pwm_ao_a        -- Enable PWM_AO_A (GPIO Header PIN35)
 #   pwm_f           -- Enable PWM_F (GPIO Header PIN39)
 #   i2c0            -- Enable I2C0 (GPIO Header PIN22 & PIN23)
+#   i2s             -- Enable I2S (GPIO Header PIN29 & PIN30 & PIN31 & PIN32)
 #   watchdog        -- Enable watchdog
-overlays=uart4 pwm_ao_a pwm_f i2c0 watchdog
+overlays=uart4 pwm_ao_a pwm_f i2c0 i2s watchdog
