@@ -10,7 +10,7 @@ build_board_deb() {
 	rm -rf $pkgdir
 	mkdir -p $pkgdir/DEBIAN
 
-	board_deb_dependencies=$(echo $PACKAGE_LIST_ADDITIONAL)
+	board_deb_dependencies=$(echo $PACKAGE_LIST_BOARD_DEPS)
 	board_deb_dependencies=${board_deb_dependencies// /,}
 
 	cat <<-EOF > $pkgdir/DEBIAN/control
@@ -413,7 +413,7 @@ build_board_deb() {
 
 	# Add dependencies file
 	cat <<-EOF > $pkgdir/etc/fenix-board-dependencis
-	FENIX_BOARD_DEPENDENCIES="$(echo $PACKAGE_LIST_ADDITIONAL)"
+	FENIX_BOARD_DEPENDENCIES="$(echo $PACKAGE_LIST_BOARD_DEPS)"
 	EOF
 
 	# Create board deb file
