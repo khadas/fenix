@@ -7,9 +7,10 @@ max_freq_a55=1908
 #   pwm_f           -- Enable PWM_F (GPIO Header PIN35)
 #   i2c3            -- Enable i2c3 (GPIO Header PIN22 & PIN23)
 #   spi1            -- Enable SPI1 (GPIO Header PIN15 & PIN16 & PIN35 & PIN37), pwm_f need to be removed
+#   i2s             -- Enable I2S (GPIO Header PIN29 & PIN30 & PIN31 & PIN32 & PIN33)
 #   onewire         -- Enable onewire bus (GPIO Header PIN15)
 #   disable-ts050   -- Disable TS050 LCD
 #   m2x-eth         -- Enable M2X 100M ethernet. Note: 1G ethernet will be disabled.
 #   otg-device      -- Enable USB OTG Device
 #   watchdog        -- Enable watchdog
-overlays=uart3 pwm_f i2c3 watchdog
+overlays=uart3 pwm_f i2c3 i2s watchdog

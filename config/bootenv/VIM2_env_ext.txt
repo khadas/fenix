@@ -3,5 +3,6 @@
 #   onewire         -- Enable onewire bus (GPIO Header PIN37)
 #   pwm_d           -- Enable PWM_D (GPIO Header PIN35)
 #   i2c0            -- Enable I2C0 (GPIO Header PIN22 & PIN23)
+#   i2s             -- Enable I2S (GPIO Header PIN29 & PIN30 & PIN31 & PIN32)
 #   watchdog        -- Enable watchdog
-overlays=uart4 pwm_d i2c0 watchdog
+overlays=uart4 pwm_d i2c0 i2s watchdog
