@@ -1,7 +1,7 @@
-From 38c87490f792dff89d8162a15025c18adbb9c434 Mon Sep 17 00:00:00 2001
+From eed02a3d349a279d79cad6ea5c1db24ba3d2f66d Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Tue, 19 Jan 2021 12:57:11 +0000
-Subject: [PATCH 18/54] FROMLIST(v1): arm64: dts: meson: add initial
+Subject: [PATCH 18/53] FROMLIST(v1): arm64: dts: meson: add initial
  device-tree for Minix NEO U9-H
 
 Minix NEO U9-H is based on the Amlogic Q200 reference board with an
@@ -170,5 +170,5 @@ index 000000000000..a414cd39c2b1
 +	};
 +};
 -- 
-2.17.1
+2.25.1
 

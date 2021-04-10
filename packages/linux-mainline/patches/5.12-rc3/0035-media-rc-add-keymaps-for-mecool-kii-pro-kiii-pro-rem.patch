@@ -1,7 +1,7 @@
-From e01abedd0d7845c7d58184e2fae15d69aa706b39 Mon Sep 17 00:00:00 2001
+From 2e041ea3076f2cca2b5c0a86533eb074f689c075 Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Mon, 8 Mar 2021 02:51:01 +0000
-Subject: [PATCH 35/54] media: rc: add keymaps for mecool-kii-pro/kiii-pro
+Subject: [PATCH 35/53] media: rc: add keymaps for mecool-kii-pro/kiii-pro
  remotes
 
 Add keymaps and bindings for the simple IR (NEC) remotes used with
@@ -253,5 +253,5 @@ index 6f8e2bbbc851..916fcc62ecf9 100644
  #define RC_MAP_MEDION_X10_DIGITAINER     "rc-medion-x10-digitainer"
  #define RC_MAP_MEDION_X10_OR2X           "rc-medion-x10-or2x"
 -- 
-2.17.1
+2.25.1
 

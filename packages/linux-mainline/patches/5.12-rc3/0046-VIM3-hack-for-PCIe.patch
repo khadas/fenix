@@ -1,7 +1,7 @@
-From 969cb89d5d7793df144f31ca504c042767873d82 Mon Sep 17 00:00:00 2001
+From 8d10f88a070873b180be916740b45cb33e35e513 Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Sat, 23 May 2020 15:29:11 +0800
-Subject: [PATCH 46/54] VIM3: hack for PCIe
+Subject: [PATCH 46/53] VIM3: hack for PCIe
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---
@@ -26,5 +26,5 @@ index 686ded034f22..d8c4ec085b2d 100644
  
  static const struct of_device_id meson_pcie_of_match[] = {
 -- 
-2.17.1
+2.25.1
 

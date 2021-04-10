@@ -1,0 +1,26 @@
+From 02f8431acd6f033be995afd506f95be26886199f Mon Sep 17 00:00:00 2001
+From: Nick Xie <nick@khadas.com>
+Date: Sat, 10 Apr 2021 09:22:59 +0800
+Subject: [PATCH 51/53] Revert "builddeb: Enable rootless builds"
+
+This reverts commit 3e8541803624678925a477a03e19e3c155b5fc12.
+---
+ scripts/package/builddeb | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/package/builddeb b/scripts/package/builddeb
+index 1b11f8993629..50e193a3ab32 100755
+--- a/scripts/package/builddeb
++++ b/scripts/package/builddeb
+@@ -48,7 +48,7 @@ create_package() {
+ 
+ 	# Create the package
+ 	dpkg-gencontrol -p$pname -P"$pdir"
+-	dpkg-deb $dpkg_deb_opts ${KDEB_COMPRESS:+-Z$KDEB_COMPRESS} --build "$pdir" ..
++	dpkg-deb ${KDEB_COMPRESS:+-Z$KDEB_COMPRESS} --build "$pdir" ..
+ }
+ 
+ deploy_kernel_headers () {
+-- 
+2.25.1
+

@@ -1,7 +1,7 @@
-From 513aa0b66f60366ef99b91e586fa217bdf5f1811 Mon Sep 17 00:00:00 2001
+From cb0ab55cf7eebcb7dd8b3fc3a7db53b26e460ac7 Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Tue, 19 Jan 2021 11:55:20 +0000
-Subject: [PATCH 06/54] FROMGIT: media: rc: add keymap for minix-neo remote
+Subject: [PATCH 06/53] FROMGIT: media: rc: add keymap for minix-neo remote
 
 Add a keymap and bindings for the simple IR (NEC) remote used with
 Minix 'NEO' branded Android STB devices.
@@ -113,5 +113,5 @@ index 30f138ebab6f..6f8e2bbbc851 100644
  #define RC_MAP_MSI_DIGIVOX_III           "rc-msi-digivox-iii"
  #define RC_MAP_MSI_TVANYWHERE            "rc-msi-tvanywhere"
 -- 
-2.17.1
+2.25.1
 

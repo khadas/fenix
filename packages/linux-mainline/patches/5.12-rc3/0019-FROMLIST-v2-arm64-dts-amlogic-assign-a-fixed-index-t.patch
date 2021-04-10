@@ -1,7 +1,7 @@
-From b9d5da5a952d7cb5760008be00e359023c39b239 Mon Sep 17 00:00:00 2001
+From 4915a7d168999ec0ecd2b58fc61f2cc8b14d33fe Mon Sep 17 00:00:00 2001
 From: Alexander Stein <alexander.stein@mailbox.org>
 Date: Wed, 3 Feb 2021 17:03:42 +0000
-Subject: [PATCH 19/54] FROMLIST(v2): arm64: dts: amlogic: assign a fixed index
+Subject: [PATCH 19/53] FROMLIST(v2): arm64: dts: amlogic: assign a fixed index
  to mmc devices
 
 Recently introduced async probe on mmc devices can shuffle block IDs.
@@ -28,7 +28,7 @@ diff --git a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi b/arch/arm64/boot
 index 3a4f20506a61..bd6e48e3c51a 100644
 --- a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
 +++ b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-@@ -17,6 +17,12 @@
+@@ -17,6 +17,12 @@ / {
  	#address-cells = <2>;
  	#size-cells = <2>;
  
@@ -45,7 +45,7 @@ diff --git a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi b/arch/arm64/boot/dts/aml
 index cf9eb7c8a6f0..14ff467c6be8 100644
 --- a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
 +++ b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
-@@ -20,6 +20,12 @@
+@@ -20,6 +20,12 @@ / {
  	#address-cells = <2>;
  	#size-cells = <2>;
  
@@ -59,5 +59,5 @@ index cf9eb7c8a6f0..14ff467c6be8 100644
  		#address-cells = <2>;
  		#size-cells = <2>;
 -- 
-2.17.1
+2.25.1
 

@@ -1,7 +1,7 @@
-From f36f4cd9c2b145c99806fa2af6ea8f59a0b95bab Mon Sep 17 00:00:00 2001
+From 72427ffd36521f70ea08361f8e08f1aa93f63cfe Mon Sep 17 00:00:00 2001
 From: chewitt <christianshewitt@gmail.com>
 Date: Sun, 19 Apr 2020 08:40:21 +0000
-Subject: [PATCH 36/54] WIP: arm64: dts: meson: add common hdmi/hdmi-spdif dtsi
+Subject: [PATCH 36/53] WIP: arm64: dts: meson: add common hdmi/hdmi-spdif dtsi
  for GXL/GXM
 
 ---
@@ -202,5 +202,5 @@ index 000000000000..20a73ee81bdb
 +	status = "okay";
 +};
 -- 
-2.17.1
+2.25.1
 

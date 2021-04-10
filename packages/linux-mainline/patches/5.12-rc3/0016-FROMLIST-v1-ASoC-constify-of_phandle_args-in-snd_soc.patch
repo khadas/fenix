@@ -1,7 +1,7 @@
-From 0cdeb2d506394ea4ca7675bad8a6a9696a58dc0d Mon Sep 17 00:00:00 2001
+From 8eb81f8e40e1b3bef7f9b571645fc83302a5e9f1 Mon Sep 17 00:00:00 2001
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Date: Sun, 21 Feb 2021 16:27:16 +0000
-Subject: [PATCH 16/54] FROMLIST(v1): ASoC: constify of_phandle_args in
+Subject: [PATCH 16/53] FROMLIST(v1): ASoC: constify of_phandle_args in
  snd_soc_get_dai_name()
 
 The pointer to of_phandle_args passed to snd_soc_get_dai_name() and
@@ -120,7 +120,7 @@ index 87aa19ac4af3..393b6c2307e4 100644
  			  unsigned int component_id);
  
 diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index c642e5f8f28c..4762286b33fe 100644
+index be360a402b67..c62d2612e8f5 100644
 --- a/sound/soc/qcom/lpass-cpu.c
 +++ b/sound/soc/qcom/lpass-cpu.c
 @@ -340,7 +340,7 @@ int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai)
@@ -159,10 +159,10 @@ index 159bf88b9f8c..8415e9bd2932 100644
  {
  	if (component->driver->of_xlate_dai_name)
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f6d4e99b590c..50190654edda 100644
+index 0cffc9527e28..16ba54eb8164 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -2994,7 +2994,7 @@ int snd_soc_get_dai_id(struct device_node *ep)
+@@ -2998,7 +2998,7 @@ int snd_soc_get_dai_id(struct device_node *ep)
  }
  EXPORT_SYMBOL_GPL(snd_soc_get_dai_id);
  
@@ -172,5 +172,5 @@ index f6d4e99b590c..50190654edda 100644
  {
  	struct snd_soc_component *pos;
 -- 
-2.17.1
+2.25.1
 
