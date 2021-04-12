@@ -1,7 +1,7 @@
-From ce7245bd2452b9bb3bd63b1eeb819349b160ea7b Mon Sep 17 00:00:00 2001
+From bc965b560ddc68d6cd277064779d59cf5f7c426d Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Fri, 29 Jan 2021 04:46:21 +0000
-Subject: [PATCH 17/54] FROMLIST(v1): dt-bindings: arm: amlogic: add support
+Subject: [PATCH 17/53] FROMLIST(v1): dt-bindings: arm: amlogic: add support
  for the Minix NEO U9-H
 
 The Minix NEO U9-H is a small form-factor Android STB based on the
@@ -25,5 +25,5 @@ index 5f6769bf45bd..d24334e1e166 100644
                - tronsmart,vega-s96
                - wetek,core2
 -- 
-2.17.1
+2.25.1
 

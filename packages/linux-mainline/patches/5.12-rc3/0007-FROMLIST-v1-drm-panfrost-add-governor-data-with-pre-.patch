@@ -1,7 +1,7 @@
-From 6fbb0f5e72c0ab43ca69aa02e90003cf91fc6357 Mon Sep 17 00:00:00 2001
+From 1306cbd89240c6617b701982aa09895647b77ee2 Mon Sep 17 00:00:00 2001
 From: Lukasz Luba <lukasz.luba@arm.com>
 Date: Sun, 24 Jan 2021 03:57:47 +0000
-Subject: [PATCH 07/54] FROMLIST(v1): drm/panfrost: add governor data with
+Subject: [PATCH 07/53] FROMLIST(v1): drm/panfrost: add governor data with
  pre-defined thresholds
 
 The simple_ondemand devfreq governor uses two thresholds to decide about
@@ -60,5 +60,5 @@ index db6ea48e21f9..1e2a4de941aa 100644
  
  	ktime_t busy_time;
 -- 
-2.17.1
+2.25.1
 

@@ -1,7 +1,7 @@
-From 2e1b8ec2c1b25a09d7c540e1d6d0cf1462a222cb Mon Sep 17 00:00:00 2001
+From b6203b4e9abce8053b82d1bb85b53d1bcb83926a Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Wed, 1 Apr 2020 14:11:35 +0800
-Subject: [PATCH 39/54] arm64: dts: sdio: VIM1/VIM2: change freq to 100MHz
+Subject: [PATCH 39/53] arm64: dts: sdio: VIM1/VIM2: change freq to 100MHz
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---
@@ -13,7 +13,7 @@ diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts b/arch/a
 index df287b12975b..02473c9e35a6 100644
 --- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
 +++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
-@@ -220,6 +220,9 @@
+@@ -220,6 +220,9 @@ &pwm_ef {
  };
  
  &sd_emmc_a {
@@ -27,7 +27,7 @@ diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/
 index a2b0578c89ad..ca16a5d9950b 100644
 --- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
 +++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-@@ -308,7 +308,7 @@
+@@ -308,7 +308,7 @@ &sd_emmc_a {
  	#size-cells = <0>;
  
  	bus-width = <4>;
@@ -37,5 +37,5 @@ index a2b0578c89ad..ca16a5d9950b 100644
  	non-removable;
  	disable-wp;
 -- 
-2.17.1
+2.25.1
 

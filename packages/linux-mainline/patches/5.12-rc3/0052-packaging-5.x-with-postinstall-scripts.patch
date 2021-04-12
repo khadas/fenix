@@ -1,14 +1,14 @@
-From 335621fe1b31a74f42d93856b3ab8336379a5499 Mon Sep 17 00:00:00 2001
-From: yan <yan-wyb@foxmail.com>
-Date: Mon, 30 Nov 2020 17:36:50 +0800
-Subject: [PATCH 51/54] packaging 5.x with postinstall scripts
+From a877f11aac5f551af0774025e293fa455037d660 Mon Sep 17 00:00:00 2001
+From: Nick Xie <nick@khadas.com>
+Date: Sat, 10 Apr 2021 09:35:10 +0800
+Subject: [PATCH 52/53] packaging 5.x with postinstall scripts
 
-Signed-off-by: yan <yan-wyb@foxmail.com>
+Signed-off-by: Nick Xie <nick@khadas.com>
 ---
  arch/arm64/Makefile      |   2 +-
- scripts/package/builddeb | 166 ++++++++++++++++++++++++++++++++++++---
+ scripts/package/builddeb | 164 +++++++++++++++++++++++++++++++++++----
  scripts/package/mkdebian |  21 +++--
- 3 files changed, 171 insertions(+), 18 deletions(-)
+ 3 files changed, 166 insertions(+), 21 deletions(-)
 
 diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
 index 5b84aec31ed3..803aaa7bf233 100644
@@ -24,14 +24,13 @@ index 5b84aec31ed3..803aaa7bf233 100644
  all:	Image.gz
  
 diff --git a/scripts/package/builddeb b/scripts/package/builddeb
-index 84dadb863a49..e4516984873d 100755
+index 50e193a3ab32..9e4d80425ce8 100755
 --- a/scripts/package/builddeb
 +++ b/scripts/package/builddeb
-@@ -40,12 +40,51 @@ create_package() {
- 	chmod -R go-w "$pdir"
+@@ -46,9 +46,46 @@ create_package() {
  	# in case we are in a restrictive umask environment like 0077
  	chmod -R a+rX "$pdir"
-+
+ 
 +	# Create preinstall and post install script to remove dtb
 +	if [ "$3" = "dtb" ]; then
 +
@@ -69,18 +68,14 @@ index 84dadb863a49..e4516984873d 100755
 +	chmod 775 $pdir/DEBIAN/postinst ; chmod 775 $pdir/DEBIAN/prerm
 +	fi
 +
-+
- 	# in case we build in a setuid/setgid directory
- 	chmod -R ug-s "$pdir"
- 
  	# Create the package
  	dpkg-gencontrol -p$pname -P"$pdir"
--	dpkg-deb $dpkg_deb_opts ${KDEB_COMPRESS:+-Z$KDEB_COMPRESS} --build "$pdir" ..
+-	dpkg-deb ${KDEB_COMPRESS:+-Z$KDEB_COMPRESS} --build "$pdir" ..
 +	dpkg-deb --build "$pdir" ..
  }
  
  deploy_kernel_headers () {
-@@ -102,9 +141,15 @@ deploy_libc_headers () {
+@@ -105,9 +142,15 @@ deploy_libc_headers () {
  }
  
  version=$KERNELRELEASE
@@ -99,22 +94,18 @@ index 84dadb863a49..e4516984873d 100755
  dbg_packagename=$packagename-dbg
  
  if [ "$ARCH" = "um" ] ; then
-@@ -115,6 +160,14 @@ fi
+@@ -118,6 +161,10 @@ fi
  # XXX: have each arch Makefile export a variable of the canonical image install
  # path instead
  case $ARCH in
 +aarch64|arm64)
-+	image_name=Image
-+	installed_image_path="boot/vmlinuz-$version"
-+	;;
-+arm*)
-+	image_name=zImage
-+	installed_image_path="boot/vmlinuz-$version"
-+	;;
++   image_name=Image
++   installed_image_path="boot/vmlinuz-$version"
++   ;;
  um)
  	installed_image_path="usr/bin/linux-$version"
  	;;
-@@ -128,13 +181,17 @@ esac
+@@ -131,13 +178,17 @@ esac
  BUILD_DEBUG=$(if_enabled_echo CONFIG_DEBUG_INFO Yes)
  
  # Setup the directory structure
@@ -134,14 +125,13 @@ index 84dadb863a49..e4516984873d 100755
  	cp System.map "$tmpdir/usr/lib/uml/modules/$version/System.map"
  	cp $KCONFIG_CONFIG "$tmpdir/usr/share/doc/$packagename/config"
  	gzip "$tmpdir/usr/share/doc/$packagename/config"
-@@ -178,6 +235,22 @@ if is_enabled CONFIG_MODULES; then
+@@ -181,6 +232,24 @@ if is_enabled CONFIG_MODULES; then
  	fi
  fi
  
-+
 +if grep -q '^CONFIG_OF=y' $KCONFIG_CONFIG ; then
-+	#mkdir -p "$tmpdir/boot/dtb"
-+	INSTALL_DTBS_PATH="$dtb_dir/boot/dtb-$version" $MAKE KBUILD_SRC= dtbs_install
++   #mkdir -p "$tmpdir/boot/dtb"
++   INSTALL_DTBS_PATH="$dtb_dir/boot/dtb-$version" $MAKE KBUILD_SRC= dtbs_install
 +fi
 +
 +if [ "$ARCH" != "um" ]; then
@@ -152,12 +142,15 @@ index 84dadb863a49..e4516984873d 100755
 +	host_arch=$(dpkg-architecture -a$(cat debian/arch) -qDEB_HOST_MULTIARCH)
 +	mkdir $libc_headers_dir/usr/include/$host_arch
 +	mv $libc_headers_dir/usr/include/asm $libc_headers_dir/usr/include/$host_arch/
++
++	create_package "$dtb_packagename" "$dtb_dir" "dtb"
 +fi
++
 +
  # Install the maintainer scripts
  # Note: hook scripts under /etc/kernel are also executed by official Debian
  # kernel packages, as well as kernel packages built using make-kpkg.
-@@ -187,7 +260,7 @@ debhookdir=${KDEB_HOOKDIR:-/etc/kernel}
+@@ -190,7 +259,7 @@ debhookdir=${KDEB_HOOKDIR:-/etc/kernel}
  for script in postinst postrm preinst prerm ; do
  	mkdir -p "$tmpdir$debhookdir/$script.d"
  	cat <<EOF > "$tmpdir/DEBIAN/$script"
@@ -166,7 +159,7 @@ index 84dadb863a49..e4516984873d 100755
  
  set -e
  
-@@ -203,14 +276,83 @@ EOF
+@@ -206,18 +275,83 @@ EOF
  	chmod 755 "$tmpdir/DEBIAN/$script"
  done
  
@@ -175,21 +168,24 @@ index 84dadb863a49..e4516984873d 100755
 -		deploy_kernel_headers debian/linux-headers
 -		create_package linux-headers-$version debian/linux-headers
 -	fi
+-
+-	deploy_libc_headers debian/linux-libc-dev
+-	create_package linux-libc-dev debian/linux-libc-dev
 +##
 +## Create sym link to kernel image
 +##
 +sed -e "s/exit 0//g" -i $tmpdir/DEBIAN/postinst
 +cat >> $tmpdir/DEBIAN/postinst <<EOT
 +if [ "\$(grep nand /proc/partitions)" != "" ] && [ "\$(grep mmc /proc/partitions)" = "" ]; then
-+	mkimage -A arm -O linux -T kernel -C none -a "0x40008000" -e "0x40008000" -n "Linux kernel" -d /$installed_image_path /boot/uImage  > /dev/null 2>&1
-+	cp /boot/uImage /tmp/uImage
-+	sync
-+	mountpoint -q /boot || mount /boot
-+	cp /tmp/uImage /boot/uImage
-+	rm -f /$installed_image_path
++   mkimage -A arm -O linux -T kernel -C none -a "0x40008000" -e "0x40008000" -n "Linux kernel" -d /$installed_image_path /boot/uImage  > /dev/null 2>&1
++   cp /boot/uImage /tmp/uImage
++   sync
++   mountpoint -q /boot || mount /boot
++   cp /tmp/uImage /boot/uImage
++   rm -f /$installed_image_path
 +else
-+	ln -sf $(basename $installed_image_path) /boot/zImage 2> /dev/null || mv /$installed_image_path /boot/zImage
-+fi
++   ln -sf $(basename $installed_image_path) /boot/zImage 2> /dev/null || mv /$installed_image_path /boot/zImage
+ fi
 +touch /boot/.next
 +exit 0
 +EOT
@@ -203,28 +199,27 @@ index 84dadb863a49..e4516984873d 100755
 +if [ "\$(stat -c %d:%i /)" != "\$(stat -c %d:%i /proc/1/root/.)" ]; then exit 0; fi
 +
 +check_and_unmount (){
-+	boot_device=\$(mountpoint -d /boot)
++   boot_device=\$(mountpoint -d /boot)
 +
-+	for file in /dev/* ; do
-+		CURRENT_DEVICE=\$(printf "%d:%d" \$(stat --printf="0x%t 0x%T" \$file))
-+		if [[ "\$CURRENT_DEVICE" = "\$boot_device" ]]; then
-+			boot_partition=\$file 
-+			break
-+		fi
-+	done
- 
- 	deploy_libc_headers debian/linux-libc-dev
- 	create_package linux-libc-dev debian/linux-libc-dev
-+	bootfstype=\$(blkid -s TYPE -o value \$boot_partition)
-+	if [ "\$bootfstype" = "vfat" ]; then
-+		# we have to keep it mounted! umount /boot
-+		rm -f /boot/System.map* /boot/config* /boot/vmlinuz* /boot/$image_name /boot/uImage
-+	fi
++   for file in /dev/* ; do
++       CURRENT_DEVICE=\$(printf "%d:%d" \$(stat --printf="0x%t 0x%T" \$file))
++       if [[ "\$CURRENT_DEVICE" = "\$boot_device" ]]; then
++           boot_partition=\$file
++           break
++       fi
++   done
++   bootfstype=\$(blkid -s TYPE -o value \$boot_partition)
++   if [ "\$bootfstype" = "vfat" ]; then
++       # we have to keep it mounted! umount /boot
++       rm -f /boot/System.map* /boot/config* /boot/vmlinuz* /boot/$image_name /boot/uImage
++   fi
 +}
 +mountpoint -q /boot && check_and_unmount
 +EOT
 +echo "exit 0" >> $tmpdir/DEBIAN/preinst
-+
+ 
+ create_package "$packagename" "$tmpdir"
+ 
 +# Build kernel header package
 +(cd $srctree; find . -name Makefile\* -o -name Kconfig\* -o -name \*.pl) > "$objtree/debian/hdrsrcfiles"
 +(cd $srctree; find arch/*/include include scripts -type f -o -type l) >> "$objtree/debian/hdrsrcfiles"
@@ -234,7 +229,7 @@ index 84dadb863a49..e4516984873d 100755
 +if is_enabled CONFIG_STACK_VALIDATION; then
 +	(cd $objtree; find tools/objtool -type f -executable) >> "$objtree/debian/hdrobjfiles"
 +fi
-+(cd $objtree; find arch/$SRCARCH/include Module.symvers include scripts -type f) >> "$objtree/debian/hdrobjfiles"
++	(cd $objtree; find arch/$SRCARCH/include Module.symvers include scripts -type f) >> "$objtree/debian/hdrobjfiles"
 +if is_enabled CONFIG_GCC_PLUGINS; then
 +	(cd $objtree; find scripts/gcc-plugins -name \*.so -o -name gcc-common.h) >> "$objtree/debian/hdrobjfiles"
 +fi
@@ -247,19 +242,20 @@ index 84dadb863a49..e4516984873d 100755
 +ln -sf "/usr/src/linux-headers-$version" "$kernel_headers_dir/lib/modules/$version/build"
 +rm -f "$objtree/debian/hdrsrcfiles" "$objtree/debian/hdrobjfiles"
 +
-+(cd $destdir; make M=scripts clean)
++(cd $destdir; export sub_make_done=0; make M=scripts clean;)
 +
 +if [ "$ARCH" != "um" ]; then
 +	create_package "$kernel_headers_packagename" "$kernel_headers_dir" "headers"
-+	create_package "$dtb_packagename" "$dtb_dir" "dtb"
- fi
- 
- create_package "$packagename" "$tmpdir"
++fi
++
+ if [ -n "$BUILD_DEBUG" ] ; then
+ 	# Build debug package
+ 	# Different tools want the image in different locations
 diff --git a/scripts/package/mkdebian b/scripts/package/mkdebian
-index 7cb3f40a6c9b..470a66992ee8 100755
+index 60a2a63a5e90..68683fb905a0 100755
 --- a/scripts/package/mkdebian
 +++ b/scripts/package/mkdebian
-@@ -94,11 +94,15 @@ else
+@@ -94,11 +94,16 @@ else
  	packageversion=$version-$revision
  fi
  sourcename=$KDEB_SOURCENAME
@@ -267,6 +263,7 @@ index 7cb3f40a6c9b..470a66992ee8 100755
 +kernel_headers_packagename=linux-headers$LOCAL_VERSION
 +dtb_packagename=linux-dtb$LOCAL_VERSION
 +image_name=
++
  
  if [ "$ARCH" = "um" ] ; then
  	packagename=user-mode-linux
@@ -277,7 +274,7 @@ index 7cb3f40a6c9b..470a66992ee8 100755
  fi
  
  debarch=
-@@ -177,12 +181,18 @@ Maintainer: $maintainer
+@@ -178,12 +183,17 @@ Rules-Requires-Root: no
  Build-Depends: bc, rsync, kmod, cpio, bison, flex | flex:native $extra_build_depends
  Homepage: https://www.kernel.org/
  
@@ -293,11 +290,10 @@ index 7cb3f40a6c9b..470a66992ee8 100755
 +Description: Linux DTB, version $version
 + This package contains device blobs from the Linux kernel, version $version
 +
-+
  Package: linux-libc-dev
  Section: devel
  Provides: linux-kernel-headers
-@@ -196,8 +206,9 @@ EOF
+@@ -197,8 +207,9 @@ EOF
  if is_enabled CONFIG_MODULES; then
  cat <<EOF >> debian/control
  
@@ -308,15 +304,15 @@ index 7cb3f40a6c9b..470a66992ee8 100755
  Description: Linux kernel headers for $version on $debarch
   This package provides kernel header files for $version on $debarch
   .
-@@ -208,7 +219,7 @@ fi
+@@ -209,7 +220,7 @@ fi
  if is_enabled CONFIG_DEBUG_INFO; then
  cat <<EOF >> debian/control
  
 -Package: linux-image-$version-dbg
-+Package: $dtb_packagename
++Package: $packagename-dbg
  Section: debug
  Architecture: $debarch
  Description: Linux kernel debugging symbols for $version
 -- 
-2.17.1
+2.25.1
 

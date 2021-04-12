@@ -1,7 +1,7 @@
-From d04b0d89c5876735223ee138dc8c0e932e4b6bc3 Mon Sep 17 00:00:00 2001
+From fc581239f0799b5b62b1e42bda0ba7eefd216aab Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Wed, 25 Dec 2019 13:41:52 +0800
-Subject: [PATCH 47/54] ETH: setup mac address from command line
+Subject: [PATCH 47/53] ETH: setup mac address from command line
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---
@@ -70,5 +70,5 @@ index 6dc9f10414e4..ef7cb0653b27 100644
  		if (PTR_ERR(*mac) == -EPROBE_DEFER)
  			return ERR_CAST(*mac);
 -- 
-2.17.1
+2.25.1
 

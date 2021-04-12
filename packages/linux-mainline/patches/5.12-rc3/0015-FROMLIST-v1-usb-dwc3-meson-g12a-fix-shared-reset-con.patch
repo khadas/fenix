@@ -1,7 +1,7 @@
-From 6cb1da068ea1e2abc8934925d95ccd6d8031fac4 Mon Sep 17 00:00:00 2001
+From 1769579f5badb927919f2951010a2cf98d0e8e2b Mon Sep 17 00:00:00 2001
 From: Amjad Ouled-Ameur <aouledameur@baylibre.com>
 Date: Fri, 13 Nov 2020 07:46:15 +0000
-Subject: [PATCH 15/54] FROMLIST(v1): usb: dwc3: meson-g12a: fix shared reset
+Subject: [PATCH 15/53] FROMLIST(v1): usb: dwc3: meson-g12a: fix shared reset
  control use
 
 reset_control_(de)assert() calls are called on a shared reset line when
@@ -101,5 +101,5 @@ index bdf1f98dfad8..6570146cabc5 100644
  	ret = priv->drvdata->usb_init(priv);
  	if (ret)
 -- 
-2.17.1
+2.25.1
 

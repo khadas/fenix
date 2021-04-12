@@ -1,7 +1,7 @@
-From 464f708c9b4517dc505b57cc026a78c09b1eb33b Mon Sep 17 00:00:00 2001
+From 200c4546875dc04458209d122364edfed34952c4 Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Sun, 24 Jan 2021 11:27:35 +0000
-Subject: [PATCH 12/54] FROMLIST(v2): drm/lima: add governor data with
+Subject: [PATCH 12/53] FROMLIST(v2): drm/lima: add governor data with
  pre-defined thresholds
 
 This patch adapts the panfrost pre-defined thresholds change [0] to the
@@ -60,5 +60,5 @@ index 2d9b3008ce77..b0c7c736e81a 100644
  	ktime_t busy_time;
  	ktime_t idle_time;
 -- 
-2.17.1
+2.25.1
 

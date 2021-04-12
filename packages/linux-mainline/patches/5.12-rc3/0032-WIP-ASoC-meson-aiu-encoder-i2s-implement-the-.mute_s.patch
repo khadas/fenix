@@ -1,7 +1,7 @@
-From e5eedecfcac2a12f52fd18278d5ba5791d305b41 Mon Sep 17 00:00:00 2001
+From cf9149146eed984179affe08ca85cdaf1d008518 Mon Sep 17 00:00:00 2001
 From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 Date: Wed, 23 Dec 2020 02:46:54 +0100
-Subject: [PATCH 32/54] WIP: ASoC: meson: aiu: encoder-i2s: implement the
+Subject: [PATCH 32/53] WIP: ASoC: meson: aiu: encoder-i2s: implement the
  .mute_stream callback
 
 Implement the .mute_stream callback based on the code from the vendor
@@ -65,5 +65,5 @@ index 393b6c2307e4..7884c50f244d 100644
  #define AIU_I2S_DAC_CFG			0x040
  #define AIU_I2S_SYNC			0x044
 -- 
-2.17.1
+2.25.1
 

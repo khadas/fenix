@@ -76,3 +76,10 @@ enable_splash=true
 # Add customer kernel args here
 user_kernel_args=
 
+# Framebuffer Rotate
+# 0 - default
+# 1 - clockwise, 90 degrees
+# 2 - clockwise, 180 degrees
+# 3 - clockwise, 270 degrees
+fb_rotate=0
+

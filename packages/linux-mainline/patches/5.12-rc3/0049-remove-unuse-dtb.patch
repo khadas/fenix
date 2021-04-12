@@ -1,7 +1,7 @@
-From 827d45a856ce82ffec5993510d7609f0851290f4 Mon Sep 17 00:00:00 2001
+From 75a73cf33b583f7e5af2c5151cecad6ca6b0bfef Mon Sep 17 00:00:00 2001
 From: yan <yan-wyb@foxmail.com>
 Date: Tue, 23 Mar 2021 15:35:02 +0800
-Subject: [PATCH 50/54] remove unuse dtb
+Subject: [PATCH 49/53] remove unuse dtb
 
 Signed-off-by: yan <yan-wyb@foxmail.com>
 ---
@@ -125,5 +125,5 @@ index 62d3abc17a24..f18c75a3f74a 100644
 -dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-sapphire-excavator.dtb
 -dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399pro-rock-pi-n10.dtb
 -- 
-2.17.1
+2.25.1
 
