@@ -1,4 +1,4 @@
-From a877f11aac5f551af0774025e293fa455037d660 Mon Sep 17 00:00:00 2001
+From 85b018e977f1fee259886ce20de8e261c402f98f Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Sat, 10 Apr 2021 09:35:10 +0800
 Subject: [PATCH 52/53] packaging 5.x with postinstall scripts
@@ -24,10 +24,10 @@ index 5b84aec31ed3..803aaa7bf233 100644
  all:	Image.gz
  
 diff --git a/scripts/package/builddeb b/scripts/package/builddeb
-index 50e193a3ab32..9e4d80425ce8 100755
+index 25a04f6369a6..cfece523e211 100755
 --- a/scripts/package/builddeb
 +++ b/scripts/package/builddeb
-@@ -46,9 +46,46 @@ create_package() {
+@@ -41,9 +41,46 @@ create_package() {
  	# in case we are in a restrictive umask environment like 0077
  	chmod -R a+rX "$pdir"
  
@@ -75,7 +75,7 @@ index 50e193a3ab32..9e4d80425ce8 100755
  }
  
  deploy_kernel_headers () {
-@@ -105,9 +142,15 @@ deploy_libc_headers () {
+@@ -100,9 +137,15 @@ deploy_libc_headers () {
  }
  
  version=$KERNELRELEASE
@@ -94,7 +94,7 @@ index 50e193a3ab32..9e4d80425ce8 100755
  dbg_packagename=$packagename-dbg
  
  if [ "$ARCH" = "um" ] ; then
-@@ -118,6 +161,10 @@ fi
+@@ -113,6 +156,10 @@ fi
  # XXX: have each arch Makefile export a variable of the canonical image install
  # path instead
  case $ARCH in
@@ -105,7 +105,7 @@ index 50e193a3ab32..9e4d80425ce8 100755
  um)
  	installed_image_path="usr/bin/linux-$version"
  	;;
-@@ -131,13 +178,17 @@ esac
+@@ -126,13 +173,17 @@ esac
  BUILD_DEBUG=$(if_enabled_echo CONFIG_DEBUG_INFO Yes)
  
  # Setup the directory structure
@@ -125,7 +125,7 @@ index 50e193a3ab32..9e4d80425ce8 100755
  	cp System.map "$tmpdir/usr/lib/uml/modules/$version/System.map"
  	cp $KCONFIG_CONFIG "$tmpdir/usr/share/doc/$packagename/config"
  	gzip "$tmpdir/usr/share/doc/$packagename/config"
-@@ -181,6 +232,24 @@ if is_enabled CONFIG_MODULES; then
+@@ -176,6 +227,24 @@ if is_enabled CONFIG_MODULES; then
  	fi
  fi
  
@@ -150,7 +150,7 @@ index 50e193a3ab32..9e4d80425ce8 100755
  # Install the maintainer scripts
  # Note: hook scripts under /etc/kernel are also executed by official Debian
  # kernel packages, as well as kernel packages built using make-kpkg.
-@@ -190,7 +259,7 @@ debhookdir=${KDEB_HOOKDIR:-/etc/kernel}
+@@ -185,7 +254,7 @@ debhookdir=${KDEB_HOOKDIR:-/etc/kernel}
  for script in postinst postrm preinst prerm ; do
  	mkdir -p "$tmpdir$debhookdir/$script.d"
  	cat <<EOF > "$tmpdir/DEBIAN/$script"
@@ -159,7 +159,7 @@ index 50e193a3ab32..9e4d80425ce8 100755
  
  set -e
  
-@@ -206,18 +275,83 @@ EOF
+@@ -201,18 +270,83 @@ EOF
  	chmod 755 "$tmpdir/DEBIAN/$script"
  done
  
@@ -252,7 +252,7 @@ index 50e193a3ab32..9e4d80425ce8 100755
  	# Build debug package
  	# Different tools want the image in different locations
 diff --git a/scripts/package/mkdebian b/scripts/package/mkdebian
-index 60a2a63a5e90..68683fb905a0 100755
+index 7cb3f40a6c9b..9d4bf6f2a8f1 100755
 --- a/scripts/package/mkdebian
 +++ b/scripts/package/mkdebian
 @@ -94,11 +94,16 @@ else
@@ -274,7 +274,7 @@ index 60a2a63a5e90..68683fb905a0 100755
  fi
  
  debarch=
-@@ -178,12 +183,17 @@ Rules-Requires-Root: no
+@@ -177,12 +182,17 @@ Maintainer: $maintainer
  Build-Depends: bc, rsync, kmod, cpio, bison, flex | flex:native $extra_build_depends
  Homepage: https://www.kernel.org/
  
@@ -293,7 +293,7 @@ index 60a2a63a5e90..68683fb905a0 100755
  Package: linux-libc-dev
  Section: devel
  Provides: linux-kernel-headers
-@@ -197,8 +207,9 @@ EOF
+@@ -196,8 +206,9 @@ EOF
  if is_enabled CONFIG_MODULES; then
  cat <<EOF >> debian/control
  
@@ -304,7 +304,7 @@ index 60a2a63a5e90..68683fb905a0 100755
  Description: Linux kernel headers for $version on $debarch
   This package provides kernel header files for $version on $debarch
   .
-@@ -209,7 +220,7 @@ fi
+@@ -208,7 +219,7 @@ fi
  if is_enabled CONFIG_DEBUG_INFO; then
  cat <<EOF >> debian/control
  

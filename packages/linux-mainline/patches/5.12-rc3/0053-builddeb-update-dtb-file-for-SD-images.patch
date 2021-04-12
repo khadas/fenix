@@ -1,4 +1,4 @@
-From d131f26e6912e1fac7ec0c2132b9f0a3be10fbd9 Mon Sep 17 00:00:00 2001
+From 76dfabd881a4f9a4b3edc7e0f3adc2b3f6d2618e Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Thu, 20 Aug 2020 22:08:10 +0800
 Subject: [PATCH 53/53] builddeb: update dtb file for SD images
@@ -9,10 +9,10 @@ Signed-off-by: Nick Xie <nick@khadas.com>
  1 file changed, 29 insertions(+)
 
 diff --git a/scripts/package/builddeb b/scripts/package/builddeb
-index 9e4d80425ce8..99520eba2382 100755
+index cfece523e211..4509368b4167 100755
 --- a/scripts/package/builddeb
 +++ b/scripts/package/builddeb
-@@ -55,8 +55,37 @@ create_package() {
+@@ -50,8 +50,37 @@ create_package() {
  	EOF
  
  	cat >> $pdir/DEBIAN/postinst <<-EOF
