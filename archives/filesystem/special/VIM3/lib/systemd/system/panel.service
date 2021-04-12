@@ -1,8 +1,7 @@
 [Unit]
 Description=Panel Setup
 DefaultDependencies=no
-After=lightdm.service
-ConditionPathExists=/usr/sbin/lightdm
+After=plymouth-quit.service
 
 [Service]
 Type=oneshot
