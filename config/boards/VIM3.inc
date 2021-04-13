@@ -21,8 +21,11 @@ tweaks_platform() {
 	# Enable services
 	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable fan.service"'
 
-	if [ "$DISTRIB_TYPE" != "server" ] && [ "$LINUX" != "mainline" ]; then
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable panel.service hdmi_resolution.service"'
+	if [ "$LINUX" != "mainline" ]; then
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable panel.service"'
+		if [ "$DISTRIB_TYPE" != "server" ]; then
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable hdmi_resolution.service"'
+		fi
 	fi
 
 	if [ "$LINUX" != "mainline" ]; then

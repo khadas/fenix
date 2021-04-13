@@ -29,7 +29,7 @@ if [ $panel_exist -eq 1 ] && [ $display_device = panel ]; then
 
 	echo panel > /sys/class/display/mode
 
-	fbset -fb /dev/fb0 -g 1088 1920 1080 3840 32
+	fbset -fb /dev/fb0 -g 1088 1920 1088 3840 32
 
 	echo "0 0 1087 1919" > /sys/class/graphics/fb0/free_scale_axis
 	echo "0 0 1087 1919" > /sys/class/graphics/fb0/window_axis
