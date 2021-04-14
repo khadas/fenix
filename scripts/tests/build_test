@@ -1,0 +1,475 @@
+#!/bin/bash
+
+## hyphop ##
+
+#= build test framework
+
+STOP=0
+SIGNALS="HUP INT QUIT TERM KILL"
+
+HIDE_PREF=/mnt/share/build/
+
+export HIDE_PREF
+
+[ "$PID_" ] || \
+PID_=$$
+
+[ "$PPID_" ] || \
+PPID_=$PPID
+
+[ "$sudo" ] || \
+    sudo=sudo
+
+#PPID_=$(grep PPid /proc/$PID_/status | grep -o -P \\d+)
+PPID_CMD=$(echo $(strings /proc/$PPID_/cmdline))
+
+# get process session id
+[ "$SID_" ] || \
+    SID_=$(grep NSsid /proc/$PID_/status | grep -o -P \\d+)
+
+STOP(){
+    trap - $SIGNALS
+    STOP=$((STOP+1))
+    JOBS=$(echo $(jobs -p))
+    echo "%% STOP($STOP) $0 JOBS: $JOBS PID: $PID_ SID: $SID_ :: $?">&2
+    [ "$JOBS" ] && \
+	kill -TERM $JOBS
+}
+
+trap "STOP" $SIGNALS
+
+PROG=${0##*/}
+DIR=${0%/*}
+
+USAGE(){ echo "\
+USAGE: $PROG [-h|--help] [-l] [-s] [-E] [-n] [-m|-M|-e] [test_name] ...\
+
+    -l test list | -n noop mode | -m match test | -M regexp match | -h help
+    -e regexp tests | -E no errors stop on fist fail | -s show more sumarry
+"
+}
+
+EXAMPLES(){ echo "\
+EXAMPLES
+    $PROG -l # display all tests
+    GITHUB_ENV=1 USED_SPACE=96 $PROG .. # github action env
+    GITHUB_ENV=1 USED_SPACE=1  $PROG TEST-True TEST-Signals
+    BUILD=../fenix.build DOWNLOAD_PKG_DIR=../fenix.dl $PROG .. # change default build env
+    BUILD=../fenix.build DOWNLOAD_PKG_DIR=../fenix.dl ./scripts/tests/build_test VIM3L-default-image-mini-raw # ...
+    GITHUB_ENV=1 USED_SPACE=1 BUILD=../fenix.build DOWNLOAD_PKG_DIR=../fenix.dl ./scripts/tests/build_test VIM3L-default-image-mini-raw
+    $PROG -e -        # all tests
+    $PROG -e VIM1-    # all tests for VIM1
+    $PROG -e VIM1-    # all tests for VIM1
+    $PROG -E -e VIM1- # all tests for VIM1 stop after 1st fail
+    $PROG -s -e VIM1- # all tests for VIM1 + extra summary
+    LOGFILE=/tmp/test.log ./build_test TEST_True # dublicate output to LOGFILE
+"
+}
+
+MAKEDIR=${0%/*}/../..
+SETENV=$MAKEDIR/env/setenv.sh
+
+#export CHECK_BUSY=yes
+
+#echo "[i] $0 DIR: $MAKEDIR ARGS: $@">&2
+
+#[ "" ] && \
+[ "$GITHUB_ENV" -a ! "$LOG2" ] && \
+    LOGFILE=auto
+
+[ "$LOGFILE" ] && {
+## matroska run
+    now=$(date +%s)
+    SHARE=/mnt/share/build
+    LOGP=/tmp/
+    LOGP="$SHARE/$GITHUB_REPOSITORY"
+    LOG2=$LOGFILE
+    case $LOG2 in
+	auto)
+	LOG2=$LOGP/logs/$PROG.$now.log
+	# read last
+	#[ -e $LOGP$PROG.last.log ] && {
+	#    PL=$(readlink $LOGP$PROG.last.log)
+	#}
+	mkdir -p $LOGP/logs;
+	UPLOAD="$LOGP/images"
+	mkdir -p "$UPLOAD";
+
+	ln -sf "logs/$PROG.$now.log" "$LOGP/$PROG.last.log"
+
+	#grep -q $SHARE /proc/mounts && \
+	#LOG3=$SHARE/fenix/$PROG.$now.log
+
+	;;
+    esac
+    LOGFILE=
+    export LOGFILE
+    export LOG2
+    export UPLOAD
+    export UPLOAD_SCRIPT="$(realpath "$DIR"/upload)"
+    export PPID_
+    export PID_
+    export SID_
+
+    touch $LOG2 || exit 1
+    chmod 0666 $LOG2
+    #printf >> $LOG2
+
+    echo "%%LOGFILE: $LOG2 [$(date)]">&2
+    echo "%%LOGFILE: ${LOG2#$HIDE_PREF} [$(date)]">>$LOG2
+    echo "%%CMD: $0 $@">>$LOG2
+
+    $0 "$@" >>$LOG2 2>&1 &
+    P=$!
+
+    tail -n1 -q --pid $P -F "$LOG2" &
+    wait $P
+    exit
+}
+
+tests=
+
+get_tests(){
+tests="$(grep -A99 ^\#TEST_LIST_BEGIN $0 | grep -B99 ^\#TEST_LIST_END | grep -o ^.*\) | sed s/\).*//)"
+}
+
+#TEST=
+for a in $@; do
+    case $a in 
+    -h|--help)
+    USAGE
+    EXAMPLES
+    exit
+    ;;
+    -i)
+    INFO=1
+    ;;
+    -l|--list)
+    echo "[i] full test list">&2
+    get_tests
+    echo "$tests"
+    exit
+    ;;
+    -m|--match)
+    MATCH=grep
+    ;;
+    -M)
+    MATCH=egrep
+    ;;
+    -s)
+    SUMMARY_SHOW=1
+    ;;
+    -E)
+    NO_ERROR=NO_ERROR
+    ;;
+    -e)
+    EVAL=1
+    MATCH=egrep
+    ;;
+    -n|--noop)
+    NOOP=1
+    ;;
+    *)
+    [ "$INFO" ] && {
+	grep -A99 "$a)" $0 | grep -m1 -B99 ";;"
+	exit
+    }
+    [ "$MATCH" ] && {
+	get_tests
+	if [ "$EVAL" ]; then
+	    a_=$(echo "$tests" | $MATCH "$a")
+	    [ "$a_" ] && a=$a_
+	else
+	    echo "$tests" | $MATCH "$a"
+	    exit
+	fi
+    }
+    [ "$a" ] && \
+    TESTS="$TESTS $a"
+    ;;
+    esac
+done
+
+[ "$TESTS" ] || {
+    USAGE>&2
+    echo "[e] cant defined any test">&2
+    exit 1
+}
+
+# checks
+for a in $TESTS; do
+    get_tests
+    for b in $tests; do
+	[ "$b" = "$a" ] && b= && break
+    done
+    [ "$b" ] && {
+	USAGE>&2
+	echo "[e] cant recognize this test: $a">&2
+	exit 1
+    }
+done
+
+RUN(){
+    echo "# $@">&2
+    [ "$NOOP" ] || \
+    "$@"
+}
+
+
+[ "$GITHUB_ENV" ] && {
+
+    [ "$BUILD" ] || \
+    BUILD=../fenix.build
+
+    [ "$DOWNLOAD_PKG_DIR" ] || \
+    DOWNLOAD_PKG_DIR=../fenix.dl
+
+    [ "$FENIX_TEST" ] || {
+    echo "%%GITHUB action detected :: GITHUB_ENV: $GITHUB_ENV">&2
+    #env
+    [ -e "$GITHUB_ENV" ] && {
+    echo "%%GITHUB_ENV:" $(cat $GITHUB_ENV)
+    echo FENIX_TEST=$(date +%s) >> $GITHUB_ENV
+    }
+
+    # emergeny cleaner
+    grep -q HOME_FULL /etc/cron.d/home_full 2>/dev/null || {
+    echo "* * * * * root df /home --output=pcent | grep -q 100 && echo HOME_FULL > /dev/kmsg && BUILD=$BUILD make clean -C\"$(realpath "$MAKEDIR")\" >> /tmp/home_clean.log" | sudo tee /etc/cron.d/home_full
+    }
+
+    }
+
+    export BUILD
+    export DOWNLOAD_PKG_DIR
+
+    # check free space
+    [ "$USED_SPACE" ] || \
+    USED_SPACE=$(df /home --output=pcent| grep -o [[:digit:]]*)
+
+    echo "%%USED_SPACE: $USED_SPACE%">&2
+
+    # need clean
+    [ "$USED_SPACE" -gt 90 ] && {
+	#RUNNER_WORKSPACE=/home/builder/actions-runner/_work/fenix
+	#GITHUB_WORKSPACE=/home/builder/actions-runner/_work/fenix/fenix
+	#[ -d "$RUNNER_WORKSPACE" ] && {
+	echo "[i] FREE SPACE CLEANING: $RUNNER_WORKSPACE">&2
+	RUN make clean -C "$MAKEDIR"
+	#}
+
+    # recheck free space again
+    USED_SPACE=$(df /home --output=pcent| grep -o [[:digit:]]*)
+    echo "[i] USED_SPACE: $USED_SPACE">&2
+
+    }
+
+}
+
+echo "%%TEST_LIST[$NO_ERROR]:" $TESTS >&2
+
+[ "$BUILD" ] && \
+echo "\
+%%BUILD: $BUILD
+%%DOWNLOAD_PKG_DIR: $DOWNLOAD_PKG_DIR
+">&2
+
+export NO_ASK=1
+export NO_GIT_UPDATE=1
+
+export NO_KEEP_IMAGE=1
+
+ML="UBOOT=mainline"
+CMP="COMPRESS_IMAGE=yes"
+USB="INSTALL_TYPE=SD-USB"
+RAW="INSTALL_TYPE_RAW=yes"
+
+EDGE="KHADAS_BOARD=Edge"
+VIM1="KHADAS_BOARD=VIM1"
+VIM2="KHADAS_BOARD=VIM2"
+VIM3="KHADAS_BOARD=VIM3"
+VIM3L="KHADAS_BOARD=VIM3L"
+
+MINI="DISTRIB_TYPE=minimal"
+SERVER="DISTRIB_TYPE=server"
+XFCE="DISTRIB_TYPE=xfce"
+BIONIC="DISTRIBUTION=Ubuntu DISTRIB_RELEASE=bionic"
+FOCAL="DISTRIBUTION=Ubuntu DISTRIB_RELEASE=focal"
+BUSTER="DISTRIBUTION=Debian DISTRIB_RELEASE=buster"
+GNOME="DISTRIB_TYPE=gnome"
+
+[ "$NOOP" ] && {
+    echo "[i] NOOP MODE">&2
+    exit 0
+}
+
+[ "$GITHUB_ENV" ] && \
+(   # self kill if parentless
+    echo "%%PPID WATCH: $PPID_($PID_) [$PPID_CMD]">&2
+    while [ -d /proc/$PPID_ -a -d /proc/$PID_ ] ; do
+	#[ -d /proc/$PID_ ] && break
+	sleep 1
+    done
+
+    echo "%%PPID EXIT: $PPID_ PID: $PID_ SID: $SID_ ">&2
+    # kill parentless build sudo processes
+    $sudo pkill -SIGTERM -u root -s $SID_
+    sleep 2
+    # self kill
+    [ -d /proc/$PID_ ] && kill -TERM $PID_
+
+    exit
+)&
+
+ok=0
+fail=0
+total=0
+for t in $TESTS; do
+    total=$((total+1))
+done
+
+begin0=$(date +%s)
+
+this=0
+
+SUMMARY=
+
+for TEST in $TESTS; do
+    [ "$STOP" -gt 0 ] && break
+    begin=$(date +%s)
+    this=$((this+1))
+    echo "%%TEST[$this/$total]: $TEST STARTING[$(date --date=@$begin)] $$">&2
+
+# NOTE ALL LONG TEST NEED RUN IN BG
+
+    BG_=$!
+
+    case $TEST in
+#TEST_LIST_BEGIN
+Install-deps)
+    (
+    RUN sudo dpkg --configure -a # && \
+    RUN sudo apt-get update # && \
+    RUN sudo apt-get install -y git make lsb-release qemu-user-static zip
+    )&
+    ;;
+
+Clean)  make -C "$MAKEDIR" clean & ;;
+Clean_all) make -C "$MAKEDIR" clean-all & ;;
+Clean_old) make -C "$MAKEDIR" clean-old & ;;
+
+TEST_True) true;;
+TEST_TrueBG) true &;;
+TEST_False) false;;
+TEST_FalseBG) false &;;
+TEST_Signals) "$DIR"/signal_test & ;;
+TEST_Delay) for s in $(seq 1 60); do echo tik tak $s; sleep 1; done & ;;
+TEST_ML)
+    echo ONE
+    echo TWO
+;;
+
+VIM1-default-image-xfce-raw)  ( source  $SETENV -d -q -s $VIM1 $XFCE $RAW $CMP && make -C "$MAKEDIR" ) & ;;
+VIM2-default-image-xfce-raw)  ( source  $SETENV -d -q -s $VIM2 $XFCE $RAW $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3-default-image-xfce-raw)  ( source  $SETENV -d -q -s $VIM3 $XFCE $RAW $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3L-default-image-xfce-raw) ( source  $SETENV -d -q -s $VIM3L $XFCE $RAW $CMP && make -C "$MAKEDIR" ) & ;;
+
+VIM1-default-buster-mini-raw)  ( source  $SETENV -d -q -s $VIM1 $BUSTER $MINI $RAW $CMP && make -C "$MAKEDIR" ) & ;;
+VIM2-default-buster-mini-raw)  ( source  $SETENV -d -q -s $VIM2 $BUSTER $MINI $RAW $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3-default-buster-mini-raw)  ( source  $SETENV -d -q -s $VIM3 $BUSTER $MINI $RAW $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3L-default-buster-mini-raw)  ( source  $SETENV -d -q -s $VIM3L $BUSTER $MINI $RAW $CMP && make -C "$MAKEDIR" ) & ;;
+
+VIM1-default-image-mini)  ( source  $SETENV -d -q -s $VIM1 $MINI $CMP && make -C "$MAKEDIR" ) & ;;
+VIM2-default-image-mini)  ( source  $SETENV -d -q -s $VIM2 $MINI $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3-default-image-mini)  ( source  $SETENV -d -q -s $VIM3 $MINI $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3L-default-image-mini) ( source  $SETENV -d -q -s $VIM3L $MINI $CMP && make -C "$MAKEDIR" ) & ;;
+
+VIM1-default-image-mini-raw)  ( source  $SETENV -d -q -s $VIM1 $MINI $RAW $CMP && make -C "$MAKEDIR" ) & ;;
+VIM2-default-image-mini-raw)  ( source  $SETENV -d -q -s $VIM2 $MINI $RAW $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3-default-image-mini-raw)  ( source  $SETENV -d -q -s $VIM3 $MINI $RAW $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3L-default-image-mini-raw) ( source  $SETENV -d -q -s $VIM3L $MINI $RAW $CMP && make -C "$MAKEDIR" ) & ;;
+
+VIM1-default-image)  ( source  $SETENV -d -q -s $VIM1 $CMP && make -C "$MAKEDIR" ) & ;;
+VIM2-default-image)  ( source  $SETENV -d -q -s $VIM2 $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3-default-image)  ( source  $SETENV -d -q -s $VIM3 $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3L-default-image) ( source  $SETENV -d -q -s $VIM3L $CMP && make -C "$MAKEDIR" ) & ;;
+
+VIM1-mainline-image)  ( source  $SETENV -d -q -s $VIM1 $ML $CMP && make -C "$MAKEDIR" ) & ;;
+VIM2-mainline-image)  ( source  $SETENV -d -q -s $VIM2 $ML $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3-mainline-image)  ( source  $SETENV -d -q -s $VIM3 $ML $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3L-mainline-image) ( source  $SETENV -d -q -s $VIM3L $ML $CMP && make -C "$MAKEDIR" ) & ;;
+
+VIM1-mainline-image-mini)  ( source  $SETENV -d -q -s $VIM1 $ML $MINI $CMP && make -C "$MAKEDIR" ) & ;;
+VIM2-mainline-image-mini)  ( source  $SETENV -d -q -s $VIM2 $ML $MINI $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3-mainline-image-mini)  ( source  $SETENV -d -q -s $VIM3 $ML $MINI $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3L-mainline-image-mini) ( source  $SETENV -d -q -s $VIM3L $ML $MINI $CMP && make -C "$MAKEDIR" ) & ;;
+
+VIM1-mainline-bionic-mini)  ( source  $SETENV -d -q -s $VIM1 $ML $BIONIC $MINI $CMP && make -C "$MAKEDIR" ) & ;;
+VIM2-mainline-bionic-mini)  ( source  $SETENV -d -q -s $VIM2 $ML $BIONIC $MINI $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3-mainline-bionic-mini)  ( source  $SETENV -d -q -s $VIM3 $ML $BIONIC $MINI $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3L-mainline-bionic-mini) ( source  $SETENV -d -q -s $VIM3L $ML $BIONIC $MINI $CMP && make -C "$MAKEDIR" ) & ;;
+
+Edge-default-uboot-only)  ( source  $SETENV -d -q -s $EDGE && make uboot -C "$MAKEDIR" ) & ;;
+Edge-default-linux-only)  ( source  $SETENV -d -q -s $EDGE && make kernel -C "$MAKEDIR" ) & ;;
+Edge-default-image)       ( source  $SETENV -d -q -s $EDGE $CMP && make -C "$MAKEDIR" ) & ;;
+Edge-default-image-mini)  ( source  $SETENV -d -q -s $EDGE $MINI $CMP && make -C "$MAKEDIR" ) & ;;
+Edge-default-image-mini-raw)  ( source  $SETENV -d -q -s $EDGE $MINI $RAW $CMP && make -C "$MAKEDIR" ) & ;;
+Edge-default-gnome-usb)   ( source  $SETENV -d -q -s $EDGE $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
+Edge-default-bionic-mini) ( source  $SETENV -d -q -s $EDGE $BIONIC $MINI $CMP && make -C "$MAKEDIR" ) & ;;
+Edge-mainline-uboot-only) ( source  $SETENV -d -q -s $EDGE $ML && make uboot -C "$MAKEDIR" ) & ;;
+Edge-mainline-linux-only) ( source  $SETENV -d -q -s $EDGE $ML && make kernel -C "$MAKEDIR" ) & ;;
+Edge-mainline-image)      ( source  $SETENV -d -q -s $EDGE $ML $CMP && make -C "$MAKEDIR" ) & ;;
+Edge-mainline-image-mini) ( source  $SETENV -d -q -s $EDGE $ML $MINI $CMP && make -C "$MAKEDIR" ) & ;;
+Edge-mainline-gnome-usb)  ( source  $SETENV -d -q -s $EDGE $ML $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
+Edge-mainline-bionic-mini)( source  $SETENV -d -q -s $EDGE $ML $BIONIC $MINI $CMP && make -C "$MAKEDIR" ) & ;;
+
+
+#TEST_LIST_END
+    *)
+    echo "[e] not recognized test $TEST">&2
+    ;;
+    esac
+
+    code=$?
+
+#    if [ "$!" ]; then
+	if [ "$BG_" -ne "$!" ]; then
+	    wait $!
+	    code=$?
+	fi
+#    fi
+
+    end=$(date +%s)
+    duration=$((end-begin))
+
+    case $code in
+	0)status=OK
+	ok=$((ok+1))
+	;;
+	*)status=ERROR
+	fail=$((fail+1))
+	code_="exit_code: $code"
+	;;
+    esac
+
+    DETAILS="%%TEST[$this/$total]: $TEST == $status $code_ duration: $duration = \
+$(date +%H:%M:%S -d@$duration -u)"
+    SUMMARY="$SUMMARY
+$DETAILS"
+    echo "$DETAILS" >&2
+
+    [ "$NO_ERROR" -a "$code" -ne 0 ] && break
+done
+
+end0=$(date +%s)
+duration0=$((end0-begin0))
+skip=$((total-ok-fail))
+
+[ $total = 1 ] || {
+[ "$SUMMARY_SHOW" ] && \
+echo "%%SUMMARY_BEGIN:$SUMMARY
+%%SUMMARY_END:">&2
+echo "%%TESTS[$NO_ERROR]: total: $total ok: $ok fail: $fail skip: $skip duration: $duration0 = \
+$(date +%H:%M:%S -d@$duration0 -u) [$(date -d@$end0)]">&2
+
+}
+exit $fail

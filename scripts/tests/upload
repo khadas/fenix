@@ -1,0 +1,41 @@
+#!/bin/bash
+
+## hyphop ##
+
+#= UPLOAD files
+
+[ "$VERBOSE_" ] && \
+echo "%%${0##*/} $@">&2
+
+DIE(){
+    echo "[e] $@">&2
+    exit 1
+}
+
+[ "$VERBOSE_" ] && \
+echo "UPLOAD: $UPLOAD
+BUILD_IMAGES: $BUILD_IMAGES
+IMAGE_FILE_NAME: $IMAGE_FILE_NAME">&2
+
+[ "$UPLOAD" ] || DIE "UPLOAD undefined"
+[ "$BUILD_IMAGES" ] || DIE "BUILD_IMAGES undefined"
+[ "$IMAGE_FILE_NAME" ] || DIE I"MAGE_FILE_NAME undefined"
+[ -d "$UPLOAD" ] || DIE "UPLOAD $UPLOAD not exist"
+
+UPLOAD_=${UPLOAD#$HIDE_PREF}
+
+for f in "$BUILD_IMAGES/"$IMAGE_FILE_NAME*; do
+    if [ -e "$f" ]; then
+	f_=${f#$BUILD_IMAGES/}
+	echo "%%UPLOAD: $f_ => $UPLOAD_"
+	if [ "$SUDO_UID" ]; then
+	    sudo -u $SUDO_USER mv "$f" "$UPLOAD"
+	    echo "%%UPLOAD_FILE: $UPLOAD_/$f_"
+	else
+	    mv "$f" "$UPLOAD"
+	    echo "%%UPLOAD_FILE: $UPLOAD_/$f_"
+	fi
+    else
+	echo "%%UPLOAD: $f not exist">&2
+    fi
+done
