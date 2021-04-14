@@ -26,14 +26,14 @@ build_uboot() {
 	fi
 
 	cd ${ROOT}
-	if [ ! -d u-boot/.git ]; then
+	if [ ! -d "$UBOOT_VENDOR_DIR"/.git ]; then
 		info_msg "U-boot repository does not exist, clone u-boot repository('$UBOOT_GIT_BRANCH') from '$UBOOT_SOURCE_URL'..."
 		## Clone u-boot from Khadas GitHub
-		git clone $GIT_CLONE_OPTIONS $UBOOT_SOURCE_URL -b $UBOOT_GIT_BRANCH
+		git clone $GIT_CLONE_OPTIONS $UBOOT_SOURCE_URL -b $UBOOT_GIT_BRANCH "$UBOOT_VENDOR_DIR"
 		[ $? != 0 ] && error_msg "Failed to clone 'u-boot'" && return -1
 	fi
 
-	cd u-boot/
+	cd "$UBOOT_VENDOR_DIR"
 	touch .scmversion
 
 	if ! git branch | grep "^* $UBOOT_GIT_BRANCH$" > /dev/null; then
@@ -97,14 +97,14 @@ build_linux() {
 	fi
 
 	cd ${ROOT}
-	if [ ! -d linux/.git ]; then
+	if [ ! -d "$LINUX_VENDOR_DIR"/.git ]; then
 		info_msg "Linux repository does not exist, clone linux repository('$LINUX_GIT_BRANCH') from '$LINUX_SOURCE_URL'..."
 		## Clone linux from Khadas GitHub
-		git clone $GIT_CLONE_OPTIONS $LINUX_SOURCE_URL -b $LINUX_GIT_BRANCH
+		git clone $GIT_CLONE_OPTIONS $LINUX_SOURCE_URL -b $LINUX_GIT_BRANCH "$LINUX_VENDOR_DIR"
 		[ $? != 0 ] && error_msg "Failed to clone 'linux'" && return -1
 	fi
 
-	cd linux/
+	cd "$LINUX_VENDOR_DIR"
 	touch .scmversion
 
 	if ! git branch | grep "^* $LINUX_GIT_BRANCH$" > /dev/null; then
@@ -158,16 +158,20 @@ build_linux_debs() {
 	fi
 
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
-	make -j${NR_JOBS} -C $LINUX_DIR bindeb-pkg KDEB_PKGVERSION="$VERSION" LOCAL_VERSION="-${VENDOR,,}-${LINUX}" KBUILD_DEBARCH="$DISTRIB_ARCH" ARCH=arm64 DEBFULLNAME="Khadas" DEBEMAIL="hello@khadas.com" CROSS_COMPILE="${CCACHE} ${KERNEL_COMPILER}" CONFIG_SHELL="bash"
+	make -j${NR_JOBS} -C $LINUX_DIR bindeb-pkg \
+	    KDEB_PKGVERSION="$VERSION" LOCAL_VERSION="-${VENDOR,,}-${LINUX}" \
+	    KBUILD_DEBARCH="$DISTRIB_ARCH" ARCH=arm64 DEBFULLNAME="Khadas" \
+	    DEBEMAIL="hello@khadas.com" CROSS_COMPILE="${CCACHE} \
+	    ${KERNEL_COMPILER}" CONFIG_SHELL="bash"
 
-	mkdir -p $BUILD_DEBS/$VERSION
+	mkdir -p "$BUILD_DEBS/$VERSION"
 
 	if [ "$LINUX" == "mainline" ]; then
 		mv $BUILD/*.deb $BUILD_DEBS/$VERSION
 		rm -rf $BUILD/*.buildinfo $BUILD/*.changes
 	else
-		mv $ROOT/*.deb $BUILD_DEBS/$VERSION
-		rm -rf $ROOT/*.buildinfo $ROOT/*.changes
+		mv $BUILD/*.deb $BUILD_DEBS/$VERSION
+		rm -rf $BUILD/*.buildinfo $BUILD/*.changes
 	fi
 }
 
@@ -186,13 +190,13 @@ build_uboot_deb() {
 			error_msg "U-boot file '$file' not found!"
 			return -1
 		fi
-		cp $UBOOT_IMAGE_DIR/$file $pkgdir/usr/lib/u-boot
+		cp "$UBOOT_IMAGE_DIR/$file" "$pkgdir"/usr/lib/u-boot
 	done
 
 	# For amlogic platform, we need to update the dtb for u-boot
 	# Only for vendor u-boot & kernel
 	if [ "$VENDOR" == "Amlogic" ] && [ "$LINUX" != "mainline" ]; then
-		cp $ROOT/linux/$LINUX_DTB $pkgdir/usr/lib/u-boot/dtb.img
+		cp "$LINUX_DIR/$LINUX_DTB" "$pkgdir"/usr/lib/u-boot/dtb.img
 	fi
 
 	cat <<-EOF > $pkgdir/usr/lib/u-boot/platform_install.sh
@@ -303,71 +307,38 @@ build_uboot_deb() {
 
 # Clean linux
 clean_linux() {
-
-	if [ "$LINUX" == "mainline" ]; then
-		cd $BUILD/linux-mainline-*
-	else
-		cd $ROOT/linux/
-	fi
-
 	info_msg "Clean linux..."
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
-	make ARCH=arm64 distclean
-
-	cd - > /dev/null
+	make ARCH=arm64 distclean -C"$LINUX_DIR"
 }
 
 # Clean u-boot
 clean_uboot() {
-	if [ "$UBOOT" == "mainline" ]; then
-		cd $BUILD/u-boot-mainline-*
-	else
-		cd $ROOT/u-boot
-	fi
-
 	info_msg "Clean u-boot..."
-	make distclean
-
-	cd - > /dev/null
+	make distclean -C"$UBOOT_DIR"
 }
 
 # Config linux
 config_linux() {
-	if [ "$LINUX" == "mainline" ]; then
-		cd $BUILD/linux-mainline-*
-	else
-		cd $ROOT/linux/
-	fi
-
 	info_msg "Config linux..."
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
 	if [ "$LINUX" == "mainline" ]; then
-		cp $PKGS_DIR/linux-mainline/configs/${KHADAS_BOARD}.config .config
+		cp $PKGS_DIR/linux-mainline/configs/${KHADAS_BOARD}.config "$LINUX_DIR"/.config
 	else
-		make ARCH=arm64 $LINUX_DEFCONFIG
+		make ARCH=arm64 $LINUX_DEFCONFIG -C"$LINUX_DIR"
 	fi
 
-	make ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} menuconfig
-
-	cd - > /dev/null
+	make ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} menuconfig -C"$LINUX_DIR"
 }
 
 # Save linux config
 save_linux_config() {
-	if [ "$LINUX" == "mainline" ]; then
-		cd $BUILD/linux-mainline-*
-	else
-		cd $ROOT/linux/
-	fi
-
 	info_msg "Save linux config..."
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
 	if [ "$LINUX" == "mainline" ]; then
-		cp .config $PKGS_DIR/linux-mainline/configs/${KHADAS_BOARD}.config
+		cp "$LINUX_DIR"/.config $PKGS_DIR/linux-mainline/configs/${KHADAS_BOARD}.config
 	else
-		make ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} savedefconfig
-		mv defconfig arch/arm64/configs/$LINUX_DEFCONFIG
+		make ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} savedefconfig -C"$LINUX_DIR"
+		mv "$LINUX_DIR"/defconfig "$LINUX_DIR"/arch/arm64/configs/$LINUX_DEFCONFIG
 	fi
-
-	cd - > /dev/null
 }
