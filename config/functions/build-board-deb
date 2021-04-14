@@ -393,9 +393,9 @@ build_board_deb() {
 	INSTALL_TYPE=$INSTALL_TYPE
 	IMAGE_VERSION=$IMAGE_VERSION
 	################ GIT VERSION ################
-	UBOOT_GIT_VERSION=`git -C $ROOT/u-boot describe --abbrev=7 --dirty --always --tags 2> /dev/null`
-	LINUX_GIT_VERSION=`git -C $ROOT/linux describe --abbrev=7 --dirty --always --tags 2> /dev/null`
-	FENIX_GIT_VERSION=`git -C $ROOT describe --abbrev=7 --dirty --always --tags 2> /dev/null`
+	UBOOT_GIT_VERSION=`git -C "$UBOOT_VENDOR_DIR" describe --abbrev=7 --dirty --always --tags 2> /dev/null`
+	LINUX_GIT_VERSION=`git -C "$LINUX_VENDOR_DIR" describe --abbrev=7 --dirty --always --tags 2> /dev/null`
+	FENIX_GIT_VERSION=`git -C "$ROOT" describe --abbrev=7 --dirty --always --tags 2> /dev/null`
 	#############################################
 	EOF
 
