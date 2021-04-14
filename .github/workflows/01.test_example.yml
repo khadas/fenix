@@ -13,7 +13,8 @@ jobs:
         uses: actions/checkout@v2
 
       - run: env
-      - run: scripts/tests/build_test -s Install-deps -e default-.*-mini-raw
+      - run: scripts/tests/build_test -s Install-deps -e mainline-image-mini -e mini-raw
+#      - run: scripts/tests/build_test -s Install-deps -e default-.*-mini-raw
 #      - run: scripts/tests/build_test Clean-old
 #      - run: scripts/tests/build_test VIM3L-default-image-mini-raw
 #      - run: scripts/tests/build_test Install-deps VIM3L-default-image-mini-raw

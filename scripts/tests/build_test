@@ -378,6 +378,11 @@ VIM2-default-buster-mini-raw)  ( source  $SETENV -d -q -s $VIM2 $BUSTER $MINI $R
 VIM3-default-buster-mini-raw)  ( source  $SETENV -d -q -s $VIM3 $BUSTER $MINI $RAW $CMP && make -C "$MAKEDIR" ) & ;;
 VIM3L-default-buster-mini-raw)  ( source  $SETENV -d -q -s $VIM3L $BUSTER $MINI $RAW $CMP && make -C "$MAKEDIR" ) & ;;
 
+VIM1-default-bionic-mini-raw)  ( source  $SETENV -d -q -s $VIM1 $BIONIC $MINI $RAW $CMP && make -C "$MAKEDIR" ) & ;;
+VIM2-default-bionic-mini-raw)  ( source  $SETENV -d -q -s $VIM2 $BIONIC $MINI $RAW $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3-default-bionic-mini-raw)  ( source  $SETENV -d -q -s $VIM3 $BIONIC $MINI $RAW $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3L-default-bionic-mini-raw)  ( source  $SETENV -d -q -s $VIM3L $BIONIC $MINI $RAW $CMP && make -C "$MAKEDIR" ) & ;;
+
 VIM1-default-image-mini)  ( source  $SETENV -d -q -s $VIM1 $MINI $CMP && make -C "$MAKEDIR" ) & ;;
 VIM2-default-image-mini)  ( source  $SETENV -d -q -s $VIM2 $MINI $CMP && make -C "$MAKEDIR" ) & ;;
 VIM3-default-image-mini)  ( source  $SETENV -d -q -s $VIM3 $MINI $CMP && make -C "$MAKEDIR" ) & ;;
@@ -415,12 +420,16 @@ Edge-default-image-mini)  ( source  $SETENV -d -q -s $EDGE $MINI $CMP && make -C
 Edge-default-image-mini-raw)  ( source  $SETENV -d -q -s $EDGE $MINI $RAW $CMP && make -C "$MAKEDIR" ) & ;;
 Edge-default-gnome-usb)   ( source  $SETENV -d -q -s $EDGE $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
 Edge-default-bionic-mini) ( source  $SETENV -d -q -s $EDGE $BIONIC $MINI $CMP && make -C "$MAKEDIR" ) & ;;
+Edge-default-buster-mini) ( source  $SETENV -d -q -s $EDGE $BUSTER $MINI $CMP && make -C "$MAKEDIR" ) & ;;
+Edge-default-bionic-mini-raw) ( source  $SETENV -d -q -s $EDGE $BIONIC $MINI $RAW $CMP && make -C "$MAKEDIR" ) & ;;
+Edge-default-buster-mini-raw) ( source  $SETENV -d -q -s $EDGE $BUSTER $MINI $RAW $CMP && make -C "$MAKEDIR" ) & ;;
 Edge-mainline-uboot-only) ( source  $SETENV -d -q -s $EDGE $ML && make uboot -C "$MAKEDIR" ) & ;;
 Edge-mainline-linux-only) ( source  $SETENV -d -q -s $EDGE $ML && make kernel -C "$MAKEDIR" ) & ;;
 Edge-mainline-image)      ( source  $SETENV -d -q -s $EDGE $ML $CMP && make -C "$MAKEDIR" ) & ;;
 Edge-mainline-image-mini) ( source  $SETENV -d -q -s $EDGE $ML $MINI $CMP && make -C "$MAKEDIR" ) & ;;
 Edge-mainline-gnome-usb)  ( source  $SETENV -d -q -s $EDGE $ML $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
 Edge-mainline-bionic-mini)( source  $SETENV -d -q -s $EDGE $ML $BIONIC $MINI $CMP && make -C "$MAKEDIR" ) & ;;
+Edge-mainline-buster-mini)( source  $SETENV -d -q -s $EDGE $ML $BUSTER $MINI $CMP && make -C "$MAKEDIR" ) & ;;
 
 
 #TEST_LIST_END
