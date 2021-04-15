@@ -27,7 +27,7 @@ USAGE
 
 META USAGE
 
-    ./xze rootfs_stage.sh -M INFO="any strings" var=VAR
+    ./xze IMAGE -M INFO="any strings" var=VAR
 '; [ "$1" ] && echo '# META USAGE EXAMPLE (Krescue images)
 
     IN=FreeBSD-aarch64-13.0-Khadas-EDGE-V-361468M-20200528.img

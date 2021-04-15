@@ -1,7 +1,7 @@
 ##################################### Path ###########################################
 ## Root directory
-ROOT="$(dirname "$(dirname "$(readlink -fm "$0")")")"
-
+#ROOT="$(dirname "$(dirname "$(readlink -fm "$0")")")"
+ROOT=$(realpath "${BASH_SOURCE%/*}"/..)
 ## Config directory
 CONFIG="$ROOT/config"
 ## Board configuratios directory
@@ -11,15 +11,37 @@ BOOT_SCRIPTS="$CONFIG/bootscripts"
 ## Boot environment
 BOOT_ENV="$CONFIG/bootenv"
 ## Download packages directory
+[ "$DOWNLOAD_PKG_DIR" ] || \
 DOWNLOAD_PKG_DIR="$ROOT/downloads"
+DOWNLOAD_PKG_DIR=$(realpath "$DOWNLOAD_PKG_DIR")
 ## Packages directory
 PKGS_DIR="$ROOT/packages"
 ## Packages build directory
+[ "$BUILD" ] || \
 BUILD="$ROOT/build"
+
+## Build pid
+[ "$FPID" ] || \
+    FPID="$BUILD"/build.pid
+
+[ "$LINUX_VENDOR_DIR" ] || \
+LINUX_VENDOR_DIR="$BUILD"/linux
+
+[ "$UBOOT_VENDOR_DIR" ] || \
+UBOOT_VENDOR_DIR="$BUILD"/u-boot
+
+[ -d "$LINUX_VENDOR_DIR" ] || \
+mkdir -p "$LINUX_VENDOR_DIR"
+
+[ -d "$UBOOT_VENDOR_DIR" ] || \
+mkdir -p "$UBOOT_VENDOR_DIR"
+
+BUILD=$(realpath "$BUILD")
 ## ccache build directory
 [ "$CCACHE_DIR" ] || \
 export CCACHE_DIR="$BUILD/ccache"
 ## Build images
+[ "$BUILD_IMAGES" ] || \
 BUILD_IMAGES="$BUILD/images"
 ## Build debs
 BUILD_DEBS="$BUILD_IMAGES/debs"
@@ -30,8 +52,13 @@ ROOTFS_TEMP="$BUILD_IMAGES/.tmp/rootfs-${KHADAS_BOARD}-${DISTRIB_RELEASE}-${DIST
 ## Toolchains
 TOOLCHAINS="$BUILD/toolchains"
 
-UTILS_DIR="$BUILD/utils-[0-9a-f]*"
-UPGRADE_DIR="$BUILD/images_upgrade-[0-9a-f]*"
+UTILS_DIR="$BUILD"/utils-*
+UPGRADE_DIR="$BUILD"/images_upgrade-*
+
+sudo="sudo -E"
+[ "$UID" = 0 -o "$USER" = "root" ] && sudo=
+
+echo "[i] FENIX (${0#*/}) BUILD: $BUILD | DL: $DOWNLOAD_PKG_DIR | sudo: $sudo"
 
 ##################################### Configurations ##################################
 MAKE_PARAMS="BUILD_TYPE DOWNLOAD_MIRROR NO_CCACHE COMPRESS_IMAGE INSTALL_TYPE_RAW CLONE_FULL_COMMIT_LOG"
@@ -77,6 +104,7 @@ if [ "$NO_CCACHE" != "yes" ]; then
 	CCACHE=ccache
 	export PATH="/usr/lib/ccache:$PATH"
 else
+	[ "$CCACHE_QUIET" ] || \
 	echo "Disable CCACHE ..."
 	CCACHE=""
 fi
@@ -127,6 +155,26 @@ if [ "$BUILD_TYPE" == "release" ]; then
 else
 	TZDATA=`cat /etc/timezone` # Timezone for target is taken from host or defined here.
 fi
+
+# Non-interactive mode auto detect
+case $(readlink /proc/$$/fd/1) in
+    /dev/tty*|/dev/pts*)
+    ;;
+    *)
+    NO_ASK=1
+    echo "[i] no ask mode was auto detected"
+    ;;
+esac
+
+[ "$NO_ASK" ] && {
+    export NO_ASK=1
+    export NO_COLOR=1
+    export NO_PROGRESS=1
+    export DEBIAN_FRONTEND=noninteractive
+    export DEBIAN_PRIORITY=critical
+    export WGETRC=$(realpath "$CONFIG")/etc/wgetrc_minimal_progress
+    echo "[i] no ask ( noninteractive ) mode activated"
+}
 
 # All command-line software which outputs text with ANSI color added should
 # check for the presence of a NO_COLOR environment variable that, when

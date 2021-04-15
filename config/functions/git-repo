@@ -17,6 +17,10 @@ check_modifications() {
 ## $1 git repository path
 ## $2 git branch
 update_git_repo() {
+    [ "$NO_GIT_UPDATE" ] && {
+	info_msg "Git update was disabled by NO_GIT_UPDATE"
+	return
+    }
     if [ ! -f $ROOT/.ignore-update ]; then
         if [ "$1" == "" ] || [ "$2" == "" ]; then
             echo "Usage: $0 <repository_path> <git_branch>"
@@ -25,7 +29,7 @@ update_git_repo() {
 
         cd $1
         if [ ! -d .git ]; then
-            error_msg "No Git repository found!"
+            error_msg "No Git repository [$2] found at $1!"
             cd -
             return -1
         fi

@@ -206,7 +206,8 @@ create_rootfs_cache()
 	if [[ -f $cache_fname ]]; then
 		local date_diff=$(( ($(date +%s) - $(stat -c %Y $cache_fname)) / 86400 ))
 		info_msg "Extracting $display_name $date_diff days old"
-		pv -p -b -r -c -N "$display_name" "$cache_fname" | lz4 -dc | tar xp --xattrs -C $ROOTFS_TEMP/
+		# may be no need progress at all its very fast
+		lz4 -dc < $cache_fname | tar xp --xattrs -C $ROOTFS_TEMP/
 	else
 		info_msg "Creating new rootfs for $DISTRIB_RELEASE-$DISTRIB_TYPE"
 
@@ -304,9 +305,11 @@ create_rootfs_cache()
 			return -1
 		fi
 
+		[ "$DEBUG" ] && {
 		# DEBUG: print free space
 		echo -e "\nFree space:"
 		eval 'df -h'
+		}
 
 		# stage: remove downloaded packages
 		chroot $ROOTFS_TEMP /bin/bash -c "apt-get clean"
@@ -322,8 +325,14 @@ create_rootfs_cache()
 		# based on rootfs size calculation
 		umount_chroot "$ROOTFS_TEMP"
 
-		tar cp --xattrs --directory=$ROOTFS_TEMP/ --exclude='./dev/*' --exclude='./proc/*' --exclude='./run/*' --exclude='./tmp/*' \
+		if [ "$NO_PROGRESS" ]; then
+		    tar cp --xattrs --directory=$ROOTFS_TEMP/ --exclude='./dev/*' --exclude='./proc/*' --exclude='./run/*' --exclude='./tmp/*' \
+			--exclude='./sys/*' . | lz4 -c > $cache_fname
+		else
+		    tar cp --xattrs --directory=$ROOTFS_TEMP/ --exclude='./dev/*' --exclude='./proc/*' --exclude='./run/*' --exclude='./tmp/*' \
 			--exclude='./sys/*' . | pv -p -b -r -s $(du -sb $ROOTFS_TEMP/ | cut -f1) -N "$display_name" | lz4 -c > $cache_fname
+		fi
+		chmod 0777 $cache_fname
 	fi
 }
 
@@ -419,17 +428,21 @@ prepare_partitions()
 
 	info_msg "Copying files to root directory..."
 
+	rsync_progress="--info=progress2,stats1"
+	[ "$NO_PROGRESS" ] && \
+		rsync_progress=
+
 	rsync -aHWXh --exclude="/boot/*" --exclude="/dev/*" --exclude="/proc/*" --exclude="/run/*" --exclude="/tmp/*" \
-			--exclude="/sys/*" --info=progress2,stats1 $ROOTFS_TEMP/ $ROOTFS/
+			--exclude="/sys/*" $rsync_progress $ROOTFS_TEMP/ $ROOTFS/
 
 	# rsync /boot
 	info_msg "Copying files to /boot directory..."
 	if [[ $(findmnt --target $ROOTFS/boot -o FSTYPE -n) == vfat ]]; then
 		# fat32
-		rsync -rLtWh --info=progress2,stats1 $ROOTFS_TEMP/boot $ROOTFS
+		rsync -rLtWh $rsync_progress $ROOTFS_TEMP/boot $ROOTFS
 	else
 		# ext4
-		rsync -aHWXh --info=progress2,stats1 $ROOTFS_TEMP/boot $ROOTFS
+		rsync -aHWXh $rsync_progress $ROOTFS_TEMP/boot $ROOTFS
 	fi
 
 	if [[ -f $ROOTFS_TEMP/boot/env.txt ]]; then
@@ -444,9 +457,11 @@ prepare_partitions()
 		echo "$bootfs_uuid                                 /boot           vfat    defaults                                                                 0   2" >> $ROOTFS/etc/fstab
 	fi
 
+	[ "$DEBUG" ] && {
 	# DEBUG: print free space
 	info_msg "Free space:"
 	eval 'df -h'
+	}
 
 	sync
 
@@ -460,11 +475,12 @@ prepare_partitions()
 ## Prepare rootfs
 prepare_rootfs() {
 	info_msg "Preparing rootfs for ${KHADAS_BOARD}-${DISTRIB_RELEASE}-${DISTRIB_TYPE}"
+	# add some safety before make rm -rf ;-)
+	unmount_deep "$ROOTFS_TEMP"
+	rm -rf "$ROOTFS_TEMP"
+	mkdir -p "$ROOTFS_TEMP" "$BUILD_IMAGES/cache/rootfs"
 
-	rm -rf $ROOTFS_TEMP
-	mkdir -p $ROOTFS_TEMP $BUILD_IMAGES/cache/rootfs
-
-	trap cleanup INT EXIT TERM
+	trap cleanup INT EXIT TERM QUIT
 
 	create_rootfs_cache
 

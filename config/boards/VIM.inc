@@ -6,7 +6,8 @@ case "$UBOOT" in
 	2015.01)
 		UBOOT_COMPILER="aarch64-none-elf-"
 		UBOOT_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-none-elf/bin:$TOOLCHAINS/gcc-linaro-arm-none-eabi/bin"
-		UBOOT_DIR="$ROOT/u-boot"
+		[ "$UBOOT_VENDOR_DIR" ] && \
+		UBOOT_DIR=$(realpath "$UBOOT_VENDOR_DIR")
 		UBOOT_IMAGE_DIR="$UBOOT_DIR/fip/_tmp"
 	;;
 	mainline)
@@ -30,7 +31,7 @@ case "$LINUX" in
 	4.9)
 		KERNEL_COMPILER="aarch64-linux-gnu-"
 		KERNEL_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/bin"
-		LINUX_DIR="$ROOT/linux"
+		LINUX_DIR=$(realpath "$LINUX_VENDOR_DIR")
 		;;
 esac
 
@@ -45,10 +46,14 @@ WIFI_MODEL="Broadcom"
 
 ##############################
 uboot_custom_postprocess() {
+
+	# already inside ?!??
+	# cd $UBOOT_DIR
 	cd $UBOOT_DIR
 
 	# Cleanup old binaries
-	rm -rf ${FIP_BUILD_FOLDER}
+	# sorry but its undefined everytime !!!????
+	#rm -rf ${FIP_BUILD_FOLDER}
 
 #	source fip/check_compile.sh
 	source fip/variables.sh "$UBOOT_DIR"
@@ -190,8 +195,8 @@ pack_image_platform_raw() {
 	DTB2_OFFSET=0x02840000
 	LOGO_OFFSET=0x07c00000
 
-	PATH_BOOT="u-boot/fip/_tmp/u-boot.bin.sd.bin"
-	PATH_DTB0="linux/$LINUX_DTB"
+	PATH_BOOT="$UBOOT_IMAGE_DIR"/u-boot.bin.sd.bin
+	PATH_DTB0="$LINUX_DIR/$LINUX_DTB"
 	PATH_ROOT="$BUILD_IMAGES/rootfs.img"
 	PATH_LOGO="$BUILD_IMAGES/logo.img"
 
@@ -227,34 +232,52 @@ pack_image_platform() {
 
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
 		## Fixup upgrade dtb link
-		cd $UPGRADE_DIR/Amlogic
-		rm -rf kvim.dtb
+
+		#cd $UPGRADE_DIR/Amlogic
+		#rm -rf kvim.dtb
+
+		# resolve and check dir
+		for UPGRADE_DIR_ in $UPGRADE_DIR; do
+		    [ -d "$UPGRADE_DIR_" ] || {
+			error_msg "UPGRADE_DIR not exist: $UPGRADE_DIR"
+			return 1
+		    }
+		done
+		for UTILS_DIR_ in $UTILS_DIR; do
+		    [ -d "$UTILS_DIR_" ] || {
+			error_msg "UTILS_DIR not exist: $UTILS_DIR"
+			return 1
+		    }
+		done
+
+		D="$UPGRADE_DIR_"/Amlogic
 
 		case "$LINUX" in
 			4.9)
-				ln -fs ../../../linux/$LINUX_DTB kvim.dtb
-				ln -fs ../../../u-boot/fip/_tmp/u-boot.bin u-boot.bin
-				ln -fs ../../../u-boot/fip/_tmp/u-boot.bin.sd.bin u-boot.bin.sd.bin
-				ln -fs ../../../u-boot/fip/_tmp/u-boot.bin.usb.bl2 u-boot.bin.usb.bl2
-				ln -fs ../../../u-boot/fip/_tmp/u-boot.bin.usb.tpl u-boot.bin.usb.tpl
+				ln -fs "$BUILD_IMAGES/logo.img"              "$D"/logo.img
+				ln -fs "$LINUX_DIR/$LINUX_DTB"               "$D"/kvim.dtb
+				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin         "$D"/u-boot.bin
+				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.sd.bin  "$D"/u-boot.bin.sd.bin
+				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.usb.bl2 "$D"/u-boot.bin.usb.bl2
+				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.usb.tpl "$D"/u-boot.bin.usb.tpl
 				;;
 			mainline)
 				;;
 		esac
 
 		## Fixup platform & package configuration file
-		ln -fs "$IMAGE_PACKAGE_CONF" package.conf
-		ln -fs "$IMAGE_PLATFORM_CONF" platform.conf
+		ln -fs "$IMAGE_PACKAGE_CONF"  "$D"/package.conf
+		ln -fs "$IMAGE_PLATFORM_CONF" "$D"/platform.conf
 
 		## Fixup rootfs.img
 		if [ "$PACK_UBOOT_IMAGE" != "yes" ]; then
-			ln -fs ../../images/rootfs.img rootfs.img
+			ln -fs "$BUILD_IMAGES"/rootfs.img "$D"/rootfs.img
 		else
 			IMAGE_FILE_NAME="${KHADAS_BOARD}_Uboot_EMMC_${IMAGE_VERSION}.img"
-			ln -fs fake-rootfs.img rootfs.img
+			ln -fs fake-rootfs.img "$D"/rootfs.img
 		fi
 
-		cd - > /dev/null
+		#cd - > /dev/null
 
 		$UTILS_DIR/aml_image_v2_packer -r $UPGRADE_DIR/Amlogic/package.conf $UPGRADE_DIR/Amlogic $BUILD_IMAGES/${IMAGE_FILE_NAME}
     elif [ "$INSTALL_TYPE" == "SD-USB" ]; then

@@ -1,0 +1,23 @@
+#!/bin/bash
+
+## hyphop ##
+
+#= tests for tests
+
+#bash -e ./run
+
+OK=@@OK
+
+./build_test TEST_True  && echo $OK
+echo
+./build_test TEST_False || echo $OK
+echo
+./build_test TEST_TrueBG  && echo $OK
+echo
+./build_test TEST_FalseBG || echo $OK
+echo
+./build_test TEST_ML -e TEST_True  && echo $OK
+echo
+./build_test TEST_UNDEFINED || echo $OK
+echo
+./build_test -s TEST_ML -e TEST_False -e TEST_True 2>&1 | grep -B99 "total: 5 ok: 3 fail: 2 skip: 0" && echo $OK
