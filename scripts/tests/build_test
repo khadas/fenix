@@ -21,7 +21,7 @@ PPID_=$PPID
     sudo=sudo
 
 #PPID_=$(grep PPid /proc/$PID_/status | grep -o -P \\d+)
-PPID_CMD=$(echo $(strings /proc/$PPID_/cmdline))
+PPID_CMD=$(tr '\0' ' ' < /proc/$PPID_/cmdline)
 
 # get process session id
 [ "$SID_" ] || \
