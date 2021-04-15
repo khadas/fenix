@@ -467,7 +467,7 @@ fix_perms(){
 clean_old_session(){
     info_msg "Cleanup old build session"
     unmount_deep "$BUILD_IMAGES"
-    for l in "$ROOTFS" "$BUILD_IMAGES"/rootfs.img "$BUILD_IMAGES"/.tmp; do
+    for l in "$ROOTFS" "$BUILD_IMAGES"/.tmp; do
 	if [ -e "$l" ]; then
 	    info_msg "Cleanup: $l"
 	    $sudo rm -rf $l
@@ -482,7 +482,7 @@ post_create_image() {
 	# add some safety ;-) before make rm -rf
 	unmount_deep "$ROOTFS" "$BUILD_IMAGES"/.tmp
 
-	rm -rf "$BUILD_IMAGES"/rootfs.img "$BUILD_IMAGES"/.tmp
+	rm -rf "$BUILD_IMAGES"/.tmp
 
 	fix_perms "$BUILD_IMAGES"
 
