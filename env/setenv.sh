@@ -192,7 +192,7 @@ unset SUPPORTED_UBOOT
 unset SUPPORTED_LINUX
 
 DISTRIBUTION_ARRAY=("Ubuntu" "Debian")
-Ubuntu_RELEASE_ARRAY=("bionic" "focal")
+Ubuntu_RELEASE_ARRAY=("bionic" "focal" "hirsute")
 Debian_RELEASE_ARRAY=("buster")
 DISTRIB_ARCH_ARRAY=("arm64")
 Ubuntu_TYPE_ARRAY=("server" "minimal" "xfce" "lxde" "gnome")

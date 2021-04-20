@@ -235,7 +235,11 @@ PACKAGE_LIST="bc cpufrequtils device-tree-compiler fping fake-hwclock psmisc chr
 
 # Non-essential packages
 PACKAGE_LIST_ADDITIONAL="network-manager wireless-tools lsof htop mmc-utils wget nano sysstat net-tools \
-	resolvconf iozone3 jq libcrack2 cracklib-runtime curl rfkill bison flex libssl-dev"
+	resolvconf jq libcrack2 cracklib-runtime curl rfkill bison flex libssl-dev"
+
+if [[ $DISTRIB_RELEASE != "hirsute" ]]; then
+	PACKAGE_LIST_ADDITIONAL+=iozone3
+fi
 
 if [[ "$DISTRIB_TYPE" != "minimal" ]]; then
 
@@ -330,6 +334,9 @@ case $DISTRIB_RELEASE in
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_XSERVER $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_KODI $PACKAGE_LIST_MESA"
 		PACKAGE_LIST_DESKTOP+=" xserver-xorg-input-all pulseaudio-module-gsettings firefox language-selector-gnome viewnior"
 	;;
+	hirsute)
+		DEBOOTSTRAP_COMPONENTS="main,universe"
+	;;
 esac
 
 DEBIAN_MIRROR='httpredir.debian.org/debian'
@@ -347,6 +354,7 @@ else
 	APT_MIRROR=$DEBIAN_MIRROR
 fi
 
+#PACKAGE_LIST+=" $PACKAGE_LIST_RELEASE"
 PACKAGE_LIST+=" $PACKAGE_LIST_RELEASE $PACKAGE_LIST_ADDITIONAL"
 
 # Board Dependencies

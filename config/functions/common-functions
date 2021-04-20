@@ -68,8 +68,8 @@ prepare_host() {
 	local build_host=$(lsb_release -sc)
 	info_msg "Build host: $build_host"
 
-	if [[ -z "$build_host" || "bionic focal" != *"$build_host"* ]]; then
-		error_msg "Your build host is not supported! Please use 'Ubuntu bionic(18.04)/focal(20.04)' as your build host or try to build in Docker."
+	if [[ -z "$build_host" || "bionic focal hirsute" != *"$build_host"* ]]; then
+		error_msg "Your build host is not supported! Please use 'Ubuntu bionic(18.04)/focal(20.04)/hirsute(21.04)' as your build host or try to build in Docker."
 		return -1
 	fi
 
@@ -83,6 +83,12 @@ prepare_host() {
 		buster|focal)
 			if [ "$build_host" != "focal" ]; then
 				error_msg "Building Debian Buster(10)/Ubuntu Focal(20.04) images requires a Ubuntu Focal(20.04) build host, please upgrade your build host or try to build in Docker."
+				return -1
+			fi
+		;;
+		hirsute)
+			if [ "$build_host" != "hirsute" ]; then
+				error_msg "Building Ubuntu hirsute(21.04) images requires a Ubuntu hirsute(21.04) build host, please upgrade your build host or try to build in Docker."
 				return -1
 			fi
 		;;
@@ -117,21 +123,26 @@ prepare_host() {
 		fi
 	fi
 
-	local hostdeps="wget ca-certificates device-tree-compiler pv bc lzop zip binfmt-support build-essential ccache debootstrap ntpdate \
+	if [[ "$build_host" == "hirsute" ]]; then
+		local hostdeps="lib32ncurses6 lib32tinfo6 "
+	else
+		local hostdeps="lib32ncurses5 lib32tinfo5 "
+	fi
+
+	hostdeps+="wget ca-certificates device-tree-compiler pv bc lzop zip binfmt-support build-essential ccache debootstrap ntpdate \
 			gawk gcc-arm-linux-gnueabihf qemu-user-static u-boot-tools uuid-dev zlib1g-dev unzip libusb-1.0-0-dev fakeroot \
 			parted pkg-config libncurses5-dev whiptail debian-keyring debian-archive-keyring f2fs-tools libfile-fcntllock-perl rsync libssl-dev \
 			nfs-kernel-server btrfs-progs ncurses-term p7zip-full kmod dosfstools libc6-dev-armhf-cross \
 			curl patchutils liblz4-tool libpython2.7-dev linux-base swig aptly acl \
-			locales ncurses-base pixz dialog systemd-container udev lib32stdc++6 libc6-i386 lib32ncurses5 lib32tinfo5 \
+			locales ncurses-base pixz dialog systemd-container udev lib32stdc++6 libc6-i386 lib32ncurses6 lib32tinfo6 \
 			bison libbison-dev flex libfl-dev lib32z1 libglib2.0-dev"
-
 
 	if [[ -z $build_host || "focal" == "$build_host" ]]; then
 		hostdeps="${hostdeps/lib32ncurses5 lib32tinfo5/lib32ncurses6 lib32tinfo6}"
 	fi
 
 	# Getting ready for Ubuntu 20.04
-	if [[ "$build_host" == "focal" ]]; then
+	if [[ "$build_host" == "focal" || "$build_host" == "hirsute" ]]; then
 		hostdeps+=" python2 python3"
 		sudo ln -fs /usr/bin/python2.7 /usr/bin/python2
 		sudo ln -fs /usr/bin/python2.7 /usr/bin/python
@@ -321,7 +332,7 @@ get_package_list_hash()
 
 ## create_sources_list <release> <basedir>
 ##
-## <release>: buster|bionic|focal
+## <release>: buster|bionic|focal|hirsute
 ## <basedir>: path to root directory
 create_sources_list()
 {
@@ -346,7 +357,7 @@ create_sources_list()
 	EOF
 	;;
 
-	bionic|focal)
+	bionic|focal|hirsute)
 	cat <<-EOF > $basedir/etc/apt/sources.list
 	deb http://${UBUNTU_MIRROR} $release main restricted universe multiverse
 	#deb-src http://${UBUNTU_MIRROR} $release main restricted universe multiverse

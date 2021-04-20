@@ -225,6 +225,7 @@ create_rootfs_cache()
 		local apt_extra_progress="--show-progress -o DPKG::Progress-Fancy=1"
 
 		info_msg "Installing base system - Stage 1/2"
+		info_msg "debootstrap --variant=minbase --include=${DEBOOTSTRAP_LIST// /,} ${PACKAGE_LIST_EXCLUDE:+ --exclude=${PACKAGE_LIST_EXCLUDE// /,}} --arch=$DISTRIB_ARCH --components=${DEBOOTSTRAP_COMPONENTS} --foreign $DISTRIB_RELEASE $ROOTFS_TEMP/ $apt_mirror"
 		eval 'debootstrap --variant=minbase --include=${DEBOOTSTRAP_LIST// /,} ${PACKAGE_LIST_EXCLUDE:+ --exclude=${PACKAGE_LIST_EXCLUDE// /,}} \
 			--arch=$DISTRIB_ARCH --components=${DEBOOTSTRAP_COMPONENTS} --foreign $DISTRIB_RELEASE $ROOTFS_TEMP/ $apt_mirror'
 
@@ -267,6 +268,7 @@ create_rootfs_cache()
 		fi
 
 		# stage: create apt sources list
+		info_msg "Start create apt source list ..................................................................................."
 		create_sources_list "$DISTRIB_RELEASE" "$ROOTFS_TEMP/"
 
 		# stage: install key
@@ -341,7 +343,7 @@ prepare_partitions()
 {
 	info_msg "Preparing image file for rootfs..."
 
-	if [[ $(lsb_release -sc) =~ bionic|focal ]]; then
+	if [[ $(lsb_release -sc) =~ bionic|focal|hirsute ]]; then
 		EXT4_MKOPTS="-q -F -L ROOTFS -m 2 -O ^64bit,^metadata_csum"
 	elif [[ $(lsb_release -sc) == "xenial" ]]; then
 		EXT4_MKOPTS="-q -F -L ROOTFS -m 2"

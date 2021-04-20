@@ -58,7 +58,7 @@ build_deb_packages_platform() {
 		return 0
 	fi
 
-	if [ "$LINUX" == "4.9" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
+	if [ "$LINUX" == "4.9" ] && [ "$DISTRIBUTION" == "Ubuntu" ] && [ "$DISTRIB_RELEASE" != "hirsute" ]; then
 
 		info_msg "Building Kodi packages..."
 		# FIXME
@@ -147,7 +147,7 @@ install_deb_packages_platform() {
 		return 0
 	fi
 
-	if [ "$LINUX" == "4.9" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
+	if [ "$LINUX" == "4.9" ] && [ "$DISTRIBUTION" == "Ubuntu" && [ "$DISTRIB_RELEASE" != "hirsute"]; then
 
 		cd $ROOT
 
