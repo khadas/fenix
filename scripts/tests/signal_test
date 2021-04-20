@@ -1,0 +1,43 @@
+#!/bin/bash
+
+## hyphop ##
+
+#= signal bg test
+
+STOP=0
+PID=$$
+
+SIGNALS="HUP INT QUIT TERM KILL EXIT"
+
+STOP(){
+    echo "%%%% STOP $0 - $$" | tee -a /tmp/signal_test_stop
+    #trap - $SIGNALS
+    trap '' $SIGNALS
+    #PIDS=$(echo $(pgrep -P $PID))
+    JOBS=$(jobs -p)
+    echo "!!STOP $0 ($STOP) $? $@ + $PIDS[$JOBS] ++ $PID">&2
+    [ "$STOP" -gt 0 ] && return 1
+    STOP=$((STOP+1))
+    for j in $JOBS; do
+	sudo=
+	[ "$(ps -o user= -p $j)" = root ] && sudo=sudo
+	echo $sudo pkill -TERM -P $j
+	$sudo pkill -TERM -P $j
+	[ -d /proc/$j ] && {
+	echo $sudo kill -TERM $j
+	$sudo kill -TERM $j
+	}
+    done
+    echo "!!STOP($sudo) DONE $PID=$$ ::$?"
+}
+
+trap "STOP" $SIGNALS
+
+echo "[i] $0 $@ - $PID"
+
+sudo sleep 666 &
+echo "[i] $0 start bg process $!"
+sleep 1666 &
+echo "[i] $0 start bg process $!"
+echo "[i] $0 WAIT $(echo $(pgrep -P $PID))"
+wait

@@ -14,11 +14,12 @@ source config/functions/functions
 ######################################################################################
 
 if [[ $EUID != 0 ]]; then
-	warning_msg "This script requires root privileges, trying to use sudo, please enter your passowrd!"
-	sudo -E "$0" "$@"
+	need_sudo || true
+	$sudo "$0" "$@"
 	exit $?
 fi
 
+#clean_old_session
 prepare_rootfs
 build_rootfs
 if [ "$INSTALL_TYPE_RAW" == "yes" -a "$INSTALL_TYPE" == "EMMC" ]; then

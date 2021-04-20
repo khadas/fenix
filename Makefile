@@ -166,7 +166,16 @@ help:
 	@echo "  debs                  - Build all debian packages."
 	@echo "  image                 - Pack update image."
 	@echo "  clean                 - Cleanup."
+	@echo "  clean-all             - Cleanup all."
+	@echo "  clean-ccache          - Cleanup ccache only."
+	@echo "  clean-old             - Cleanup old build session only."
 	@echo "  info                  - Display current environment."
 	@echo "  get-make-params       - Get available make parameters."
 clean:
 	./scripts/clean.sh
+clean-all:
+	CLEAN_ALL=1 ./scripts/clean.sh
+clean-ccache:
+	CLEAN_CCACHE_ONLY=1 ./scripts/clean.sh
+clean-old:
+	CLEAN_OLD_ONLY=1 ./scripts/clean.sh
