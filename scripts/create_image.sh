@@ -15,7 +15,6 @@ source config/functions/functions
 ## Try to update Fenix
 check_update() {
 	cd $ROOT
-
 	update_git_repo "$PWD" ${FENIX_BRANCH:- master}
 }
 
@@ -59,13 +58,8 @@ build_debs() {
 		build_linux_debs
 	else
 		# Debs exist, but kernel version changed
-		LINUX_DEB_VER=$(dpkg --info $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb | grep Descr | awk '{print $(NF)}')
-		if [ "$LINUX" == "mainline" ]; then
-			LINUX_VER=$(cat ${BUILD}/linux-mainline-*/.config | grep "Linux/arm64" | awk '{print $3}')
-		else
-			LINUX_VER=$(cat ${ROOT}/linux/.config | grep "Linux/arm64" | awk '{print $3}')
-		fi
-
+		LINUX_DEB_VER=$(dpkg --info $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb | grep Descr | awk '{print $(NF)}') #' coloring bug
+		LINUX_VER=$(grep "Linux/arm64" $LINUX_DIR/.config | awk '{print $3}')
 		if [ "$LINUX_DEB_VER" != "$LINUX_VER" ]; then
 			build_linux_debs
 		fi
@@ -97,9 +91,17 @@ build_debs() {
 }
 
 ###########################################################
+
 start_time=`date +%s`
 check_make_params
 display_parameters
+
+check_active_session
+[ "$CHECK_BUSY" ] && \
+check_busy_files "$BUILD"
+# clean broken prev session
+clean_old_session
+
 prepare_host
 check_update
 prepare_toolchains
@@ -111,8 +113,8 @@ build_debs
 cd $ROOT
 
 ## Rootfs stage requires root privileges
-warning_msg "This script requires root privileges, trying to use sudo, please enter your passowrd!"
-sudo -E $ROOT/scripts/rootfs_stage.sh
+need_sudo || true
+$sudo $ROOT/scripts/rootfs_stage.sh
 
 echo -e "\nDone."
 echo -e "\n`date`"

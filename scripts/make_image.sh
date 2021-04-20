@@ -19,6 +19,7 @@ else
 	pack_image_platform
 fi
 compress_image
+post_create_image
 
 echo -e "\nDone."
 echo -e "\n`date`"
