@@ -45,6 +45,7 @@ for f in "$BUILD_IMAGES/"$IMAGE_FILE_NAME*; do
 		VIM2*) B=VIM2 ;;
 		VIM3L*)B=VIM3L;;
 		VIM3*) B=VIM3 ;;
+		Edge*) B=Edge ;;
 	    esac
 	    case $IMAGE_FILE_NAME in
 		*Ubuntu*) D=Ubuntu ;;
