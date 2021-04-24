@@ -1,0 +1,33 @@
+name: Build
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - 'v*'
+  schedule:
+    # Every day at 1am
+    - cron: '0 1 * * *'
+
+jobs:
+  build_test:
+    name: Build
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Get Env
+        run: env
+
+      - name: Ckeck Build
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+        run: scripts/tests/build_test -s Install-deps -e CHK
+
+      - name: Release Build
+        if: ${{ github.event_name == 'push' && github.ref != 'refs/heads/master' }}
+        run: scripts/tests/build_test -s Install-deps -e REL
+
+      - name: Test Build
+        if: ${{ github.event_name == 'schedule' }}
+        run: scripts/tests/build_test -s Install-deps -e TEST
