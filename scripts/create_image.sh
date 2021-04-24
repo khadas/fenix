@@ -54,14 +54,19 @@ build_debs() {
 	build_uboot_deb
 
 	# Build linux debs
-	if [[ ! -f $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb ]]; then
+	if [ "$FORCE_BUILD_KERNEL_DEB" == "yes" ]; then
+		info_msg "Force build kernel debian package..."
 		build_linux_debs
 	else
-		# Debs exist, but kernel version changed
-		LINUX_DEB_VER=$(dpkg --info $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb | grep Descr | awk '{print $(NF)}') #' coloring bug
-		LINUX_VER=$(grep "Linux/arm64" $LINUX_DIR/.config | awk '{print $3}')
-		if [ "$LINUX_DEB_VER" != "$LINUX_VER" ]; then
+		if [[ ! -f $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb ]]; then
 			build_linux_debs
+		else
+			# Debs exist, but kernel version changed
+			LINUX_DEB_VER=$(dpkg --info $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb | grep Descr | awk '{print $(NF)}') #' coloring bug
+			LINUX_VER=$(grep "Linux/arm64" $LINUX_DIR/.config | awk '{print $3}')
+			if [ "$LINUX_DEB_VER" != "$LINUX_VER" ]; then
+				build_linux_debs
+			fi
 		fi
 	fi
 
