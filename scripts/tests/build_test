@@ -235,6 +235,9 @@ RUN(){
 	# CI build should fetch latest code
 	unset NO_GIT_UPDATE
 
+	# CI build should force build kernel debian package based on latest code
+	export FORCE_BUILD_KERNEL_DEB=yes
+
     [ "$BUILD" ] || \
     BUILD=../fenix.build
 
