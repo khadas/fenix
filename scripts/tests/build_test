@@ -75,6 +75,12 @@ SETENV=$MAKEDIR/env/setenv.sh
 
 #echo "[i] $0 DIR: $MAKEDIR ARGS: $@">&2
 
+export NO_ASK=1
+export NO_GIT_UPDATE=1
+
+export NO_KEEP_IMAGE=1
+
+
 #[ "" ] && \
 [ "$GITHUB_ENV" -a ! "$LOG2" ] && \
     LOGFILE=auto
@@ -226,6 +232,9 @@ RUN(){
 
 [ "$GITHUB_ENV" ] && {
 
+	# CI build should fetch latest code
+	unset NO_GIT_UPDATE
+
     [ "$BUILD" ] || \
     BUILD=../fenix.build
 
@@ -290,11 +299,6 @@ echo "\
 %%BUILD: $BUILD
 %%DOWNLOAD_PKG_DIR: $DOWNLOAD_PKG_DIR
 ">&2
-
-export NO_ASK=1
-export NO_GIT_UPDATE=1
-
-export NO_KEEP_IMAGE=1
 
 ML="UBOOT=mainline"
 CMP="COMPRESS_IMAGE=yes"
