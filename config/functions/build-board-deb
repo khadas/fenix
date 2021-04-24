@@ -160,7 +160,7 @@ build_board_deb() {
 
 	if [ "\$IS_MAINLINE_KERNEL" == "yes" ]; then
 		# Mainline linux don't use such scripts now
-		echo "#!/bin/bash" >  /etc/initramfs-tools/scripts/local-top/khadas_init.sh
+		echo "#!/bin/sh" >  /etc/initramfs-tools/scripts/local-top/khadas_init.sh
 		echo "exit 0" >> /etc/initramfs-tools/scripts/local-top/khadas_init.sh
 		echo "#!/bin/bash" >  /usr/local/bin/hdmi.sh
 		echo "exit 0" >> /usr/local/bin/hdmi.sh
