@@ -293,6 +293,8 @@ RUN(){
 [[ "$TEST_BUILD" != "yes" && "$GITHUB_REF" =~ "refs/tags" ]] && {
     RELEASE_BUILD=yes
     echo "%%Fenix Release Build Version: ${GITHUB_REF##*/}"
+    # Clean up before release build
+    RUN make clean -C "$MAKEDIR"
 }
 
 echo "%%BUILD LIST[$NO_ERROR]:" $TESTS >&2
