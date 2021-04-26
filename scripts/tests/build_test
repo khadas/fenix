@@ -405,7 +405,7 @@ TEST_ML)
     echo TWO
 ;;
 
-## REL(RELEASE)  - release tag
+## REL           - release tag
 ## TEST          - test tag
 ## CHK           - build check for every commit
 
