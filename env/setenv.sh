@@ -735,6 +735,7 @@ function lunch() {
 	done
 
 	echo2 "\
+
 == ENV CONFIG =======================
 VERSION=$VERSION\
 ${p_// /$'\n'}
