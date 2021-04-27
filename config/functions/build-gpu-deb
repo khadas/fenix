@@ -207,7 +207,7 @@ build_gpu_deb() {
 		Architecture: $DISTRIB_ARCH
 		Maintainer: Nick <nick@khadas.com>
 		Installed-Size: 984
-		Replaces: libegl1-mesa-dev, libgbm-dev, libgles2, libgles2-mesa-dev, libglvnd-dev, ocl-icd-opencl-dev, opencl-c-headers, mesa-common-dev, libwayland-dev, libegl-dev,libgles-dev,libgbm-dev
+		Replaces: libegl1-mesa-dev, libgbm-dev, libgles2, libgles2-mesa-dev, libglvnd-dev, ocl-icd-opencl-dev, opencl-c-headers, mesa-common-dev, libwayland-dev, libegl-dev,libgles-dev,libgbm-dev, libgl-dev
 		Provides: libegl1-mesa-dev, libgbm-dev, libgles2-mesa-dev, libglvnd-dev, ocl-icd-opencl-dev, opencl-c-headers, mesa-common-dev, libwayland-dev
 		Section: libdevel
 		Priority: optional
