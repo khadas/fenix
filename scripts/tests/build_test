@@ -508,6 +508,8 @@ Edge-ubuntu-server-bionic-vendor-emmc-REL-TEST-CHK)         ( source  $SETENV -d
 Edge-ubuntu-lxde-bionic-vendor-emmc-REL-TEST-CHK)           ( source  $SETENV -d -q -s $EDGE $BIONIC $LXDE $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
 Edge-ubuntu-server-bionic-vendor-sdusb-REL-TEST-CHK)        ( source  $SETENV -d -q -s $EDGE $BIONIC $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
 Edge-ubuntu-lxde-bionic-vendor-sdusb-REL-TEST-CHK)          ( source  $SETENV -d -q -s $EDGE $BIONIC $LXDE $USB $CMP && make -C "$MAKEDIR" ) & ;;
+Edge-ubuntu-server-focal-mainline-emmc-REL-TEST-CHK)        ( source  $SETENV -d -q -s $EDGE $FOCAL $SERVER $ML $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR"  $RAW ) & ;;
+Edge-ubuntu-gnome-focal-mainline-emmc-REL-TEST-CHK)         ( source  $SETENV -d -q -s $EDGE $FOCAL $GNOME $ML $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR"  $RAW ) & ;;
 Edge-ubuntu-server-focal-mainline-sdusb-REL-TEST-CHK)       ( source  $SETENV -d -q -s $EDGE $FOCAL $SERVER $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 Edge-ubuntu-gnome-focal-mainline-sdusb-REL-TEST-CHK)        ( source  $SETENV -d -q -s $EDGE $FOCAL $GNOME $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 # Edge Test Images
