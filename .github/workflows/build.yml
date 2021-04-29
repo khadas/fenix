@@ -5,9 +5,9 @@ on:
       - master
     tags:
       - 'v*'
-  schedule:
-    # Every day at 1am
-    - cron: '0 1 * * *'
+#  schedule:
+#    # Every day at 1am
+#    - cron: '0 1 * * *'
 
 jobs:
   build_test:
@@ -21,10 +21,10 @@ jobs:
       - name: Get Env
         run: env
 
-      - name: Ckeck Build
-        timeout-minutes: 720
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-        run: scripts/tests/build_test -s Install-deps -e CHK
+#      - name: Ckeck Build
+#        timeout-minutes: 720
+#        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+#        run: scripts/tests/build_test -s Install-deps -e CHK
 
       - name: Release Build
         timeout-minutes: 720
@@ -33,5 +33,5 @@ jobs:
 
       - name: Test Build
         timeout-minutes: 720
-        if: ${{ github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
         run: scripts/tests/build_test -s Install-deps -e "\-TEST"
