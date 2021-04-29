@@ -80,6 +80,8 @@ export NO_GIT_UPDATE=1
 
 export NO_KEEP_IMAGE=1
 
+export CLONE_FULL_COMMIT_LOG=yes
+
 
 #[ "" ] && \
 [ "$GITHUB_ENV" -a ! "$LOG2" ] && \
