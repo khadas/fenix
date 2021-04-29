@@ -33,7 +33,7 @@ jobs:
         if: ${{ github.event_name == 'push' && github.ref != 'refs/heads/master' }}
         run: scripts/tests/build_test -s Install-deps -e REL
 
-      - name: Test Build
-        timeout-minutes: 720
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-        run: scripts/tests/build_test -s Install-deps -e "\-TEST"
+#      - name: Test Build
+#        timeout-minutes: 720
+#        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+#        run: scripts/tests/build_test -s Install-deps -e "\-TEST"
