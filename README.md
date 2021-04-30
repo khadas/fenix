@@ -1,7 +1,5 @@
-[![Release Build](https://github.com/khadas/fenix/actions/workflows/release-build.yml/badge.svg)](https://github.com/khadas/fenix/actions/workflows/release-build.yml)
-[![Test Build Ubuntu](https://github.com/khadas/fenix/actions/workflows/test-build-ubuntu.yml/badge.svg?branch=master)](https://github.com/khadas/fenix/actions/workflows/test-build-ubuntu.yml)
-[![Test Build Debian](https://github.com/khadas/fenix/actions/workflows/test-build-debian.yml/badge.svg)](https://github.com/khadas/fenix/actions/workflows/test-build-debian.yml)
-[![Remove Old Artifacts](https://github.com/khadas/fenix/actions/workflows/remove-old-artifacts.yml/badge.svg?branch=master)](https://github.com/khadas/fenix/actions/workflows/remove-old-artifacts.yml)
+[![Build](https://github.com/khadas/fenix/actions/workflows/build.yml/badge.svg)](https://github.com/khadas/fenix/actions/workflows/build.yml)
+[![Download](https://img.shields.io/badge/Test%20Build%20Images-Download-blue)](http://build.khadas.com:8080/khadas/fenix/images/)
 
 # Fenix script set to build Ubuntu/Debian images
 
