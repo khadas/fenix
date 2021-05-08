@@ -307,6 +307,7 @@ build_uboot_deb() {
 
 # Clean linux
 clean_linux() {
+	for LINUX_DIR in $LINUX_DIR; do break; done
 	info_msg "Clean linux..."
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
 	make ARCH=arm64 distclean -C"$LINUX_DIR"
@@ -314,12 +315,14 @@ clean_linux() {
 
 # Clean u-boot
 clean_uboot() {
+	for UBOOT_DIR in $UBOOT_DIR; do break; done
 	info_msg "Clean u-boot..."
 	make distclean -C"$UBOOT_DIR"
 }
 
 # Config linux
 config_linux() {
+	for LINUX_DIR in $LINUX_DIR; do break; done
 	info_msg "Config linux..."
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
 	if [ "$LINUX" == "mainline" ]; then
@@ -333,6 +336,7 @@ config_linux() {
 
 # Save linux config
 save_linux_config() {
+	for LINUX_DIR in $LINUX_DIR; do break; done
 	info_msg "Save linux config..."
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
 	if [ "$LINUX" == "mainline" ]; then
