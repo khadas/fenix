@@ -1,13 +1,11 @@
-[![Release Build](https://github.com/khadas/fenix/actions/workflows/release-build.yml/badge.svg)](https://github.com/khadas/fenix/actions/workflows/release-build.yml)
-[![Test Build Ubuntu](https://github.com/khadas/fenix/actions/workflows/test-build-ubuntu.yml/badge.svg?branch=master)](https://github.com/khadas/fenix/actions/workflows/test-build-ubuntu.yml)
-[![Test Build Debian](https://github.com/khadas/fenix/actions/workflows/test-build-debian.yml/badge.svg)](https://github.com/khadas/fenix/actions/workflows/test-build-debian.yml)
-[![Remove Old Artifacts](https://github.com/khadas/fenix/actions/workflows/remove-old-artifacts.yml/badge.svg?branch=master)](https://github.com/khadas/fenix/actions/workflows/remove-old-artifacts.yml)
+[![Build](https://github.com/khadas/fenix/actions/workflows/build.yml/badge.svg)](https://github.com/khadas/fenix/actions/workflows/build.yml)
+[![Download](https://img.shields.io/badge/Test%20Build%20Images-Download-blue)](http://build.khadas.com:8080/khadas/fenix/images/)
 
 # Fenix script set to build Ubuntu/Debian images
 
 [![Documentation](https://img.shields.io/badge/Documentation-Reference-blue.svg)](https://docs.khadas.com/vim1/FenixScript.html)
 [![Licence](https://img.shields.io/badge/Licence-GPL--2.0-brightgreen.svg)](https://github.com/khadas/fenix/blob/master/LICENSE)
-[![Version](https://img.shields.io/badge/Version-v1.0.4-blue.svg)](https://github.com/khadas/fenix/tree/v1.0.4)
+[![Version](https://img.shields.io/badge/Version-v1.0.5-blue.svg)](https://github.com/khadas/fenix/tree/v1.0.5)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/khadas/fenix/pulls)
 
 Supported build host:
