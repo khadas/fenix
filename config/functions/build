@@ -309,6 +309,7 @@ build_uboot_deb() {
 clean_linux() {
 	for LINUX_DIR in $LINUX_DIR; do break; done
 	info_msg "Clean linux..."
+	[ -e "$LINUX_DIR/Makefile" ] || return 0
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
 	make ARCH=arm64 distclean -C"$LINUX_DIR"
 }
@@ -317,6 +318,7 @@ clean_linux() {
 clean_uboot() {
 	for UBOOT_DIR in $UBOOT_DIR; do break; done
 	info_msg "Clean u-boot..."
+	[ -e "$UBOOT_DIR/Makefile" ] || return 0
 	make distclean -C"$UBOOT_DIR"
 }
 
