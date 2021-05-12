@@ -138,6 +138,9 @@ build_linux() {
 	# Update linux
 	update_git_repo "$PWD" "$LINUX_GIT_BRANCH"
 
+	# no need build just prepare
+	[ ! "$BUILD_LINUX_NOOP" ] || return 0
+
 	info_msg "Build linux..."
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
 	make ARCH=arm64 $LINUX_DEFCONFIG
@@ -326,6 +329,12 @@ clean_uboot() {
 config_linux() {
 	for LINUX_DIR in $LINUX_DIR; do break; done
 	info_msg "Config linux..."
+	[ -e "$LINUX_DIR/Makefile" ] || {
+		BUILD_LINUX_NOOP=1
+		build_linux
+		for LINUX_DIR in $LINUX_DIR; do break; done
+	}
+
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
 	if [ "$LINUX" == "mainline" ]; then
 		cp $PKGS_DIR/linux-mainline/configs/${KHADAS_BOARD}.config "$LINUX_DIR"/.config
@@ -340,6 +349,11 @@ config_linux() {
 save_linux_config() {
 	for LINUX_DIR in $LINUX_DIR; do break; done
 	info_msg "Save linux config..."
+	[ -e "$LINUX_DIR/Makefile" ] || {
+		error_msg "Need prepare linux before save config (make kernel-saveconfig) "
+		return 1
+	}
+
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
 	if [ "$LINUX" == "mainline" ]; then
 		cp "$LINUX_DIR"/.config $PKGS_DIR/linux-mainline/configs/${KHADAS_BOARD}.config

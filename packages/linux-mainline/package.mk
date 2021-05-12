@@ -23,6 +23,8 @@ make_target() {
 	# Apply configuration
 	cp $PKGS_DIR/$PKG_NAME/configs/${KHADAS_BOARD}.config .config
 
+	[ ! "$BUILD_LINUX_NOOP" ] || return 0
+
 	make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE="${CCACHE} ${KERNEL_COMPILER}" Image modules dtbs
 }
 
