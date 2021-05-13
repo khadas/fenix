@@ -1,0 +1,38 @@
+From 7cb052f81432c35afc272ee557097d3df73623c8 Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Fri, 4 Dec 2020 13:58:11 +0800
+Subject: [PATCH 32/40] VIM3/VIM3L enable FUSB302
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ configs/khadas-vim3_defconfig  | 1 +
+ configs/khadas-vim3l_defconfig | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/configs/khadas-vim3_defconfig b/configs/khadas-vim3_defconfig
+index 2437c92496..71aae35798 100644
+--- a/configs/khadas-vim3_defconfig
++++ b/configs/khadas-vim3_defconfig
+@@ -60,6 +60,7 @@ CONFIG_POWER_DOMAIN=y
+ CONFIG_MESON_EE_POWER_DOMAIN=y
+ CONFIG_DM_REGULATOR=y
+ CONFIG_DM_REGULATOR_FIXED=y
++CONFIG_POWER_FUSB302=y
+ CONFIG_DM_RESET=y
+ CONFIG_DEBUG_UART_ANNOUNCE=y
+ CONFIG_DEBUG_UART_SKIP_INIT=y
+diff --git a/configs/khadas-vim3l_defconfig b/configs/khadas-vim3l_defconfig
+index f9d00266e9..55e81bd99e 100644
+--- a/configs/khadas-vim3l_defconfig
++++ b/configs/khadas-vim3l_defconfig
+@@ -60,6 +60,7 @@ CONFIG_POWER_DOMAIN=y
+ CONFIG_MESON_EE_POWER_DOMAIN=y
+ CONFIG_DM_REGULATOR=y
+ CONFIG_DM_REGULATOR_FIXED=y
++CONFIG_POWER_FUSB302=y
+ CONFIG_DM_RESET=y
+ CONFIG_DEBUG_UART_ANNOUNCE=y
+ CONFIG_DEBUG_UART_SKIP_INIT=y
+-- 
+2.17.1
+

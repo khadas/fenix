@@ -1,0 +1,68 @@
+From 941b2604ff7a1f10e8c84fc59b17c6ae3d7320d5 Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Thu, 13 May 2021 15:16:06 +0800
+Subject: [PATCH] fixup VIM1/VIM2 logo display error
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ configs/khadas-vim2_defconfig | 7 ++++---
+ configs/khadas-vim_defconfig  | 7 ++++---
+ 2 files changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/configs/khadas-vim2_defconfig b/configs/khadas-vim2_defconfig
+index 91cf97a339..25518784d3 100644
+--- a/configs/khadas-vim2_defconfig
++++ b/configs/khadas-vim2_defconfig
+@@ -61,6 +61,7 @@ CONFIG_PINCTRL=y
+ CONFIG_PINCTRL_MESON_GXL=y
+ CONFIG_POWER_DOMAIN=y
+ CONFIG_MESON_GX_VPU_POWER_DOMAIN=y
++CONFIG_MESON_EE_POWER_DOMAIN=y
+ CONFIG_DM_REGULATOR=y
+ CONFIG_DM_REGULATOR_FIXED=y
+ CONFIG_DM_RESET=y
+@@ -86,11 +87,11 @@ CONFIG_USB_GADGET_DOWNLOAD=y
+ CONFIG_DM_VIDEO=y
+ CONFIG_SYS_WHITE_ON_BLACK=y
+ CONFIG_VIDEO_MESON=y
+-CONFIG_LZO=y
+-CONFIG_ZSTD=y
+-CONFIG_OF_LIBFDT_OVERLAY=y
+ CONFIG_VIDEO_BMP_GZIP=y
+ CONFIG_VIDEO_BMP_RLE8=y
+ CONFIG_BMP_16BPP=y
+ CONFIG_BMP_24BPP=y
+ CONFIG_BMP_32BPP=y
++CONFIG_LZO=y
++CONFIG_ZSTD=y
++CONFIG_OF_LIBFDT_OVERLAY=y
+diff --git a/configs/khadas-vim_defconfig b/configs/khadas-vim_defconfig
+index 9a1409ad2d..01a8d7d2cc 100644
+--- a/configs/khadas-vim_defconfig
++++ b/configs/khadas-vim_defconfig
+@@ -56,6 +56,7 @@ CONFIG_PINCTRL=y
+ CONFIG_PINCTRL_MESON_GXL=y
+ CONFIG_POWER_DOMAIN=y
+ CONFIG_MESON_GX_VPU_POWER_DOMAIN=y
++CONFIG_MESON_EE_POWER_DOMAIN=y
+ CONFIG_DM_REGULATOR=y
+ CONFIG_DM_REGULATOR_FIXED=y
+ CONFIG_DM_RESET=y
+@@ -77,11 +78,11 @@ CONFIG_USB_GADGET_DOWNLOAD=y
+ CONFIG_DM_VIDEO=y
+ CONFIG_SYS_WHITE_ON_BLACK=y
+ CONFIG_VIDEO_MESON=y
+-CONFIG_LZO=y
+-CONFIG_ZSTD=y
+-CONFIG_OF_LIBFDT_OVERLAY=y
+ CONFIG_VIDEO_BMP_GZIP=y
+ CONFIG_VIDEO_BMP_RLE8=y
+ CONFIG_BMP_16BPP=y
+ CONFIG_BMP_24BPP=y
+ CONFIG_BMP_32BPP=y
++CONFIG_LZO=y
++CONFIG_ZSTD=y
++CONFIG_OF_LIBFDT_OVERLAY=y
+-- 
+2.17.1
+

@@ -1,0 +1,25 @@
+From c48c7e561ab67329c0bc94ba5d8d5569119c8790 Mon Sep 17 00:00:00 2001
+From: Artem Lapkin <art@khadas.com>
+Date: Thu, 7 Jan 2021 11:23:01 +0800
+Subject: [PATCH 38/40] fix bmp config for vim1
+
+---
+ configs/khadas-vim_defconfig | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/configs/khadas-vim_defconfig b/configs/khadas-vim_defconfig
+index a4e974e351..9a1409ad2d 100644
+--- a/configs/khadas-vim_defconfig
++++ b/configs/khadas-vim_defconfig
+@@ -80,3 +80,8 @@ CONFIG_VIDEO_MESON=y
+ CONFIG_LZO=y
+ CONFIG_ZSTD=y
+ CONFIG_OF_LIBFDT_OVERLAY=y
++CONFIG_VIDEO_BMP_GZIP=y
++CONFIG_VIDEO_BMP_RLE8=y
++CONFIG_BMP_16BPP=y
++CONFIG_BMP_24BPP=y
++CONFIG_BMP_32BPP=y
+-- 
+2.17.1
+
