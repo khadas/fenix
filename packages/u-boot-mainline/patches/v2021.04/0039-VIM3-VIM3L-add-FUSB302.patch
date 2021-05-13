@@ -1,0 +1,29 @@
+From 632ed0e00a3559f3183f3e03d19448a0fde83cd6 Mon Sep 17 00:00:00 2001
+From: Artem Lapkin <art@khadas.com>
+Date: Tue, 12 Jan 2021 12:51:45 +0800
+Subject: [PATCH 39/40] VIM3 VIM3L add FUSB302
+
+---
+ board/amlogic/vim3/vim3.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/board/amlogic/vim3/vim3.c b/board/amlogic/vim3/vim3.c
+index 7b09617cdc..9d958f88a2 100644
+--- a/board/amlogic/vim3/vim3.c
++++ b/board/amlogic/vim3/vim3.c
+@@ -145,6 +145,12 @@ int meson_ft_board_setup(void *blob, struct bd_info *bd)
+ 
+ int misc_init_r(void)
+ {
++
++#if defined CONFIG_POWER_FUSB302
++#include <fusb302.h>
++	fusb302_init();
++#endif
++
+ 	u8 mac_addr[MAC_ADDR_LEN];
+ 	char efuse_mac_addr[EFUSE_MAC_SIZE], tmp[3];
+ 	ssize_t len;
+-- 
+2.17.1
+

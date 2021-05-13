@@ -1,0 +1,32 @@
+From 3d14924a4cd6aaea44947ef94f1a9fe06b3bf385 Mon Sep 17 00:00:00 2001
+From: Nick Xie <nick@khadas.com>
+Date: Tue, 4 Aug 2020 15:45:53 +0800
+Subject: [PATCH 33/40] Edge: enable FUSB302
+
+Signed-off-by: Nick Xie <nick@khadas.com>
+---
+ board/rockchip/evb_rk3399/evb-rk3399.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/board/rockchip/evb_rk3399/evb-rk3399.c b/board/rockchip/evb_rk3399/evb-rk3399.c
+index abb76585cf..22293b9fa3 100644
+--- a/board/rockchip/evb_rk3399/evb-rk3399.c
++++ b/board/rockchip/evb_rk3399/evb-rk3399.c
+@@ -29,4 +29,14 @@ int board_early_init_f(void)
+ out:
+ 	return 0;
+ }
++
++int misc_init_r(void)
++{
++#if defined CONFIG_POWER_FUSB302
++    fusb302_init();
++#endif
++
++    return 0;
++}
++
+ #endif
+-- 
+2.17.1
+

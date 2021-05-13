@@ -1,0 +1,123 @@
+From 4dbec1c301306648087a1b48065405c40ddc80fb Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Tue, 27 Apr 2021 17:06:29 +0800
+Subject: [PATCH 15/40] khadas_add_env_in_fat_2
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ configs/khadas-edge-captain-rk3399_defconfig | 3 ++-
+ configs/khadas-edge-rk3399_defconfig         | 3 ++-
+ configs/khadas-edge-v-rk3399_defconfig       | 3 ++-
+ configs/khadas-vim2_defconfig                | 3 +++
+ configs/khadas-vim3_defconfig                | 4 +++-
+ configs/khadas-vim3l_defconfig               | 4 +++-
+ configs/khadas-vim_defconfig                 | 3 +++
+ 7 files changed, 18 insertions(+), 5 deletions(-)
+
+diff --git a/configs/khadas-edge-captain-rk3399_defconfig b/configs/khadas-edge-captain-rk3399_defconfig
+index cac0ae4556..ebac80c780 100644
+--- a/configs/khadas-edge-captain-rk3399_defconfig
++++ b/configs/khadas-edge-captain-rk3399_defconfig
+@@ -28,7 +28,8 @@ CONFIG_CMD_FS_UUID=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_SPL_OF_CONTROL=y
+ CONFIG_OF_SPL_REMOVE_PROPS="pinctrl-0 pinctrl-names clock-names interrupt-parent assigned-clocks assigned-clock-rates assigned-clock-parents"
+-# CONFIG_ENV_IS_NOWHERE is not set
++CONFIG_ENV_IS_IN_FAT=y
++CONFIG_ENV_FAT_DEVICE_AND_PART="2"
+ CONFIG_SYS_RELOC_GD_ENV_ADDR=y
+ CONFIG_NET_RANDOM_ETHADDR=y
+ CONFIG_ROCKCHIP_GPIO=y
+diff --git a/configs/khadas-edge-rk3399_defconfig b/configs/khadas-edge-rk3399_defconfig
+index 2fab1aa0a8..43f098fd34 100644
+--- a/configs/khadas-edge-rk3399_defconfig
++++ b/configs/khadas-edge-rk3399_defconfig
+@@ -27,7 +27,8 @@ CONFIG_CMD_TIME=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_SPL_OF_CONTROL=y
+ CONFIG_OF_SPL_REMOVE_PROPS="pinctrl-0 pinctrl-names clock-names interrupt-parent assigned-clocks assigned-clock-rates assigned-clock-parents"
+-# CONFIG_ENV_IS_NOWHERE is not set
++CONFIG_ENV_IS_IN_FAT=y
++CONFIG_ENV_FAT_DEVICE_AND_PART="2"
+ CONFIG_SYS_RELOC_GD_ENV_ADDR=y
+ CONFIG_ROCKCHIP_GPIO=y
+ CONFIG_SYS_I2C_ROCKCHIP=y
+diff --git a/configs/khadas-edge-v-rk3399_defconfig b/configs/khadas-edge-v-rk3399_defconfig
+index 69b20b1767..85de26b410 100644
+--- a/configs/khadas-edge-v-rk3399_defconfig
++++ b/configs/khadas-edge-v-rk3399_defconfig
+@@ -27,7 +27,8 @@ CONFIG_CMD_TIME=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_SPL_OF_CONTROL=y
+ CONFIG_OF_SPL_REMOVE_PROPS="pinctrl-0 pinctrl-names clock-names interrupt-parent assigned-clocks assigned-clock-rates assigned-clock-parents"
+-# CONFIG_ENV_IS_NOWHERE is not set
++CONFIG_ENV_IS_IN_FAT=y
++CONFIG_ENV_FAT_DEVICE_AND_PART="2"
+ CONFIG_SYS_RELOC_GD_ENV_ADDR=y
+ CONFIG_NET_RANDOM_ETHADDR=y
+ CONFIG_ROCKCHIP_GPIO=y
+diff --git a/configs/khadas-vim2_defconfig b/configs/khadas-vim2_defconfig
+index b0fe1379fd..1573e59092 100644
+--- a/configs/khadas-vim2_defconfig
++++ b/configs/khadas-vim2_defconfig
+@@ -29,6 +29,9 @@ CONFIG_CMD_BMP=y
+ CONFIG_CMD_REGULATOR=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_OF_CONTROL=y
++CONFIG_ENV_IS_NOWHERE=y
++CONFIG_ENV_IS_IN_FAT=y
++CONFIG_ENV_FAT_DEVICE_AND_PART="2"
+ CONFIG_SYS_RELOC_GD_ENV_ADDR=y
+ CONFIG_NET_RANDOM_ETHADDR=y
+ CONFIG_SARADC_MESON=y
+diff --git a/configs/khadas-vim3_defconfig b/configs/khadas-vim3_defconfig
+index 5b62c0bf38..bc7824f68a 100644
+--- a/configs/khadas-vim3_defconfig
++++ b/configs/khadas-vim3_defconfig
+@@ -29,9 +29,11 @@ CONFIG_CMD_USB_MASS_STORAGE=y
+ CONFIG_CMD_REGULATOR=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_OF_CONTROL=y
++CONFIG_ENV_IS_NOWHERE=y
++CONFIG_ENV_IS_IN_FAT=y
++CONFIG_ENV_FAT_DEVICE_AND_PART="2"
+ CONFIG_SYS_RELOC_GD_ENV_ADDR=y
+ CONFIG_NET_RANDOM_ETHADDR=y
+-CONFIG_ADC=y
+ CONFIG_SARADC_MESON=y
+ CONFIG_BUTTON=y
+ CONFIG_BUTTON_ADC=y
+diff --git a/configs/khadas-vim3l_defconfig b/configs/khadas-vim3l_defconfig
+index 7e54679aa8..2c52840b1c 100644
+--- a/configs/khadas-vim3l_defconfig
++++ b/configs/khadas-vim3l_defconfig
+@@ -29,9 +29,11 @@ CONFIG_CMD_USB_MASS_STORAGE=y
+ CONFIG_CMD_REGULATOR=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_OF_CONTROL=y
++CONFIG_ENV_IS_NOWHERE=y
++CONFIG_ENV_IS_IN_FAT=y
++CONFIG_ENV_FAT_DEVICE_AND_PART="2"
+ CONFIG_SYS_RELOC_GD_ENV_ADDR=y
+ CONFIG_NET_RANDOM_ETHADDR=y
+-CONFIG_ADC=y
+ CONFIG_SARADC_MESON=y
+ CONFIG_BUTTON=y
+ CONFIG_BUTTON_ADC=y
+diff --git a/configs/khadas-vim_defconfig b/configs/khadas-vim_defconfig
+index ce03c8870c..d586bb3961 100644
+--- a/configs/khadas-vim_defconfig
++++ b/configs/khadas-vim_defconfig
+@@ -27,6 +27,9 @@ CONFIG_CMD_BMP=y
+ CONFIG_CMD_REGULATOR=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_OF_CONTROL=y
++CONFIG_ENV_IS_NOWHERE=y
++CONFIG_ENV_IS_IN_FAT=y
++CONFIG_ENV_FAT_DEVICE_AND_PART="2"
+ CONFIG_SYS_RELOC_GD_ENV_ADDR=y
+ CONFIG_NET_RANDOM_ETHADDR=y
+ CONFIG_SARADC_MESON=y
+-- 
+2.17.1
+

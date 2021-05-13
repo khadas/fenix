@@ -1,0 +1,73 @@
+From fd2ece8811395e2c46e5ec92894c19eb2f8b8755 Mon Sep 17 00:00:00 2001
+From: Artem Lapkin <art@khadas.com>
+Date: Fri, 15 Jan 2021 16:02:04 +0800
+Subject: [PATCH 25/40] video: meson: add HDMI fail-save FullHD option
+
+add VIDEO_MESON_HDMI_FAIL_SAVE_FULL_HD configuration option
+
+ABOUT:
+
+Force setup FullHD display mode, if proper timing cant readed.
+from display! Its happens for some 4K display, which send
+unsupported high timings, but same time can works as FullHD!
+Also its will be useful for suspended or disconnected displays.
+
+NOTE: this option disabled by default
+
+Signed-off-by: Artem Lapkin <art@khadas.com>
+---
+ drivers/video/meson/Kconfig     | 10 ++++++++++
+ drivers/video/meson/meson_vpu.c | 19 +++++++++++++++++--
+ 2 files changed, 27 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/video/meson/Kconfig b/drivers/video/meson/Kconfig
+index 0c9ddeb8b6..55d67700f3 100644
+--- a/drivers/video/meson/Kconfig
++++ b/drivers/video/meson/Kconfig
+@@ -10,3 +10,13 @@ config VIDEO_MESON
+ 	select DISPLAY
+ 	help
+ 	  Enable Amlogic Meson Video Processing Unit video support.
++
++config VIDEO_MESON_HDMI_FAIL_SAVE_FULL_HD
++	bool "Enable HDMI fail-save FullHD mode"
++	depends on VIDEO_MESON
++	default y
++	help
++	  Force setup FullHD display mode, if proper timing cant readed.
++	  from display! Its happens for some 4K display, which send
++	  unsupported high timings, but same time can works as FullHD!
++	  Also its will be useful for suspended or disconnected displays
+diff --git a/drivers/video/meson/meson_vpu.c b/drivers/video/meson/meson_vpu.c
+index 67d4ce7b3b..ec16061218 100644
+--- a/drivers/video/meson/meson_vpu.c
++++ b/drivers/video/meson/meson_vpu.c
+@@ -53,8 +53,23 @@ static int meson_vpu_setup_mode(struct udevice *dev, struct udevice *disp)
+ 	if (disp) {
+ 		ret = display_read_timing(disp, &timing);
+ 		if (ret) {
+-			debug("%s: Failed to read timings\n", __func__);
+-			goto cvbs;
++			if (IS_ENABLED(CONFIG_VIDEO_MESON_HDMI_FAIL_SAVE_FULL_HD)) {
++				printf("DISPLAY: setup failsave FullHD mode\n");
++				timing.pixelclock.typ = 148500000;
++				timing.hactive.typ = 1920;
++				timing.hfront_porch.typ = 88;
++				timing.hback_porch.typ = 148;
++				timing.hsync_len.typ = 44;
++				timing.vactive.typ = 1080;
++				timing.vfront_porch.typ = 4;
++				timing.vback_porch.typ = 36;
++				timing.vsync_len.typ = 5;
++				timing.flags = 10;
++				timing.hdmi_monitor = true;
++			} else {
++				debug("%s: Failed to read timings\n", __func__);
++				goto cvbs;
++			}
+ 		}
+ 
+ 		uc_priv->xsize = timing.hactive.typ;
+-- 
+2.17.1
+

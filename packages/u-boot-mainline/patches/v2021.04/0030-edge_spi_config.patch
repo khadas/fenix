@@ -1,0 +1,75 @@
+From 9e4e91ae20b7a35e38660ce498371182f0b188d8 Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Fri, 4 Dec 2020 13:51:13 +0800
+Subject: [PATCH 30/40] edge_spi_config
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ configs/khadas-edge-captain-rk3399_defconfig | 2 ++
+ configs/khadas-edge-rk3399_defconfig         | 2 ++
+ configs/khadas-edge-v-rk3399_defconfig       | 2 ++
+ 3 files changed, 6 insertions(+)
+
+diff --git a/configs/khadas-edge-captain-rk3399_defconfig b/configs/khadas-edge-captain-rk3399_defconfig
+index 1592096052..0915f1c8f9 100644
+--- a/configs/khadas-edge-captain-rk3399_defconfig
++++ b/configs/khadas-edge-captain-rk3399_defconfig
+@@ -46,6 +46,7 @@ CONFIG_MMC_DW=y
+ CONFIG_MMC_DW_ROCKCHIP=y
+ CONFIG_MMC_SDHCI=y
+ CONFIG_MMC_SDHCI_ROCKCHIP=y
++CONFIG_SPI_FLASH_WINBOND=y
+ CONFIG_PHY_REALTEK=y
+ CONFIG_DM_ETH=y
+ CONFIG_ETH_DESIGNWARE=y
+@@ -57,6 +58,7 @@ CONFIG_PWM_ROCKCHIP=y
+ CONFIG_RAM_RK3399_LPDDR4=y
+ CONFIG_BAUDRATE=1500000
+ CONFIG_DEBUG_UART_SHIFT=2
++CONFIG_ROCKCHIP_SPI=y
+ CONFIG_SYSRESET=y
+ CONFIG_USB=y
+ CONFIG_USB_XHCI_HCD=y
+diff --git a/configs/khadas-edge-rk3399_defconfig b/configs/khadas-edge-rk3399_defconfig
+index 18ca6954e4..63e349bd7d 100644
+--- a/configs/khadas-edge-rk3399_defconfig
++++ b/configs/khadas-edge-rk3399_defconfig
+@@ -44,6 +44,7 @@ CONFIG_MMC_DW=y
+ CONFIG_MMC_DW_ROCKCHIP=y
+ CONFIG_MMC_SDHCI=y
+ CONFIG_MMC_SDHCI_ROCKCHIP=y
++CONFIG_SPI_FLASH_WINBOND=y
+ CONFIG_PHY_REALTEK=y
+ CONFIG_DM_ETH=y
+ CONFIG_ETH_DESIGNWARE=y
+@@ -55,6 +56,7 @@ CONFIG_PWM_ROCKCHIP=y
+ CONFIG_RAM_RK3399_LPDDR4=y
+ CONFIG_BAUDRATE=1500000
+ CONFIG_DEBUG_UART_SHIFT=2
++CONFIG_ROCKCHIP_SPI=y
+ CONFIG_SYSRESET=y
+ CONFIG_USB=y
+ CONFIG_USB_XHCI_HCD=y
+diff --git a/configs/khadas-edge-v-rk3399_defconfig b/configs/khadas-edge-v-rk3399_defconfig
+index 77b87a2031..7251094276 100644
+--- a/configs/khadas-edge-v-rk3399_defconfig
++++ b/configs/khadas-edge-v-rk3399_defconfig
+@@ -45,6 +45,7 @@ CONFIG_MMC_DW=y
+ CONFIG_MMC_DW_ROCKCHIP=y
+ CONFIG_MMC_SDHCI=y
+ CONFIG_MMC_SDHCI_ROCKCHIP=y
++CONFIG_SPI_FLASH_WINBOND=y
+ CONFIG_PHY_REALTEK=y
+ CONFIG_DM_ETH=y
+ CONFIG_ETH_DESIGNWARE=y
+@@ -56,6 +57,7 @@ CONFIG_PWM_ROCKCHIP=y
+ CONFIG_RAM_RK3399_LPDDR4=y
+ CONFIG_BAUDRATE=1500000
+ CONFIG_DEBUG_UART_SHIFT=2
++CONFIG_ROCKCHIP_SPI=y
+ CONFIG_SYSRESET=y
+ CONFIG_USB=y
+ CONFIG_USB_XHCI_HCD=y
+-- 
+2.17.1
+
