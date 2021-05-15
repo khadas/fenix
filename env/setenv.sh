@@ -646,7 +646,7 @@ function choose_install_type() {
 	echo_
 	echo_ "Choose install type:"
 	# FIXME
-	if [ "$KHADAS_BOARD" != "Edge" ] && [ "$UBOOT" == "mainline" -o "$LINUX" == "mainline" ]; then
+	if [ "$UBOOT" == "mainline" -o "$LINUX" == "mainline" ]; then
 		INSTALL_TYPE_ARRAY=("SD-USB")
 		INSTALL_TYPE_ARRAY_LEN=${#INSTALL_TYPE_ARRAY[@]}
 	fi
