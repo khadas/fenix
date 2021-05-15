@@ -412,18 +412,18 @@ TEST_ML)
 ## CHK           - build check for every commit
 
 # VIM1 Release Images
-VIM1-ubuntu-server-bionic-vendor-emmc-REL-TEST-CHK)         ( source  $SETENV -d -q -s $VIM1 $BIONIC $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
-VIM1-ubuntu-xfce-bionic-vendor-emmc-REL-TEST-CHK)           ( source  $SETENV -d -q -s $VIM1 $BIONIC $XFCE $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
-VIM1-ubuntu-server-bionic-vendor-sdusb-REL-TEST)            ( source  $SETENV -d -q -s $VIM1 $BIONIC $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
-VIM1-ubuntu-xfce-bionic-vendor-sdusb-REL-TEST)              ( source  $SETENV -d -q -s $VIM1 $BIONIC $XFCE $USB $CMP && make -C "$MAKEDIR" ) & ;;
+VIM1-ubuntu-server-bionic-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $VIM1 $BIONIC $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
+VIM1-ubuntu-xfce-bionic-vendor-emmc-REL-CHK)                ( source  $SETENV -d -q -s $VIM1 $BIONIC $XFCE $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
+VIM1-ubuntu-server-bionic-vendor-sdusb-REL)                 ( source  $SETENV -d -q -s $VIM1 $BIONIC $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
+VIM1-ubuntu-xfce-bionic-vendor-sdusb-REL)                   ( source  $SETENV -d -q -s $VIM1 $BIONIC $XFCE $USB $CMP && make -C "$MAKEDIR" ) & ;;
 VIM1-ubuntu-server-focal-mainline-sdusb-REL-TEST)           ( source  $SETENV -d -q -s $VIM1 $FOCAL $SERVER $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 VIM1-ubuntu-gnome-focal-mainline-sdusb-REL-TEST)            ( source  $SETENV -d -q -s $VIM1 $FOCAL $GNOME $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 # VIM1 Test Images
-VIM1-ubuntu-minimal-focal-mainline-sdusb-TEST)              ( source  $SETENV -d -q -s $VIM1 $FOCAL $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
+VIM1-ubuntu-minimal-focal-mainline-sdusb)                   ( source  $SETENV -d -q -s $VIM1 $FOCAL $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 
 VIM1-debian-server-buster-vendor-emmc)                      ( source  $SETENV -d -q -s $VIM1 $BUSTER $SERVER $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
 VIM1-debian-xfce-buster-vendor-emmc)                        ( source  $SETENV -d -q -s $VIM1 $BUSTER $XFCE $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
-VIM1-debian-minimal-buster-vendor-emmc-TEST)                ( source  $SETENV -d -q -s $VIM1 $BUSTER $MINI $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
+VIM1-debian-minimal-buster-vendor-emmc)                     ( source  $SETENV -d -q -s $VIM1 $BUSTER $MINI $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
 
 VIM1-debian-server-buster-vendor-sdusb)                     ( source  $SETENV -d -q -s $VIM1 $BUSTER $SERVER $USB $CMP && make -C "$MAKEDIR") & ;;
 VIM1-debian-xfce-buster-vendor-sdusb)                       ( source  $SETENV -d -q -s $VIM1 $BUSTER $XFCE $USB $CMP && make -C "$MAKEDIR") & ;;
@@ -431,106 +431,104 @@ VIM1-debian-minimal-buster-vendor-sdusb)                    ( source  $SETENV -d
 
 VIM1-debian-server-buster-mainline-sdusb)                   ( source  $SETENV -d -q -s $VIM1 $BUSTER $SERVER $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 VIM1-debian-xfce-buster-mainline-sdusb)                     ( source  $SETENV -d -q -s $VIM1 $BUSTER $XFCE $ML $USB $CMP && make -C "$MAKEDIR") & ;;
-VIM1-debian-minimal-buster-mainline-sdusb-TEST)             ( source  $SETENV -d -q -s $VIM1 $BUSTER $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
+VIM1-debian-minimal-buster-mainline-sdusb)                  ( source  $SETENV -d -q -s $VIM1 $BUSTER $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 
 # VIM2 Release Images
-VIM2-ubuntu-server-bionic-vendor-emmc-REL-TEST-CHK)         ( source  $SETENV -d -q -s $VIM2 $BIONIC $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
-VIM2-ubuntu-xfce-bionic-vendor-emmc-REL-TEST-CHK)           ( source  $SETENV -d -q -s $VIM2 $BIONIC $XFCE $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
-VIM2-ubuntu-server-bionic-vendor-sdusb-REL-TEST)            ( source  $SETENV -d -q -s $VIM2 $BIONIC $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
-VIM2-ubuntu-xfce-bionic-vendor-sdusb-REL-TEST)              ( source  $SETENV -d -q -s $VIM2 $BIONIC $XFCE $USB $CMP && make -C "$MAKEDIR" ) & ;;
+VIM2-ubuntu-server-bionic-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $VIM2 $BIONIC $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
+VIM2-ubuntu-xfce-bionic-vendor-emmc-REL-CHK)                ( source  $SETENV -d -q -s $VIM2 $BIONIC $XFCE $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
+VIM2-ubuntu-server-bionic-vendor-sdusb-REL)                 ( source  $SETENV -d -q -s $VIM2 $BIONIC $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
+VIM2-ubuntu-xfce-bionic-vendor-sdusb-REL)                   ( source  $SETENV -d -q -s $VIM2 $BIONIC $XFCE $USB $CMP && make -C "$MAKEDIR" ) & ;;
 VIM2-ubuntu-server-focal-mainline-sdusb-REL-TEST)           ( source  $SETENV -d -q -s $VIM2 $FOCAL $SERVER $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 VIM2-ubuntu-gnome-focal-mainline-sdusb-REL-TEST)            ( source  $SETENV -d -q -s $VIM2 $FOCAL $GNOME $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 # VIM2 Test Images
-VIM2-ubuntu-minimal-focal-mainline-sdusb-TEST)              ( source  $SETENV -d -q -s $VIM2 $FOCAL $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
+VIM2-ubuntu-minimal-focal-mainline-sdusb)                   ( source  $SETENV -d -q -s $VIM2 $FOCAL $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 
 VIM2-debian-server-buster-vendor-emmc)                      ( source  $SETENV -d -q -s $VIM2 $BUSTER $SERVER $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
 VIM2-debian-xfce-buster-vendor-emmc)                        ( source  $SETENV -d -q -s $VIM2 $BUSTER $XFCE $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
-VIM2-debian-minimal-buster-vendor-emmc-TEST)                ( source  $SETENV -d -q -s $VIM2 $BUSTER $MINI $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
+VIM2-debian-minimal-buster-vendor-emmc)                     ( source  $SETENV -d -q -s $VIM2 $BUSTER $MINI $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
 
 VIM2-debian-server-buster-vendor-sdusb)                     ( source  $SETENV -d -q -s $VIM2 $BUSTER $SERVER $USB $CMP && make -C "$MAKEDIR") & ;;
 VIM2-debian-xfce-buster-vendor-sdusb)                       ( source  $SETENV -d -q -s $VIM2 $BUSTER $XFCE $USB $CMP && make -C "$MAKEDIR") & ;;
-VIM2-debian-minimal-buster-vendor-sdusb-TEST)               ( source  $SETENV -d -q -s $VIM2 $BUSTER $MINI $USB $CMP && make -C "$MAKEDIR") & ;;
+VIM2-debian-minimal-buster-vendor-sdusb)                    ( source  $SETENV -d -q -s $VIM2 $BUSTER $MINI $USB $CMP && make -C "$MAKEDIR") & ;;
 
 VIM2-debian-server-buster-mainline-sdusb)                   ( source  $SETENV -d -q -s $VIM2 $BUSTER $SERVER $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 VIM2-debian-xfce-buster-mainline-sdusb)                     ( source  $SETENV -d -q -s $VIM2 $BUSTER $XFCE $ML $USB $CMP && make -C "$MAKEDIR") & ;;
-VIM2-debian-minimal-buster-mainline-sdusb-TEST)             ( source  $SETENV -d -q -s $VIM2 $BUSTER $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
+VIM2-debian-minimal-buster-mainline-sdusb)                  ( source  $SETENV -d -q -s $VIM2 $BUSTER $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 
 # VIM3 Release Images
-VIM3-ubuntu-server-focal-vendor-emmc-REL-TEST-CHK)          ( source  $SETENV -d -q -s $VIM3 $FOCAL $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
-VIM3-ubuntu-gnome-focal-vendor-emmc-REL-TEST-CHK)           ( source  $SETENV -d -q -s $VIM3 $FOCAL $GNOME $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
-VIM3-ubuntu-server-focal-vendor-sdusb-REL-TEST)             ( source  $SETENV -d -q -s $VIM3 $FOCAL $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
-VIM3-ubuntu-gnome-focal-vendor-sdusb-REL-TEST)              ( source  $SETENV -d -q -s $VIM3 $FOCAL $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3-ubuntu-server-focal-vendor-emmc-REL-CHK)               ( source  $SETENV -d -q -s $VIM3 $FOCAL $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
+VIM3-ubuntu-gnome-focal-vendor-emmc-REL-CHK)                ( source  $SETENV -d -q -s $VIM3 $FOCAL $GNOME $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
+VIM3-ubuntu-server-focal-vendor-sdusb-REL)                  ( source  $SETENV -d -q -s $VIM3 $FOCAL $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3-ubuntu-gnome-focal-vendor-sdusb-REL)                   ( source  $SETENV -d -q -s $VIM3 $FOCAL $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
 VIM3-ubuntu-server-focal-mainline-sdusb-REL-TEST)           ( source  $SETENV -d -q -s $VIM3 $FOCAL $SERVER $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 VIM3-ubuntu-gnome-focal-mainline-sdusb-REL-TEST)            ( source  $SETENV -d -q -s $VIM3 $FOCAL $GNOME $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 # VIM3 Test Images
-VIM3-ubuntu-minimal-focal-vendor-emmc-TEST)                 ( source  $SETENV -d -q -s $VIM3 $FOCAL $MINI $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
+VIM3-ubuntu-minimal-focal-vendor-emmc)                      ( source  $SETENV -d -q -s $VIM3 $FOCAL $MINI $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
 VIM3-ubuntu-minimal-focal-vendor-sdusb)                     ( source  $SETENV -d -q -s $VIM3 $FOCAL $MINI $USB $CMP && make -C "$MAKEDIR") & ;;
 
-VIM3-ubuntu-minimal-focal-mainline-sdusb-TEST)              ( source  $SETENV -d -q -s $VIM3 $FOCAL $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
+VIM3-ubuntu-minimal-focal-mainline-sdusb)                   ( source  $SETENV -d -q -s $VIM3 $FOCAL $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 
 VIM3-debian-server-buster-vendor-emmc)                      ( source  $SETENV -d -q -s $VIM3 $BUSTER $SERVER $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
 VIM3-debian-xfce-buster-vendor-emmc)                        ( source  $SETENV -d -q -s $VIM3 $BUSTER $XFCE $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
-VIM3-debian-minimal-buster-vendor-emmc-TEST)                ( source  $SETENV -d -q -s $VIM3 $BUSTER $MINI $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
+VIM3-debian-minimal-buster-vendor-emmc)                     ( source  $SETENV -d -q -s $VIM3 $BUSTER $MINI $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
 
 VIM3-debian-server-buster-vendor-sdusb)                     ( source  $SETENV -d -q -s $VIM3 $BUSTER $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
 VIM3-debian-xfce-buster-vendor-sdusb)                       ( source  $SETENV -d -q -s $VIM3 $BUSTER $XFCE $USB $CMP && make -C "$MAKEDIR") & ;;
-VIM3-debian-minimal-buster-vendor-sdusb-TEST)               ( source  $SETENV -d -q -s $VIM3 $BUSTER $MINI $USB $CMP && make -C "$MAKEDIR") & ;;
+VIM3-debian-minimal-buster-vendor-sdusb)                    ( source  $SETENV -d -q -s $VIM3 $BUSTER $MINI $USB $CMP && make -C "$MAKEDIR") & ;;
 
 VIM3-debian-server-buster-mainline-sdusb)                   ( source  $SETENV -d -q -s $VIM3 $BUSTER $SERVER $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 VIM3-debian-xfce-buster-mainline-sdusb)                     ( source  $SETENV -d -q -s $VIM3 $BUSTER $XFCE $ML $USB $CMP && make -C "$MAKEDIR") & ;;
-VIM3-debian-minimal-buster-mainline-sdusb-TEST)             ( source  $SETENV -d -q -s $VIM3 $BUSTER $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
+VIM3-debian-minimal-buster-mainline-sdusb)                  ( source  $SETENV -d -q -s $VIM3 $BUSTER $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 
 # VIM3L Release Images
-VIM3L-ubuntu-server-focal-vendor-emmc-REL-TEST-CHK)         ( source  $SETENV -d -q -s $VIM3L $FOCAL $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
-VIM3L-ubuntu-gnome-focal-vendor-emmc-REL-TEST-CHK)          ( source  $SETENV -d -q -s $VIM3L $FOCAL $GNOME $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
-VIM3L-ubuntu-server-focal-vendor-sdusb-REL-TEST)            ( source  $SETENV -d -q -s $VIM3L $FOCAL $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
-VIM3L-ubuntu-gnome-focal-vendor-sdusb-REL-TEST)             ( source  $SETENV -d -q -s $VIM3L $FOCAL $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3L-ubuntu-server-focal-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $VIM3L $FOCAL $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
+VIM3L-ubuntu-gnome-focal-vendor-emmc-REL-CHK)               ( source  $SETENV -d -q -s $VIM3L $FOCAL $GNOME $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
+VIM3L-ubuntu-server-focal-vendor-sdusb-REL)                 ( source  $SETENV -d -q -s $VIM3L $FOCAL $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3L-ubuntu-gnome-focal-vendor-sdusb-REL)                  ( source  $SETENV -d -q -s $VIM3L $FOCAL $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
 VIM3L-ubuntu-server-focal-mainline-sdusb-REL-TEST)          ( source  $SETENV -d -q -s $VIM3L $FOCAL $SERVER $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 VIM3L-ubuntu-gnome-focal-mainline-sdusb-REL-TEST)           ( source  $SETENV -d -q -s $VIM3L $FOCAL $GNOME $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 # VIM3L Test Images
-VIM3L-ubuntu-minimal-focal-vendor-emmc-TEST)                ( source  $SETENV -d -q -s $VIM3L $FOCAL $MINI $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
+VIM3L-ubuntu-minimal-focal-vendor-emmc)                     ( source  $SETENV -d -q -s $VIM3L $FOCAL $MINI $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
 VIM3L-ubuntu-minimal-focal-vendor-sdusb)                    ( source  $SETENV -d -q -s $VIM3L $FOCAL $MINI $USB $CMP && make -C "$MAKEDIR") & ;;
 
-VIM3L-ubuntu-minimal-focal-mainline-sdusb-TEST)             ( source  $SETENV -d -q -s $VIM3L $FOCAL $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
+VIM3L-ubuntu-minimal-focal-mainline-sdusb)                  ( source  $SETENV -d -q -s $VIM3L $FOCAL $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 
 VIM3L-debian-server-buster-vendor-emmc)                     ( source  $SETENV -d -q -s $VIM3L $BUSTER $SERVER $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
 VIM3L-debian-xfce-buster-vendor-emmc)                       ( source  $SETENV -d -q -s $VIM3L $BUSTER $XFCE $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
-VIM3L-debian-minimal-buster-vendor-emmc-TEST)               ( source  $SETENV -d -q -s $VIM3L $BUSTER $MINI $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
+VIM3L-debian-minimal-buster-vendor-emmc)                    ( source  $SETENV -d -q -s $VIM3L $BUSTER $MINI $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
 
 VIM3L-debian-server-buster-vendor-sdusb)                    ( source  $SETENV -d -q -s $VIM3L $BUSTER $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
 VIM3L-debian-xfce-buster-vendor-sdusb)                      ( source  $SETENV -d -q -s $VIM3L $BUSTER $XFCE $USB $CMP && make -C "$MAKEDIR") & ;;
-VIM3L-debian-minimal-buster-vendor-sdusb-TEST)              ( source  $SETENV -d -q -s $VIM3L $BUSTER $MINI $USB $CMP && make -C "$MAKEDIR") & ;;
+VIM3L-debian-minimal-buster-vendor-sdusb)                   ( source  $SETENV -d -q -s $VIM3L $BUSTER $MINI $USB $CMP && make -C "$MAKEDIR") & ;;
 
 VIM3L-debian-server-buster-mainline-sdusb)                  ( source  $SETENV -d -q -s $VIM3L $BUSTER $SERVER $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 VIM3L-debian-xfce-buster-mainline-sdusb)                    ( source  $SETENV -d -q -s $VIM3L $BUSTER $XFCE $ML $USB $CMP && make -C "$MAKEDIR") & ;;
-VIM3L-debian-minimal-buster-mainline-sdusb-TEST)            ( source  $SETENV -d -q -s $VIM3L $BUSTER $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
+VIM3L-debian-minimal-buster-mainline-sdusb)                 ( source  $SETENV -d -q -s $VIM3L $BUSTER $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 
 # Edge Release Images
-Edge-ubuntu-server-bionic-vendor-emmc-REL-TEST-CHK)         ( source  $SETENV -d -q -s $EDGE $BIONIC $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
-Edge-ubuntu-lxde-bionic-vendor-emmc-REL-TEST-CHK)           ( source  $SETENV -d -q -s $EDGE $BIONIC $LXDE $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
-Edge-ubuntu-server-bionic-vendor-sdusb-REL-TEST)            ( source  $SETENV -d -q -s $EDGE $BIONIC $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
-Edge-ubuntu-lxde-bionic-vendor-sdusb-REL-TEST)              ( source  $SETENV -d -q -s $EDGE $BIONIC $LXDE $USB $CMP && make -C "$MAKEDIR" ) & ;;
-Edge-ubuntu-server-focal-mainline-emmc-REL-TEST)            ( source  $SETENV -d -q -s $EDGE $FOCAL $SERVER $ML $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR"  $RAW ) & ;;
-Edge-ubuntu-gnome-focal-mainline-emmc-REL-TEST)             ( source  $SETENV -d -q -s $EDGE $FOCAL $GNOME $ML $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR"  $RAW ) & ;;
+Edge-ubuntu-server-bionic-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $EDGE $BIONIC $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
+Edge-ubuntu-lxde-bionic-vendor-emmc-REL-CHK)                ( source  $SETENV -d -q -s $EDGE $BIONIC $LXDE $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
+Edge-ubuntu-server-bionic-vendor-sdusb-REL)                 ( source  $SETENV -d -q -s $EDGE $BIONIC $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
+Edge-ubuntu-lxde-bionic-vendor-sdusb-REL)                   ( source  $SETENV -d -q -s $EDGE $BIONIC $LXDE $USB $CMP && make -C "$MAKEDIR" ) & ;;
 Edge-ubuntu-server-focal-mainline-sdusb-REL-TEST)           ( source  $SETENV -d -q -s $EDGE $FOCAL $SERVER $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 Edge-ubuntu-gnome-focal-mainline-sdusb-REL-TEST)            ( source  $SETENV -d -q -s $EDGE $FOCAL $GNOME $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 # Edge Test Images
-Edge-ubuntu-minimal-focal-vendor-emmc-TEST)                 ( source  $SETENV -d -q -s $EDGE $FOCAL $MINI $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
+Edge-ubuntu-minimal-focal-vendor-emmc)                      ( source  $SETENV -d -q -s $EDGE $FOCAL $MINI $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
 Edge-ubuntu-minimal-focal-vendor-sdusb)                     ( source  $SETENV -d -q -s $EDGE $FOCAL $MINI $USB $CMP && make -C "$MAKEDIR") & ;;
 
-Edge-ubuntu-minimal-focal-mainline-sdusb-TEST)              ( source  $SETENV -d -q -s $EDGE $FOCAL $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
+Edge-ubuntu-minimal-focal-mainline-sdusb)                   ( source  $SETENV -d -q -s $EDGE $FOCAL $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 
 Edge-debian-server-buster-vendor-emmc)                      ( source  $SETENV -d -q -s $EDGE $BUSTER $SERVER $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
 Edge-debian-xfce-buster-vendor-emmc)                        ( source  $SETENV -d -q -s $EDGE $BUSTER $XFCE $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
-Edge-debian-minimal-buster-vendor-emmc-TEST)                ( source  $SETENV -d -q -s $EDGE $BUSTER $MINI $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
+Edge-debian-minimal-buster-vendor-emmc)                     ( source  $SETENV -d -q -s $EDGE $BUSTER $MINI $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
 
 Edge-debian-server-buster-vendor-sdusb)                     ( source  $SETENV -d -q -s $EDGE $BUSTER $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
 Edge-debian-xfce-buster-vendor-sdusb)                       ( source  $SETENV -d -q -s $EDGE $BUSTER $XFCE $USB $CMP && make -C "$MAKEDIR") & ;;
-Edge-debian-minimal-buster-vendor-sdusb-TEST)               ( source  $SETENV -d -q -s $EDGE $BUSTER $MINI $USB $CMP && make -C "$MAKEDIR") & ;;
+Edge-debian-minimal-buster-vendor-sdusb)                    ( source  $SETENV -d -q -s $EDGE $BUSTER $MINI $USB $CMP && make -C "$MAKEDIR") & ;;
 
 Edge-debian-server-buster-mainline-sdusb)                   ( source  $SETENV -d -q -s $EDGE $BUSTER $SERVER $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 Edge-debian-xfce-buster-mainline-sdusb)                     ( source  $SETENV -d -q -s $EDGE $BUSTER $XFCE $ML $USB $CMP && make -C "$MAKEDIR") & ;;
-Edge-debian-minimal-buster-mainline-sdusb-TEST)             ( source  $SETENV -d -q -s $EDGE $BUSTER $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
+Edge-debian-minimal-buster-mainline-sdusb)                  ( source  $SETENV -d -q -s $EDGE $BUSTER $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 
 #TEST_LIST_END
     *)
