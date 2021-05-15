@@ -1,0 +1,65 @@
+From 72b4fe6f7748f36fa803b519fd924caa5edbd37d Mon Sep 17 00:00:00 2001
+From: Nick Xie <nick@khadas.com>
+Date: Sat, 15 May 2021 17:12:53 +0800
+Subject: [PATCH] add device model to /proc/cpuinfo
+
+Signed-off-by: Nick Xie <nick@khadas.com>
+---
+ arch/arm64/kernel/cpuinfo.c |  4 ++++
+ arch/arm64/kernel/setup.c   | 11 +++++++++++
+ 2 files changed, 15 insertions(+)
+
+diff --git a/arch/arm64/kernel/cpuinfo.c b/arch/arm64/kernel/cpuinfo.c
+index 1158948a872e..4ffec87c1da3 100644
+--- a/arch/arm64/kernel/cpuinfo.c
++++ b/arch/arm64/kernel/cpuinfo.c
+@@ -133,6 +133,8 @@ static const char *const compat_hwcap2_str[] = {
+ };
+ #endif /* CONFIG_COMPAT */
+ 
++extern const char *machine_model;
++
+ static int c_show(struct seq_file *m, void *v)
+ {
+ 	int i, j;
+@@ -196,6 +198,8 @@ static int c_show(struct seq_file *m, void *v)
+ 		seq_printf(m, "CPU revision\t: %d\n\n", MIDR_REVISION(midr));
+ 	}
+ 
++	seq_printf(m, "Hardware\t: %s\n", machine_model);
++
+ 	return 0;
+ }
+ 
+diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+index 61845c0821d9..b03c7f15bedb 100644
+--- a/arch/arm64/kernel/setup.c
++++ b/arch/arm64/kernel/setup.c
+@@ -51,6 +51,9 @@
+ #include <asm/xen/hypervisor.h>
+ #include <asm/mmu_context.h>
+ 
++const char *machine_model;
++EXPORT_SYMBOL(machine_model);
++
+ static int num_standard_resources;
+ static struct resource *standard_resources;
+ 
+@@ -210,6 +213,14 @@ static void __init setup_machine_fdt(phys_addr_t dt_phys)
+ 	if (!name)
+ 		return;
+ 
++	pr_info("Machine model: %s\n", name);
++	//	dump_stack_set_arch_desc("%s (DT)", name);
++	name = of_flat_dt_get_machine_name();
++	if (!name)
++		return;
++
++	machine_model = name;
++
+ 	pr_info("Machine model: %s\n", name);
+ 	dump_stack_set_arch_desc("%s (DT)", name);
+ }
+-- 
+2.25.1
+
