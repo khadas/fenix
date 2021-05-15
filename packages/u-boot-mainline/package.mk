@@ -14,8 +14,14 @@ make_target() {
 
 	export PATH=$UBOOT_COMPILER_PATH:$PATH
 	make distclean
+	if [ "$VENDOR" == "Rockchip" ]; then
+		cp -r $PKGS_DIR/$PKG_NAME/atf/$KHADAS_BOARD/* $BUILD/$PKG_NAME-$PKG_VERSION
+	fi
 	make ${UBOOT_DEFCONFIG}
 	make -j${NR_JOBS} CROSS_COMPILE="${CCACHE} ${UBOOT_COMPILER}"
+	if [ "$VENDOR" == "Rockchip" ]; then
+		make CROSS_COMPILE="${CCACHE} ${UBOOT_COMPILER}" u-boot.itb
+	fi
 }
 
 post_make_target() {
@@ -77,7 +83,8 @@ post_make_target() {
 		fi
 	elif [ "$VENDOR" == "Rockchip" ]; then
 		if [[ $(type -t uboot_custom_postprocess) == function ]]; then
-			uboot_custom_postprocess
+			tools/mkimage -n rk3399 -T rksd -d tpl/u-boot-tpl-dtb.bin tpl-spl.img
+			cat spl/u-boot-spl-dtb.bin >>tpl-spl.img
 		fi
 	fi
 }
@@ -92,9 +99,7 @@ makeinstall_target() {
 		cp fip/u-boot.bin $BUILD_IMAGES/$PKG_NAME/$KHADAS_BOARD
 		cp fip/u-boot.bin.sd.bin $BUILD_IMAGES/$PKG_NAME/$KHADAS_BOARD
 	elif [ "$VENDOR" == "Rockchip" ]; then
-		cp idbloader.img $BUILD_IMAGES/$PKG_NAME/$KHADAS_BOARD
-		cp uboot.img $BUILD_IMAGES/$PKG_NAME/$KHADAS_BOARD
-		cp trust.img $BUILD_IMAGES/$PKG_NAME/$KHADAS_BOARD
+		cp tpl-spl.img $BUILD_IMAGES/$PKG_NAME/$KHADAS_BOARD
+		cp u-boot.itb $BUILD_IMAGES/$PKG_NAME/$KHADAS_BOARD
 	fi
-
 }
