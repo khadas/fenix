@@ -181,13 +181,9 @@ build_board_deb() {
 		[ -f /etc/modules.mainline ] && mv /etc/modules.mainline /etc/modules
 	else
 		# FIXME Workaround for Bluetooth
-		# Restart bluetooth-khadas.service when bluetooth power state changed
-		if [ -f /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py ]; then
-			if ! cat /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py | grep -q "bluetooth-power-fixup"; then
-				cp /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py.backup
-				echo "        if state:" >> /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py
-				echo "           os.system(\"systemctl start bluetooth-power-fixup\")" >> /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py
-			fi
+		# Revert Workaround
+		if [ -f /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py.backup ]; then
+			mv /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py.backup /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py
 		fi
 		# Update modules
 		[ -f /etc/modules.mainlne ] && rm /etc/modules.mainlne
