@@ -52,7 +52,7 @@ for f in "$BUILD_IMAGES/"$IMAGE_FILE_NAME*; do
 		*Debian*) D=Debian ;; # maybe ;-)
 	    esac
 	    case $IMAGE_FILE_NAME in
-		*SD-USB*) T=SD-USB ;;
+		*SD-USB*) T=SD_USB ;;
 		*EMMC*)   T=EMMC ;;
 	    esac
 	    case $IMAGE_FILE_NAME in
