@@ -19,6 +19,7 @@
 # check_make_params
 # get_available_make_params
 # post_create_image
+# download_rootfs_cache
 
 ## Print error message
 ## $1 - message
@@ -427,7 +428,7 @@ check_make_params() {
 	echo ""
 	for param in $MAKE_PARAMS
 	do
-		printf "${BOLDCYAN}%-25s:${ENDCOLOR}${BOLDGREEN}%10s${ENDCOLOR}\n" $param ${!param}
+		printf "${BOLDCYAN}%-30s:${ENDCOLOR}${BOLDGREEN}%10s${ENDCOLOR}\n" $param ${!param}
 	done
 	echo ""
 }
@@ -435,13 +436,13 @@ check_make_params() {
 ## get_available_make_params
 get_available_make_params() {
 	echo ""
-	printf "${BOLDYELLOW}%-20s${ENDCOLOR}${BOLDYELLOW}%15s${ENDCOLOR}\n" "Parameter" "Value"
-	printf "===============================================\n"
+	printf "${BOLDYELLOW}%-30s${ENDCOLOR}${BOLDYELLOW}%15s${ENDCOLOR}\n" "Parameter" "Value"
+	printf "=========================================================\n"
 	for param in $MAKE_PARAMS
 	do
 		key=$param
 		value=${param}_VALUES
-		printf "${BOLDCYAN}%-25s:${ENDCOLOR}${BOLDGREEN}%20s${ENDCOLOR}\n" "$key" "${!value}"
+		printf "${BOLDCYAN}%-30s:${ENDCOLOR}${BOLDGREEN}%20s${ENDCOLOR}\n" "$key" "${!value}"
 	done
 	echo ""
 }
@@ -540,4 +541,76 @@ check_busy_files(){
     fi
     done
     return 0
+}
+
+## download_rootfs_cache
+download_rootfs_cache() {
+	local cache_name=$1
+	local cache_url=$ROOTFS_CACHE_URL/$cache_name
+	local wget_cmd
+
+	mkdir -p $BUILD_IMAGES/cache/rootfs
+	cd $BUILD_IMAGES/cache/rootfs
+
+	wget_cmd="wget --timeout=30 --tries=3 --passive-ftp --no-check-certificate -O "
+
+	if [ ! -f ${cache_name}.download_complete ]; then
+		rm -rf $cache_name ${cache_name}.sha256
+	fi
+
+	# Check rootfs cache checksum
+	if ! `timeout 10 curl --head --fail --silent ${cache_url}.sha256 2>&1 >/dev/null`; then
+		warning_msg "Can't find rootfs cache checksum ${cache_name}.sha256 on server! Create it from scratch!"
+		return 255
+	fi
+
+	# Download rootfs cache checksum
+	local count=10
+	while [ $count -gt 0 ]; do
+		rm -rf ${cache_name}.sha256
+
+		if $wget_cmd "${cache_name}.sha256" "${cache_url}.sha256"; then
+			fix_perms "${cache_name}.sha256"
+			break
+		fi
+		count=$((count - 1))
+	done
+
+	if [ $count -eq 0 ]; then
+		error_msg "Cant't get $cache_name checksum : ${cache_name}.sha256\n Try later !!"
+		return -1
+	else
+		echo "Cache $cache_name checksum is: `cat ${cache_name}.sha256`"
+	fi
+
+	# Check rootfs cache checksum
+	if ! `timeout 10 curl --head --fail --silent ${cache_url} 2>&1 >/dev/null`; then
+		warning_msg "Can't find rootfs cache ${cache_name} on server! Create it from scratch!"
+		return 255
+	fi
+
+	# Download rootfs cache
+	count=10
+	while [ $count -gt 0 ]; do
+		rm -rf $cache_name
+
+		if $wget_cmd "$cache_name" "$cache_url"; then
+		    calc_sha256="$(sha256sum $cache_name | cut -d" " -f1)"
+		    [ `cat ${cache_name}.sha256` == "${calc_sha256}" ] && break
+
+		    error_msg "Incorrect checksum calculated on downloaded file: got ${calc_sha256}, wanted `cat ${cache_name}.sha256`"
+			rm -rf $cache_name
+		fi
+		count=$((count - 1))
+	done
+
+	if [ $count -eq 0 ]; then
+		error_msg "Cant't get $cache_name cache : $cache_url\n Try later !!"
+		return -1
+	else
+		fix_perms "$cache_name"
+		echo "Calculated checksum is: ${calc_sha256}"
+		touch ${cache_name}.download_complete
+		fix_perms "${cache_name}.download_complete"
+	fi
 }

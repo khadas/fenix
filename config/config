@@ -61,7 +61,7 @@ sudo="sudo -E"
 echo "[i] FENIX (${0#*/}) BUILD: $BUILD | DL: $DOWNLOAD_PKG_DIR | sudo: $sudo"
 
 ##################################### Configurations ##################################
-MAKE_PARAMS="BUILD_TYPE DOWNLOAD_MIRROR NO_CCACHE COMPRESS_IMAGE INSTALL_TYPE_RAW CLONE_FULL_COMMIT_LOG FORCE_BUILD_KERNEL_DEB"
+MAKE_PARAMS="BUILD_TYPE DOWNLOAD_MIRROR NO_CCACHE COMPRESS_IMAGE INSTALL_TYPE_RAW CLONE_FULL_COMMIT_LOG FORCE_BUILD_KERNEL_DEB SKIP_ROOTFS_CACHE_DOWNLOAD"
 
 ## Available values
 BUILD_TYPE_VALUES="develop | release"
@@ -71,6 +71,7 @@ COMPRESS_IMAGE_VALUES="no | yes"
 INSTALL_TYPE_RAW_VALUES="no | yes"
 CLONE_FULL_COMMIT_LOG_VALUES="no | yes"
 FORCE_BUILD_KERNEL_DEB_VALUES="no | yes"
+SKIP_ROOTFS_CACHE_DOWNLOAD_VALUES="no | yes"
 
 ## Default values
 [[ -z $NO_CCACHE ]] && NO_CCACHE=no
@@ -80,6 +81,7 @@ FORCE_BUILD_KERNEL_DEB_VALUES="no | yes"
 [[ -z $INSTALL_TYPE_RAW ]] && INSTALL_TYPE_RAW=no
 [[ -z $CLONE_FULL_COMMIT_LOG ]] && CLONE_FULL_COMMIT_LOG=no
 [[ -z $FORCE_BUILD_KERNEL_DEB ]] && FORCE_BUILD_KERNEL_DEB=no
+[[ -z $SKIP_ROOTFS_CACHE_DOWNLOAD ]] && SKIP_ROOTFS_CACHE_DOWNLOAD=no
 
 
 FENIX_BRANCH="master"
@@ -336,10 +338,12 @@ esac
 
 DEBIAN_MIRROR='httpredir.debian.org/debian'
 UBUNTU_MIRROR='ports.ubuntu.com/'
+ROOTFS_CACHE_URL="http://build.khadas.com/khadas/fenix/cache/rootfs"
 
 if [[ $DOWNLOAD_MIRROR == china ]] ; then
 	DEBIAN_MIRROR='mirrors.tuna.tsinghua.edu.cn/debian'
 	UBUNTU_MIRROR='mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/'
+	ROOTFS_CACHE_URL="http://build.khadas.com/khadas/fenix/cache/rootfs"
 fi
 
 # apt-cacher-ng mirror configurarion
