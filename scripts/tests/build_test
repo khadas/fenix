@@ -240,6 +240,9 @@ RUN(){
 	# CI build should force build kernel debian package based on latest code
 	export FORCE_BUILD_KERNEL_DEB=yes
 
+	# CI build should skip download rootfs cache from server
+	export SKIP_ROOTFS_CACHE_DOWNLOAD=yes
+
     [ "$BUILD" ] || \
     BUILD=../fenix.build
 
