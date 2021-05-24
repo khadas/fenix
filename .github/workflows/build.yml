@@ -6,8 +6,7 @@ on:
     tags:
       - 'v*'
 #  schedule:
-#    # Every day at 1am
-#    - cron: '0 1 * * *'
+#    - cron: '0 1 * * 0'
 
 jobs:
   build_test:
@@ -33,7 +32,7 @@ jobs:
         if: ${{ github.event_name == 'push' && github.ref != 'refs/heads/master' }}
         run: scripts/tests/build_test -s Install-deps -e REL
 
-#      - name: Test Build
-#        timeout-minutes: 720
-#        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-#        run: scripts/tests/build_test -s Install-deps -e "\-TEST"
+      - name: Rootfs Cache Build
+        timeout-minutes: 720
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+        run: scripts/tests/build_test -s Install-deps -e "\-CACHE"

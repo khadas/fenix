@@ -15,20 +15,26 @@ DIE(){
 
 [ "$VERBOSE_" ] && \
 echo "UPLOAD: $UPLOAD
+ROOTFS_CACHE: $ROOTFS_CACHE
 BUILD_IMAGES: $BUILD_IMAGES
 RELEASE_BUILD: $RELEASE_BUILD
-IMAGE_FILE_NAME: $IMAGE_FILE_NAME">&2
+IMAGE_FILE_NAME: $IMAGE_FILE_NAME
+CREATE_ROOTFS_CACHE_ONLY: $CREATE_ROOTFS_CACHE_ONLY">&2
 
 [ "$UPLOAD" ] || DIE "UPLOAD undefined"
+[ "$ROOTFS_CACHE" ] || DIE "ROOTFS_CACHE undefined"
 [ "$BUILD_IMAGES" ] || DIE "BUILD_IMAGES undefined"
-[ "$IMAGE_FILE_NAME" ] || DIE I"MAGE_FILE_NAME undefined"
+[ "$IMAGE_FILE_NAME" ] || DIE "IMAGE_FILE_NAME undefined"
+[ "$CREATE_ROOTFS_CACHE_ONLY" ] || DIE "CREATE_ROOTFS_CACHE_ONLY undefined"
 [ -d "$UPLOAD" ] || DIE "UPLOAD $UPLOAD not exist"
+[ -d "$ROOTFS_CACHE" ] || DIE "ROOTFS_CACHE $ROOTFS_CACHE not exist"
 
 UPLOAD_=${UPLOAD#$HIDE_PREF}
 
 [ "$SUDO_UID" ] && \
 SUDO_="sudo -u $SUDO_USER"
 
+[ "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ] && \
 for f in "$BUILD_IMAGES/"$IMAGE_FILE_NAME*; do
 
     UPLOAD_REL=/storage/.tmp
@@ -97,3 +103,24 @@ for f in "$BUILD_IMAGES/"$IMAGE_FILE_NAME*; do
 	echo "%%UPLOAD: $f not exist">&2
     fi
 done
+
+[ "$CREATE_ROOTFS_CACHE_ONLY" == "yes" ] && \
+{
+	case $IMAGE_FILE_NAME in
+	*minimal*) T=minimal ;;
+	*server*) T=server ;;
+	*xfce*) T=xfce ;;
+	*lxde*) T=lxde ;;
+	*gnome*) T=gnome ;;
+	esac
+	case $IMAGE_FILE_NAME in
+	*focal*) R=focal ;;
+	*bionic*) R=bionic ;;
+	*buster*) R=buster ;;
+	esac
+
+	echo "%%UPLOAD rootfs cache: $BUILD_IMAGES/cache/rootfs/$R-$T-arm64.* => $ROOTFS_CACHE"
+	$SUDO_ mkdir -p "$ROOTFS_CACHE"
+	$SUDO_ rm -f $ROOTFS_CACHE/$R-$T-arm64.*
+	$SUDO_ cp $BUILD_IMAGES/cache/rootfs/$R-$T-arm64.* "$ROOTFS_CACHE"
+}
