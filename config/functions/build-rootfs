@@ -361,7 +361,6 @@ create_rootfs_cache()
 	    tar cp --xattrs --directory=$ROOTFS_TEMP/ --exclude='./dev/*' --exclude='./proc/*' --exclude='./run/*' --exclude='./tmp/*' \
 		--exclude='./sys/*' . | pv -p -b -r -s $(du -sb $ROOTFS_TEMP/ | cut -f1) -N "$display_name" | lz4 -c > $cache_fname
 	fi
-	chmod 0777 $cache_fname
 	sha256sum $cache_fname | cut -d" " -f1 > ${cache_fname}.sha256
 	fix_perms ${cache_fname}.sha256
 }
