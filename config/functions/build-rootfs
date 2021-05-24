@@ -203,7 +203,7 @@ create_rootfs_cache()
 	local packages_hash=$(get_package_list_hash)
 	local cache_fname=$BUILD_IMAGES/cache/rootfs/${DISTRIB_RELEASE}-${DISTRIB_TYPE}-${DISTRIB_ARCH}.$packages_hash.tar.lz4
 	local display_name=${DISTRIB_RELEASE}-${DISTRIB_TYPE}-${DISTRIB_ARCH}.${packages_hash:0:3}...${packages_hash:29}.tar.lz4
-	if [[ -f $cache_fname && -f ${cache_fname}.sha256 && "$FORCE_CREATE_ROOTFS_CACHE" != "yes" ]]; then
+	if [[ -f $cache_fname && -f ${cache_fname}.sha256 && "$FORCE_CREATE_ROOTFS_CACHE" != "yes" && "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ]]; then
 		local date_diff=$(( ($(date +%s) - $(stat -c %Y $cache_fname)) / 86400 ))
 		# Check
 		local cache_sha256=$(cat ${cache_fname}.sha256)
@@ -221,7 +221,7 @@ create_rootfs_cache()
 		fi
 	fi
 
-	if [[ "$SKIP_ROOTFS_CACHE_DOWNLOAD" != "yes" && "$FORCE_CREATE_ROOTFS_CACHE" != "yes" ]]; then
+	if [[ "$SKIP_ROOTFS_CACHE_DOWNLOAD" != "yes" && "$FORCE_CREATE_ROOTFS_CACHE" != "yes" && "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ]]; then
 		info_msg "Try to download cache from server"
 		if download_rootfs_cache $(basename $cache_fname); then
 			local date_diff=$(( ($(date +%s) - $(stat -c %Y $cache_fname)) / 86400 ))
@@ -233,7 +233,7 @@ create_rootfs_cache()
 		fi
 	fi
 
-	if [ "$FORCE_CREATE_ROOTFS_CACHE" == "yes" ]; then
+	if [[ "$FORCE_CREATE_ROOTFS_CACHE" == "yes" || "$CREATE_ROOTFS_CACHE_ONLY" == "yes" ]]; then
 		warning_msg "Force creating rootfs cache"
 		rm -f $BUILD_IMAGES/cache/rootfs/${DISTRIB_RELEASE}-${DISTRIB_TYPE}-${DISTRIB_ARCH}.*
 	fi
@@ -362,7 +362,9 @@ create_rootfs_cache()
 		--exclude='./sys/*' . | pv -p -b -r -s $(du -sb $ROOTFS_TEMP/ | cut -f1) -N "$display_name" | lz4 -c > $cache_fname
 	fi
 	sha256sum $cache_fname | cut -d" " -f1 > ${cache_fname}.sha256
-	fix_perms ${cache_fname}.sha256
+	fix_perms $cache_fname ${cache_fname}.sha256
+
+	[[ "$CREATE_ROOTFS_CACHE_ONLY" == "yes" ]] && info_msg "ROOTFS CACHE: ${GREEN}${cache_fname} ${ENDCOLOR} is ready!" || true
 }
 
 ## creates image file, partitions and fs
@@ -512,6 +514,8 @@ prepare_rootfs() {
 	trap cleanup INT EXIT TERM QUIT
 
 	create_rootfs_cache
+
+	[[ "$CREATE_ROOTFS_CACHE_ONLY" == "yes" ]] && return
 
 	install_distribution_specific
 

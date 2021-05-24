@@ -23,22 +23,27 @@ display_parameters() {
 	echo ""
 	echo "***********************PARAMETERS************************"
 	echo "Fenix Version:         $VERSION"
-	echo "Khadas Board:          $KHADAS_BOARD"
-	echo "Uboot Version:         $UBOOT"
-	echo "Uboot Configuration:   $UBOOT_DEFCONFIG"
-	echo "Uboot Branch:          $UBOOT_GIT_BRANCH"
-	echo "Linux Version:         $LINUX"
-	echo "Linux Configuration:   $LINUX_DEFCONFIG"
-	echo "Linux DTB:             $LINUX_DTB"
-	echo "Linux Branch:          $LINUX_GIT_BRANCH"
-	echo "Distribution:          $DISTRIBUTION"
-	echo "Distribution Release:  $DISTRIB_RELEASE"
-	echo "Distribution Type:     $DISTRIB_TYPE"
-	echo "Distribution Arch:     $DISTRIB_ARCH"
-	echo "Install Type:          $INSTALL_TYPE"
-	echo "Final Image:           $IMAGE_FILE_NAME"
-	[ "$COMPRESS_IMAGE" == "yes" ] && \
-	echo "Compressed Image:      $IMAGE_FILE_NAME.xz"
+
+	if [ "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ]; then
+		echo "Khadas Board:          $KHADAS_BOARD"
+		echo "Uboot Version:         $UBOOT"
+		echo "Uboot Configuration:   $UBOOT_DEFCONFIG"
+		echo "Uboot Branch:          $UBOOT_GIT_BRANCH"
+		echo "Linux Version:         $LINUX"
+		echo "Linux Configuration:   $LINUX_DEFCONFIG"
+		echo "Linux DTB:             $LINUX_DTB"
+		echo "Linux Branch:          $LINUX_GIT_BRANCH"
+		echo "Distribution:          $DISTRIBUTION"
+		echo "Distribution Release:  $DISTRIB_RELEASE"
+		echo "Distribution Type:     $DISTRIB_TYPE"
+		echo "Distribution Arch:     $DISTRIB_ARCH"
+		echo "Install Type:          $INSTALL_TYPE"
+		echo "Final Image:           $IMAGE_FILE_NAME"
+		[ "$COMPRESS_IMAGE" == "yes" ] && \
+		echo "Compressed Image:      $IMAGE_FILE_NAME.xz"
+	else
+		echo "Rootfs cache:          ${DISTRIB_RELEASE}-${DISTRIB_TYPE}-${DISTRIB_ARCH}.$(get_package_list_hash).tar.lz4"
+	fi
 	echo "*********************************************************"
 	echo ""
 }
@@ -111,9 +116,10 @@ prepare_host
 check_update
 prepare_toolchains
 prepare_packages
-build_uboot
-build_linux
-build_debs
+[ "$CREATE_ROOTFS_CACHE_ONLY" == "yes" ] && info_msg "Creating rootfs cache only"
+[ "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ] && build_uboot
+[ "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ] && build_linux
+[ "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ] && build_debs
 
 cd $ROOT
 

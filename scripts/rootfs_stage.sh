@@ -21,6 +21,8 @@ fi
 
 #clean_old_session
 prepare_rootfs
+[ "$CREATE_ROOTFS_CACHE_ONLY" == "yes" ] && post_create_image && exit
+
 build_rootfs
 if [ "$INSTALL_TYPE_RAW" == "yes" -a "$INSTALL_TYPE" == "EMMC" ]; then
 	pack_image_platform_raw
