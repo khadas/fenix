@@ -1,7 +1,7 @@
-From 8eb81f8e40e1b3bef7f9b571645fc83302a5e9f1 Mon Sep 17 00:00:00 2001
+From 8b38a589b97ab909f20324c1652a3d744a0ccd29 Mon Sep 17 00:00:00 2001
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Date: Sun, 21 Feb 2021 16:27:16 +0000
-Subject: [PATCH 16/53] FROMLIST(v1): ASoC: constify of_phandle_args in
+Subject: [PATCH 16/63] FROMLIST(v1): ASoC: constify of_phandle_args in
  snd_soc_get_dai_name()
 
 The pointer to of_phandle_args passed to snd_soc_get_dai_name() and

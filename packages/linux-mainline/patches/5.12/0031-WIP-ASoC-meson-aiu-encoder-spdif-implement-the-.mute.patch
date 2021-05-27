@@ -1,7 +1,7 @@
-From e27d5ce1c88d8cc1b34ca04389975370f43838a8 Mon Sep 17 00:00:00 2001
+From fd7e8c00ceee18926e3c7e584167a8f4d13e5ed7 Mon Sep 17 00:00:00 2001
 From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 Date: Wed, 23 Dec 2020 02:45:27 +0100
-Subject: [PATCH 31/53] WIP: ASoC: meson: aiu: encoder-spdif: implement the
+Subject: [PATCH 31/63] WIP: ASoC: meson: aiu: encoder-spdif: implement the
  .mute_stream callback
 
 Implement the .mute_stream callback based on code from the vendor

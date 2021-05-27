@@ -1,7 +1,7 @@
-From 30cf79c693fe4220265ee63646a8269a7e8ee9ce Mon Sep 17 00:00:00 2001
+From b9d8416f44f519354032c7b726470a35c7e01533 Mon Sep 17 00:00:00 2001
 From: hyphop <art@khadas.com>
 Date: Mon, 1 Jun 2020 15:08:18 +0900
-Subject: [PATCH 42/53] rockchip_khadas_edge_add_ir_recv
+Subject: [PATCH 42/63] rockchip_khadas_edge_add_ir_recv
 
 add missed ir receivier to Khadas Edge
 

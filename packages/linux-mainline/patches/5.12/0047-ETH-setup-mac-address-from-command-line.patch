@@ -1,7 +1,7 @@
-From fc581239f0799b5b62b1e42bda0ba7eefd216aab Mon Sep 17 00:00:00 2001
+From fd8e4c51121385fba3d1e1d1d8a6305f6ef4d65a Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Wed, 25 Dec 2019 13:41:52 +0800
-Subject: [PATCH 47/53] ETH: setup mac address from command line
+Subject: [PATCH 47/63] ETH: setup mac address from command line
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---

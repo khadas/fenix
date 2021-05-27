@@ -1,7 +1,7 @@
-From 9b4756408f184d3684df0659afdf8ba2f51ef389 Mon Sep 17 00:00:00 2001
+From 959c23eae58233ad5cadcd11db5bd3463b05fe4e Mon Sep 17 00:00:00 2001
 From: kszaq <kszaquitto@gmail.com>
 Date: Sat, 6 Jul 2019 07:54:44 +0000
-Subject: [PATCH 04/53] HACK: arm64: dts: meson-gx: add ATF BL32 reserved
+Subject: [PATCH 04/63] HACK: arm64: dts: meson-gx: add ATF BL32 reserved
  memory region
 
 Vendor firmware/uboot has an additional reserved region for BL32 trusted

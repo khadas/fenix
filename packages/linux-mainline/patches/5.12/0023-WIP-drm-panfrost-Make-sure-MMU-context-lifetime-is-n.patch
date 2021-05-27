@@ -1,7 +1,7 @@
-From e9a050f59554dbcfeec3c44dfe3d7c66b1f573ca Mon Sep 17 00:00:00 2001
+From 5849c6ae8e393c79bde5edb742982c82ad4cebb4 Mon Sep 17 00:00:00 2001
 From: Boris Brezillon <boris.brezillon@collabora.com>
 Date: Tue, 4 Feb 2020 15:35:03 +0100
-Subject: [PATCH 23/53] WIP: drm/panfrost: Make sure MMU context lifetime is
+Subject: [PATCH 23/63] WIP: drm/panfrost: Make sure MMU context lifetime is
  not bound to panfrost_priv
 
 Jobs can be in-flight when the file descriptor is closed (either because

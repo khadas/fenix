@@ -1,7 +1,7 @@
-From 048f5c3c7f9dc81859e31f85ff18db119274e044 Mon Sep 17 00:00:00 2001
+From 89398562c6096d40f31dbdd6cf66ad20e026da10 Mon Sep 17 00:00:00 2001
 From: Neil Armstrong <narmstrong@baylibre.com>
 Date: Mon, 15 Mar 2021 10:55:41 +0000
-Subject: [PATCH 21/53] FROMLIST(v1): tty: serial: meson: retrieve port FIFO
+Subject: [PATCH 21/63] FROMLIST(v1): tty: serial: meson: retrieve port FIFO
  size from DT
 
 Now the DT bindings has a property to get the FIFO size for a particular port,

@@ -1,7 +1,7 @@
-From bcb5eb447ae6fdae4be0f5b4665af6cfbbc23850 Mon Sep 17 00:00:00 2001
+From 46524f747877352bbb6f9cf67e8821eaff1dc427 Mon Sep 17 00:00:00 2001
 From: chewitt <christianshewitt@gmail.com>
 Date: Sun, 19 Apr 2020 09:17:49 +0000
-Subject: [PATCH 37/53] WIP: arm64: dts: meson: add common hdmi/hdmi-spdif dtsi
+Subject: [PATCH 37/63] WIP: arm64: dts: meson: add common hdmi/hdmi-spdif dtsi
  for GXBB
 
 ---

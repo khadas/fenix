@@ -1,0 +1,40 @@
+From 0f35e96d1cb5a1faf8a6820fc14ae6b150e96b43 Mon Sep 17 00:00:00 2001
+From: Nick Xie <nick@khadas.com>
+Date: Thu, 27 May 2021 11:34:25 +0800
+Subject: [PATCH 62/63] VIM1/2: add i2c aliases
+
+Signed-off-by: Nick Xie <nick@khadas.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts | 2 ++
+ arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts      | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
+index da5ec5713f25..24c8b20abca2 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
+@@ -32,6 +32,8 @@ aliases {
+ 		serial2 = &uart_B;
+ 		serial3 = &uart_C;
+ 		serial4 = &uart_AO_B;
++		i2c0 = &i2c_A;
++		i2c1 = &i2c_B;
+ 		ethernet0 = &ethmac;
+ 		rtc0 = &rtc;
+ 		rtc1 = &vrtc;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+index 6cbfba283038..561fc94c9fa5 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+@@ -22,6 +22,8 @@ aliases {
+ 		serial2 = &uart_B;
+ 		serial3 = &uart_C;
+ 		serial4 = &uart_AO_B;
++		i2c0 = &i2c_A;
++		i2c1 = &i2c_B;
+ 	};
+ 
+ 	chosen {
+-- 
+2.25.1
+

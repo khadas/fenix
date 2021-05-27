@@ -1,7 +1,7 @@
-From 200c4546875dc04458209d122364edfed34952c4 Mon Sep 17 00:00:00 2001
+From 006f010179fb234e791292566ef4764a953e8f74 Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Sun, 24 Jan 2021 11:27:35 +0000
-Subject: [PATCH 12/53] FROMLIST(v2): drm/lima: add governor data with
+Subject: [PATCH 12/63] FROMLIST(v2): drm/lima: add governor data with
  pre-defined thresholds
 
 This patch adapts the panfrost pre-defined thresholds change [0] to the

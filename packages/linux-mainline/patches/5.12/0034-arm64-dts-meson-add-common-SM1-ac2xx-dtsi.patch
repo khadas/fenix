@@ -1,7 +1,7 @@
-From 2730d191f818d0d68ff3f8c90eefea04ba37938c Mon Sep 17 00:00:00 2001
+From 221e04c1f0e2a6c58d8ccf31d0be8628b21b6fe1 Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Wed, 24 Jun 2020 12:41:46 +0000
-Subject: [PATCH 34/53] arm64: dts: meson: add common SM1 ac2xx dtsi
+Subject: [PATCH 34/63] arm64: dts: meson: add common SM1 ac2xx dtsi
 
 Add a common dtsi for Android STB devices based on the Amlogic S905X3
 (AC213/AC214) and S905D3 (AC201/AC202) reference designs. The dtsi is

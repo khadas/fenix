@@ -1,7 +1,7 @@
-From 75a73cf33b583f7e5af2c5151cecad6ca6b0bfef Mon Sep 17 00:00:00 2001
+From ffb44e0c4baac081a7c74a0a9c887d09660bde6e Mon Sep 17 00:00:00 2001
 From: yan <yan-wyb@foxmail.com>
 Date: Tue, 23 Mar 2021 15:35:02 +0800
-Subject: [PATCH 49/53] remove unuse dtb
+Subject: [PATCH 49/63] remove unuse dtb
 
 Signed-off-by: yan <yan-wyb@foxmail.com>
 ---

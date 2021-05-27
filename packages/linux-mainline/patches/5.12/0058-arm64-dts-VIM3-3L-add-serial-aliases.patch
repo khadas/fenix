@@ -1,0 +1,28 @@
+From 54028db0fafad5efb1035f58f05586a1c90a9926 Mon Sep 17 00:00:00 2001
+From: Nick Xie <nick@khadas.com>
+Date: Thu, 27 May 2021 10:55:09 +0800
+Subject: [PATCH 58/63] arm64: dts: VIM3/3L: add serial aliases
+
+Signed-off-by: Nick Xie <nick@khadas.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+index 7fa1dc10da7e..84d3b6493a9e 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+@@ -13,6 +13,10 @@
+ / {
+ 	aliases {
+ 		serial0 = &uart_AO;
++		serial1 = &uart_A;
++		serial2 = &uart_B;
++		serial3 = &uart_C;
++		serial4 = &uart_AO_B;
+ 		ethernet0 = &ethmac;
+ 		rtc0 = &rtc;
+ 		rtc1 = &vrtc;
+-- 
+2.25.1
+

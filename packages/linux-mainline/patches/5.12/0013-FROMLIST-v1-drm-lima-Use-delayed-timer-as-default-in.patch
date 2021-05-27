@@ -1,7 +1,7 @@
-From e6f12c543b68042599c94969857dc4f3bf81ef72 Mon Sep 17 00:00:00 2001
+From 3b4245dca868c0bf82ad07603198ca78a314f07f Mon Sep 17 00:00:00 2001
 From: Lukasz Luba <lukasz.luba@arm.com>
 Date: Wed, 27 Jan 2021 11:36:36 +0000
-Subject: [PATCH 13/53] FROMLIST(v1): drm/lima: Use delayed timer as default in
+Subject: [PATCH 13/63] FROMLIST(v1): drm/lima: Use delayed timer as default in
  devfreq profile
 
 Devfreq framework supports 2 modes for monitoring devices.

@@ -1,7 +1,7 @@
-From 66d5a9395ad2ae0605da431a96a66ba36f681868 Mon Sep 17 00:00:00 2001
+From b84864859405fcba8b248e4ec1311c047d07e0df Mon Sep 17 00:00:00 2001
 From: Qinglang Miao <miaoqinglang@huawei.com>
 Date: Sat, 28 Nov 2020 16:10:04 +0000
-Subject: [PATCH 08/53] FROMLIST(v1): drm/panfrost: fix reference leak in
+Subject: [PATCH 08/63] FROMLIST(v1): drm/panfrost: fix reference leak in
  panfrost_job_hw_submit
 
 pm_runtime_get_sync will increment pm usage counter even it

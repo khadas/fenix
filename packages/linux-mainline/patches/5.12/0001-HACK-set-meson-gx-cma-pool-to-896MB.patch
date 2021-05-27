@@ -1,7 +1,7 @@
-From 452dcd192b31f8926a061069a0aa8051c9c331d0 Mon Sep 17 00:00:00 2001
+From 5dab42a738ea7f8606a388547b92624d439f6d43 Mon Sep 17 00:00:00 2001
 From: chewitt <github@chrishewitt.net>
 Date: Sat, 13 Apr 2019 05:41:51 +0000
-Subject: [PATCH 01/53] HACK: set meson-gx cma pool to 896MB
+Subject: [PATCH 01/63] HACK: set meson-gx cma pool to 896MB
 
 This change sets the CMA pool to a larger 896MB! value for vdec use
 

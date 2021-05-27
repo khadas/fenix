@@ -1,7 +1,7 @@
-From 038dbd27bbb52ee7c46d4c5d43999b02a7a1bef9 Mon Sep 17 00:00:00 2001
+From df4c63e70fe00efc97572e81827122f937db76de Mon Sep 17 00:00:00 2001
 From: Boris Brezillon <boris.brezillon@collabora.com>
 Date: Thu, 4 Feb 2021 07:37:53 +0000
-Subject: [PATCH 11/53] FROMLIST(v2): drm/panfrost: Stay in the threaded MMU
+Subject: [PATCH 11/63] FROMLIST(v2): drm/panfrost: Stay in the threaded MMU
  IRQ handler until we've handled all IRQs
 
 Doing a hw-irq -> threaded-irq round-trip is counter-productive, stay

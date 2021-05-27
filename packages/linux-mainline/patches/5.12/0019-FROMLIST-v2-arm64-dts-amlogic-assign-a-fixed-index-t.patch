@@ -1,7 +1,7 @@
-From 4915a7d168999ec0ecd2b58fc61f2cc8b14d33fe Mon Sep 17 00:00:00 2001
+From dd67b55b4aa96597caae67b01a790ab93d4f0e0b Mon Sep 17 00:00:00 2001
 From: Alexander Stein <alexander.stein@mailbox.org>
 Date: Wed, 3 Feb 2021 17:03:42 +0000
-Subject: [PATCH 19/53] FROMLIST(v2): arm64: dts: amlogic: assign a fixed index
+Subject: [PATCH 19/63] FROMLIST(v2): arm64: dts: amlogic: assign a fixed index
  to mmc devices
 
 Recently introduced async probe on mmc devices can shuffle block IDs.

@@ -1,7 +1,7 @@
-From 85b018e977f1fee259886ce20de8e261c402f98f Mon Sep 17 00:00:00 2001
+From dc810a056cb861362d97935667cf81705c535bb5 Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Sat, 10 Apr 2021 09:35:10 +0800
-Subject: [PATCH 52/53] packaging 5.x with postinstall scripts
+Subject: [PATCH 52/63] packaging 5.x with postinstall scripts
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---

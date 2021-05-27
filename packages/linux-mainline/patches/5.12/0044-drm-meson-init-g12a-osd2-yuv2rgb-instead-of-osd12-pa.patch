@@ -1,7 +1,7 @@
-From e7456faa53f9f23481f09ed4adbe14a92201b065 Mon Sep 17 00:00:00 2001
+From 1f32cf4bedcebe6af7da1cef264737a7569d5abe Mon Sep 17 00:00:00 2001
 From: hyphop <art@khadas.com>
 Date: Mon, 15 Jun 2020 15:50:39 +0900
-Subject: [PATCH 44/53] drm-meson-init-g12a-osd2-yuv2rgb-instead-of-osd12-param
+Subject: [PATCH 44/63] drm-meson-init-g12a-osd2-yuv2rgb-instead-of-osd12-param
 
     osd12 - kernel arg
     PROBLEM: some combination of old uboot and new kernel can have green screen problem

@@ -1,7 +1,7 @@
-From 2aa444bc065b414c2b695347715ffd9232557bf4 Mon Sep 17 00:00:00 2001
+From c742fb2955a4b250b2a7d7b854413b10942de239 Mon Sep 17 00:00:00 2001
 From: yan <yan-wyb@foxmail.com>
 Date: Wed, 2 Dec 2020 10:23:07 +0800
-Subject: [PATCH 38/53] WIP: arm64: dts: meson: add audio playback to khadas
+Subject: [PATCH 38/63] WIP: arm64: dts: meson: add audio playback to khadas
  vim2
 
 Signed-off-by: yan <yan-wyb@foxmail.com>
