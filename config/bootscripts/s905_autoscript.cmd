@@ -121,6 +121,7 @@ for dev in ${devs}; do
 					if test -e ${dev} ${dev_num}:${distro_bootpart} ${mark_prefix}/.next; then
 						# Update dtb load address for mainline kernel
 						setenv dtb_loadaddr "0x4080000"
+						setenv dtbo_loadaddr "0x32000000"
 					fi;
 					if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${dtb_loadaddr} dtb.img; then
 						if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${env_loadaddr} /boot/env.txt || ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${env_loadaddr} env.txt; then
@@ -152,6 +153,7 @@ for dev in ${devs}; do
 						if test -e ${dev} ${dev_num}:${distro_bootpart} ${mark_prefix}/.next; then
 							echo "Booting mainline kernel...";
 							setenv uart_tty "ttyAML0";
+							setenv dtb_dir "dtb/amlogic"
 
 							# Setup dtb for different HW version
 							fdt addr ${dtb_loadaddr};
@@ -185,6 +187,7 @@ for dev in ${devs}; do
 						else
 							echo "Booting legacy kernel...";
 							setenv uart_tty "ttyS0";
+							setenv dtb_dir "dtb"
 
 							# Setup dtb for different HW version
 							fdt addr ${dtb_loadaddr};
@@ -240,7 +243,7 @@ for dev in ${devs}; do
 						if test "X${overlays}" != "X"; then
 							for overlay in ${overlays}; do
 								echo Apply dtbo ${overlay}
-								if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${dtbo_loadaddr} ${mark_prefix}/dtb/overlays/${overlaydir}/${overlay}.dtbo; then
+								if ${load_method} ${dev} ${dev_num}:${distro_bootpart} ${dtbo_loadaddr} ${mark_prefix}/${dtb_dir}/overlays/${overlaydir}/${overlay}.dtbo; then
 									fdt apply ${dtbo_loadaddr}
 								fi
 							done
