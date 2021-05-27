@@ -1,4 +1,4 @@
-From 85f02fa1cda216abb25cab44e67567aa0a2d9138 Mon Sep 17 00:00:00 2001
+From 4aee7efdcf8fc8d01578a159a50a6ef7e90d7c33 Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Thu, 27 May 2021 11:02:17 +0800
 Subject: [PATCH 63/63] VIMs: add device tree overlays
@@ -10,18 +10,18 @@ Signed-off-by: Nick Xie <nick@khadas.com>
  .../boot/dts/amlogic/meson-gxm-khadas-vim2.dts     |  4 ++--
  arch/arm64/boot/dts/amlogic/overlays/kvim/Makefile |  8 ++++++++
  arch/arm64/boot/dts/amlogic/overlays/kvim/i2c0.dts | 12 ++++++++++++
- .../arm64/boot/dts/amlogic/overlays/kvim/uart4.dts | 12 ++++++++++++
+ .../arm64/boot/dts/amlogic/overlays/kvim/uart4.dts | 14 ++++++++++++++
  .../arm64/boot/dts/amlogic/overlays/kvim2/Makefile |  8 ++++++++
  .../arm64/boot/dts/amlogic/overlays/kvim2/i2c0.dts | 12 ++++++++++++
- .../boot/dts/amlogic/overlays/kvim2/uart4.dts      | 12 ++++++++++++
+ .../boot/dts/amlogic/overlays/kvim2/uart4.dts      | 14 ++++++++++++++
  .../arm64/boot/dts/amlogic/overlays/kvim3/Makefile |  8 ++++++++
  .../arm64/boot/dts/amlogic/overlays/kvim3/i2c3.dts | 14 ++++++++++++++
- .../boot/dts/amlogic/overlays/kvim3/uart3.dts      | 12 ++++++++++++
+ .../boot/dts/amlogic/overlays/kvim3/uart3.dts      | 14 ++++++++++++++
  .../boot/dts/amlogic/overlays/kvim3l/Makefile      |  8 ++++++++
  .../boot/dts/amlogic/overlays/kvim3l/i2c3.dts      | 12 ++++++++++++
- .../boot/dts/amlogic/overlays/kvim3l/uart3.dts     | 12 ++++++++++++
+ .../boot/dts/amlogic/overlays/kvim3l/uart3.dts     | 14 ++++++++++++++
  scripts/Makefile.lib                               |  3 +++
- 16 files changed, 142 insertions(+), 4 deletions(-)
+ 16 files changed, 150 insertions(+), 4 deletions(-)
  create mode 100644 arch/arm64/boot/dts/amlogic/overlays/kvim/Makefile
  create mode 100644 arch/arm64/boot/dts/amlogic/overlays/kvim/i2c0.dts
  create mode 100644 arch/arm64/boot/dts/amlogic/overlays/kvim/uart4.dts
@@ -108,7 +108,7 @@ index 000000000000..bcf4578f3e05
 +clean-files    := *.dtbo
 diff --git a/arch/arm64/boot/dts/amlogic/overlays/kvim/i2c0.dts b/arch/arm64/boot/dts/amlogic/overlays/kvim/i2c0.dts
 new file mode 100644
-index 000000000000..de48d29d916f
+index 000000000000..f0d107842063
 --- /dev/null
 +++ b/arch/arm64/boot/dts/amlogic/overlays/kvim/i2c0.dts
 @@ -0,0 +1,12 @@
@@ -117,7 +117,7 @@ index 000000000000..de48d29d916f
 +
 +/ {
 +	fragment@0 {
-+		target = <&i2c0>;
++		target = <&i2c_A>;
 +
 +		__overlay__ {
 +			status = "okay";
@@ -126,10 +126,10 @@ index 000000000000..de48d29d916f
 +};
 diff --git a/arch/arm64/boot/dts/amlogic/overlays/kvim/uart4.dts b/arch/arm64/boot/dts/amlogic/overlays/kvim/uart4.dts
 new file mode 100644
-index 000000000000..ba6ffe761777
+index 000000000000..004bdfe23cbd
 --- /dev/null
 +++ b/arch/arm64/boot/dts/amlogic/overlays/kvim/uart4.dts
-@@ -0,0 +1,12 @@
+@@ -0,0 +1,14 @@
 +/dts-v1/;
 +/plugin/;
 +
@@ -139,6 +139,8 @@ index 000000000000..ba6ffe761777
 +
 +		__overlay__ {
 +			status = "okay";
++			pinctrl-0 = <&uart_ao_b_pins>;
++			pinctrl-names = "default";
 +		};
 +	};
 +};
@@ -158,7 +160,7 @@ index 000000000000..90e8936ae52f
 +clean-files    := *.dtbo *.scr
 diff --git a/arch/arm64/boot/dts/amlogic/overlays/kvim2/i2c0.dts b/arch/arm64/boot/dts/amlogic/overlays/kvim2/i2c0.dts
 new file mode 100644
-index 000000000000..de48d29d916f
+index 000000000000..f0d107842063
 --- /dev/null
 +++ b/arch/arm64/boot/dts/amlogic/overlays/kvim2/i2c0.dts
 @@ -0,0 +1,12 @@
@@ -167,7 +169,7 @@ index 000000000000..de48d29d916f
 +
 +/ {
 +	fragment@0 {
-+		target = <&i2c0>;
++		target = <&i2c_A>;
 +
 +		__overlay__ {
 +			status = "okay";
@@ -176,10 +178,10 @@ index 000000000000..de48d29d916f
 +};
 diff --git a/arch/arm64/boot/dts/amlogic/overlays/kvim2/uart4.dts b/arch/arm64/boot/dts/amlogic/overlays/kvim2/uart4.dts
 new file mode 100644
-index 000000000000..ba6ffe761777
+index 000000000000..004bdfe23cbd
 --- /dev/null
 +++ b/arch/arm64/boot/dts/amlogic/overlays/kvim2/uart4.dts
-@@ -0,0 +1,12 @@
+@@ -0,0 +1,14 @@
 +/dts-v1/;
 +/plugin/;
 +
@@ -189,6 +191,8 @@ index 000000000000..ba6ffe761777
 +
 +		__overlay__ {
 +			status = "okay";
++			pinctrl-0 = <&uart_ao_b_pins>;
++			pinctrl-names = "default";
 +		};
 +	};
 +};
@@ -228,10 +232,10 @@ index 000000000000..ac800e9cde24
 +};
 diff --git a/arch/arm64/boot/dts/amlogic/overlays/kvim3/uart3.dts b/arch/arm64/boot/dts/amlogic/overlays/kvim3/uart3.dts
 new file mode 100644
-index 000000000000..c2267df1fb66
+index 000000000000..325b5e5e45e3
 --- /dev/null
 +++ b/arch/arm64/boot/dts/amlogic/overlays/kvim3/uart3.dts
-@@ -0,0 +1,12 @@
+@@ -0,0 +1,14 @@
 +/dts-v1/;
 +/plugin/;
 +
@@ -241,6 +245,8 @@ index 000000000000..c2267df1fb66
 +
 +		__overlay__ {
 +			status = "okay";
++			pinctrl-names = "default";
++			pinctrl-0 = <&uart_c_pins>;
 +		};
 +	};
 +};
@@ -278,10 +284,10 @@ index 000000000000..8f979fe323f8
 +};
 diff --git a/arch/arm64/boot/dts/amlogic/overlays/kvim3l/uart3.dts b/arch/arm64/boot/dts/amlogic/overlays/kvim3l/uart3.dts
 new file mode 100644
-index 000000000000..c2267df1fb66
+index 000000000000..325b5e5e45e3
 --- /dev/null
 +++ b/arch/arm64/boot/dts/amlogic/overlays/kvim3l/uart3.dts
-@@ -0,0 +1,12 @@
+@@ -0,0 +1,14 @@
 +/dts-v1/;
 +/plugin/;
 +
@@ -291,6 +297,8 @@ index 000000000000..c2267df1fb66
 +
 +		__overlay__ {
 +			status = "okay";
++			pinctrl-names = "default";
++			pinctrl-0 = <&uart_c_pins>;
 +		};
 +	};
 +};
