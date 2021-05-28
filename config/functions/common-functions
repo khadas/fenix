@@ -134,8 +134,18 @@ prepare_host() {
 	# Getting ready for Ubuntu 20.04
 	if [[ "$build_host" == "focal" ]]; then
 		hostdeps+=" python2 python3"
-		sudo ln -fs /usr/bin/python2.7 /usr/bin/python2
-		sudo ln -fs /usr/bin/python2.7 /usr/bin/python
+		# strange maner to change system without user notify ;-)
+		local p=/usr/bin/python2.7
+		[ -s $p ] && \
+		for s in /usr/bin/python /usr/bin/python2; do
+			[ -L "$s" ] || continue
+			local o=$(readlink $s)
+			[ "$o" = "$p" ] || {
+				warning_msg "Need to change symlink $s to $p from $o"
+				need_sudo || true;
+				$sudo ln -fs $p $s
+			}
+		done
 	else
 		hostdeps+=" python libpython-dev"
 	fi
