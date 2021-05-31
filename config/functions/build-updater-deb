@@ -43,6 +43,7 @@ build_updater_deb() {
 				updater_deb_dependencies+="wiringpi, python3-wiringpi, kodi, kodi-bin, encoder-libs-aml"
 				;;
 		esac
+		updater_deb_conflicts+="opencv3"
 	elif [ "$LINUX" == "mainline" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
 		case $KHADAS_BOARD in
 			VIM1)
@@ -72,6 +73,7 @@ build_updater_deb() {
 	Section: kernel
 	Priority: optional
 	Depends: ${updater_deb_dependencies}
+	Conflicts: ${updater_deb_conflicts}
 	Description: Fenix updater for ${DISTRIBUTION}-${DISTRIB_RELEASE} on $KHADAS_BOARD Linux ${LINUX}
 	EOF
 
