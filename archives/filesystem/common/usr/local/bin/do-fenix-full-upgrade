@@ -23,14 +23,14 @@ fi
 
 FENIX_UPDATER=fenix-updater-package-${DISTRIB_CODENAME}-${BOARD,,}-${LINUX,,}
 
-sudo apt update
-sudo apt full-upgrade -y
+sudo apt-get update
+sudo apt-get dist-upgrade -y
 
 echo "Installing basic denpendencies ..."
-sudo apt install -y $FENIX_BOARD_DEPENDENCIES $FENIX_DESKTOP_DEPENDENCIES
+sudo apt-get install -y $FENIX_BOARD_DEPENDENCIES $FENIX_DESKTOP_DEPENDENCIES
 
 echo "Installing Fenix updater: $FENIX_UPDATER ..."
-sudo apt install -y $FENIX_UPDATER
+sudo apt-get install -y $FENIX_UPDATER
 
 sync
 
