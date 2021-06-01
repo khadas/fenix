@@ -2,8 +2,15 @@ PKG_NAME="mpp_rk3399"
 PKG_VERSION="5db0daad16e9bfa32ce66055b3e44bee35a5d09e"
 PKG_SHA256="4b78f03a228f1c619f24086f99b3cdd191a238c6aa185f583e9bca52298cee70"
 PKG_SOURCE_DIR="mpp_rk3399-${PKG_VERSION}*"
-PKG_SITE="https://github.com/numbqq/mpp_rk3399"
-PKG_URL="https://github.com/numbqq/mpp_rk3399/archive/$PKG_VERSION.tar.gz"
+PKG_SITE="$GITHUB_URL/numbqq/mpp_rk3399"
+PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
+[[ $DOWNLOAD_MIRROR == china ]] && \
+{
+PKG_SITE="$GITEE_URL/numbqq/mpp_rk3399"
+PKG_URL="$PKG_SITE/repository/archive/$PKG_VERSION.tar.gz"
+PKG_SOURCE_DIR="$PKG_NAME"
+PKG_SHA256="90eb25387a384b6c23fad2379e27259527936e6cf6dc1d72cd7231f3b929e171"
+}
 PKG_ARCH="arm64 armhf"
 PKG_LICENSE="GPL"
 PKG_SHORTDESC="Rockchip Media Process Platform deb packages for RK3399"

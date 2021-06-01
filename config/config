@@ -90,10 +90,9 @@ CREATE_ROOTFS_CACHE_ONLY_VALUES="no | yes"
 [[ -z $CREATE_ROOTFS_CACHE_ONLY ]] && CREATE_ROOTFS_CACHE_ONLY=no
 
 
+GITHUB_URL="https://github.com"
+GITEE_URL="https://gitee.com"
 FENIX_BRANCH="master"
-## U-boot & Linux GitHub URL
-LINUX_SOURCE_URL="https://github.com/khadas/linux"
-UBOOT_SOURCE_URL="https://github.com/khadas/u-boot"
 [[ "$CLONE_FULL_COMMIT_LOG" == "no" ]] && GIT_CLONE_OPTIONS="--depth=1"
 
 ROOTFSCACHE_VERSION=6
@@ -346,10 +345,18 @@ DEBIAN_MIRROR='httpredir.debian.org/debian'
 UBUNTU_MIRROR='ports.ubuntu.com/'
 ROOTFS_CACHE_URL="http://build.khadas.com/khadas/fenix/cache/rootfs"
 
+## U-boot & Linux GitHub URL
+LINUX_SOURCE_URL="https://github.com/khadas/linux"
+UBOOT_SOURCE_URL="https://github.com/khadas/u-boot"
+
 if [[ $DOWNLOAD_MIRROR == china ]] ; then
 	DEBIAN_MIRROR='mirrors.tuna.tsinghua.edu.cn/debian'
 	UBUNTU_MIRROR='mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/'
 	ROOTFS_CACHE_URL="http://build.khadas.com/khadas/fenix/cache/rootfs"
+
+	## U-boot & Linux Gitee URL
+	LINUX_SOURCE_URL="https://gitee.com/khadas/linux"
+	UBOOT_SOURCE_URL="https://gitee.com/khadas/u-boot"
 fi
 
 # apt-cacher-ng mirror configurarion

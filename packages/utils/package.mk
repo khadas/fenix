@@ -2,8 +2,15 @@ PKG_NAME="utils"
 PKG_VERSION="108fb1745e84cdd2fc5ca5d764a5ced8085b6552"
 PKG_SHA256="a58d6dd246c37993f3866300bf4f00568c34d43ac9668e11dc9688f0c926e8cf"
 PKG_SOURCE_DIR="utils-${PKG_VERSION}*"
-PKG_SITE="https://github.com/khadas/utils"
-PKG_URL="https://github.com/khadas/utils/archive/$PKG_VERSION.tar.gz"
+PKG_SITE="$GITHUB_URL/khadas/utils"
+PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
+[[ $DOWNLOAD_MIRROR == china ]] && \
+{
+PKG_SITE="$GITEE_URL/khadas/utils"
+PKG_URL="$PKG_SITE/repository/archive/$PKG_VERSION.tar.gz"
+PKG_SOURCE_DIR="$PKG_NAME"
+PKG_SHA256="5ef89fa19a0f84ddd409f1f130461c5a48a3a3f76b50e54f62ba83dedabfa4c8"
+}
 PKG_ARCH="X86"
 PKG_LICENSE="GPL"
 PKG_SHORTDESC="Khadas utils"

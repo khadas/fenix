@@ -2,8 +2,15 @@ PKG_NAME="libdrm_rk3399"
 PKG_VERSION="d918e9665bf1e6eb63c960bce3c9b10b46e83e23"
 PKG_SHA256="18772031c72204c3965e06f6483f2a0af65a5dc9767ea38ecb774c7d11d3286e"
 PKG_SOURCE_DIR="libdrm_rk3399-${PKG_VERSION}*"
-PKG_SITE="https://github.com/numbqq/libdrm_rk3399"
-PKG_URL="https://github.com/numbqq/libdrm_rk3399/archive/$PKG_VERSION.tar.gz"
+PKG_SITE="$GITHUB_URL/numbqq/libdrm_rk3399"
+PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
+[[ $DOWNLOAD_MIRROR == china ]] && \
+{
+PKG_SITE="$GITEE_URL/numbqq/libdrm_rk3399"
+PKG_URL="$PKG_SITE/repository/archive/$PKG_VERSION.tar.gz"
+PKG_SOURCE_DIR="$PKG_NAME"
+PKG_SHA256="b6c8c150dd9c11854036818fce351410da9ee034b86b3621898d42a34e2133f8"
+}
 PKG_ARCH="arm64 armhf"
 PKG_LICENSE="GPL"
 PKG_SHORTDESC="Rockchip Userspace Library for DRM RGA device deb packages for RK3399"

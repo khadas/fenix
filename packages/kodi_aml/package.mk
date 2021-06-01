@@ -2,8 +2,15 @@ PKG_NAME="kodi_aml"
 PKG_VERSION="075477033bc50e5c4666b9561da3f0f81bedb599"
 PKG_SHA256="3a1de224b2a56ffe579faa248b1a09d1938c5a88278a749fdb872bfac03d7c8f"
 PKG_SOURCE_DIR="kodi_aml-${PKG_VERSION}*"
-PKG_SITE="https://github.com/numbqq/kodi_aml"
-PKG_URL="https://github.com/numbqq/kodi_aml/archive/$PKG_VERSION.tar.gz"
+PKG_SITE="$GITHUB_URL/numbqq/kodi_aml"
+PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
+[[ $DOWNLOAD_MIRROR == china ]] && \
+{
+PKG_SITE="$GITEE_URL/numbqq/kodi_aml"
+PKG_URL="$PKG_SITE/repository/archive/$PKG_VERSION.tar.gz"
+PKG_SOURCE_DIR="$PKG_NAME"
+PKG_SHA256="17088f1c12301f009b7dc5f52d5db1860a9cd2d2c57f720a505b3f55dc8675a7"
+}
 PKG_ARCH="arm aarch64"
 PKG_LICENSE="GPL"
 PKG_SHORTDESC="Amlogic Kodi package"

@@ -2,8 +2,15 @@ PKG_NAME="tengine_libs_deb"
 PKG_VERSION="73c6b9fb81313d1e7d2161204a57b62dac021fd3"
 PKG_SHA256="988e2cf8e54e3e3a2924d46f451bb9342e25315aae994390d9174dc07acab539"
 PKG_SOURCE_DIR="${PKG_NAME}-${PKG_VERSION}*"
-PKG_SITE="https://github.com/numbqq/${PKG_NAME}"
-PKG_URL="https://github.com/numbqq/${PKG_NAME}/archive/$PKG_VERSION.tar.gz"
+PKG_SITE="$GITHUB_URL/numbqq/${PKG_NAME}"
+PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
+[[ $DOWNLOAD_MIRROR == china ]] && \
+{
+PKG_SITE="$GITEE_URL/numbqq/${PKG_NAME}"
+PKG_URL="$PKG_SITE/repository/archive/$PKG_VERSION.tar.gz"
+PKG_SOURCE_DIR="$PKG_NAME"
+PKG_SHA256="87d0532c07759c7d5eaa80760240d8843d7558c2ef85414847dc2b873056db7d"
+}
 PKG_ARCH="aarch64"
 PKG_LICENSE="GPL"
 PKG_SHORTDESC="Tengine NPU libraries"

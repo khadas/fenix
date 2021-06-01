@@ -2,8 +2,15 @@ PKG_NAME="opencv3"
 PKG_VERSION="50bfced386c8763a0d36991d2ac5f7bf6e71f28c"
 PKG_SHA256="2706895d0411a99d05a6646e8569ececcaeb074e786b861f0085bb7f53059741"
 PKG_SOURCE_DIR="opencv-${PKG_VERSION}*"
-PKG_SITE="https://github.com/numbqq/opencv3"
-PKG_URL="https://github.com/numbqq/opencv3/archive/$PKG_VERSION.tar.gz"
+PKG_SITE="$GITHUB_URL/numbqq/opencv3"
+PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
+[[ $DOWNLOAD_MIRROR == china ]] && \
+{
+PKG_SITE="$GITEE_URL/numbqq/opencv3"
+PKG_URL="$PKG_SITE/repository/archive/$PKG_VERSION.tar.gz"
+PKG_SOURCE_DIR="$PKG_NAME"
+PKG_SHA256="ada01bb8a874680a7f3b88d5b8a74ab63e6642cae2a7806242925a9ecb1aa420"
+}
 PKG_ARCH="arm aarch64"
 PKG_LICENSE="GPL"
 PKG_SHORTDESC="OpenCV3"

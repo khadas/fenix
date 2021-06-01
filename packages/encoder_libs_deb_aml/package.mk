@@ -2,8 +2,15 @@ PKG_NAME="encoder_libs_deb_aml"
 PKG_VERSION="3bd9ba6e62b3aa3d4096134d00606d279b49f475"
 PKG_SHA256="61fa117e813307506b4360e6ac0eb71e5a2e9e4c2704d6d9f54ae6081b97a96d"
 PKG_SOURCE_DIR="${PKG_NAME}-${PKG_VERSION}*"
-PKG_SITE="https://github.com/numbqq/${PKG_NAME}"
-PKG_URL="https://github.com/numbqq/${PKG_NAME}/archive/$PKG_VERSION.tar.gz"
+PKG_SITE="$GITHUB_URL/numbqq/${PKG_NAME}"
+PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
+[[ $DOWNLOAD_MIRROR == china ]] && \
+{
+PKG_SITE="$GITEE_URL/numbqq/${PKG_NAME}"
+PKG_URL="$PKG_SITE/repository/archive/$PKG_VERSION.tar.gz"
+PKG_SOURCE_DIR="$PKG_NAME"
+PKG_SHA256="8090b4d1d59571de1cc9e4419bd2575a74747668d93cd38ca32e87531559ddc6"
+}
 PKG_ARCH="arm64"
 PKG_LICENSE="GPL"
 PKG_SHORTDESC="Amlogic H264/H264 encoder libraries."

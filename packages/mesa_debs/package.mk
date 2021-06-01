@@ -2,8 +2,15 @@ PKG_NAME="mesa_debs"
 PKG_VERSION="fb24caac356087935bf95b9a61d62e17e7229de7"
 PKG_SHA256="e7dc33cd1414de022027aff15447002b5092930ad6e56db6e26130d12527d739"
 PKG_SOURCE_DIR="mesa_debs-${PKG_VERSION}*"
-PKG_SITE="https://github.com/numbqq/${PKG_NAME}"
-PKG_URL="https://github.com/numbqq/${PKG_NAME}/archive/$PKG_VERSION.tar.gz"
+PKG_SITE="$GITHUB_URL/numbqq/${PKG_NAME}"
+PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
+[[ $DOWNLOAD_MIRROR == china ]] && \
+{
+PKG_SITE="$GITEE_URL/numbqq/${PKG_NAME}"
+PKG_URL="$PKG_SITE/repository/archive/$PKG_VERSION.tar.gz"
+PKG_SOURCE_DIR="$PKG_NAME"
+PKG_SHA256="77fc3c12a874485ab257552aa668411b0cebcc075614beb0657cb537d14b50c4"
+}
 PKG_ARCH="arm64 armhf"
 PKG_LICENSE="GPL"
 PKG_SHORTDESC="Mesa libraies with Lima/Panfrost support."
