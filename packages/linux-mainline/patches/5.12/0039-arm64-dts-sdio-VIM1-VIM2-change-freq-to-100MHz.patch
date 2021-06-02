@@ -1,7 +1,7 @@
 From ef982c0eeaafd97eb26d617479c4013ffae76df5 Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Wed, 1 Apr 2020 14:11:35 +0800
-Subject: [PATCH 39/63] arm64: dts: sdio: VIM1/VIM2: change freq to 100MHz
+Subject: [PATCH 39/67] arm64: dts: sdio: VIM1/VIM2: change freq to 100MHz
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---

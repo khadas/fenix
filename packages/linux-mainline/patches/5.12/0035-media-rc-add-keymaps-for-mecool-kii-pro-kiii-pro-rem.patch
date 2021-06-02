@@ -1,7 +1,7 @@
 From 73a124860915b3a51d5ece837c74dbbdda521ac8 Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Mon, 8 Mar 2021 02:51:01 +0000
-Subject: [PATCH 35/63] media: rc: add keymaps for mecool-kii-pro/kiii-pro
+Subject: [PATCH 35/67] media: rc: add keymaps for mecool-kii-pro/kiii-pro
  remotes
 
 Add keymaps and bindings for the simple IR (NEC) remotes used with

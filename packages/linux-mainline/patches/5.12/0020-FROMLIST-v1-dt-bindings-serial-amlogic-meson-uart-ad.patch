@@ -1,7 +1,7 @@
 From 2eb7e9cdf8da06e8889d78bbe4491dc0178fe3c3 Mon Sep 17 00:00:00 2001
 From: Neil Armstrong <narmstrong@baylibre.com>
 Date: Mon, 15 Mar 2021 10:54:48 +0000
-Subject: [PATCH 20/63] FROMLIST(v1): dt-bindings: serial: amlogic, meson-uart:
+Subject: [PATCH 20/67] FROMLIST(v1): dt-bindings: serial: amlogic, meson-uart:
  add amlogic, uart-fifosize property
 
 On most of the Amlogic SoCs, the first UART controller in the "Everything-Else"

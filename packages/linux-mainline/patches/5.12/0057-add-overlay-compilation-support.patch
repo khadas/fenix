@@ -1,7 +1,7 @@
 From cf7c1575186130ed854479673e40273426c9563d Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Wed, 26 May 2021 15:52:29 +0800
-Subject: [PATCH 57/63] add overlay compilation support
+Subject: [PATCH 57/67] add overlay compilation support
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---

@@ -1,7 +1,7 @@
 From 0c998d213c23664f632657308fdeea90960b805b Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Sat, 15 May 2021 16:39:23 +0800
-Subject: [PATCH 55/63] VIMs: add gpiomem support
+Subject: [PATCH 55/67] VIMs: add gpiomem support
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---

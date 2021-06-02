@@ -1,7 +1,7 @@
 From a1390fad99b96418c1288b21da6de5540d0a7c4e Mon Sep 17 00:00:00 2001
 From: Boris Brezillon <boris.brezillon@collabora.com>
 Date: Thu, 4 Feb 2021 07:35:52 +0000
-Subject: [PATCH 10/63] FROMLIST(v2): drm/panfrost: Don't try to map pages that
+Subject: [PATCH 10/67] FROMLIST(v2): drm/panfrost: Don't try to map pages that
  are already mapped
 
 We allocate 2MB chunks at a time, so it might appear that a page fault

@@ -1,7 +1,7 @@
 From 99ea3bab8ee24041bf51f738f6bb51ee16aa06be Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Thu, 19 Dec 2019 21:36:14 +0800
-Subject: [PATCH 40/63] arm64: dts: SDIO: VIM2: enable 'cap-sd-highspeed'
+Subject: [PATCH 40/67] arm64: dts: SDIO: VIM2: enable 'cap-sd-highspeed'
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---

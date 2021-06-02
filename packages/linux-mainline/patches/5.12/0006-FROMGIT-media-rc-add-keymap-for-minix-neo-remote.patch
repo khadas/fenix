@@ -1,7 +1,7 @@
 From 05d072f7ca99f14298c1688ff645568381ad7545 Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Tue, 19 Jan 2021 11:55:20 +0000
-Subject: [PATCH 06/63] FROMGIT: media: rc: add keymap for minix-neo remote
+Subject: [PATCH 06/67] FROMGIT: media: rc: add keymap for minix-neo remote
 
 Add a keymap and bindings for the simple IR (NEC) remote used with
 Minix 'NEO' branded Android STB devices.

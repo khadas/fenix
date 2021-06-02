@@ -1,0 +1,30 @@
+From 3d4b899aa3a4e9690ec75601e2fe19af92fab6d4 Mon Sep 17 00:00:00 2001
+From: Nick Xie <nick@khadas.com>
+Date: Wed, 2 Jun 2021 18:10:23 +0800
+Subject: [PATCH 66/67] clk: VIM3: add npu clocks
+
+Signed-off-by: Nick Xie <nick@khadas.com>
+---
+ drivers/clk/meson/g12a.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
+index c22611d3669a..b898b4461624 100644
+--- a/drivers/clk/meson/g12a.c
++++ b/drivers/clk/meson/g12a.c
+@@ -4723,6 +4723,12 @@ static struct clk_hw_onecell_data g12b_hw_onecell_data = {
+ 		[CLKID_SPICC1_SCLK_SEL]		= &g12a_spicc1_sclk_sel.hw,
+ 		[CLKID_SPICC1_SCLK_DIV]		= &g12a_spicc1_sclk_div.hw,
+ 		[CLKID_SPICC1_SCLK]		= &g12a_spicc1_sclk.hw,
++		[CLKID_NNA_AXI_CLK_SEL]		= &sm1_nna_axi_clk_sel.hw,
++		[CLKID_NNA_AXI_CLK_DIV]		= &sm1_nna_axi_clk_div.hw,
++		[CLKID_NNA_AXI_CLK]			= &sm1_nna_axi_clk.hw,
++		[CLKID_NNA_CORE_CLK_SEL]	= &sm1_nna_core_clk_sel.hw,
++		[CLKID_NNA_CORE_CLK_DIV]	= &sm1_nna_core_clk_div.hw,
++		[CLKID_NNA_CORE_CLK]		= &sm1_nna_core_clk.hw,
+ 		[CLKID_MIPI_DSI_PXCLK_SEL]	= &g12a_mipi_dsi_pxclk_sel.hw,
+ 		[CLKID_MIPI_DSI_PXCLK_DIV]	= &g12a_mipi_dsi_pxclk_div.hw,
+ 		[CLKID_MIPI_DSI_PXCLK]		= &g12a_mipi_dsi_pxclk.hw,
+-- 
+2.25.1
+

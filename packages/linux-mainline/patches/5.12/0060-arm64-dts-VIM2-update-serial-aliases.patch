@@ -1,7 +1,7 @@
 From ed1bc606dcf2391b1c5c34f2f92513ffae3fbb50 Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Thu, 27 May 2021 10:58:18 +0800
-Subject: [PATCH 60/63] arm64: dts: VIM2: update serial aliases
+Subject: [PATCH 60/67] arm64: dts: VIM2: update serial aliases
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---

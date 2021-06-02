@@ -1,7 +1,7 @@
 From 4aee7efdcf8fc8d01578a159a50a6ef7e90d7c33 Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Thu, 27 May 2021 11:02:17 +0800
-Subject: [PATCH 63/63] VIMs: add device tree overlays
+Subject: [PATCH 63/67] VIMs: add device tree overlays
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---

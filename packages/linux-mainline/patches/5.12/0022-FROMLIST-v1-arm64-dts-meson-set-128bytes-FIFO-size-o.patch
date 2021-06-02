@@ -1,7 +1,7 @@
 From dcf5dbe8b633ad01728267aa95807ad4e2959290 Mon Sep 17 00:00:00 2001
 From: Neil Armstrong <narmstrong@baylibre.com>
 Date: Mon, 15 Mar 2021 10:56:36 +0000
-Subject: [PATCH 22/63] FROMLIST(v1): arm64: dts: meson: set 128bytes FIFO size
+Subject: [PATCH 22/67] FROMLIST(v1): arm64: dts: meson: set 128bytes FIFO size
  on uart A
 
 The first UART controller in "Everything-Else" power domain, usually used

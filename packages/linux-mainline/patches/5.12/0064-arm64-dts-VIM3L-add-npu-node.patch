@@ -1,0 +1,47 @@
+From 723d95ea6420b2f180a10849ee91790a09d7eab4 Mon Sep 17 00:00:00 2001
+From: Nick Xie <nick@khadas.com>
+Date: Wed, 2 Jun 2021 16:49:26 +0800
+Subject: [PATCH 64/67] arm64: dts: VIM3L: add npu node
+
+Signed-off-by: Nick Xie <nick@khadas.com>
+---
+ .../dts/amlogic/meson-sm1-khadas-vim3l.dts    | 23 +++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+index 06de0b1ce726..af104f9b83eb 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+@@ -32,6 +32,29 @@ vddcpu: regulator-vddcpu {
+ 		regulator-boot-on;
+ 		regulator-always-on;
+ 	};
++
++	galcore {
++		compatible = "amlogic, galcore";
++		dev_name = "galcore";
++		status = "okay";
++		clocks = <&clkc CLKID_NNA_AXI_CLK>,
++		<&clkc CLKID_NNA_CORE_CLK>;
++		clock-names = "cts_vipnanoq_axi_clk_composite",
++						"cts_vipnanoq_core_clk_composite";
++		interrupts = <0 186 4>;
++		interrupt-names = "galcore";
++		reg = <0x0 0xff100000 0x0 0x800
++				0x0 0xff000000 0x0 0x400000
++				0x0 0xff63c118 0x0 0x0
++				0x0 0xff63c11c 0x0 0x0
++				0x0 0xffd01088 0x0 0x0
++				0x0 0xff63c1c8 0x0 0x0
++		>;
++		reg-names = "NN_REG","NN_SRAM","NN_MEM0",
++					"NN_MEM1","NN_RESET","NN_CLK";
++		nn_power_version = <3>;
++		nn_efuse = <0xff63003c 0x20>;
++	};
+ };
+ 
+ &cpu0 {
+-- 
+2.25.1
+

@@ -1,7 +1,7 @@
 From 0f35e96d1cb5a1faf8a6820fc14ae6b150e96b43 Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Thu, 27 May 2021 11:34:25 +0800
-Subject: [PATCH 62/63] VIM1/2: add i2c aliases
+Subject: [PATCH 62/67] VIM1/2: add i2c aliases
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---

@@ -1,7 +1,7 @@
 From eb5689be0cae32143df137949deacdad18a935d5 Mon Sep 17 00:00:00 2001
 From: yan <yan-wyb@foxmail.com>
 Date: Tue, 9 Mar 2021 17:19:51 +0800
-Subject: [PATCH 48/63] =?UTF-8?q?VIM3:=20Change=20fan=20auto=20control=20t?=
+Subject: [PATCH 48/67] =?UTF-8?q?VIM3:=20Change=20fan=20auto=20control=20t?=
  =?UTF-8?q?emp=20to=2050=C2=B0C?=
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8

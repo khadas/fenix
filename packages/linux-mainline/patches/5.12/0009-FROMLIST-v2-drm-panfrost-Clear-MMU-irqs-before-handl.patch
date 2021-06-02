@@ -1,7 +1,7 @@
 From 8d35b3ccb80057bffa8409eaecbed6f97aff6d98 Mon Sep 17 00:00:00 2001
 From: Boris Brezillon <boris.brezillon@collabora.com>
 Date: Thu, 4 Feb 2021 07:34:34 +0000
-Subject: [PATCH 09/63] FROMLIST(v2): drm/panfrost: Clear MMU irqs before
+Subject: [PATCH 09/67] FROMLIST(v2): drm/panfrost: Clear MMU irqs before
  handling the fault
 
 When a fault is handled it will unblock the GPU which will continue

@@ -1,7 +1,7 @@
 From a97b028258de787a006b155e724cb74f9d8f2b29 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Fri, 15 Feb 2019 14:21:27 +0100
-Subject: [PATCH 28/63] WIP: clk: meson: g12a: fix gp0 and hifi ranges
+Subject: [PATCH 28/67] WIP: clk: meson: g12a: fix gp0 and hifi ranges
 
 While some SoC samples are able to lock with a PLL factor of 55, others
 samples can't. ATM, a minimum of 60 appears to work on all the samples

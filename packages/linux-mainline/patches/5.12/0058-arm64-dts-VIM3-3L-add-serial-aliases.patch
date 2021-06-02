@@ -1,7 +1,7 @@
 From 54028db0fafad5efb1035f58f05586a1c90a9926 Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Thu, 27 May 2021 10:55:09 +0800
-Subject: [PATCH 58/63] arm64: dts: VIM3/3L: add serial aliases
+Subject: [PATCH 58/67] arm64: dts: VIM3/3L: add serial aliases
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---

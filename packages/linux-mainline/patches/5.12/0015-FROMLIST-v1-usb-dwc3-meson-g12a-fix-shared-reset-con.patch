@@ -1,7 +1,7 @@
 From 85efde55d0061f500d425bd53991e6f0534d2627 Mon Sep 17 00:00:00 2001
 From: Amjad Ouled-Ameur <aouledameur@baylibre.com>
 Date: Fri, 13 Nov 2020 07:46:15 +0000
-Subject: [PATCH 15/63] FROMLIST(v1): usb: dwc3: meson-g12a: fix shared reset
+Subject: [PATCH 15/67] FROMLIST(v1): usb: dwc3: meson-g12a: fix shared reset
  control use
 
 reset_control_(de)assert() calls are called on a shared reset line when

@@ -1,7 +1,7 @@
 From 762cc821d4ee61b84c05d70c5d973771c956551a Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Fri, 29 Jan 2021 04:46:21 +0000
-Subject: [PATCH 17/63] FROMLIST(v1): dt-bindings: arm: amlogic: add support
+Subject: [PATCH 17/67] FROMLIST(v1): dt-bindings: arm: amlogic: add support
  for the Minix NEO U9-H
 
 The Minix NEO U9-H is a small form-factor Android STB based on the

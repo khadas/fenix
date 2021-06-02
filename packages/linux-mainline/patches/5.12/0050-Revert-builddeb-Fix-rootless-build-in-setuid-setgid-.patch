@@ -1,7 +1,7 @@
 From 11690414e2fc3bbe62dec942c585f94a8ef2e426 Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Mon, 12 Apr 2021 10:49:33 +0800
-Subject: [PATCH 50/63] Revert "builddeb: Fix rootless build in setuid/setgid
+Subject: [PATCH 50/67] Revert "builddeb: Fix rootless build in setuid/setgid
  directory"
 
 This reverts commit d1889589a4f54b2d1d7075d608b596d6fcfd3d96.

@@ -1,0 +1,59 @@
+From b0cbd0d11add08dd829a0e2c2dffece940f6f0f9 Mon Sep 17 00:00:00 2001
+From: Nick Xie <nick@khadas.com>
+Date: Wed, 2 Jun 2021 18:10:04 +0800
+Subject: [PATCH 65/67] arm64: dts: VIM3: add npu node
+
+Signed-off-by: Nick Xie <nick@khadas.com>
+---
+ .../amlogic/meson-g12b-a311d-khadas-vim3.dts  | 35 +++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-a311d-khadas-vim3.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-a311d-khadas-vim3.dts
+index 124a80901084..01748f3b3bf5 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12b-a311d-khadas-vim3.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-g12b-a311d-khadas-vim3.dts
+@@ -13,6 +13,41 @@
+ 
+ / {
+ 	compatible = "khadas,vim3", "amlogic,a311d", "amlogic,g12b";
++
++	reserved-memory {
++		galcore_reserved:linux,galcore {
++			compatible = "shared-dma-pool";
++			reusable;
++			size = <0x0 0x1000000>;
++			alignment = <0x0 0x400000>;
++			linux,contiguous-region;
++		};
++	};
++
++	galcore {
++		compatible = "amlogic, galcore";
++		dev_name = "galcore";
++		status = "okay";
++		clocks = <&clkc CLKID_NNA_AXI_CLK>,
++				<&clkc CLKID_NNA_CORE_CLK>;
++		clock-names = "cts_vipnanoq_axi_clk_composite",
++						"cts_vipnanoq_core_clk_composite";
++		interrupts = <0 147 4>;
++		interrupt-names = "galcore";
++		reg = <0x0 0xff100000 0x0 0x800
++				0x0 0xff000000 0x0 0x400000
++				0x0 0xff63c10c 0x0 0x4
++				0x0 0xff63c110 0x0 0x4
++				0x0 0xffd01088 0x0 0x4
++				0X0 0xff63c1c8 0X0 0x4
++		>;
++		reg-names = "NN_REG","NN_SRAM","NN_MEM0",
++					"NN_MEM1","NN_RESET","NN_CLK";
++		nn_power_version = <2>;
++		nn_efuse = <0xff63003c 0x20>;
++
++		memory-region = <&galcore_reserved>;
++	};
+ };
+ 
+ /*
+-- 
+2.25.1
+

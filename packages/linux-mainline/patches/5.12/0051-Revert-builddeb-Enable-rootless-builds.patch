@@ -1,7 +1,7 @@
 From 8059b82de432e1f612c39599df9d687d78f57f29 Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Mon, 12 Apr 2021 10:50:02 +0800
-Subject: [PATCH 51/63] Revert "builddeb: Enable rootless builds"
+Subject: [PATCH 51/67] Revert "builddeb: Enable rootless builds"
 
 This reverts commit 3e8541803624678925a477a03e19e3c155b5fc12.
 ---

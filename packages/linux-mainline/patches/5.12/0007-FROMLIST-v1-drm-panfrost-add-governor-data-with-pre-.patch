@@ -1,7 +1,7 @@
 From f59b8fe32e2dccde23e37d4231fb6b9e3b2d6042 Mon Sep 17 00:00:00 2001
 From: Lukasz Luba <lukasz.luba@arm.com>
 Date: Sun, 24 Jan 2021 03:57:47 +0000
-Subject: [PATCH 07/63] FROMLIST(v1): drm/panfrost: add governor data with
+Subject: [PATCH 07/67] FROMLIST(v1): drm/panfrost: add governor data with
  pre-defined thresholds
 
 The simple_ondemand devfreq governor uses two thresholds to decide about
