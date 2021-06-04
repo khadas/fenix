@@ -16,12 +16,16 @@ check_modifications() {
 ## Update git repository
 ## $1 git repository path
 ## $2 git branch
+
+GIT_UPDATE_IGNORE_FLAG=.ignore-update
+GIT_UPDATE_IGNORE_NOTIFY="[TIPS] same can solve this via \`NO_GIT_UPDATE=1 make\` or \`touch $GIT_UPDATE_IGNORE_FLAG; make\`"
+
 update_git_repo() {
     [ "$NO_GIT_UPDATE" ] && {
 	info_msg "Git update was disabled by NO_GIT_UPDATE"
 	return
     }
-    if [ ! -f $ROOT/.ignore-update ]; then
+    if [ ! -f $ROOT/$GIT_UPDATE_IGNORE_FLAG ]; then
         if [ "$1" == "" ] || [ "$2" == "" ]; then
             echo "Usage: $0 <repository_path> <git_branch>"
             return -1
@@ -46,6 +50,7 @@ update_git_repo() {
 			if [ $HAVE_MODIFYCATIONS -ne 0 ]; then
 				# Found modifications
 				error_msg "$1: can't checkout to branch '$2', please commit your modifications and try again!"
+				echo "$GIT_UPDATE_IGNORE_NOTIFY"
 				return -1
 			fi
 
@@ -56,6 +61,7 @@ update_git_repo() {
 		[ "$NO_ASK" ] || \
 		if [ $HAVE_MODIFYCATIONS -ne 0 ]; then
 			echo -e "Press $YELLOW<Ctrl-C>$ENDCOLOR to abort compilation, $YELLOW<Enter>$ENDCOLOR to ignore and continue"
+			echo "$GIT_UPDATE_IGNORE_NOTIFY"
 			read
 		fi
 
