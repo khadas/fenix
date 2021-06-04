@@ -82,7 +82,7 @@ build_board_deb() {
 			rm -rf /boot/boot.scr
 			rm -rf /boot/rk3399_autoscript.cmd
 
-			rm -rf /boot/initrd.img-*
+			#rm -rf /boot/initrd.img-*
 		fi
 	}
 
