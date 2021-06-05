@@ -176,6 +176,9 @@ build_board_deb() {
 		[ -f "/lib/systemd/system/0hdmi.service" ] && rm /lib/systemd/system/0hdmi.service
 		[ -f "/lib/systemd/system/bluetooth-khadas.service" ] && rm /lib/systemd/system/bluetooth-khadas.service
 		[ -f "/lib/systemd/system/bluetooth-power-fixup.service" ] && rm /lib/systemd/system/bluetooth-power-fixup.service
+		[ -L "/lib/systemd/system/reboot.target.wants/plymouth-reboot.service" ] && rm /lib/systemd/system/reboot.target.wants/plymouth-reboot.service
+		[ -L "/lib/systemd/system/halt.target.wants/plymouth-halt.service" ] && rm /lib/systemd/system/halt.target.wants/plymouth-halt.service
+		[ -L "/lib/systemd/system/poweroff.target.wants/plymouth-poweroff.service" ] && rm /lib/systemd/system/poweroff.target.wants/plymouth-poweroff.service
 
 		# Update modules
 		[ -f /etc/modules.mainline ] && mv /etc/modules.mainline /etc/modules
