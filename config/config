@@ -328,7 +328,7 @@ case $DISTRIB_RELEASE in
 	;;
 	focal)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
-		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9"
+		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found"
 		PACKAGE_LIST_KODI="mesa-utils libglu1 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libcurl4 libcrossguid0  libmicrohttpd12 libavahi-compat-libdnssd-dev libcec4 \
 			libfstrcmp0 libnfs13 fonts-liberation python-bluez python-pil python-simplejson libaacs0 fonts-dejavu-core libao-dev libpython2.7 libpython2.7-minimal libpython2.7-stdlib x11-utils"
 		PACKAGE_LIST_SERVER_KODI="libao4 libwayland-cursor0 libavahi-compat-libdnssd-dev libass9 libavahi-client3 libavahi-common3 libbluray2 libcdio18 libcec4 \
