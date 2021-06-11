@@ -48,6 +48,9 @@ build_board_deb() {
 	# Remove distro unattended-upgrades config
 	[ -f "/etc/apt/apt.conf.d/50unattended-upgrades" ] && rm /etc/apt/apt.conf.d/50unattended-upgrades
 
+	# Remove unused file
+	[ -f /etc/apt/apt.conf.d/02compress-indexes ] && rm /etc/apt/apt.conf.d/02compress-indexes
+
 	# make a backup since we are unconditionally overwriting this on update
 	[ -f "/etc/default/cpufrequtils" ] && cp /etc/default/cpufrequtils /etc/default/cpufrequtils.dpkg-old
 

@@ -95,7 +95,7 @@ GITEE_URL="https://gitee.com"
 FENIX_BRANCH="master"
 [[ "$CLONE_FULL_COMMIT_LOG" == "no" ]] && GIT_CLONE_OPTIONS="--depth=1"
 
-ROOTFSCACHE_VERSION=6
+ROOTFSCACHE_VERSION=7
 DATE=$(date +%F | sed 's/-//g')
 IMAGE_VERSION="V${VERSION}-${DATE:2}"
 [[ "$BUILD_TYPE" != "release" ]] && IMAGE_VERSION=${IMAGE_VERSION}-develop

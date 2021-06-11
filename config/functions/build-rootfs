@@ -303,10 +303,6 @@ create_rootfs_cache()
 	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "cat fenix.key | apt-key add -"'
 	rm $ROOTFS_TEMP/fenix.key
 
-	# compressing packages list to gain some space
-	echo "Acquire::GzipIndexes "true"; Acquire::CompressionTypes::Order:: "gz";" > $ROOTFS_TEMP/etc/apt/apt.conf.d/02compress-indexes
-	echo "Acquire::Languages "none";" > $ROOTFS_TEMP/etc/apt/apt.conf.d/no-languages
-
 	# add armhf arhitecture to arm64
 	if [[ $DISTRIB_ARCH == arm64 ]]; then
 		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "dpkg --add-architecture armhf"'
