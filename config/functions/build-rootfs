@@ -99,6 +99,9 @@ install_common()
 	# Premit root login via SSH for the first boot
 	sed -i 's/#\?PermitRootLogin .*/PermitRootLogin yes/' $ROOTFS_TEMP/etc/ssh/sshd_config
 
+	# Clean ssh keys
+	rm -f $ROOTFS_TEMP/etc/ssh/ssh_host*
+
 	# Create watchdog log directory
 	mkdir -p $ROOTFS_TEMP/var/log/watchdog
 
