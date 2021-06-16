@@ -11,6 +11,12 @@
 #
 # By default this script does nothing.
 
+# Create system ssh keys if not exist
+for a in /etc/ssh/ssh_host*; do
+    [ -e "$a" ] && break
+    dpkg-reconfigure openssh-server
+done
+
 # For kodi
 [ -f /sys/class/video/freerun_mode ] && chmod 777 /sys/class/video/freerun_mode
 [ -f /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq ] && chmod 777 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq

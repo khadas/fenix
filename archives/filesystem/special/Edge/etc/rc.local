@@ -11,6 +11,12 @@
 #
 # By default this script does nothing.
 
+# Create system ssh keys if not exist
+for a in /etc/ssh/ssh_host*; do
+    [ -e "$a" ] && break
+    dpkg-reconfigure openssh-server
+done
+
 #/boot/hdmi.sh &
 
 # Add write right for fw_setenv
