@@ -268,7 +268,7 @@ for dev in ${devs}; do
 							fi;
 						fi;
 
-						setenv bootargs "root=${rootdev} rootfstype=ext4 rootflags=data=writeback rw ubootpart=${ubootpartuuid} ${condev} ${kernel_log} ${hdmiargs} ${panelargs} fbcon=rotate:${fb_rotate} fsck.repair=yes net.ifnames=0 ${ddr} ${wol} ${max_freq} jtag=disable mac=${eth_mac} ${saveethmac} fan=${fan_mode} khadas_board=${khadas_board} hwver=${hwver} coherent_pool=${dma_size} ${rebootmode} imagetype=${imagetype} uboottype=${uboottype} ${splashargs} ${user_kernel_args}";
+						setenv bootargs "root=${rootdev} rootfstype=ext4 rootflags=data=writeback rw ubootpart=${ubootpartuuid} ${condev} ${kernel_log} ${hdmiargs} ${panelargs} fbcon=rotate:${fb_rotate} fsck.repair=yes net.ifnames=0 ${ddr} ${wol} ${max_freq} jtag=disable mac=${eth_mac} ${saveethmac} fan=${fan_mode} khadas_board=${khadas_board} hwver=${hwver} coherent_pool=${dma_size} pci=pcie_bus_perf ${rebootmode} imagetype=${imagetype} uboottype=${uboottype} ${splashargs} ${user_kernel_args}";
 						booti ${kernel_loadaddr} ${initrd_loadaddr} ${dtb_loadaddr};
 					fi;
 				fi;
