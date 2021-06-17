@@ -14,7 +14,7 @@
 # Create system ssh keys if not exist
 for a in /etc/ssh/ssh_host*; do
     [ -e "$a" ] && break
-    dpkg-reconfigure openssh-server
+    dpkg-reconfigure -f noninteractive openssh-server
 done
 
 #/boot/hdmi.sh &
