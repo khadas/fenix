@@ -92,13 +92,11 @@ build_deb_packages_platform() {
 			rm -rf $BUILD/.stamps/gstreamer_aml
 			build_package "gstreamer_aml:target"
 
-			if [ "$KHADAS_BOARD" == "VIM3" ]; then
-				info_msg "Building tengine_libs_deb packages..."
-				# FIXME
-				# remove build stamp to force build for other arch
-				rm -rf $BUILD/.stamps/tengine_libs_deb
-				build_package "tengine_libs_deb:target"
-			fi
+			info_msg "Building tengine_libs_deb packages..."
+			# FIXME
+			# remove build stamp to force build for other arch
+			rm -rf $BUILD/.stamps/tengine_libs_deb
+			build_package "tengine_libs_deb:target"
 
 			if [ "$DISTRIB_RELEASE" == "bionic" ]; then
 				info_msg "Building opencv3 packages..."
@@ -183,10 +181,8 @@ install_deb_packages_platform() {
 			info_msg "Installing gstreamer_aml packages..."
 			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/*.deb
 
-			if [ "$KHADAS_BOARD" == "VIM3" ]; then
-				info_msg "Installing tengine_libs_deb packages..."
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/tengine_libs_deb/*.deb
-			fi
+			info_msg "Installing tengine_libs_deb packages..."
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/tengine_libs_deb/*.deb
 
 			if [ "$DISTRIB_RELEASE" == "bionic" ]; then
 				info_msg "Installing opencv3 packages..."
