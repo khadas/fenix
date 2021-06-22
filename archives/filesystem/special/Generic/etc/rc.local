@@ -1,0 +1,21 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+# Reboot test handle
+if cat /proc/cmdline | grep -q reboot_test > /dev/null; then
+	if ! systemctl is-active reboot-test-khadas | grep "^active$" > /dev/null; then
+		systemctl start reboot-test-khadas
+	fi
+fi
+
+exit 0

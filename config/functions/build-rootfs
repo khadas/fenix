@@ -554,7 +554,9 @@ build_rootfs() {
 	chroot $ROOTFS_TEMP/ bash "/RUNME.sh"
 
 	## Logo
-	cp archives/logo/${VENDOR}/logo.img $BUILD_IMAGES
+	if [ "$KHADAS_BOARD" != "Generic" ]; then
+		cp archives/logo/${VENDOR}/logo.img $BUILD_IMAGES
+	fi
 
 	## Unmount to get the rootfs.img
 	sync

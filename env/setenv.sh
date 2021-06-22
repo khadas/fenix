@@ -263,8 +263,14 @@ function choose_khadas_board() {
 
 	KHADAS_BOARD_ARRAY=()
 	for board in $ROOT/config/boards/*.conf; do
-		KHADAS_BOARD_ARRAY+=("$(basename $board | cut -d'.' -f1)")
+		if [ $(basename $board) != "Generic.conf" ]; then
+			KHADAS_BOARD_ARRAY+=("$(basename $board | cut -d'.' -f1)")
+		fi
 	done
+	# Append Generic configuration to last
+	if [ -f $ROOT/config/boards/Generic.conf ]; then
+		KHADAS_BOARD_ARRAY+=("Generic")
+	fi
 
 	KHADAS_BOARD_ARRAY_LEN=${#KHADAS_BOARD_ARRAY[@]}
 
@@ -394,7 +400,9 @@ function choose_linux_version() {
 	if [ "$UBOOT" == "mainline" ]; then
 		SUPPORTED_LINUX=("mainline")
 	else
-		SUPPORTED_LINUX=(`echo ${SUPPORTED_LINUX[@]} | sed s/mainline//g`)
+		if [ "$KHADAS_BOARD" != "Generic" ]; then
+			SUPPORTED_LINUX=(`echo ${SUPPORTED_LINUX[@]} | sed s/mainline//g`)
+		fi
 	fi
 
 	i=0
@@ -751,6 +759,11 @@ function lunch() {
 		esac
 	fi
 
+	if [ "$KHADAS_BOARD" == "Generic" ]; then
+		VENDOR="Generic"
+		CHIP="Generic"
+	fi
+
 	local v p p_
 
 	for p in $CONFIG_ARGS $CONFIG_ADDS; do
@@ -852,8 +865,12 @@ source config/boards/${KHADAS_BOARD}.conf || { cd $CDIR;   return 1
 [ ! "$UBOOT" -a "$LINUX" = "mainline" ] && \
     UBOOT=mainline
 
+[ "$KHADAS_BOARD" != "Generic" ] && {
 choose_uboot_version             || err UBOOT           || return 1
 oky UBOOT
+} || {
+	UBOOT=NULL
+}
 choose_linux_version             || err LINUX           || return 1
 oky LINUX
 choose_distribution              || err DISTRIBUTION    || return 1

@@ -26,9 +26,9 @@ display_parameters() {
 
 	if [ "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ]; then
 		echo "Khadas Board:          $KHADAS_BOARD"
-		echo "Uboot Version:         $UBOOT"
-		echo "Uboot Configuration:   $UBOOT_DEFCONFIG"
-		echo "Uboot Branch:          $UBOOT_GIT_BRANCH"
+		[ "$KHADAS_BOARD" != "Generic" ] && echo "Uboot Version:         $UBOOT"
+		[ "$KHADAS_BOARD" != "Generic" ] && echo "Uboot Configuration:   $UBOOT_DEFCONFIG"
+		[ "$KHADAS_BOARD" != "Generic" ] && echo "Uboot Branch:          $UBOOT_GIT_BRANCH"
 		echo "Linux Version:         $LINUX"
 		echo "Linux Configuration:   $LINUX_DEFCONFIG"
 		echo "Linux DTB:             $LINUX_DTB"
@@ -56,7 +56,9 @@ build_debs() {
 	mkdir -p $BUILD_IMAGES
 
 	# Build u-boot deb
-	build_uboot_deb
+	if [ "$KHADAS_BOARD" != "Generic" ]; then
+		build_uboot_deb
+	fi
 
 	# Build linux debs
 	if [ "$FORCE_BUILD_KERNEL_DEB" == "yes" ]; then

@@ -266,7 +266,7 @@ build_board_deb() {
 
 	# Copy boot scripts
 	mkdir -p $pkgdir/boot
-	if [ "$VENDOR" != "Rockchip" ]; then
+	if [ "$VENDOR" == "Amlogic" ]; then
 		cp $BOOT_SCRIPTS/$BOOT_SCRIPT_VENDOR $pkgdir/boot
 		cp $BOOT_SCRIPTS/$BOOT_SCRIPT_BOARD $pkgdir/boot
 

@@ -13,6 +13,11 @@
 build_uboot() {
 	ret=0
 
+	if [ "$KHADAS_BOARD" == "Generic" ]; then
+		warning_msg "Ignore u-boot build for generic configuration!"
+		return
+	fi
+
 	if [ "$UBOOT" == "mainline" ]; then
 		rm -rf $BUILD/.stamps/u-boot-mainline/
 		build_package "u-boot-mainline:target"
