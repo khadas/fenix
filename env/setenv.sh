@@ -190,14 +190,30 @@ unset_vars VENDOR CHIP
 
 unset SUPPORTED_UBOOT
 unset SUPPORTED_LINUX
+unset SUPPORTED_UBOOT_DESC
+unset SUPPORTED_LINUX_DESC
 
 DISTRIBUTION_ARRAY=("Ubuntu" "Debian")
+DISTRIBUTION_ARRAY_DESC=("Ubuntu" "Debian")
 Ubuntu_RELEASE_ARRAY=("bionic" "focal")
+Ubuntu_RELEASE_ARRAY_DESC=("Ubuntu 18.04" "Ubuntu 20.04")
 Debian_RELEASE_ARRAY=("buster")
+Debian_RELEASE_ARRAY_DESC=("Debian 10")
 DISTRIB_ARCH_ARRAY=("arm64")
 Ubuntu_TYPE_ARRAY=("server" "minimal" "xfce" "lxde" "gnome")
+Ubuntu_TYPE_ARRAY_DESC=("Headless Image With Essential Packages"\
+						"Minimal Image With Very Basic Packages"\
+						"Desktop Image With XFCE Desktop"\
+						"Desktop Image With LXDE Desktop"\
+						"Desktop Image With GNOME Desktop")
 Debian_TYPE_ARRAY=("server" "minimal" "xfce" "lxde")
+Debian_TYPE_ARRAY_DESC=("Headless Image With Essential Packages"\
+						"Minimal Image With Very Basic Packages"\
+						"Desktop Image With XFCE Desktop"\
+						"Desktop Image With LXDE Desktop")
 INSTALL_TYPE_ARRAY=("EMMC" "SD-USB")
+INSTALL_TYPE_ARRAY_DESC=("Image For Writing to eMMC Storage With USB Burning Tool"\
+						 "Image For Writing to SD/USB Storage")
 
 DISTRIBUTION_ARRAY_LEN=${#DISTRIBUTION_ARRAY[@]}
 Ubuntu_RELEASE_ARRAY_LEN=${#Ubuntu_RELEASE_ARRAY[@]}
@@ -254,7 +270,9 @@ function choose_khadas_board() {
 
 	while [[ $i -lt $KHADAS_BOARD_ARRAY_LEN ]]
 	do
-		echo_ "$((${i}+1)). ${KHADAS_BOARD_ARRAY[$i]}"
+		BOARD_DESC=`head -1 $ROOT/config/boards/${KHADAS_BOARD_ARRAY[$i]}.conf`
+		BOARD_DESC=${BOARD_DESC:2}
+		echo_ "$((${i}+1)). ${KHADAS_BOARD_ARRAY[$i]} - ${BOARD_DESC}"
 		[ "${KHADAS_BOARD_ARRAY[$i]}" = "$KHADAS_BOARD" ] && return 0
 		let i++
 	done
@@ -319,7 +337,7 @@ file '$ROOT/config/boards/${KHADAS_BOARD}.conf'? Please add it!"
 
     while [[ $i -lt ${UBOOT_VERSION_ARRAY_LEN} ]]
     do
-        echo_ "$((${i}+1)). uboot-${SUPPORTED_UBOOT[$i]}"
+        echo_ "$((${i}+1)). uboot-${SUPPORTED_UBOOT[$i]} - ${SUPPORTED_UBOOT_DESC[$i]}"
 	[ "${SUPPORTED_UBOOT[$i]}" = "$UBOOT" ] && return 0
         let i++
     done
@@ -450,7 +468,7 @@ function choose_distribution() {
 	i=0
 	while [[ $i -lt $DISTRIBUTION_ARRAY_LEN ]]
 	do
-		echo_ "$((${i}+1)). ${DISTRIBUTION_ARRAY[$i]}"
+		echo_ "$((${i}+1)). ${DISTRIBUTION_ARRAY[$i]} - ${DISTRIBUTION_ARRAY_DESC[$i]}"
 		[ "${DISTRIBUTION_ARRAY[$i]}" = "$DISTRIBUTION" ] && return 0
 		let i++
 	done
@@ -514,8 +532,10 @@ function choose_distribution_release() {
 	while [[ $i -lt ${!DISTRIBUTION_RELEASE_ARRAY_LEN} ]]
 	do
 		DISTRIBUTION_RELEASE_ARRAY_ELEMENT=${DISTRIBUTION}_RELEASE_ARRAY[$i]
+		DISTRIBUTION_RELEASE_ARRAY_ELEMENT_DESC=${DISTRIBUTION}_RELEASE_ARRAY_DESC[$i]
 		DISTRIBUTION_RELEASE=${!DISTRIBUTION_RELEASE_ARRAY_ELEMENT}
-		echo_ "$((${i}+1)). ${DISTRIBUTION_RELEASE}"
+		DISTRIBUTION_RELEASE_DESC=${!DISTRIBUTION_RELEASE_ARRAY_ELEMENT_DESC}
+		echo_ "$((${i}+1)). ${DISTRIBUTION_RELEASE} - ${DISTRIBUTION_RELEASE_DESC}"
 		[ "$DISTRIBUTION_RELEASE" = "$DISTRIB_RELEASE" ] && return 0
 		let i++
 	done
@@ -583,8 +603,10 @@ function choose_distribution_type() {
 	while [[ $i -lt ${!DISTRIBUTION_TYPE_ARRAY_LEN} ]]
 	do
 		DISTRIBUTION_TYPE_ARRAY_ELEMENT=${DISTRIBUTION}_TYPE_ARRAY[$i]
+		DISTRIBUTION_TYPE_ARRAY_ELEMENT_DESC=${DISTRIBUTION}_TYPE_ARRAY_DESC[$i]
 		DISTRIBUTION_TYPE=${!DISTRIBUTION_TYPE_ARRAY_ELEMENT}
-		echo_ "$((${i}+1)). ${DISTRIBUTION_TYPE}"
+		DISTRIBUTION_TYPE_DESC=${!DISTRIBUTION_TYPE_ARRAY_ELEMENT_DESC}
+		echo_ "$((${i}+1)). ${DISTRIBUTION_TYPE} - ${DISTRIBUTION_TYPE_DESC=}"
 		[ "$DISTRIBUTION_TYPE" = "$DISTRIB_TYPE" ] && return 0
 		let i++
 	done
@@ -648,12 +670,13 @@ function choose_install_type() {
 	# FIXME
 	if [ "$UBOOT" == "mainline" -o "$LINUX" == "mainline" ]; then
 		INSTALL_TYPE_ARRAY=("SD-USB")
+		INSTALL_TYPE_ARRAY_DESC=("Image For Writing to SD/USB Storage")
 		INSTALL_TYPE_ARRAY_LEN=${#INSTALL_TYPE_ARRAY[@]}
 	fi
 	i=0
 	while [[ $i -lt $INSTALL_TYPE_ARRAY_LEN ]]
 	do
-		echo_ "$((${i}+1)). ${INSTALL_TYPE_ARRAY[$i]}"
+		echo_ "$((${i}+1)). ${INSTALL_TYPE_ARRAY[$i]} - ${INSTALL_TYPE_ARRAY_DESC[$i]}"
 		[ "${INSTALL_TYPE_ARRAY[$i]}" = "$INSTALL_TYPE" ] && return 0
 		let i++
 	done
