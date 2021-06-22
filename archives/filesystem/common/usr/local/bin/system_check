@@ -65,7 +65,7 @@ if [ "$hwver" == "VIM2.V14" ]; then
 		## Wi-Fi firmware
 		mv /lib/firmware/brcm/fw_bcm4359c0_ag_apsta_ap6398s.bin /lib/firmware/brcm/fw_bcm4359c0_ag_apsta.bin
 		mv /lib/firmware/brcm/fw_bcm4359c0_ag_ap6398s.bin /lib/firmware/brcm/fw_bcm4359c0_ag.bin
-		mv /lib/firmware/brcm/nvram_ap6398s.txt /lib/firmware/brcm/nvram_ap6359sa.txt
+#		mv /lib/firmware/brcm/nvram_ap6398s.txt /lib/firmware/brcm/nvram_ap6359sa.txt
 
 		mv /lib/firmware/brcm/brcmfmac4359-sdio_ap6398s.bin /lib/firmware/brcm/brcmfmac4359-sdio.bin
 		mv /lib/firmware/brcm/brcmfmac4359-sdio_ap6398s.txt /lib/firmware/brcm/brcmfmac4359-sdio.txt
@@ -80,6 +80,10 @@ elif [ "$hwver" == "VIM2.V12" ]; then
 	# Delete unused bluetooth firmware for VIM2 with AP6356SA
 	if [ -f /lib/firmware/brcm/BCM4359C0_ap6398s.hcd ]; then
 		rm /lib/firmware/brcm/BCM4359C0_ap6398s.hcd
+	fi
+	if [ ! -f /etc/.wifi-fixed ]; then
+		mv /lib/firmware/brcm/nvram_ap6359sa.txt /lib/firmware/brcm/nvram_ap6398s.txt
+		touch /etc/.wifi-fixed
 	fi
 fi
 
