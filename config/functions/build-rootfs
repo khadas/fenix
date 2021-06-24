@@ -10,6 +10,11 @@ install_common()
 {
 	info_msg "Applying common tweaks..."
 
+	if [[ $(type -t install_common_Generic) == function ]]; then
+		install_common_Generic
+		return
+	fi
+
 	# Remove default interfaces file if present
 	# before installing board support package
 	rm -f $ROOTFS_TEMP/etc/network/interfaces
@@ -88,6 +93,17 @@ install_common()
 		tweaks_platform
 	fi
 
+	# Clean ssh keys
+	rm -f $ROOTFS_TEMP/etc/ssh/ssh_host*
+
+	[ ! "$NO_TWEAKS" ] || {
+	    info_msg "install common NO_TWEAKS enabled ... skipped ..."
+	    return 0
+	}
+
+	# Premit root login via SSH for the first boot
+	sed -i 's/#\?PermitRootLogin .*/PermitRootLogin yes/' $ROOTFS_TEMP/etc/ssh/sshd_config
+
 	# Enable additional services
 	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable resize2fs.service system-check.service"'
 
@@ -95,12 +111,6 @@ install_common()
 	[[ -f $ROOTFS_TEMP/etc/rsyslog.d/50-default.conf ]] && sed '/daemon\.\*\;mail.*/,/xconsole/ s/.*/#&/' -i $ROOTFS_TEMP/etc/rsyslog.d/50-default.conf
 	# Disable deprecated parameter
 	[ -f $ROOTFS_TEMP/etc/rsyslog.conf ] && sed '/.*$KLogPermitNonKernelFacility.*/,// s/.*/#&/' -i $ROOTFS_TEMP/etc/rsyslog.conf
-
-	# Premit root login via SSH for the first boot
-	sed -i 's/#\?PermitRootLogin .*/PermitRootLogin yes/' $ROOTFS_TEMP/etc/ssh/sshd_config
-
-	# Clean ssh keys
-	rm -f $ROOTFS_TEMP/etc/ssh/ssh_host*
 
 	# Create watchdog log directory
 	mkdir -p $ROOTFS_TEMP/var/log/watchdog
