@@ -1,0 +1,7 @@
+#!/bin/sh
+
+INITRD=/boot/initrd.img
+echo "update-initramfs: $2 > $INITRD" >&2
+ln -sf $(basename $2) $INITRD 1>/dev/null 2>&1 || cp $2 $INITRD
+
+exit 0
