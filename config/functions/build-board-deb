@@ -3,9 +3,15 @@
 
 ## Build board deb package
 build_board_deb() {
-	info_msg "Build board deb..."
-
 	local pkgname="${LINUX_BOARD_DEB}"
+
+	if [ "$KHADAS_BOARD" == "Generic" ]; then
+	    warning_msg "Ignore build common packages: $pkgname"
+	    return 0
+	fi
+
+	info_msg "Build board deb: $pkgname"
+
 	local pkgdir="$BUILD_IMAGES/.tmp/${pkgname}_${VERSION}_${DISTRIB_ARCH}"
 	rm -rf $pkgdir
 	mkdir -p $pkgdir/DEBIAN
