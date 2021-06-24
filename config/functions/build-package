@@ -113,10 +113,20 @@ extract_package() {
 					tar xjf $f -C $2
 					;;
 				*.tar.gz | *.tgz)
+					if which pigz 1>/dev/null 2>/dev/null; then
+					# mt decompress
+					pigz -dc < $f | tar -xf- -C$2
+					else
 					tar xzf $f -C $2
+					fi
 					;;
 				*.tar.xz | *.txz)
+					if which pixz 1>/dev/null 2>/dev/null; then
+					# mt decompress
+					pixz -dc < $f | tar -xf- $C$2
+					else
 					tar xJf $f -C $2
+					fi
 					;;
 				*.7z)
 					mkdir -p $2/$1
