@@ -2,6 +2,11 @@
 
 #set -e -o pipefail
 
+[ "$0" = /RUNME.sh ] || {
+    echo "[i] only for chroot usage">&2
+    exit 1
+}
+
 export LC_ALL=C
 export LANG=C
 
@@ -18,6 +23,9 @@ echo root:$ROOT_PASSWORD | chpasswd
 USER_PASSWORD_ENCRYPTED=`perl -e 'printf("%s\n", crypt($ARGV[0], "password"))' "$USER_PASSWORD"`
 useradd -m -p "$USER_PASSWORD_ENCRYPTED" -s /bin/bash $USERNAME
 usermod -aG sudo,adm $USERNAME
+
+# Clean ssh keys
+rm -f /etc/ssh/ssh_host*
 
 # Add group
 DEFGROUPS="audio,video,disk,input,tty,root,users,games,dialout,cdrom,dip,plugdev,bluetooth,pulse-access,systemd-journal,netdev,staff,i2c"
