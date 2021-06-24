@@ -10,6 +10,14 @@
 
 echo CUSTOM SCRIPT "$@"
 
+[ "$BUILD" ] || \
+    BUILD=${BUILD_IMAGES%/*}
+
+[ "$BUILD_KERNEL" ] || \
+    BUILD_KERNEL="$BUILD/linux-mainline-install"
+
+echo "BUILD: $BUILD"
+echo "BUILD_KERNEL: $BUILD_KERNEL"
 echo "IMAGE_FILE_NAME=$IMAGE_FILE_NAME"
 echo "BUILD_IMAGES=$BUILD_IMAGES"
 
@@ -78,6 +86,17 @@ cp="rsync -avz --no-o --no-g --no-perms"
 
     $cp $ROOT/archives/filesystem/special/Generic/boot/extlinux .
 
+    [ -d $BUILD_KERNEL/boot ] && {
+    $cp $BUILD_KERNEL/boot/* .
+
+    for z in vmlinuz-*; do
+	[ -e $z ] && {
+	    $cp $z zImage
+	}
+    done
+
+    }
+
     ls -l1
 )
 
@@ -97,13 +116,14 @@ done
 (
     cd $P.1/ || exit 1
 
-#   $cp $ROOT/archives/filesystem/common/etc/initramfs-tools etc/
+    $cp $ROOT/archives/filesystem/special/Generic/etc .
 
     ls -l1 etc/initramfs-tools
     head etc/initramfs-tools/initramfs.conf
-#    mkdir -p var/lib/alsa
-#    $cp $ROOT/archives/filesystem/blobs/asound.state/asound.state var/lib/alsa/
 
+    [ -d $BUILD_KERNEL/lib ] && {
+	$cp $BUILD_KERNEL/lib .
+    }
 )
 
 # optimize
