@@ -123,6 +123,10 @@ echo_(){
 	[ "$QUITMODE" ] || echo "$@"
 }
 
+printf_(){
+	[ "$QUITMODE" ] || printf "$@"
+}
+
 for a in "$@"; do
     case $a in
     -d|--default)
@@ -276,9 +280,10 @@ function choose_khadas_board() {
 
 	while [[ $i -lt $KHADAS_BOARD_ARRAY_LEN ]]
 	do
-		BOARD_DESC=`head -1 $ROOT/config/boards/${KHADAS_BOARD_ARRAY[$i]}.conf`
-		BOARD_DESC=${BOARD_DESC:2}
-		echo_ "$((${i}+1)). ${KHADAS_BOARD_ARRAY[$i]} - ${BOARD_DESC}"
+		BOARD_DESC=$(grep -m1 \#= $ROOT/config/boards/${KHADAS_BOARD_ARRAY[$i]}.conf)
+		BOARD_DESC=${BOARD_DESC#* }
+		printf_ "%2s) %-8s - %s\n" \
+		     $((i+1)) "${KHADAS_BOARD_ARRAY[$i]}" "$BOARD_DESC"
 		[ "${KHADAS_BOARD_ARRAY[$i]}" = "$KHADAS_BOARD" ] && return 0
 		let i++
 	done
