@@ -249,6 +249,10 @@ install_deb_chroot()
 {
 	local package=$1
 	local name=$(basename $package)
+	[ -e "$package" ] || {
+	    warning_msg "Installing $name in chroot skipped (not exist)"
+	    return 0
+	}
 	cp $package $ROOTFS_TEMP/root/$name
 	info_msg "Installing $name in chroot..."
 	mount_chroot "$ROOTFS_TEMP"
@@ -487,8 +491,25 @@ clean_old_session(){
     fix_perms "$BUILD_IMAGES"
 }
 
+## post create image customization
+## USAGE: CUSTOM_SCRIPT=.works/custom.sh make image
+
+custom_script(){
+    [ -x "$CUSTOM_SCRIPT" ] && {
+    echo "custom_script: $CUSTOM_SCRIPT $IMAGE_FILE_NAME $ROOTFS "
+
+    IMAGE_FILE_NAME=$IMAGE_FILE_NAME \
+    BUILD_IMAGES=$BUILD_IMAGES \
+    ROOTFS=$ROOTFS \
+    $CUSTOM_SCRIPT
+    return
+    }
+    return 0
+}
+
 ## post_create_image
 post_create_image() {
+
 	# cleanup
 	# add some safety ;-) before make rm -rf
 	unmount_deep "$ROOTFS" "$BUILD_IMAGES"/.tmp
@@ -496,6 +517,8 @@ post_create_image() {
 	rm -rf "$BUILD_IMAGES"/.tmp
 
 	fix_perms "$BUILD_IMAGES"
+
+	custom_script
 
 	# upload images
 
