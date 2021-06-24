@@ -16,16 +16,73 @@ PKG_NEED_BUILD="YES"
 make_target() {
 
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
+	export ARCH=arm64
+	export CROSS_COMPILE="${CCACHE} ${KERNEL_COMPILER}"
+	export INSTALL_MOD_STRIP=1
 
-#	make ARCH=arm64 distclean
-#	make ARCH=arm64 CROSS_COMPILE="${CCACHE} ${KERNEL_COMPILER}" ${LINUX_DEFCONFIG}
+	[ "$KERNEL_INSTALL_PATH" ] || \
+	    KERNEL_INSTALL_PATH="$BUILD/linux-mainline-install"
 
-	# Apply configuration
-	cp $PKGS_DIR/$PKG_NAME/configs/${KHADAS_BOARD}.config .config
+	[ "$INSTALL_PATH" ] || \
+	    INSTALL_PATH="$KERNEL_INSTALL_PATH/boot"
+
+	[ "$INSTALL_MOD_PATH" ] || \
+	    INSTALL_MOD_PATH="$KERNEL_INSTALL_PATH"
+
+	export INSTALL_MOD_PATH
+	export INSTALL_PATH
+
+	echo "KERNEL_INSTALL_PATH: $KERNEL_INSTALL_PATH"
+
+# KERNEL_MAKE_ARGS=menuconfig make kernel
+
+	case "$KERNEL_MAKE_ARGS" in
+	    "")
+	    KERNEL_MAKE_ARGS="prepare Image modules dtbs"
+	    ;;
+	esac
+
+	c=$PKGS_DIR/$PKG_NAME/configs/${KHADAS_BOARD}.config
+
+	case $KERNEL_CONFIG in
+	    "")
+	    ;;
+	    -)
+	    c=
+	    ;;
+	    *.config*)
+	    for c in "$KERNEL_CONFIG" "$PKGS_DIR/$PKG_NAME/configs/$KERNEL_CONFIG" ""; do
+	    [ -e "$c" ] && break
+	    done
+	    ;;
+	    *)
+	    error_msg "KERNEL_CONFIG: $KERNEL_CONFIG is wrong"
+	    return 1
+	    ;;
+	esac
+
+	[ "$c" ] && {
+	    diff -q "$c" .config || {
+		echo "KERNEL config updated from $c"
+		cp "$c" .config
+	    }
+	}
 
 	[ ! "$BUILD_LINUX_NOOP" ] || return 0
 
-	make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE="${CCACHE} ${KERNEL_COMPILER}" Image modules dtbs
+	for k in $KERNEL_MAKE_ARGS; do
+
+	    case $k in
+		install)
+		mkdir -p $INSTALL_PATH
+		;;
+	    esac
+
+	    echo "KERNEL: make $k"
+	    make -j${NR_JOBS} $k
+
+	done
+
 }
 
 makeinstall_target() {
