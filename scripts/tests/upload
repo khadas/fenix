@@ -34,78 +34,76 @@ UPLOAD_=${UPLOAD#$HIDE_PREF}
 [ "$SUDO_UID" ] && \
 SUDO_="sudo -u $SUDO_USER"
 
-[ "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ] && \
-for f in "$BUILD_IMAGES/"$IMAGE_FILE_NAME*; do
+if [ "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ]; then
+	for f in "$BUILD_IMAGES/"$IMAGE_FILE_NAME*; do
 
-    UPLOAD_REL=/storage/.tmp
+	    UPLOAD_REL=/storage/.tmp
 
-    if [ -e "$f" ]; then
-	f_=${f#$BUILD_IMAGES/}
-	BDT=
-	B=
-	D=
-	T=
-	RAW=
-	    case $IMAGE_FILE_NAME in
-		VIM1*) B=VIM1 ;;
-		VIM2*) B=VIM2 ;;
-		VIM3L*)B=VIM3L;;
-		VIM3*) B=VIM3 ;;
-		Edge*) B=Edge ;;
-	    esac
-	    case $IMAGE_FILE_NAME in
-		*Ubuntu*) D=Ubuntu ;;
-		*Debian*) D=Debian ;; # maybe ;-)
-	    esac
-	    case $IMAGE_FILE_NAME in
-		*SD-USB*) T=SD_USB ;;
-		*EMMC*)   T=EMMC ;;
-	    esac
-	    case $IMAGE_FILE_NAME in
-		*SD-USB*) RAW=1 ;;
-		*raw.img*) RAW=1 ;;
-	    esac
+	    if [ -e "$f" ]; then
+		f_=${f#$BUILD_IMAGES/}
+		BDT=
+		B=
+		D=
+		T=
+		RAW=
+		    case $IMAGE_FILE_NAME in
+			VIM1*) B=VIM1 ;;
+			VIM2*) B=VIM2 ;;
+			VIM3L*)B=VIM3L;;
+			VIM3*) B=VIM3 ;;
+			Edge*) B=Edge ;;
+		    esac
+		    case $IMAGE_FILE_NAME in
+			*Ubuntu*) D=Ubuntu ;;
+			*Debian*) D=Debian ;; # maybe ;-)
+		    esac
+		    case $IMAGE_FILE_NAME in
+			*SD-USB*) T=SD_USB ;;
+			*EMMC*)   T=EMMC ;;
+		    esac
+		    case $IMAGE_FILE_NAME in
+			*SD-USB*) RAW=1 ;;
+			*raw.img*) RAW=1 ;;
+		    esac
 
-	[ "$B" -a "$D" -a "$T" ] && \
-		BDT=$B/$D/$T
+		[ "$B" -a "$D" -a "$T" ] && \
+			BDT=$B/$D/$T
 
-	[ "$BUILD_TYPE" = "release" ] && {
+		[ "$BUILD_TYPE" = "release" ] && {
 
-	    [ "$BDT" ] && \
-	    UPLOAD_REL=/storage/Firmware/$BDT
+		    [ "$BDT" ] && \
+		    UPLOAD_REL=/storage/Firmware/$BDT
 
-	    echo "%%UPLOAD-REL: $f_ => $UPLOAD_REL"
+		    echo "%%UPLOAD-REL: $f_ => $UPLOAD_REL"
 
-	    [ -d "$UPLOAD_REL" ] || \
-	    $SUDO_ mkdir -p "$UPLOAD_REL"
-	    $SUDO_ cp "$f" "$UPLOAD_REL"
-	    echo "%%UPLOAD_FILE: $UPLOAD_REL/$f_"
+		    [ -d "$UPLOAD_REL" ] || \
+		    $SUDO_ mkdir -p "$UPLOAD_REL"
+		    $SUDO_ cp "$f" "$UPLOAD_REL"
+		    echo "%%UPLOAD_FILE: $UPLOAD_REL/$f_"
 
-	    [ "$BDT" -a "$RAW" ] && {
-		TO="/storage/Firmware/Krescue/images/$f_"
-		$SUDO_ ln -sf "../../$BDT/$f_" "$TO"
-		echo "%%UPLOAD_LINK_KRESCUE: $TO"
-	    }
-	} # release upload END
+		    [ "$BDT" -a "$RAW" ] && {
+			TO="/storage/Firmware/Krescue/images/$f_"
+			$SUDO_ ln -sf "../../$BDT/$f_" "$TO"
+			echo "%%UPLOAD_LINK_KRESCUE: $TO"
+		    }
+		} # release upload END
 
-	echo "%%UPLOAD: $f_ => $UPLOAD_"
-	$SUDO_ mv "$f" "$UPLOAD"
-	[ "$BDT" ] && {
-	    TO="$UPLOAD_/$BDT/$f_"
-	    $SUDO_ mkdir -p "$UPLOAD_/$BDT"
-	    $SUDO_ ln -sf "../../../$f_" "$TO"
-	    echo "%%UPLOAD_LINK: $TO"
-	}
+		echo "%%UPLOAD: $f_ => $UPLOAD_"
+		$SUDO_ mv "$f" "$UPLOAD"
+		[ "$BDT" ] && {
+		    TO="$UPLOAD_/$BDT/$f_"
+		    $SUDO_ mkdir -p "$UPLOAD_/$BDT"
+		    $SUDO_ ln -sf "../../../$f_" "$TO"
+		    echo "%%UPLOAD_LINK: $TO"
+		}
 
-	echo "%%UPLOAD_FILE: $UPLOAD_/$f_"
+		echo "%%UPLOAD_FILE: $UPLOAD_/$f_"
 
-    else
-	echo "%%UPLOAD: $f not exist">&2
-    fi
-done
-
-[ "$CREATE_ROOTFS_CACHE_ONLY" == "yes" ] && \
-{
+	    else
+		echo "%%UPLOAD: $f not exist">&2
+	    fi
+	done
+else
 	case $IMAGE_FILE_NAME in
 	*minimal*) T=minimal ;;
 	*server*) T=server ;;
@@ -123,4 +121,4 @@ done
 	$SUDO_ mkdir -p "$ROOTFS_CACHE"
 	$SUDO_ rm -f $ROOTFS_CACHE/$R-$T-arm64.*
 	$SUDO_ cp $BUILD_IMAGES/cache/rootfs/$R-$T-arm64.* "$ROOTFS_CACHE"
-}
+fi
