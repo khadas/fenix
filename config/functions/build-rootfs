@@ -31,23 +31,23 @@ install_common()
 	date -u '+%Y-%m-%d %H:%M:%S' > $ROOTFS_TEMP/etc/fake-hwclock.data
 
 	# Install linux image deb in chroot
-	if [ -f $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
-		install_deb_chroot $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
+	if [ -f $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
 	fi
 
 	# Install linux dtb deb in chroot
-	if [ -f $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB/image/dtb}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
-		install_deb_chroot $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB/image/dtb}_${VERSION}_${DISTRIB_ARCH}.deb
+	if [ -f $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${LINUX_IMAGE_DEB/image/dtb}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${LINUX_IMAGE_DEB/image/dtb}_${VERSION}_${DISTRIB_ARCH}.deb
 	fi
 
 	# Install linux headers deb in chroot
-	if [ -f $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB/image/headers}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
-		install_deb_chroot $BUILD_DEBS/$VERSION/${LINUX_IMAGE_DEB/image/headers}_${VERSION}_${DISTRIB_ARCH}.deb
+	if [ -f $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${LINUX_IMAGE_DEB/image/headers}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${LINUX_IMAGE_DEB/image/headers}_${VERSION}_${DISTRIB_ARCH}.deb
 	fi
 
 	# Install linux firmware in chroot
-	if [ -f $BUILD_DEBS/$VERSION/${LINUX_FIRMWARE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
-		install_deb_chroot $BUILD_DEBS/$VERSION/${LINUX_FIRMWARE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
+	if [ -f $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${LINUX_FIRMWARE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${LINUX_FIRMWARE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
 	fi
 
 	# Install u-boot deb in chroot

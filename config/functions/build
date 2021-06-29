@@ -178,15 +178,10 @@ build_linux_debs() {
 	    DEBEMAIL="hello@khadas.com" CROSS_COMPILE="${CCACHE} \
 	    ${KERNEL_COMPILER}" CONFIG_SHELL="bash"
 
-	mkdir -p "$BUILD_DEBS/$VERSION"
+	mkdir -p "$BUILD_DEBS/$VERSION/$KHADAS_BOARD"
 
-	if [ "$LINUX" == "mainline" ]; then
-		mv $BUILD/*.deb $BUILD_DEBS/$VERSION
-		rm -rf $BUILD/*.buildinfo $BUILD/*.changes
-	else
-		mv $BUILD/*.deb $BUILD_DEBS/$VERSION
-		rm -rf $BUILD/*.buildinfo $BUILD/*.changes
-	fi
+	mv $BUILD/*.deb $BUILD_DEBS/$VERSION/$KHADAS_BOARD
+	rm -rf $BUILD/*.buildinfo $BUILD/*.changes
 }
 
 ## Build u-boot deb
