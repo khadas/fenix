@@ -686,6 +686,11 @@ function choose_install_type() {
 		INSTALL_TYPE_ARRAY_DESC=("Image For Writing to SD/USB Storage")
 		INSTALL_TYPE_ARRAY_LEN=${#INSTALL_TYPE_ARRAY[@]}
 	fi
+
+	# no need ask if only one choose ;-)
+	[ $INSTALL_TYPE_ARRAY_LEN = 1 ] && echo_ -n "only one choose " && \
+		INSTALL_TYPE=${INSTALL_TYPE_ARRAY[0]} && return 0
+
 	i=0
 	while [[ $i -lt $INSTALL_TYPE_ARRAY_LEN ]]
 	do
