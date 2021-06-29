@@ -10,6 +10,13 @@ case "$UBOOT" in
 		UBOOT_DIR=$(realpath "$UBOOT_VENDOR_DIR")
 		UBOOT_IMAGE_DIR="$UBOOT_DIR/fip/_tmp"
 	;;
+	2019.01)
+		UBOOT_COMPILER="aarch64-elf-"
+		UBOOT_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-elf/bin"
+		[ "$UBOOT_VENDOR_DIR" ] && \
+		UBOOT_DIR=$(realpath "$UBOOT_VENDOR_DIR")
+		UBOOT_IMAGE_DIR="$UBOOT_DIR/fip/_tmp"
+	;;
 	mainline)
 		UBOOT_COMPILER="aarch64-elf-"
 		UBOOT_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-elf/bin"
@@ -31,6 +38,11 @@ case "$LINUX" in
 	4.9)
 		KERNEL_COMPILER="aarch64-linux-gnu-"
 		KERNEL_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/bin"
+		LINUX_DIR=$(realpath "$LINUX_VENDOR_DIR")
+		;;
+	5.4)
+		KERNEL_COMPILER="aarch64-none-linux-gnu-"
+		KERNEL_COMPILER_PATH="$TOOLCHAINS/gcc-arm-aarch64-none-linux-gnu/bin"
 		LINUX_DIR=$(realpath "$LINUX_VENDOR_DIR")
 		;;
 esac
@@ -252,14 +264,21 @@ pack_image_platform() {
 
 		D="$UPGRADE_DIR_"/Amlogic
 
-		case "$LINUX" in
-			4.9)
+		case "$UBOOT" in
+			2015.01)
 				ln -fs "$BUILD_IMAGES/logo.img"              "$D"/logo.img
 				ln -fs "$LINUX_DIR/$LINUX_DTB"               "$D"/kvim.dtb
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin         "$D"/u-boot.bin
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.sd.bin  "$D"/u-boot.bin.sd.bin
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.usb.bl2 "$D"/u-boot.bin.usb.bl2
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.usb.tpl "$D"/u-boot.bin.usb.tpl
+				;;
+			2019.01)
+				ln -fs "$BUILD_IMAGES/logo.img"						"$D"/logo.img
+				ln -fs "$LINUX_DIR/$LINUX_DTB"						"$D"/kvim.dtb
+				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.signed			"$D"/u-boot.bin.signed
+				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.sd.bin.signed	"$D"/u-boot.bin.sd.bin.signed
+				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.usb.signed		"$D"/u-boot.bin.usb.signed
 				;;
 			mainline)
 				;;

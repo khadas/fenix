@@ -85,7 +85,7 @@ build_desktop_deb() {
 		fi
 	else
 		linux_ver=\`uname -r\`
-		if linux-version compare \$linux_ver ge 4.12; then
+		if linux-version compare \$linux_ver ge 5.10; then
 			IS_MAINLINE_KERNEL="yes"
 		fi
 	fi

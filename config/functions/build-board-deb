@@ -135,7 +135,7 @@ build_board_deb() {
 	if [ "\$VENDOR" == "Amlogic" ]; then
 		ln -sf /lib/firmware /etc/firmware
 		if [[ "\$BOARD" =~ "VIM3" ]]; then
-			if linux-version compare \`uname -r\` lt 4.12; then
+			if linux-version compare \`uname -r\` lt 5.10; then
 				systemctl enable panel.service
 				if [ "\$BOARD" == "VIM3" ]; then
 					systemctl enable camera_isp_3a_server.service
@@ -162,7 +162,7 @@ build_board_deb() {
 		sed -i "s/INSTALL_TYPE=.*/INSTALL_TYPE=\$imagetype/" /etc/fenix-release
 		sed -i "s/BOARD=.*/BOARD=\$khadas_board/" /etc/fenix-release
 		linux_ver=\`uname -r\`
-		if linux-version compare \$linux_ver ge 4.12; then
+		if linux-version compare \$linux_ver ge 5.10; then
 			IS_MAINLINE_KERNEL="yes"
 		fi
 	fi
@@ -251,7 +251,7 @@ build_board_deb() {
 
 	# Copy board special rootfs files
 	## Copy board common rootfs files
-	if [[ "$KHADAS_BOARD" =~ VIM[123] ]]; then
+	if [[ "$KHADAS_BOARD" =~ VIM[1234] ]]; then
 		## VIMs common rootfs files
 		rsync -aI $ROOT/archives/filesystem/special/VIM-COMMON/* $pkgdir/
 	fi
@@ -267,8 +267,8 @@ build_board_deb() {
 		fi
 	fi
 
-	# Fixup rc.local permission
-	chmod 755 $pkgdir/etc/rc.local
+#	# Fixup rc.local permission
+#	chmod 755 $pkgdir/etc/rc.local
 
 	# Copy boot scripts
 	mkdir -p $pkgdir/boot
