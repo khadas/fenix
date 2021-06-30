@@ -20,6 +20,7 @@
 # get_available_make_params
 # post_create_image
 # download_rootfs_cache
+# copy_ota_debs
 
 ## Print error message
 ## $1 - message
@@ -690,4 +691,30 @@ download_rootfs_cache() {
 		touch ${cache_name}.download_complete
 		fix_perms "${cache_name}.download_complete"
 	fi
+}
+
+## Copy OTA Debian Packages to Corresponding Folder
+copy_ota_debs() {
+
+	local ota_debs=$BUILD_DEBS/$VERSION/ota_debs
+
+	info_msg "Copying debs to $ota_debs/$KHADAS_BOARD/$DISTRIBUTION-$DISTRIB_RELEASE ..."
+
+	mkdir -p $ota_debs/$KHADAS_BOARD/$DISTRIBUTION-$DISTRIB_RELEASE
+	rm -rf $ota_debs/$KHADAS_BOARD/$DISTRIBUTION-$DISTRIB_RELEASE/*
+	cd $ota_debs
+
+	cp ../$KHADAS_BOARD/*.deb $KHADAS_BOARD/$DISTRIBUTION-$DISTRIB_RELEASE
+	find ../$KHADAS_BOARD/$DISTRIBUTION-$DISTRIB_RELEASE -iname "*.deb" -type f -exec cp {} $KHADAS_BOARD/$DISTRIBUTION-$DISTRIB_RELEASE \;
+	(
+	cd $KHADAS_BOARD/$DISTRIBUTION-$DISTRIB_RELEASE
+	for deb in `ls [0-9][0-9]-*.deb 2> /dev/null`
+	do
+		new_deb=${deb:3}
+		info_msg "Renaming $deb to $new_deb"
+		mv $deb $new_deb
+	done
+	)
+
+	cd - > /dev/null
 }

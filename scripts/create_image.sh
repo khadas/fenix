@@ -100,6 +100,8 @@ build_debs() {
 	if [[ $(type -t build_deb_packages_platform) == function ]]; then
 		build_deb_packages_platform
 	fi
+
+	copy_ota_debs
 }
 
 ###########################################################

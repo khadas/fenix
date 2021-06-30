@@ -72,6 +72,7 @@ case "$TARGET" in
 		[[ $(type -t build_common_deb) == function ]] && build_common_deb
 		build_updater_deb
 		[[ $(type -t build_deb_packages_platform) == function ]] && build_deb_packages_platform
+		copy_ota_debs
 		;;
 esac
 
