@@ -357,6 +357,7 @@ prepare_toolchains() {
 	build_package "gcc-linaro-arm-none-eabi:host"
 	build_package "gcc-linaro-aarch64-elf:host"
 	build_package "gcc-arm-aarch64-none-linux-gnu:host"
+	build_package "gcc-riscv-none-embed:host"
 
 	return 0
 }
