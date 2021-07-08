@@ -1,11 +1,13 @@
-#!/bin/sh
+#!/bin/bash
 
 #set -e -o pipefail
 
-[ "$0" = /RUNME.sh ] || {
-    echo "[i] only for chroot usage">&2
+case $(readlink /proc/self/cwd) in
+    *fenix*)
+    echo "[e] only for chroot usage">&2
     exit 1
-}
+    ;;
+esac
 
 export LC_ALL=C
 export LANG=C
