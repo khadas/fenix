@@ -118,10 +118,14 @@ prepare_host
 check_update
 prepare_toolchains
 prepare_packages
-[ "$CREATE_ROOTFS_CACHE_ONLY" == "yes" ] && info_msg "Creating rootfs cache only"
-[ "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ] && build_uboot
-[ "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ] && build_linux
-[ "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ] && build_debs
+
+[ "$CREATE_ROOTFS_CACHE_ONLY" == "yes" ] && \
+    NO_BUILD_UBOOT=1 && NO_BUILD_LINUX=1 && NO_BUILD_DEBS=1 && \
+    info_msg "Creating rootfs cache only"
+
+[ "$NO_BUILD_UBOOT" ] || build_uboot
+[ "$NO_BUILD_LINUX" ] || build_linux
+[ "$NO_BUILD_DEBS"  ] || build_debs
 
 cd $ROOT
 
