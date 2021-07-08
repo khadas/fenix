@@ -171,6 +171,16 @@ help:
 	@echo "  clean-old             - Cleanup old build session only."
 	@echo "  info                  - Display current environment."
 	@echo "  get-make-params       - Get available make parameters."
+	@echo "  write                 - Write image to device"
+	@echo "  write-boot-online     - Write u-boot to device via Krescue"
+	@echo "  write-help            - Get detailed help about write ..."
+	@echo "  krescue               - Build/update Krescue ..."
+	@echo "  krescue-write         - Write Krescue image to SD/USB..."
+	@echo "  krescue-write-vim1    - Write Krescue VIM1 image ......."
+	@echo "  krescue-write-vim2    - Write Krescue VIM2 image ......."
+	@echo "  krescue-write-vim3    - Write Krescue VIM3 image ......."
+	@echo "  krescue-write-vim3l   - Write Krescue VIM3L image ......"
+	@echo "  krescue-write-edge    - Write Krescue Edge image ......."
 clean:
 	./scripts/clean.sh
 clean-all:
@@ -179,3 +189,9 @@ clean-ccache:
 	CLEAN_CCACHE_ONLY=1 ./scripts/clean.sh
 clean-old:
 	CLEAN_OLD_ONLY=1 ./scripts/clean.sh
+
+write write-help write-boot-online write-boot-emmc-online write-boot-spi-online write-boot-spi-online-apply :
+	./scripts/write_image.sh "$@"
+krescue krescue-write krescue-write-vim1 krescue-write-vim2 krescue-write-vim3 krescue-write-vim3l krescue-write-edge :
+	./scripts/krescue.sh "$@"
+
