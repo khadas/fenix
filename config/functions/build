@@ -155,6 +155,12 @@ build_linux() {
 ## Build linux debs
 build_linux_debs() {
 
+	# overload
+	if [[ $(type -t ${FUNCNAME[0]}_) == function ]]; then
+	    ${FUNCNAME[0]}_
+	    return
+	fi
+
 	# Build linux debs
 	info_msg "Build linux debs..."
 
