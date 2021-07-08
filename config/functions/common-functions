@@ -50,11 +50,11 @@ info_msg() {
 ## Calculate time
 ## $1 - time in seconds
 time_cal() {
-	local minutes
-
-	minutes=$(($1 / 60))
-
-	echo "Time elapsed: $minutes minute(s)."
+	local min m
+	min=$(($1/60))
+	sec=$(($1-min*60))
+	[ "$min" = 0 ] || m="$min min"
+	echo "Time elapsed: $m $sec sec"
 }
 
 ## Prepare host
@@ -67,27 +67,35 @@ prepare_host() {
 	fi
 
 	local build_host=$(lsb_release -sc)
-	info_msg "Build host: $build_host"
+	info_msg "Build host: $build_host target: $DISTRIB_RELEASE"
 
-	if [[ -z "$build_host" || "bionic focal" != *"$build_host"* ]]; then
-		error_msg "Your build host is not supported! Please use 'Ubuntu bionic(18.04)/focal(20.04)' as your build host or try to build in Docker."
-		return -1
-	fi
-
-	case $DISTRIB_RELEASE in
+	[ ! "$NO_HOST_CHECK" ] || {
+		case $buid_host in
+		hirsute|bullseye)
+		## looks like can build all prev system
+		;;
+		focal|buster)
+			case $DISTRIB_RELEASE in
+				hirsute|bullseye)
+				error_msg "Broken combination => $buid_host and $DISTRIB_RELEASE"
+				return 1
+				;;
+			esac
+		;;
 		bionic)
-			if [ "$build_host" != "focal" -a "$build_host" != "bionic" ]; then
-				error_msg "Building Ubuntu Bionic(18.04) images requires a Ubuntu Bionic(18.04)/Focal(20.04) build host, please upgrade your build host or try to build in Docker."
-				return -1
-			fi
+			case $DISTRIB_RELEASE in
+				hirsute|bullseye|focal|buster)
+				error_msg "Broken combination => $buid_host and $DISTRIB_RELEASE"
+				return 1
+				;;
+			esac
 		;;
-		buster|focal)
-			if [ "$build_host" != "focal" ]; then
-				error_msg "Building Debian Buster(10)/Ubuntu Focal(20.04) images requires a Ubuntu Focal(20.04) build host, please upgrade your build host or try to build in Docker."
-				return -1
-			fi
+		*)
+		error_msg "Build host system not detected (can try use \`NO_HOST_CHECK=1 make\`)"
+		return -1
 		;;
-	esac
+		esac
+	}
 
 	grep -q i386 <(dpkg --print-foreign-architectures) || (warning_msg "Requires root privileges, please enter your passowrd!" && sudo dpkg --add-architecture i386)
 	if systemd-detect-virt -q -c; then
@@ -118,6 +126,7 @@ prepare_host() {
 		fi
 	fi
 
+	# maybe need clean some packages from this list !?
 	local hostdeps="wget ca-certificates device-tree-compiler pv bc lzop zip binfmt-support build-essential ccache debootstrap ntpdate \
 			gawk gcc-arm-linux-gnueabihf qemu-user-static u-boot-tools uuid-dev zlib1g-dev unzip libusb-1.0-0-dev fakeroot \
 			parted pkg-config libncurses5-dev whiptail debian-keyring debian-archive-keyring f2fs-tools libfile-fcntllock-perl rsync libssl-dev \
@@ -126,33 +135,27 @@ prepare_host() {
 			locales ncurses-base pixz dialog systemd-container udev lib32stdc++6 libc6-i386 lib32ncurses5 lib32tinfo5 \
 			bison libbison-dev flex libfl-dev lib32z1 libglib2.0-dev"
 
+	# new fs tools + compression
+	hostdeps="$hostdeps mtools e2tools e2fsprogs file pixz pigz zstd"
+	# remove no need it
+	for r in nfs-kernel-server p7zip-full; do
+	hostdeps="${hostdeps/$r/}"
+	done
 
-	if [[ -z $build_host || "focal" == "$build_host" ]]; then
-		hostdeps="${hostdeps/lib32ncurses5 lib32tinfo5/lib32ncurses6 lib32tinfo6}"
-	fi
-
-	# Getting ready for Ubuntu 20.04
-	if [[ "$build_host" == "focal" ]]; then
-		hostdeps+=" python2 python3"
-		# strange maner to change system without user notify ;-)
-		local p=/usr/bin/python2.7
-		[ -s $p ] && \
-		for s in /usr/bin/python /usr/bin/python2; do
-			[ -L "$s" ] || continue
-			local o=$(readlink $s)
-			[ "$o" = "$p" ] || {
-				warning_msg "Need to change symlink $s to $p from $o"
-				need_sudo || true;
-				$sudo ln -fs $p $s
-			}
-		done
-	else
+	# Getting ready for new hosts
+	case $build_host in
+		bionic)
 		hostdeps+=" python libpython-dev"
-	fi
+		;;
+		*)
+		hostdeps+=" python2 python3"
+		hostdeps="${hostdeps/lib32ncurses5 lib32tinfo5/lib32ncurses6 lib32tinfo6}"
+	esac
+
 
 	# warning: apt-cacher-ng will fail if installed and used both on host and in container/chroot environment with shared network
 	# set NO_APT_CACHER=yes to prevent installation errors in such case
-	if [[ $NO_APT_CACHER != yes ]]; then hostdeps="$hostdeps apt-cacher-ng"; fi
+	[ "$NO_APT_CACHER" = yes ] || hostdeps="$hostdeps apt-cacher-ng"
 
 	local deps=()
 	local installed=$(dpkg-query -W -f '${db:Status-Abbrev}|${binary:Package}\n' '*' 2>/dev/null | grep '^ii' | awk -F '|' '{print $2}' | cut -d ':' -f 1)
@@ -171,24 +174,44 @@ prepare_host() {
 	fi
 
 	# enable arm binary format so that the cross-architecture chroot environment will work
-	mountpoint -q /proc/sys/fs/binfmt_misc/ || sudo mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc || {
-		if ! grep -q binfmt_misc <(lsmod); then
-			info_msg "Module 'binfmt_misc' not installed, try to install it!"
-			warning_msg "Requires root privileges, please enter your password!"
-			sudo modprobe -q binfmt_misc || {
+	mountpoint -q /proc/sys/fs/binfmt_misc/ || \
+		$sudo mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc || \
+			[ -d /sys/module/binfmt_misc ] || {
+				info_msg "Module 'binfmt_misc' not installed, try to install it!"
+				warning_msg "Requires root privileges, please enter your password!"
+				$sudo modprobe -q binfmt_misc || {
 				# FIXME 'binfmt_misc' should be installed on host PC manually
 				# https://github.com/khadas/fenix/issues/35#issuecomment-492326880
-				if systemd-detect-virt -q -c; then
-                    error_msg "You are built in container: $(systemd-detect-virt), but the module 'binfmt_misc' is not installed, please exit the container to execute 'sudo modprobe binfmt_misc' on your host PC and try again!"
-				fi
-
+				systemd-detect-virt -q -c && \
+				error_msg "You are built in container: $(systemd-detect-virt), but the module 'binfmt_misc' is not installed, please exit the container to execute 'sudo modprobe binfmt_misc' on your host PC and try again!"
 				exit -1
-			}
-		fi
-    }
+				}
+	}
 
-	test -e /proc/sys/fs/binfmt_misc/qemu-arm || sudo update-binfmts --enable qemu-arm
-	test -e /proc/sys/fs/binfmt_misc/qemu-aarch64 || sudo update-binfmts --enable qemu-aarch64
+	test -e /proc/sys/fs/binfmt_misc/qemu-arm || $sudo update-binfmts --enable qemu-arm
+	test -e /proc/sys/fs/binfmt_misc/qemu-aarch64 || $sudo update-binfmts --enable qemu-aarch64
+
+	# python tricks
+	local p m w
+	mkdir -p $BUILD/bin
+	case $PATH in
+		$BUILD/bin:*);;
+		*)export PATH="$BUILD/bin:$PATH";;
+	esac
+	for p in python python2; do
+		which $p 1>/dev/null || \
+		for m in python2 python3; do
+			w=$(which $m)
+			if [ "$w" ]; then
+				echo ln -sf $w $BUILD/bin/$p
+				ln -sf $w $BUILD/bin/$p
+				break
+			fi
+		done
+	printf "[i] check $p -> "
+	$p -V
+	done
+
 }
 
 ## Mount chroot
@@ -198,8 +221,10 @@ mount_chroot() {
 		echo "Usage: mount_chroot <target>"
 		return -1
 	fi
+	mkdir -p /tmp/fenix # shared path to host system from chroot
 	mount -t proc chproc $target/proc
 	mount -t sysfs chsys $target/sys
+	mount --bind /tmp/fenix $target/sys/fs # get it from /sys/fs
 	mount -t devtmpfs chdev $target/dev || mount --bind /dev $target/dev
 	mount -t devpts chpts $target/dev/pts
 }
@@ -331,7 +356,18 @@ prepare_packages() {
 ## returns md5 hash for current package list
 get_package_list_hash()
 {
-	( printf '%s\n' "$PACKAGE_LIST" | sort -u; printf '%s\n' "$PACKAGE_LIST_EXCLUDE" | sort -u; echo "$ROOTFSCACHE_VERSION" ) | md5sum | cut -d' ' -f 1
+	package_list=$(echo $(
+	printf '%s\n' $PACKAGE_LIST | sort -u
+	echo -
+	printf '%s\n' $PACKAGE_LIST_EXCLUDE | sort -u
+	echo =
+	echo $ROOTFSCACHE_VERSION
+	))
+
+	md5_=$(echo $package_list | md5sum)
+	md5_=${md5_:0:7}
+	echo "PKG_LIST_HASH: $md5_ : $package_list">&2
+	echo $md5_
 }
 
 ## create_sources_list <release> <basedir>
@@ -344,9 +380,15 @@ create_sources_list()
 	local basedir=$2
 	[[ -z $basedir ]] && error_msg "No basedir passed to create_sources_list" && return -1
 
+	local security=
 	case $release in
-	buster)
-	cat <<-EOF > $basedir/etc/apt/sources.list
+	bullseye)
+	security="-security"
+	esac
+
+	case $release in
+	buster|bullseye)
+	cat <<-EOF | tee $basedir/etc/apt/sources.list
 	deb http://${DEBIAN_MIRROR} $release main contrib non-free
 	#deb-src http://${DEBIAN_MIRROR} $release main contrib non-free
 
@@ -356,13 +398,13 @@ create_sources_list()
 	deb http://${DEBIAN_MIRROR} ${release}-backports main contrib non-free
 	#deb-src http://${DEBIAN_MIRROR} ${release}-backports main contrib non-free
 
-	deb http://security.debian.org/ ${release}/updates main contrib non-free
+	deb http://security.debian.org/ ${release}$security/updates main contrib non-free
 	#deb-src http://security.debian.org/ ${release}/updates main contrib non-free
 	EOF
 	;;
 
-	bionic|focal)
-	cat <<-EOF > $basedir/etc/apt/sources.list
+	bionic|focal|hirsute)
+	cat <<-EOF | tee $basedir/etc/apt/sources.list
 	deb http://${UBUNTU_MIRROR} $release main restricted universe multiverse
 	#deb-src http://${UBUNTU_MIRROR} $release main restricted universe multiverse
 
