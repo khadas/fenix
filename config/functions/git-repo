@@ -21,6 +21,9 @@ GIT_UPDATE_IGNORE_FLAG=.ignore-update
 GIT_UPDATE_IGNORE_NOTIFY="[TIPS] same can solve this via \`NO_GIT_UPDATE=1 make\` or \`touch $GIT_UPDATE_IGNORE_FLAG; make\`"
 
 update_git_repo() {
+
+    git branch --show-current | grep -q dev && NO_GIT_UPDATE=1
+
     [ "$NO_GIT_UPDATE" ] && {
 	info_msg "Git update was disabled by NO_GIT_UPDATE"
 	return
