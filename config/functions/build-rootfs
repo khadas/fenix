@@ -1,3 +1,4 @@
+#!/bin/bash
 # Functions:
 # install_common
 # install_distribution_specific
@@ -8,12 +9,13 @@
 
 install_common()
 {
-	info_msg "Applying common tweaks..."
-
-	if [[ $(type -t install_common_Generic) == function ]]; then
-		install_common_Generic
-		return
+	# overload
+	if [[ $(type -t ${FUNCNAME[0]}_) == function ]]; then
+	    ${FUNCNAME[0]}_
+	    return
 	fi
+
+	info_msg "Applying common tweaks..."
 
 	# Remove default interfaces file if present
 	# before installing board support package
@@ -149,6 +151,12 @@ install_common()
 
 install_distribution_specific()
 {
+	# overload
+	if [[ $(type -t ${FUNCNAME[0]}_) == function ]]; then
+	    ${FUNCNAME[0]}_
+	    return
+	fi
+
 	info_msg "Applying distribution specific tweaks for $DISTRIB_RELEASE"
 
 	case $DISTRIB_RELEASE in
@@ -214,8 +222,8 @@ install_distribution_specific()
 create_rootfs_cache()
 {
 	local packages_hash=$(get_package_list_hash)
-	local cache_fname=$BUILD_IMAGES/cache/rootfs/${DISTRIB_RELEASE}-${DISTRIB_TYPE}-${DISTRIB_ARCH}.$packages_hash.tar.lz4
-	local display_name=${DISTRIB_RELEASE}-${DISTRIB_TYPE}-${DISTRIB_ARCH}.${packages_hash:0:3}...${packages_hash:29}.tar.lz4
+	local display_name=${DISTRIB_RELEASE}-${DISTRIB_TYPE}-${DISTRIB_ARCH}.$packages_hash.tar.lz4
+	local cache_fname=$BUILD_IMAGES/cache/rootfs/$display_name
 	if [[ -f $cache_fname && -f ${cache_fname}.sha256 && "$FORCE_CREATE_ROOTFS_CACHE" != "yes" && "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ]]; then
 		local date_diff=$(( ($(date +%s) - $(stat -c %Y $cache_fname)) / 86400 ))
 		# Check
@@ -254,10 +262,26 @@ create_rootfs_cache()
 	info_msg "Creating new rootfs for $DISTRIB_RELEASE-$DISTRIB_TYPE"
 
 	# stage: debootstrap base system
+
+	APT_PROXY_ADDR=${APT_PROXY_ADDR#*://} # strip http:// prefix
+	case $APT_PROXY_ADDR in
+	    ""|auto) # scan apt proxys
+	    echo "[i] APT_PROXY: scanning ..."
+	    for APT_PROXY_ADDR in _gateway:3142 localhost:3142 ""; do
+		[ "$APT_PROXY_ADDR" ] && \
+		curl -s -I -m1 $APT_PROXY_ADDR | grep -m1 -q 406 && break
+	    done
+	    ;;
+	esac
+
+	echo "[i] APT_PROXY: $APT_PROXY_ADDR"
+
 	if [[ $NO_APT_CACHER != yes ]]; then
 		# apt-cacher-ng apt-get proxy parameter
-		local apt_extra="-o Acquire::http::Proxy=\"http://${APT_PROXY_ADDR:-localhost:3142}\""
-		local apt_mirror="http://${APT_PROXY_ADDR:-localhost:3142}/$APT_MIRROR"
+		if [ "$APT_PROXY_ADDR" ]; then
+		local apt_extra="-o Acquire::http::Proxy=\"http://$APT_PROXY_ADDR\""
+		local apt_mirror="http://$APT_PROXY_ADDR/$APT_MIRROR"
+		fi
 	else
 		local apt_mirror="http://$APT_MIRROR"
 	fi
@@ -267,21 +291,34 @@ create_rootfs_cache()
 	local apt_extra_progress="--show-progress -o DPKG::Progress-Fancy=1"
 
 	info_msg "Installing base system - Stage 1/2"
+
+	echo "debootstrap --variant=minbase --include=${DEBOOTSTRAP_LIST// /,} ${PACKAGE_LIST_EXCLUDE:+ --exclude=${PACKAGE_LIST_EXCLUDE// /,}} \
+		--arch=$DISTRIB_ARCH --components=${DEBOOTSTRAP_COMPONENTS} --foreign $DISTRIB_RELEASE $ROOTFS_TEMP/ $apt_mirror"
+
 	eval 'debootstrap --variant=minbase --include=${DEBOOTSTRAP_LIST// /,} ${PACKAGE_LIST_EXCLUDE:+ --exclude=${PACKAGE_LIST_EXCLUDE// /,}} \
 		--arch=$DISTRIB_ARCH --components=${DEBOOTSTRAP_COMPONENTS} --foreign $DISTRIB_RELEASE $ROOTFS_TEMP/ $apt_mirror'
 
 	[[ ${PIPESTATUS[0]} -ne 0 || ! -f $ROOTFS_TEMP/debootstrap/debootstrap ]] && error_msg "Debootstrap base system first stage failed" && return -1
 
-	cp /usr/bin/$QEMU_BINARY $ROOTFS_TEMP/usr/bin/
+	mkdir -p $ROOTFS_TEMP/usr/local/bin
+#	cp /usr/bin/$QEMU_BINARY $ROOTFS_TEMP/usr/local/bin
 
-	mkdir -p $ROOTFS_TEMP/usr/share/keyrings/
-	cp /usr/share/keyrings/debian-archive-keyring.gpg $ROOTFS_TEMP/usr/share/keyrings/
-	cp /usr/share/keyrings/ubuntu-archive-keyring.gpg $ROOTFS_TEMP/usr/share/keyrings/
+	mkdir -p $ROOTFS_TEMP/usr/share/keyrings
+	cp /usr/share/keyrings/*-archive-keyring.gpg $ROOTFS_TEMP/usr/share/keyrings
 
 	info_msg "Installing base system - Stage 2/2"
-	eval 'chroot $ROOTFS_TEMP /bin/bash -c "/debootstrap/debootstrap --second-stage"'
+	echo 'chroot $ROOTFS_TEMP /bin/bash -c "/debootstrap/debootstrap --second-stage"'
 
-	[[ ${PIPESTATUS[0]} -ne 0 || ! -f $ROOTFS_TEMP/bin/bash ]] && error_msg "Debootstrap base system second stage failed" && return -1
+	chroot $ROOTFS_TEMP /bin/bash -c "/debootstrap/debootstrap --second-stage" || {
+		for l in $ROOTFS_TEMP/debootstrap/debootstrap.log; do
+			[ -e $l ] || continue # its OK not error
+			tail -n10 $l
+			return -1
+		done
+	}
+
+#	[[ ${PIPESTATUS[0]} -ne 0 || ! -f $ROOTFS_TEMP/bin/bash ]] && \
+#	error_msg "Debootstrap base system second stage failed" && return -1
 
 	mount_chroot "$ROOTFS_TEMP"
 
@@ -379,6 +416,12 @@ create_rootfs_cache()
 ## creates image file, partitions and fs
 prepare_partitions()
 {
+	# overload
+	if [[ $(type -t ${FUNCNAME[0]}_) == function ]]; then
+	    ${FUNCNAME[0]}_
+	    return
+	fi
+
 	info_msg "Preparing image file for rootfs..."
 
 	if [[ $(lsb_release -sc) =~ bionic|focal ]]; then
@@ -527,8 +570,13 @@ prepare_rootfs() {
 	[[ "$CREATE_ROOTFS_CACHE_ONLY" == "yes" ]] && return
 
 	install_distribution_specific
-
 	install_common
+
+	if [[ $(type -t install_custom) == function ]]; then
+	    install_custom
+	    return
+	    # remove service start blockers later!
+	fi
 
 	# remove service start blockers
 	rm -f $ROOTFS_TEMP/sbin/initctl $ROOTFS_TEMP/sbin/start-stop-daemon
@@ -552,21 +600,25 @@ build_rootfs() {
 	fi
 
 	# mkimage tool
-	cp $UTILS_DIR/mkimage-$DISTRIB_ARCH $ROOTFS_TEMP/usr/local/bin/mkimage
+	[ "$KHADAS_BOARD" = "Generic" ] || \
+	    cp $UTILS_DIR/mkimage-$DISTRIB_ARCH $ROOTFS_TEMP/usr/local/bin/mkimage
 
 	## script executing on chroot
-	cp -r scripts/chroot-scripts/RUNME.sh $ROOTFS_TEMP/
+
+	[ "$POST_SCRIPT" ] || \
+	    POST_SCRIPT=scripts/chroot-scripts/RUNME.sh
+
+	cp $POST_SCRIPT $ROOTFS_TEMP/tmp
 
 	echo
-	echo "NOTE: ENTER CHROOT AND EXECUTE SCRIPT 'RUNME.sh'."
+	echo "NOTE: ENTER CHROOT AND EXECUTE SCRIPT: $POST_SCRIPT"
 	echo
 	mount_chroot "$ROOTFS_TEMP"
-	chroot $ROOTFS_TEMP/ bash "/RUNME.sh"
+	chroot $ROOTFS_TEMP/ bash "/tmp/${POST_SCRIPT##*/}"
 
 	## Logo
-	if [ "$KHADAS_BOARD" != "Generic" ]; then
+	[ "$KHADAS_BOARD" = "Generic" ] || \
 		cp archives/logo/${VENDOR}/logo.img $BUILD_IMAGES
-	fi
 
 	## Unmount to get the rootfs.img
 	sync
