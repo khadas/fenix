@@ -219,16 +219,6 @@ INSTALL_TYPE_ARRAY=("EMMC" "SD-USB")
 INSTALL_TYPE_ARRAY_DESC=("Image For Writing to eMMC Storage With USB Burning Tool"\
 						 "Image For Writing to SD/USB Storage")
 
-DISTRIBUTION_ARRAY_LEN=${#DISTRIBUTION_ARRAY[@]}
-Ubuntu_RELEASE_ARRAY_LEN=${#Ubuntu_RELEASE_ARRAY[@]}
-Debian_RELEASE_ARRAY_LEN=${#Debian_RELEASE_ARRAY[@]}
-DISTRIB_ARCH_ARRAY_LEN=${#DISTRIB_ARCH_ARRAY[@]}
-Ubuntu_TYPE_ARRAY_LEN=${#Ubuntu_TYPE_ARRAY[@]}
-Debian_TYPE_ARRAY_LEN=${#Debian_TYPE_ARRAY[@]}
-INSTALL_TYPE_ARRAY_LEN=${#INSTALL_TYPE_ARRAY[@]}
-
-
-
 echo2(){
 	[ "$QUITMODE" = 2 ] || echo "$@"
 }
@@ -618,6 +608,10 @@ function choose_distribution_type() {
 		DISTRIBUTION_TYPE_ARRAY_ELEMENT=${DISTRIBUTION}_TYPE_ARRAY[$i]
 		DISTRIBUTION_TYPE_ARRAY_ELEMENT_DESC=${DISTRIBUTION}_TYPE_ARRAY_DESC[$i]
 		DISTRIBUTION_TYPE=${!DISTRIBUTION_TYPE_ARRAY_ELEMENT}
+
+		[ ${!DISTRIBUTION_TYPE_ARRAY_LEN} = 1 ] && echo_ -n "only one choose " && \
+		DISTRIB_TYPE=$DISTRIBUTION_TYPE && return 0
+
 		DISTRIBUTION_TYPE_DESC=${!DISTRIBUTION_TYPE_ARRAY_ELEMENT_DESC}
 		echo_ "$((${i}+1)). ${DISTRIBUTION_TYPE} - ${DISTRIBUTION_TYPE_DESC=}"
 		[ "$DISTRIBUTION_TYPE" = "$DISTRIB_TYPE" ] && return 0
@@ -871,6 +865,14 @@ oky KHADAS_BOARD
 cd $ROOT                                                || return 1
 source config/boards/${KHADAS_BOARD}.conf || { cd $CDIR;   return 1
 }; cd $CDIR
+
+DISTRIBUTION_ARRAY_LEN=${#DISTRIBUTION_ARRAY[@]}
+Ubuntu_RELEASE_ARRAY_LEN=${#Ubuntu_RELEASE_ARRAY[@]}
+Debian_RELEASE_ARRAY_LEN=${#Debian_RELEASE_ARRAY[@]}
+DISTRIB_ARCH_ARRAY_LEN=${#DISTRIB_ARCH_ARRAY[@]}
+Ubuntu_TYPE_ARRAY_LEN=${#Ubuntu_TYPE_ARRAY[@]}
+Debian_TYPE_ARRAY_LEN=${#Debian_TYPE_ARRAY[@]}
+INSTALL_TYPE_ARRAY_LEN=${#INSTALL_TYPE_ARRAY[@]}
 
 [ ! "$UBOOT" -a "$LINUX" = "mainline" ] && \
     UBOOT=mainline
