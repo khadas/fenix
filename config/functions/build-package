@@ -123,7 +123,7 @@ extract_package() {
 				*.tar.xz | *.txz)
 					if which pixz 1>/dev/null 2>/dev/null; then
 					# mt decompress
-					pixz -dc < $f | tar -xf- $C$2
+					pixz -dc < $f | tar -xf- -C$2
 					else
 					tar xJf $f -C $2
 					fi
@@ -299,8 +299,8 @@ build_package() {
 	local PACKAGE_NAME
 	local TARGET
 
-	PACKAGE_NAME=$(echo $1 | awk -F : '{print $1}')
-	TARGET=$(echo $1 | awk -F : '{print $2}')
+	PACKAGE_NAME=${1%%:*}
+	TARGET=${1##*:}
 	if [ -z "$TARGET" ]; then
 		TARGET="target"
 	fi
@@ -317,7 +317,7 @@ build_package() {
 	PKG_DIR="$PKGS_DIR/$PACKAGE_NAME"
 	PKG_BUILD="$BUILD/${PKG_NAME}-${PKG_VERSION}"
 
-	mkdir -p $STAMPS/$PKG_NAME
+	mkdir -m0777 -p $STAMPS/$PKG_NAME
 	STAMP=$STAMPS/$PKG_NAME/build_$TARGET
 
 	STAMP_DEPENDS="$PKG_DIR"
