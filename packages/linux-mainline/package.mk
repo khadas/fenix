@@ -24,11 +24,15 @@ make_target() {
 	    KERNEL_INSTALL_PATH="$BUILD/linux-mainline-install"
 
 	[ "$INSTALL_PATH" ] || \
-	    INSTALL_PATH="$KERNEL_INSTALL_PATH/boot"
+	    INSTALL_PATH="$KERNEL_INSTALL_PATH"/boot
 
 	[ "$INSTALL_MOD_PATH" ] || \
 	    INSTALL_MOD_PATH="$KERNEL_INSTALL_PATH"
 
+	[ "$INSTALL_DTBS_PATH" ] || \
+	    INSTALL_DTBS_PATH="$KERNEL_INSTALL_PATH"/boot/dtb
+
+	export INSTALL_DTBS_PATH
 	export INSTALL_MOD_PATH
 	export INSTALL_PATH
 
@@ -38,7 +42,7 @@ make_target() {
 
 	case "$KERNEL_MAKE_ARGS" in
 	    "")
-	    KERNEL_MAKE_ARGS="prepare Image modules dtbs"
+	    KERNEL_MAKE_ARGS="Image modules dtbs"
 	    ;;
 	esac
 
