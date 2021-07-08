@@ -303,7 +303,7 @@ case $DISTRIB_TYPE in
 esac
 
 case $DISTRIB_RELEASE in
-	buster)
+	buster|bullseye)
 		DEBOOTSTRAP_COMPONENTS="main"
 		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher command-not-found"
 		PACKAGE_LIST_KODI="libglu1 libmicrohttpd12 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libva-drm2 libcurl4"
@@ -326,7 +326,7 @@ case $DISTRIB_RELEASE in
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_XSERVER $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_QT $PACKAGE_LIST_KODI"
 		PACKAGE_LIST_DESKTOP+=" chromium-browser xserver-xorg-input-all firefox pulseaudio-module-gconf libgnome2-perl language-selector-gnome"
 	;;
-	focal)
+	focal|hirsute)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
 		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found"
 		PACKAGE_LIST_KODI="mesa-utils libglu1 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libcurl4 libcrossguid0  libmicrohttpd12 libavahi-compat-libdnssd-dev libcec4 \
