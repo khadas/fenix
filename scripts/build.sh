@@ -45,6 +45,7 @@ case "$TARGET" in
 		compress_image "uboot-image"
 		;;
 	linux-deb)
+		unset build_linux_debs_
 		build_linux_debs
 		;;
 	board-deb)
