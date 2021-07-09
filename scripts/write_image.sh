@@ -30,13 +30,6 @@ source config/config
 
 need_='Build it at 1st! `source setenv.sh && make` or `IMAGE=path_to_image make`'
 
-[ ! "$KHADAS_BOARD" ] && echo "[e] $need_" && exit 1
-
-source $BOARD_CONFIG/$KHADAS_BOARD.conf
-#source config/functions/functions
-
-[ "$IMAGE" ] || \
-IMAGE="$BUILD_IMAGES/$IMAGE_FILE_NAME"
 
 [ "$ACTON" ] ||
 	ACTION=$1
@@ -47,6 +40,11 @@ note_(){
 
 case $ACTION in
 	write)
+	[ "$IMAGE" ] || {
+	[ ! "$KHADAS_BOARD" ] && echo "[e] $need_" && exit 1
+	source $BOARD_CONFIG/$KHADAS_BOARD.conf
+	IMAGE="$BUILD_IMAGES/$IMAGE_FILE_NAME"
+	}
 	echo "[i] $ACTION image $IMAGE"
 	[ ! -e "$IMAGE" ] && \
 	echo "[e] $IMAGE image not found
