@@ -59,14 +59,6 @@ WIFI_MODEL="Broadcom"
 ##############################
 uboot_custom_postprocess() {
 
-	# already inside ?!??
-	# cd $UBOOT_DIR
-	cd $UBOOT_DIR
-
-	# Cleanup old binaries
-	# sorry but its undefined everytime !!!????
-	#rm -rf ${FIP_BUILD_FOLDER}
-
 #	source fip/check_compile.sh
 	source fip/variables.sh "$UBOOT_DIR"
 	source fip/lib.sh
@@ -76,6 +68,9 @@ uboot_custom_postprocess() {
 	source fip/build_bl32.sh
 	source fip/build_bl33.sh
 	source fip/build_bl40.sh
+
+	# Cleanup old binaries
+	rm -rf ${FIP_BUILD_FOLDER}
 
 	# source uboot pre-build configs
 	source ${SOURCE_FILE}
