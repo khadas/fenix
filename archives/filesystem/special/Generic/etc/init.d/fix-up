@@ -1,0 +1,116 @@
+#!/bin/bash
+
+## hyphop ##
+
+### BEGIN INIT INFO
+# Provides:		fix-up
+# Required-Start:	$remote_fs $syslog
+# Required-Stop:	$remote_fs $syslog
+# Default-Start:	2 3 4 5
+# Default-Stop:
+# Short-Description:	fix-up
+### END INIT INFO
+
+. /lib/init/vars.sh
+. /lib/lsb/init-functions
+
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+NAME=fix-up
+LOG=/tmp/$NAME.log
+ETH=eth0
+
+echo_(){
+	echo "$NAME: $@" | tee -a /dev/kmsg $LOG
+}
+
+m=/sys/firmware/devicetree/base/model
+M="__undefined__"
+[ -e $m ] && \
+	M=$(tr -d '\0' < $m)
+
+case $M in
+	*VIM)
+	BOARD=VIM1
+	;;
+	*VIM2)
+	BOARD=VIM2
+	;;
+	*VIM3L)
+	BOARD=VIM3L
+	;;
+	*VIM3)
+	BOARD=VIM3
+	;;
+	*Edge*)
+	BOARD=Edge
+	;;
+	*)
+	BOARD=__UNDEFINED__
+	echo_ "WARNING: cant recognize board $M"
+	exit 0
+esac
+
+ssh_(){
+	# Create system ssh keys if not exist
+	for a in /etc/ssh/ssh_host*; do
+	[ -e "$a" ] && break
+	echo_ "SSH configure keys"
+	dpkg-reconfigure -f noninteractive openssh-server
+	echo_ "SSH configure keys DONE"
+	#   systemctl is-active sshd.service || \
+	#        systemctl restart ssh
+	done
+}
+
+net_(){
+	[ -d /sys/class/net/$ETH ] || return 0
+	echo_ "Network fail-save up"
+	( # force up buggy interface
+	for try in 1 2 3 4 5 6; do
+	ip link set dev $ETH up
+	grep -q up /sys/class/net/$ETH/operstate && {
+	dhclient -nw $ETH
+	break
+	}
+	sleep 2
+	done
+	) >> $LOG 2>&1 &
+}
+
+fix_(){
+	# post fix chroot tricks
+	for s in /usr/sbin/policy-rc.d /sbin/start-stop-daemon /sbin/initctl; do
+	[ ! -e $s ] && continue
+	head -c16 $s | grep -q /bin/sh && {
+	echo_ "Remove chroot triks: $s"
+	rm -rf $s
+	dpkg-divert --quiet --local --rename --remove $s
+	}
+	done
+}
+
+cmd_(){
+	echo_ "# $@"
+	"$@"
+}
+
+info_(){
+	echo_ "fix-up script for $BOARD"
+}
+
+case "$1" in
+	net|fix|ssh|info)
+	"$1"_
+	;;
+	start)
+	setup boot_ &
+	net_ &
+	fix_ &
+	ssh_
+	;;
+	*)
+	echo "Usage: $0 start"
+	exit 0
+	;;
+esac

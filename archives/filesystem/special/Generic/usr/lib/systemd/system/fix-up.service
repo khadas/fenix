@@ -1,0 +1,15 @@
+
+[Unit]
+Description=fix-up
+Before=basic.target
+After=sysinit.target local-fs.target
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/bash /etc/init.d/fix-up start
+TimeoutStartSec=15s
+
+[Install]
+WantedBy=basic.target

@@ -1,0 +1,995 @@
+#!/bin/bash
+
+## hyphop ##
+
+#= system setup script
+
+## NOTE: its just initial...
+
+PROG=${0##*/}
+ARGS="$@"
+
+USER=$(grep :1000:1000 /etc/passwd)
+USER=${USER%%:*}
+
+actions_(){
+grep ")\#" $0 | while read l ; do
+t=${l%%)*}
+t=${t//\*/}
+printf %s "$t "
+done
+echo
+}
+
+help(){ echo "USAGE: $PROG [--help|-q] [ACTIONS|...]
+Setup system script
+"
+
+[ "$1" ] && echo "ACTIONS: $(actions_)" && return
+grep ")\#" $0 | while read l ; do
+t=${l%%)*}
+t=${t//\*/}
+printf " %-20s\t%s\n" "$t" "${l#*\#}"
+done
+}
+
+echo_(){
+	echo "[$PROG ] $@"
+}
+warn_(){
+	[ "$QUIET" ] || \
+	echo "[$PROG!] $@">&2
+}
+
+## BEGIN
+
+export DEBIAN_FRONTEND=noninteractive
+export DEBIAN_PRIORITY=critical
+
+LINUX=zImage
+
+LOG=/tmp/setup.log
+
+GRUB_PATH=/boot/grub
+GRUB_CFG=/boot/grub/grub.cfg
+#GRUB_CFG=/tmp/grub.cfg
+
+APPEND="ro quiet splash video=HDMI-A-1:1920x1080@60 net.ifnames=0"
+APPEND_DEV="earlyprintk video=HDMI-A-1:1920x1080@60 panic=10 net.ifnames=0 loglevel=9"
+
+BOOT=/boot
+EXT=/boot/extlinux/extlinux.conf
+
+[ "$GRUB_SPLASH" ] || \
+	GRUB_SPLASH=splash.png
+
+FAIL(){
+	echo "[e] FAIL .. $@">&2
+	exit 1
+}
+
+m=/sys/firmware/devicetree/base/model
+M="__undefined__"
+
+get_board_(){
+	[ "$BOARD" ] && return
+	[ -e $m ] && M=$(tr -d '\0' < $m)
+	case $M in
+	*VIM)BOARD=VIM1;;
+	*VIM2)BOARD=VIM2;;
+	*VIM3L)BOARD=VIM3L;;
+	*VIM3)BOARD=VIM3;;
+	*Edge*)BOARD=Edge;;
+	*)
+	BOARD=__UNDEFINED__
+	warn_ "cant recognize board $M"
+#	exit 0
+	esac
+}
+
+APT(){
+	apt_extra=
+
+	[ "$APT_PROXY_ADDR" ] || {
+	#CMD avahi-browse _apt_proxy._tcp -r -k -t
+	avahi=$(which avahi-browse 2>/dev/null)
+
+	[ "$avahi" -a ! "$NO_AVAHI" ] && {
+	p=$(avahi-browse _apt_proxy._tcp -r -k -c  | grep hostname)
+	p=${p#*[}
+	p=${p%%]*}
+	APT_PROXY_ADDR="$p:3142"
+	}
+	}
+
+	apt_proxy="http://${APT_PROXY_ADDR:-localhost:3142}"
+
+	curl -m1 -s -I $apt_proxy | grep -q 406 && \
+		apt_extra="-oAcquire::http::Proxy=$apt_proxy"
+
+	echo "# apt $apt_extra $@"
+
+	case "$1" in
+	show)
+	return
+	;;
+	esac
+
+	apt-get $apt_extra -y $@ || FAIL check network connection ...
+}
+
+CMD(){
+	echo "# $@"
+	$@
+}
+
+[ ! "$1" ] && help short && exit
+
+###
+
+wait_flag=/tmp/exit
+
+apt_updated=/tmp/apt_updated
+apt_update(){
+	echo "[i] apt update"
+	[ -e $apt_updated ] && return 0
+	APT update && touch $apt_updated
+}
+
+rootfs_scan(){
+	[ "$ROOTFS_UUID" ] && \
+	ROOTFS="UUID=$ROOTFS_UUID" && return
+
+	[ "$ROOTFS" ] || \
+	ROOTFS=LABEL=ROOTFS
+
+	grep -q ^chproc /proc/mounts && return
+
+	ROOTFS_DEV=$(grep -m1 " / " /proc/mounts)
+	ROOTFS_DEV=${ROOTFS_DEV%% *}
+	[ "$ROOTFS_UUID" ] || \
+	ROOTFS_UUID=$(blkid $ROOTFS_DEV -s UUID -o value 2>/dev/null)
+	[ "$ROOTFS_UUID" ] && \
+	ROOTFS="UUID=$ROOTFS_UUID"
+}
+
+_mul(){
+	echo $(($1*$2))
+}
+
+rootfs_size_(){
+	rootfs_scan
+	ROOTFS_SIZE=$(_mul $(dumpe2fs -h $ROOTFS_DEV |& grep -m2 Block | grep -m2 -o -P '\d+'))
+}
+
+resize_(){
+	rootfs_scan
+	echo "[i] Resize/Maximize ROOTFS $ROOTFS_DEV"
+	resize2fs $ROOTFS_DEV
+	echo DONE
+}
+
+distro_name(){
+	#DISTRO_NAME=Ubuntu
+	for KERNEL in $BOOT/$LINUX $BOOT/vmlinuz; do
+	[ -e $KERNEL ] || continue
+	echo $KERNEL
+	LINUX_VER=$(grep -m1 -o --binary-files=text Linux....................... $KERNEL)
+	[ "$LINUX_VER" ] || \
+	LINUX_VER=$(file -Lb $KERNEL | grep -m1 -o version..........................)
+	LINUX_VER=${LINUX_VER%%(*}
+	LINUX_VER=${LINUX_VER#*sion }
+	done
+	DISTRO_NAME="$(lsb_release -sd) ($(lsb_release -sc)) - kernel $LINUX_VER"
+}
+
+extlinux_update_(){
+	rootfs_scan
+	echo "[i] extlinux update config: $EXT + ROOTFS_DEV: $ROOTFS_DEV ($ROOTFS_UUID)"
+
+	CMD mkdir -p ${EXT%/*} || FAIL
+	[ ! -e $EXT ] || mv -f $EXT $EXT.old || FAIL
+
+	distro_name
+
+	cat <<-EOF | tee $EXT
+LABEL $DISTRO_NAME
+  LINUX /$LINUX
+  INITRD /initrd.img
+  FDTDIR /dtb
+  APPEND root=$ROOTFS $APPEND_DEV
+EOF
+}
+
+grub_update_(){
+	rootfs_scan
+	echo "[i] grub update config: $GRUB_CFG + ROOTFS_DEV: $ROOTFS_DEV ($ROOTFS_UUID)"
+
+	[ ! -e $GRUB_CFG ] || mv $GRUB_CFG $GRUB_CFG.old || FAIL
+	distro_name
+
+	append="root=$ROOTFS $APPEND"
+
+	cat <<-EOF | tee $GRUB_CFG
+set timeout=5
+set menu_color_normal=white/black
+set menu_color_highlight=black/light-green
+insmod efi_gop
+insmod font
+if loadfont \$prefix/unicode.pf2; then
+    insmod gfxterm
+    set gfxmode=auto
+    set gfxpayload=keep
+    terminal_output gfxterm
+fi
+
+insmod png
+if background_image \$prefix/$GRUB_SPLASH; then
+  set color_normal=white/black
+  true
+fi
+
+menuentry "$DISTRO_NAME" {
+  linux /$LINUX $append
+  initrd /initrd.img
+}
+menuentry 'Boot from next volume' {
+	clear
+        exit 1
+}
+#menuentry 'UEFI Firmware Settings' {
+#        fwsetup
+#}
+EOF
+}
+
+grub_splash_default_(){
+	o=$GRUB_PATH/$GRUB_SPLASH
+	[ ! -e $o ] || mv -f $o $o.old || FAIL
+	grep -m1 \^#SPLASH_DATA -A999 "$0" | \
+	    grep -m1 -B999 \#SPLASH_DATA_END | grep -v \# | \
+		 base64 -d | gzip -dc > $o
+	ls -l1 $o*
+}
+
+grub_splash_(){
+	o=$GRUB_PATH/$GRUB_SPLASH
+
+	[ "$GRUB_SPLASH_URL" ] || \
+	GRUB_SPLASH_URL=http://dl.khadas.com/.dl/splash/splash.png
+
+	echo "[i] grub setup splash: $o url: $GRUB_SPLASH_URL"
+	(
+	mkdir -p $GRUB_PATH
+	#cd $GRUB_PATH
+	echo $GRUB_SPLASH_URL > $o.url
+	wget -O$o.tmp $GRUB_SPLASH_URL && {
+		[ -e $o ] && mv -f $o $o.old
+		mv -f $o.tmp $o
+	}
+	ls -l1 $o*
+	)
+}
+
+grub_update2(){
+	grub_update_
+	[ -e $GRUB_PATH/$GRUB_SPLASH ] || \
+	    grub_splash_default_
+
+	# fix up paths
+	#[ -d /boot/efi/efi/debian ] || \
+	#    cp -a /boot/efi/efi/ubuntu /boot/efi/efi/debian
+	#cp /boot/efi/efi/ubuntu/grubaa64.efi /boot/efi/efi/BOOT/BOOTAA64.EFI
+
+	[ -e $EXT ] && {
+	    echo "[i] disable $EXT"
+	    mv $EXT $EXT.disabled
+	}
+}
+
+avahi_proxy_pid=/tmp/avahi_proxy.pid
+avahi_proxy_log=/tmp/avahi_proxy.log
+
+[ "$AVAHI_PROXY_WAIT" ] || \
+AVAHI_PROXY_WAIT=3
+
+avahi_prepare(){
+	which avahi-browse 1>/dev/null 2>&1 || \
+	APT install avahi-utils || FAIL
+
+	p=$(cat $avahi_proxy_pid 2>/dev/null)
+
+	[ "$p" -a -d /proc/$p ] && return
+
+	echo_ "avahi apt_proxy scan $AVAHI_PROXY_WAIT sec ..."
+	avahi-browse _apt_proxy._tcp -r -k 1>$avahi_proxy_log 2>&1 &
+	echo $! > $avahi_proxy_pid
+	sleep $AVAHI_PROXY_WAIT
+}
+
+network_(){
+	echo_ "setup network (avahi + network-manager)"
+	avahi_prepare
+
+#https://askubuntu.com/questions/3503/best-way-to-cache-apt-downloads-on-a-lan
+
+#CMD avahi-browse _apt_proxy._tcp -r -k -t
+
+#apt-get -oAcquire::http::Proxy=http://universe.local:3142 update
+
+#cat /etc/apt/apt.conf.d/00-proxy
+#Acquire::http::Proxy "http://universe.local:3142";
+
+	which nmtui 1>/dev/null 2>&1 || \
+	APT install network-manager
+
+	case $1 in
+	connect)
+	echo_ "Check WIFI..."
+	ip a l wlan0 | grep inet || nmtui connect
+	;;
+	esac
+}
+
+APT_CACHE_CFG=/etc/apt/apt.conf.d/00-proxy
+
+apt_fast_disable_(){
+	[ -e "$APT_CACHE_CFG" ] && \
+	echo_ "apt cache current config: $APT_CACHE_CFG" && \
+	grep "" $APT_CACHE_CFG
+
+	CMD rm -rf $APT_CACHE_CFG && \
+	echo_ "apt fast cache config disabled"
+}
+
+apt_fast_(){
+	echo_ "apt speed up..."
+
+	[ -e "$APT_CACHE_CFG" ] && {
+	echo_ "apt cache current config: $APT_CACHE_CFG"
+	grep "" $APT_CACHE_CFG
+	case "$1" in
+	config)
+	return
+	;;
+	esac
+	}
+
+	[ "$APT_PROXY_ADDR" ] || {
+	avahi=$(which avahi-browse 2>/dev/null)
+	[ "$avahi" ] || \
+	avahi_prepare
+
+	avahi=$(which avahi-browse 2>/dev/null)
+
+	[ "$avahi" -a ! "$NO_AVAHI"  ] && {
+	p=$(avahi-browse _apt_proxy._tcp -r -k -c  | grep hostname)
+	p=${p#*[}
+	p=${p%%]*}
+	APT_PROXY_ADDR="$p:3142"
+	}
+	}
+
+	[ "$APT_PROXY_ADDR" ] && {
+	echo_ "checking host: $APT_PROXY_ADDR ..."
+	curl -m1 -s -I $APT_PROXY_ADDR | grep -q 406 || {
+	echo_ "cache: $APT_PROXY_ADDR not reachable!!!"
+	APT_PROXY_ADDR=
+	}
+	}
+
+	if [ ! "$APT_PROXY_ADDR" ]; then
+	apt_fast_disable_
+	else
+	apt_proxy="http://${APT_PROXY_ADDR#*//}"
+	echo_ "apt fast cache config: $APT_CACHE_CFG"
+	cat <<-EOF | tee $APT_CACHE_CFG
+# autogenerated by $PROG ($(date))
+Acquire::http::Proxy "$apt_proxy";
+
+EOF
+	fi
+} # apt_fast_ end
+
+ethernet_(){
+	ETH=eth0
+	PID=/tmp/dhclient.$ETH.pid
+	[ -d /sys/class/net/$ETH ] || return 0
+
+	case $1 in
+	restart)
+	ip link set dev $ETH down
+	;;
+	esac
+
+	echo "[i] $NAME: fail-save ethernet network up" | tee -a /dev/kmsg $LOG
+	(
+	for try in 1 2 3 4 5 6; do
+	ip link set dev $ETH up
+	grep -q up /sys/class/net/$ETH/operstate && {
+	[ -e $PID -a -d /proc/$(cat $PID) ] && \
+	    kill $(cat $PID)
+	dhclient -pf $PID -nw $ETH
+	break
+	}
+	sleep 2
+	done
+	) >> $LOG 2>&1 &
+}
+
+efi_boot_scan_(){
+	# scan
+	for EFI_BOOT in \
+	/usr/lib/grub/arm64-efi/monolithic/grubaa64.efi \
+	/usr/lib/grub/arm64-efi-signed/grubaa64.efi.signed \
+	"" ;
+	do
+	[ -e "$EFI_BOOT" ] && return 0
+	done
+	return 1
+}
+
+EFI_LOADER=/boot/efi/efi/BOOT/BOOTAA64.EFI
+
+grub_post_check_(){
+	echo "[i] grub post install... check EFI_LOADER: $EFI_LOADER"
+
+	[ -e $EFI_LOADER ] && echo "[i] OK already exist " && return 0
+
+	efi_boot_scan_ || FAIL "cant find efi boot loader"
+
+	CMD mkdir -p ${EFI_LOADER%/*} || FAIL
+	CMD cp $EFI_BOOT $EFI_LOADER || FAIL
+}
+
+grub_install_(){
+	case $BOOT_UUID in
+	"")
+	echo "[i] grub install..."
+	grub-install
+	grub_post_check_
+	;;
+	*-*)
+	DISTRIB=ubuntu
+	echo "[i] grub install chroot tricks ..."
+
+	efi_boot_scan_ || FAIL "cant find efi boot loader"
+
+	CMD mkdir -p /boot/efi /boot/efi/BOOT /boot/efi/$DISTRIB || FAIL
+	CMD cp -a /usr/lib/grub/arm64-efi /boot/grub/ || FAIL
+	CMD cp $EFI_BOOT $EFI_LOADER || FAIL
+	CMD cp $EFI_BOOT /boot/efi/$DISTRIB || FAIL
+
+	cat <<-EOF | tee /boot/efi/$DISTRIB/grub.cfg
+search.fs_uuid $BOOT_UUID root
+set prefix=(\$root)'/grub'
+configfile \$prefix/grub.cfg
+EOF
+
+	esac
+
+} # grub_install_ end
+
+completion_(){
+	echo_ "bash auto competion for $0"
+	cat <<'EOF' > /usr/share/bash-completion/completions/setup
+#= bash complite script for setup
+
+# setup just put into
+#  /usr/share/bash-completion/completions/
+
+_setup (){
+local cur
+COMPREPLY=()
+cur=${COMP_WORDS[COMP_CWORD]}
+case "$cur" in
+*)
+COMPREPLY=( $(compgen -W "$($1 actions)" -- $cur ) ) #"
+;;
+esac
+return 0
+}
+complete -F _setup setup -o filenames ./setup
+EOF
+} # completion_ end
+
+self_update_(){
+	echo_ "self update ... wip ..."
+}
+
+reboot_note(){
+	echo_ "need reboot system to apply ..."
+}
+
+tasksel_(){
+	echo_ "tasksel ..."
+
+	apt_fast_ config
+
+	which tasksel >/dev/null 2>&1 || \
+	APT install tasksel || FAIL
+
+	case $1 in
+	setup)
+	CMD sudo tasksel || FAIL
+	;;
+	esac
+
+	echo_ DONE
+	#reboot_note
+}
+
+lvm_initramfs_(){
+	s=/etc/initramfs-tools/scripts/local-top/forcelvm
+	[ -x "$s" ] && return 0
+	mkdir -p ${s%/*} || FAIL
+	echo_ "FIX lvm $s"
+	cat <<'EOF' > $s
+#!/bin/sh
+PREREQ=""
+prereqs()
+{
+   echo "$PREREQ"
+}
+case $1 in
+prereqs)
+   prereqs
+   exit 0
+   ;;
+esac
+. /scripts/functions
+# Begin real processing below this line
+
+# This was necessary because ubuntu's LVM autodetect is completely broken. This
+# is the only line they needed in their script. It makes no sense.
+# How was this so hard for you to do, Ubuntu?!?!? ;-)
+# debian buster too ;-)
+# https://askubuntu.com/questions/551446/cant-find-lvm-root-dropped-back-to-initramfs
+
+lvm vgchange -ay
+EOF
+	chmod +x $s
+} #lvm_initramfs_ end
+
+lvm_migrate_(){
+
+	# https://www.thegeekdiary.com/centos-rhel-converting-an-existing-root-filesystem-to-lvm-partition/
+
+	VG=vg0
+	LN=rootfs
+	LRS=+5G # 1.2+5 = 6.2 its must be ok for begin and user can reconfigure fs at any time
+
+	# initial !!!
+	echo_ "migrate to LVM (Logical Volume Manager) ..."
+
+	lvm_initramfs_
+
+	#dmsetup remove_all
+	B=/dev/mapper/$VG-$LN
+
+	[ -b "$B" ] && {
+	echo_ "detected $B and skipped..."
+	exit 1
+	}
+
+	rootfs_size_
+
+	case $r in
+	/dev/dm-*)
+	echo_ "rootfs already works as LVM $ROOTFS_DEV -> $r"
+	return 0
+	;;
+	esac
+
+	r=$(realpath $ROOTFS_DEV)
+
+	case $r in
+	/dev/dm-*)
+	echo_ "rootfs already works as LVM $ROOTFS_DEV -> $r"
+	return 0
+	;;
+	esac
+
+	which lvs 1>/dev/null 2>&1 || \
+	APT install lvm2 || FAIL
+
+	for ROOTFS_DISK in /sys/block/*/${ROOTFS_DEV##*/}; do
+	ROOTFS_DISK=${ROOTFS_DISK#*block/}
+	ROOTFS_DISK=/dev/${ROOTFS_DISK%%/*}
+	break
+	done
+
+	echo_ "ROOTFS_DISK: $ROOTFS_DISK"
+
+	ROOTFS_SIZE_PART=$(blockdev --getsize64 $ROOTFS_DEV)
+
+	[ "$ROOTFS_SIZE" != "$ROOTFS_SIZE_PART" ] && {
+	echo_ "ROOTFS_SIZE: $ROOTFS_SIZE != $ROOTFS_SIZE_PART (partition size) ... minimize ..."
+	echo ", $((ROOTFS_SIZE/512))" | sfdisk --force -N2 $ROOTFS_DISK
+	partx -u $ROOTFS_DISK
+	}
+
+	PV=$(sfdisk --dump $ROOTFS_DISK | grep -m1 type=E6D6D379)
+	[ "$PV" ] || {
+	echo "type=E6D6D379-F507-44C2-A23C-238F2A3DF928;" | sfdisk -a --force $ROOTFS_DISK
+	PV=$(sfdisk --dump $ROOTFS_DISK | grep -m1 type=E6D6D379)
+	}
+	PV=${PV%%:*}
+	PV=${PV%% *}
+
+	partx -u $ROOTFS_DISK
+	LS=$ROOTFS_SIZE
+
+	echo_ "creating PV on $PV => VG: $VG => LN: $LN size $LS bytes ..."
+	CMD wipefs -a -f $PV || FAIL
+	CMD pvcreate -ff -y $PV || FAIL
+	# pvs $PV && echo already exist
+	CMD vgcreate -ff -y $VG $PV || FAIL
+	CMD lvcreate -y -L${LS}b -n $LN $VG || FAIL
+
+	echo_ "migrate from $ROOTFS_DEV to /dev/$VG/$LN ..."
+
+	[ "$NO_FREEZE" ] && \
+	NO_FREEZE="echo skip "
+
+	CMD $NO_FREEZE fsfreeze --freeze / || FAIL
+	CMD dd if=$ROOTFS_DEV bs=1M count=$((LS/1024/1024+1)) of=/dev/$VG/$LN conv=fsync status=progress || FAIL
+	#CMD sync || FAIL
+	CMD $NO_FREEZE fsfreeze --unfreeze / || FAIL
+	CMD fsck -y -f /dev/$VG/$LN || FAIL
+	CMD tune2fs $ROOTFS_DEV -LROOTFS_BACKUP -Urandom || FAIL
+	[ "$LRS" ] && \
+	CMD lvresize -L$LRS /dev/$VG/$LN -r -y || FAIL
+
+	echo_ "DONE"
+	reboot_note
+} # lvm_migrate_ end
+
+u_boot_(){
+	echo_ "U-Boot update/write online ...wip.."
+	:
+}
+
+ssh_preconfig_(){
+	echo_ "sshd preconfig ...wip..."
+	:
+}
+
+xorg_cfg=/etc/X11/xorg.conf.d/00-khadas-tweaks.conf
+
+#### NOT USED
+boot_gpu_(){
+	echo_ "GPU tweaks $BOARD"
+
+	#https://manpages.debian.org/stretch/xserver-xorg-core/modesetting.4.en.html
+
+	# VIM1 VIM2: Xorg cant start wihout this
+	#rm -rf /dev/drm/card1
+	# or
+	#rm -rf /dev/drm/card0
+	#
+
+
+	for g in /dev/dri/by-path/platform-*-card; do
+	[ -e "$g" ] || continue
+	l=$(readlink $g)
+	case $g in
+	#VIM1
+	#VIM2
+	*platform-d00c0000.gpu-card) # DRM modesetting
+	cmd_ rm ${g%/*}/$l
+	;;
+	*platform-d0100000.vpu-card) # Glamore
+	;;
+
+	#VIM3
+	#VIM3L
+	platform-ff900000.vpu-card)
+	;;
+	platform-ffe40000.gpu-card)
+	;;
+	#Edge
+	esac
+	done
+} #boot_gpu_ end
+
+xorg_tweaks_(){
+	get_board_
+	echo_ "$BOARD $1 : $xorg_cfg"
+
+	case $1 in
+	auto)
+	[ -e $xorg_cfg ] && \
+	echo_ "$xorg_cfg already" && return
+	[ -e $xorg_cfg.disabled ] && \
+	echo_ "$xorg_cfg.disabled" && return
+	;;
+	remove)
+	[ -e "$xorg_cfg" ] && \
+	mv -f $xorg_cfg $xorg_cfg.disabled && \
+	echo_ "$xorg_cfg.disabled"
+	return
+	;;
+	esac
+
+	which Xorg 1>/dev/null || {
+	echo_ "Xorg not installed skip.."
+	return 0
+	}
+
+	cat <<EOF | tee $xorg_cfg
+# auto generated by \`$PROG $ARGS\` at $(date)
+# exec \`$PROG xorg-tweaks remove\` remove it
+
+Section "OutputClass"
+        Identifier "Panfrost"
+        MatchDriver "meson"
+        Driver "modesetting"
+        Option "PrimaryGPU" "true"
+EndSection
+
+Section "Screen"
+   Identifier    "Default Screen"
+#   Monitor       "Configured Monitor"
+#   Device        "dev"
+#   Device        "Configured Video Device"
+    DefaultDepth  24
+    SubSection "Display"
+     Depth    24
+     Modes    "1920x1080" "1440x900" "1280x720" "1280x1024" "1280x960" "1024x768" "800x600" "640x480" "720x400"
+    EndSubSection
+EndSection
+EOF
+} # xorg_tweaks end
+
+ANOOP="--no-install-recommends --no-install-suggests"
+
+for a in $@; do
+	case $a in
+	-q)# be more quiet
+	QUIET=1
+	;;
+	--help)# help
+	help
+	exit
+	;;
+	-*) # wrong param
+	help 1
+	exit
+	;;
+	esac
+done
+
+##ACTIONS
+for a in $@; do
+	case $a in
+	-*)
+	;;
+	actions)# print action list
+	actions_
+	;;
+	hello)# just say hello
+	echo_ "hello $(date)"
+	;;
+	press)# press any key
+	echo_ "press any key [ENTER]"
+	read
+	;;
+	shell)# start shell
+	echo_ "start shell [exit to continue]"
+	bash
+	echo DONE
+	;;
+	ethernet)# setup ethernet
+	ethernet_
+	;;
+	ethernet-restart)# ethernet restart
+	ethernet_ restart
+	;;
+	wait)
+	echo_ "wait file $wait_flag"
+	while [ ! -e $wait_flag ]; do  sleep 1; done
+	;;
+	false)# just return false code
+	echo_ "false test"
+	exit 1
+	;;
+	true)# just return true code
+	exit 0
+	;;
+	rootfs-size)# rootfs size
+	rootfs_size_
+	echo "$ROOTFS_SIZE"
+	;;
+	resize)# resize rootfs
+	resize_
+	;;
+	apt-update)# apt update
+	apt_update
+	;;
+	apt-clean)# apt clean
+	APT clean
+	;;
+	apt-update-clean) # apt update clean flag
+	rm -rf $apt_updated
+	;;
+	lvm-migrate)# migrate to lvm
+	lvm_migrate_
+	;;
+	gnome)# gnome install
+	echo_ "Gnome install..."
+	resize_
+	#APT update
+	#dpkg --configure -a
+	APT install gnome && reboot_note
+	;;
+	+*)# apt install pacakge
+	APT install ${a#+}
+	;;
+	=*)# apt install pacakge with no-install-*
+	APT install ${a#=} $ANOOP
+	;;
+	@*)# apt download package
+	APT install --download-only ${a#@}
+	;;
+	apt-show)# apt show
+	APT show
+	;;
+	default)# default setup
+	completion_
+	lvm_initramfs_
+	extlinux_update_
+	;;
+	extlinux)# extlinux setup
+	extlinux_update_
+	;;
+	rootfs)# print rootfs location
+	rootfs_scan
+	echo $ROOTFS
+	;;
+	distro)# print distro name
+	distro_name
+	echo $DISTRO_NAME
+	;;
+	board)# print board ID name
+	get_board_
+	echo $BOARD
+	;;
+	grub-update)# grub update
+	grub_update2
+	;;
+	grub-download) # grub package download only
+	echo_ "Grub download..."
+	#APT update
+	APT install --download-only grub-efi-arm64
+	;;
+	grub-splash-rnd)# grub splash setup random
+	GRUB_SPLASH_URL=$(grep -m1 \^#SPLASH_LIST -A999 "$0" | \
+		grep -m1 -B999 \#SPLASH_LIST_END | grep -v \# | \
+		sort -R | head -n1)
+		grub_splash_
+	;;
+	grub-splash)# grub splash setup
+	grub_splash_
+	;;
+	grub-splash-default)# grub splash default setup
+	grub_splash_default_
+	;;
+	grub)# grub install
+	echo_ "Grub install..."
+	#APT update
+	APT install grub-efi-arm64
+	#mount -o remount,rw /sys/firmware/efi/efivars
+	grub_install_
+	grub_update2
+	echo DONE
+	;;
+	boot_)# boot up tweaks
+	xorg_tweaks_ auto
+	;;
+	avahi)# setup avahi service
+	avahi_prepare
+	;;
+	network)# setup network-manager
+	network_
+	;;
+	connect)# connect wifi
+	network_ connect
+	;;
+	apt-fast)# setup apt scan and setup cache server
+	apt_fast_
+	;;
+	apt-fast-disable)# setup apt scan and setup cache server
+	apt_fast_disable_
+	;;
+	tasksel)# Tasksel Ubuntu/Debian software select
+	#apt_fast_
+	resize_
+	tasksel_ setup
+	;;
+	tasksel-install)# Tasksel Ubuntu/Debian software select install only mode
+	#apt_fast_
+	tasksel_
+	;;
+	completion)# setup completion for this script
+	completion_
+	;;
+	self-update)# setup script self update
+	self_update_
+	;;
+	u-boot)# update/write uboot to emmc by online ...WIP...
+	u_boot_
+	;;
+	ssh-preconfig)# ssh preconfig ...WIP...
+	ssh_preconfig_
+	;;
+	lvm-initramfs)# lvm initramfs fix
+	lvm_initramfs_
+	;;
+	xorg-tweaks)# Xorg tweaks
+	xorg_tweaks_
+	;;
+	xorg-tweaks-remove)# remove Xorg tweaks
+	xorg_tweaks_ remove
+	;;
+	x-mini)# minimal install fluxbox + slim + Xorg + firefox + mesa-utils
+	resize_
+	apt_fast_
+	APT install xserver-xorg-core xserver-xorg-input-all $ANOOP
+	APT install fluxbox xcompmgr $ANOOP
+	APT install slim xauth xinit $ANOOP
+
+	grep -q ^default_user /etc/slim.conf || {
+	echo "slim $USER add to /etc/slim.conf"
+	echo "default_user $USER" | tee -a /etc/slim.conf
+	}
+
+	# LIBGL_ALWAYS_SOFTWARE=1
+	# MESA_GLES_VERSION_OVERRIDE=2.0
+
+	APT install mesa-utils rxvt-unicode-256color $ANOOP
+	APT install firefox apulse alsa-utils libpci3 $ANOOP
+	;;
+	*) # wrong action
+	help
+	esac
+done
+##ACTIONS_END
+
+exit ## STOP THERE ##
+
+##INLINE DATA
+
+#SPLASH_LIST
+https://i.imgur.com/egW7pI2.png
+https://i.imgur.com/CaHc5xN.png
+https://i.imgur.com/UR79pGX.png
+https://i.imgur.com/h0UEBhj.png
+https://i.imgur.com/1eYb84f.png
+https://i.imgur.com/oC52Rz1.png
+https://i.imgur.com/46JuWog.png
+#SPLASH_LIST_END
+
+#PPM
+P3
+1 7
+15
+2 2 2
+3 3 3
+4 4 4
+5 5 5
+4 4 4
+3 3 3
+2 2 2
+##PPM_END
+
+#convert - -filter box -scale 1920x1080! -strip PNG24:- | gzip -c9 | base64
+#SPLASH_DATA
+H4sIAAAAAAACA+sM8HPn5ZLiYmBg4PX0cAliYGBvYGBgseBgAoqkbwwTYWBQLPN0cQypuPX2lmMu
+i4EAy0EVo8alBX926rYqT5ymuprr4J7oz79/1tQxgMCD/X/vyoFZB2azZIAZQkwmYJqTUQpENbQw
+8IJoB6cGNhCtoOjADKInCCxgBNEeHBfAylVGtY9qH9U+qp0+2s+duXMPUm4124wGy6j2Ue2j2kfL
+sVHto9pHtY9qp5/2OTN37gWzGtgrR4NlVPuo9lHtQ0m7xe7qajCLgf/TaLCMah/VPqp9KGkvLPv+
+DcxikHvCOBoso9pHtY9qHy3HRrWPah/VPqqdbtofce9jFnyk9NVwHojr6ernss4poQkAImGGp68h
+AAA=
+#SPLASH_DATA_END
+

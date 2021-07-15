@@ -1,0 +1,7 @@
+#!/bin/sh
+
+## hyphop ##
+
+echo
+echo "TIPS: Try \`setup\` for tuning system"
+echo
