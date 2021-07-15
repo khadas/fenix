@@ -59,6 +59,13 @@ time_cal() {
 
 ## Prepare host
 ## Install essential packages
+broken_(){
+	[ "$1" ] && \
+	error_msg "$1"
+	error_msg "Broken combination => $build_host and $DISTRIB_RELEASE"
+	error_msg "NOTE: can try use \`NO_HOST_CHECK=1 make\`)"
+	return 1
+}
 prepare_host() {
 
 	if [[ $(dpkg --print-architecture) != "amd64" ]]; then
@@ -69,30 +76,23 @@ prepare_host() {
 	local build_host=$(lsb_release -sc)
 	info_msg "Build host: $build_host target: $DISTRIB_RELEASE"
 
-	[ ! "$NO_HOST_CHECK" ] || {
-		case $buid_host in
+	[ "$NO_HOST_CHECK" ] || {
+		case $build_host in
 		hirsute|bullseye)
 		## looks like can build all prev system
 		;;
 		focal|buster)
 			case $DISTRIB_RELEASE in
-				hirsute|bullseye)
-				error_msg "Broken combination => $buid_host and $DISTRIB_RELEASE"
-				return 1
-				;;
+				hirsute|bullseye) broken_ ;;
 			esac
 		;;
 		bionic)
 			case $DISTRIB_RELEASE in
-				hirsute|bullseye|focal|buster)
-				error_msg "Broken combination => $buid_host and $DISTRIB_RELEASE"
-				return 1
-				;;
+				hirsute|bullseye|focal|buster) broken_ ;;
 			esac
 		;;
 		*)
-		error_msg "Build host system not detected (can try use \`NO_HOST_CHECK=1 make\`)"
-		return -1
+		broken_ "Build host system not detected"
 		;;
 		esac
 	}
