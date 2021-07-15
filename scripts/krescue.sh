@@ -75,7 +75,7 @@ case $ACTION in
 	build|krescue)
 	echo "[i] Krescue build/rebuild images"
 	./scripts/prepare || echo no possible continue with errors
-	BUILD=$KRESCUE_BUILD ./scripts/build -c -u
+	BUILD=$KRESCUE_BUILD ./scripts/build -c -u -y # replace old images + git update + ask yes
 	;;
 	*)
 	help
