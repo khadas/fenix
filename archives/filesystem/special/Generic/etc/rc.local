@@ -11,11 +11,4 @@
 #
 # By default this script does nothing.
 
-# Reboot test handle
-if cat /proc/cmdline | grep -q reboot_test > /dev/null; then
-	if ! systemctl is-active reboot-test-khadas | grep "^active$" > /dev/null; then
-		systemctl start reboot-test-khadas
-	fi
-fi
-
 exit 0
