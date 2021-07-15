@@ -1,0 +1,9 @@
+/boot/*
+/dev/*
+/etc/ssh/ssh_host_*
+/proc/*
+/run/*
+/tmp/*
+/sys/*
+/usr/local/bin/qemu-*
+

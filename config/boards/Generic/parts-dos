@@ -1,0 +1,4 @@
+label: dos
+
+part1 : start=16M, size=512M, type=e bootable
+part2 : start=16M, size=4G
