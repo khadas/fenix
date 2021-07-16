@@ -698,6 +698,11 @@ copy_ota_debs() {
 
 	local ota_debs=$BUILD_DEBS/$VERSION/ota_debs
 
+	if [ "$KHADAS_BOARD" == "Generic" ]; then
+		warning_msg "Ignore copy ota debian packages!"
+		return
+	fi
+
 	info_msg "Copying debs to $ota_debs/$KHADAS_BOARD/$DISTRIBUTION-$DISTRIB_RELEASE ..."
 
 	mkdir -p $ota_debs/$KHADAS_BOARD/$DISTRIBUTION-$DISTRIB_RELEASE
