@@ -137,7 +137,7 @@ prepare_host() {
 			bison libbison-dev flex libfl-dev lib32z1 libglib2.0-dev"
 
 	# new fs tools + compression
-	hostdeps="$hostdeps mtools e2tools e2fsprogs file pixz pigz zstd"
+	hostdeps="$hostdeps mtools e2tools e2fsprogs file pixz pigz zstd uuid-runtime fdisk"
 	# remove no need it
 	for r in nfs-kernel-server p7zip-full; do
 	hostdeps="${hostdeps/$r/}"
