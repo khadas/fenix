@@ -189,6 +189,11 @@ build_uboot_deb() {
 	local pkgname="${LINUX_UBOOT_DEB}"
 	local pkgdir="$BUILD_IMAGES/.tmp/${pkgname}_${VERSION}-${UBOOT_VER}_${DISTRIB_ARCH}"
 
+	if [ "$KHADAS_BOARD" == "Generic" ]; then
+		warning_msg "Ignore u-boot debian package build for generic configuration!"
+		return
+	fi
+
 	rm -rf $pkgdir
 	mkdir -p $pkgdir/usr/lib/u-boot $pkgdir/DEBIAN
 
