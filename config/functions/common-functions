@@ -367,7 +367,7 @@ get_package_list_hash()
 
 	md5_=$(echo $package_list | md5sum)
 	md5_=${md5_:0:7}
-	echo "PKG_LIST_HASH: $md5_ : $package_list">&2
+#	echo "PKG_LIST_HASH: $md5_ : $package_list">&2
 	echo $md5_
 }
 
