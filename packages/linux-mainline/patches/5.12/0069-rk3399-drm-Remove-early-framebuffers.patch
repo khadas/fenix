@@ -1,0 +1,29 @@
+From e96f8fedf914dc4116fe5296dc2896e01fc221dd Mon Sep 17 00:00:00 2001
+From: Artem Lapkin <art@khadas.com>
+Date: Tue, 20 Jul 2021 12:42:18 +0800
+Subject: [PATCH] rk3399: drm: Remove early framebuffers
+
+EFI remove blocked drm fb driver
+
+Signed-off-by: Artem Lapkin <art@khadas.com>
+---
+ drivers/gpu/drm/rockchip/rockchip_drm_drv.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+index 212bd87c0..3905fce6c 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
++++ b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+@@ -158,6 +158,9 @@ static int rockchip_drm_bind(struct device *dev)
+ 	 */
+ 	drm_dev->irq_enabled = true;
+ 
++	/* Remove early framebuffers (ie. efifb) */
++	drm_fb_helper_remove_conflicting_framebuffers(NULL, "rockchipdrmfb", false);
++
+ 	ret = rockchip_drm_fbdev_init(drm_dev);
+ 	if (ret)
+ 		goto err_unbind_all;
+-- 
+2.25.1
+
