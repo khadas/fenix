@@ -335,10 +335,10 @@ prepare_toolchains() {
 	build_package "gcc-linaro-aarch64-linux-gnu:host"
 	build_package "gcc-linaro-aarch64-none-elf:host"
 	build_package "gcc-linaro-arm-none-eabi:host"
-	if [ "$UBOOT" == "mainline" ]; then
+#	if [ "$UBOOT" == "mainline" ]; then
 		build_package "gcc-linaro-aarch64-elf:host"
 		build_package "gcc-arm-aarch64-none-linux-gnu:host"
-	fi
+#	fi
 
 	return 0
 }
