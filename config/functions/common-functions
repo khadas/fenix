@@ -282,7 +282,7 @@ install_deb_chroot()
 	cp $package $ROOTFS_TEMP/root/$name
 	info_msg "Installing $name in chroot..."
 	mount_chroot "$ROOTFS_TEMP"
-	chroot $ROOTFS_TEMP /bin/bash -c "dpkg -i /root/$name"
+	chroot $ROOTFS_TEMP /bin/bash -c "dpkg -i /root/$name" || exit 1
 	umount_chroot "$ROOTFS_TEMP"
 	rm -f $ROOTFS_TEMP/root/$name
 }
