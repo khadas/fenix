@@ -16,8 +16,8 @@ PKG_NEED_BUILD="YES"
 make_target() {
 
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
-	export ARCH=arm64
-	export CROSS_COMPILE="${CCACHE} ${KERNEL_COMPILER}"
+#	export ARCH=arm64
+#	export CROSS_COMPILE="${CCACHE} ${KERNEL_COMPILER}"
 	export INSTALL_MOD_STRIP=1
 
 	[ "$KERNEL_INSTALL_PATH" ] || \
@@ -83,7 +83,7 @@ make_target() {
 	    esac
 
 	    echo "KERNEL: make $k"
-	    make -j${NR_JOBS} $k
+	    make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE="${CCACHE} ${KERNEL_COMPILER}" $k
 
 	done
 
