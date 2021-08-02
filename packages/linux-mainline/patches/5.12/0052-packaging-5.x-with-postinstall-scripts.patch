@@ -55,9 +55,9 @@ index 25a04f6369a6..cfece523e211 100755
 +	cd /usr/src/linux-headers-$version
 +	echo "Compiling headers - please wait ..."
 +	find -type f -exec touch {} +
-+	make -s scripts >/dev/null
-+	make -s M=scripts/mod/ >/dev/null
-+	exit 0
++	make -s scripts || exit 1
++	make -s M=scripts/mod/ || exit 1
++	#exit 0
 +	EOF
 +
 +	cat >> $pdir/DEBIAN/prerm <<-EOF
