@@ -89,7 +89,8 @@ prepare_host() {
 		;;
 		bionic)
 			case $DISTRIB_RELEASE in
-				hirsute|bullseye|focal|buster) broken_ ;;
+#				hirsute|bullseye|focal|buster) broken_ ;;
+				hirsute|bullseye|buster) broken_ ;;
 			esac
 		;;
 		*)
