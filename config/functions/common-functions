@@ -222,6 +222,9 @@ mount_chroot() {
 		echo "Usage: mount_chroot <target>"
 		return -1
 	fi
+
+	grep -q $target/proc /proc/mounts && return
+
 	mkdir -p /tmp/fenix # shared path to host system from chroot
 	mount -t proc chproc $target/proc
 	mount -t sysfs chsys $target/sys
