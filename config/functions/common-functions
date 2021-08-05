@@ -243,6 +243,12 @@ qemu_helper() {
 	done
 }
 
+qemu_helper_deactivate() {
+	[ -d "$1" ] || return 1
+	q=$(which $QEMU_BINARY)
+	rm "$1$q"
+}
+
 ## notice about need sudo
 need_sudo(){
 if [ "$sudo" ]; then
