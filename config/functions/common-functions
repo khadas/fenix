@@ -236,6 +236,13 @@ mount_chroot() {
 	mkdir -p $target/run/lock
 }
 
+qemu_helper() {
+	for c in $QEMU_BINARY; do
+		q=$(which $c)
+		[ -e "$1$q" ] || cp "$q" "$1$q"
+	done
+}
+
 ## notice about need sudo
 need_sudo(){
 if [ "$sudo" ]; then
