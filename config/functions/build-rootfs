@@ -234,7 +234,7 @@ create_rootfs_cache()
 			info_msg "Extracting $display_name $date_diff days old"
 			# may be no need progress at all its very fast
 			lz4 -dc < $cache_fname | tar xp --xattrs -C $ROOTFS_TEMP/
-
+			qemu_helper "$ROOTFS_TEMP"
 			return
 		else
 			warning_msg "Cache `basename $cache_fname` checksum not match! Clean up!"
@@ -249,7 +249,7 @@ create_rootfs_cache()
 			info_msg "Extracting $display_name $date_diff days old"
 			# may be no need progress at all its very fast
 			lz4 -dc < $cache_fname | tar xp --xattrs -C $ROOTFS_TEMP/
-
+			qemu_helper "$ROOTFS_TEMP"
 			return
 		fi
 	fi
@@ -301,7 +301,7 @@ create_rootfs_cache()
 	[[ ${PIPESTATUS[0]} -ne 0 || ! -f $ROOTFS_TEMP/debootstrap/debootstrap ]] && error_msg "Debootstrap base system first stage failed" && return -1
 
 	mkdir -p $ROOTFS_TEMP/usr/local/bin
-#	cp /usr/bin/$QEMU_BINARY $ROOTFS_TEMP/usr/local/bin
+	qemu_helper "$ROOTFS_TEMP"
 
 	mkdir -p $ROOTFS_TEMP/usr/share/keyrings
 	cp /usr/share/keyrings/*-archive-keyring.gpg $ROOTFS_TEMP/usr/share/keyrings
