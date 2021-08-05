@@ -231,6 +231,9 @@ mount_chroot() {
 	#mount --bind /tmp/fenix $target/sys/fs # get it from /sys/fs
 	mount -t devtmpfs chdev $target/dev || mount --bind /dev $target/dev
 	mount -t devpts chpts $target/dev/pts
+	# maybe need it
+	mount -t tmpfs chrun $target/run
+	mkdir -p $target/run/lock
 }
 
 ## notice about need sudo
