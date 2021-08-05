@@ -191,7 +191,7 @@ install_distribution_specific()
 		;;
 	bionic|focal)
 		# remove doubled uname from motd
-		[[ -f $$ROOTFS_TEMP/etc/update-motd.d/10-uname ]] && rm $ROOTFS_TEMP/etc/update-motd.d/10-uname
+		[[ -f $ROOTFS_TEMP/etc/update-motd.d/10-uname ]] && rm $ROOTFS_TEMP/etc/update-motd.d/10-uname
 		# remove motd news from motd.ubuntu.com
 		[[ -f $ROOTFS_TEMP/etc/default/motd-news ]] && sed -i "s/^ENABLED=.*/ENABLED=0/" $ROOTFS_TEMP/etc/default/motd-news
 		# Basic Netplan config. Let NetworkManager manage all devices on this system
