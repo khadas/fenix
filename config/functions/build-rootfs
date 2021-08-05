@@ -24,8 +24,8 @@ install_common()
 	# change time zone data
 	info_msg "Setup timezone to '$TZDATA'"
 	echo $TZDATA > $ROOTFS_TEMP/etc/timezone
-	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -sf /usr/share/zoneinfo/$TZDATA  /etc/localtime"'
-	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "dpkg-reconfigure -f noninteractive tzdata"'
+	ln -sf ../usr/share/zoneinfo/$TZDATA  "$ROOTFS_TEMP"/etc/localtime
+	LC_ALL=C LANG=C chroot "$ROOTFS_TEMP" /bin/bash -c "dpkg-reconfigure -f noninteractive tzdata"
 
 	# initial date for fake-hwclock
 	date -u '+%Y-%m-%d %H:%M:%S' > $ROOTFS_TEMP/etc/fake-hwclock.data
