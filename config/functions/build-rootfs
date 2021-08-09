@@ -620,6 +620,8 @@ build_rootfs() {
 	[ "$KHADAS_BOARD" = "Generic" ] || \
 		cp archives/logo/${VENDOR}/logo.img $BUILD_IMAGES
 
+	qemu_helper_deactivate "$ROOTFS_TEMP"
+
 	## Unmount to get the rootfs.img
 	sync
 	umount_chroot "$ROOTFS_TEMP"
