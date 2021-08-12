@@ -24,8 +24,8 @@ install_common()
 	# change time zone data
 	info_msg "Setup timezone to '$TZDATA'"
 	echo $TZDATA > $ROOTFS_TEMP/etc/timezone
-	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -sf /usr/share/zoneinfo/$TZDATA  /etc/localtime"'
-	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "dpkg-reconfigure -f noninteractive tzdata"'
+	ln -sf ../usr/share/zoneinfo/$TZDATA  "$ROOTFS_TEMP"/etc/localtime
+	LC_ALL=C LANG=C chroot "$ROOTFS_TEMP" /bin/bash -c "dpkg-reconfigure -f noninteractive tzdata"
 
 	# initial date for fake-hwclock
 	date -u '+%Y-%m-%d %H:%M:%S' > $ROOTFS_TEMP/etc/fake-hwclock.data
@@ -191,7 +191,7 @@ install_distribution_specific()
 		;;
 	bionic|focal)
 		# remove doubled uname from motd
-		[[ -f $$ROOTFS_TEMP/etc/update-motd.d/10-uname ]] && rm $ROOTFS_TEMP/etc/update-motd.d/10-uname
+		[[ -f $ROOTFS_TEMP/etc/update-motd.d/10-uname ]] && rm $ROOTFS_TEMP/etc/update-motd.d/10-uname
 		# remove motd news from motd.ubuntu.com
 		[[ -f $ROOTFS_TEMP/etc/default/motd-news ]] && sed -i "s/^ENABLED=.*/ENABLED=0/" $ROOTFS_TEMP/etc/default/motd-news
 		# Basic Netplan config. Let NetworkManager manage all devices on this system
@@ -234,7 +234,7 @@ create_rootfs_cache()
 			info_msg "Extracting $display_name $date_diff days old"
 			# may be no need progress at all its very fast
 			lz4 -dc < $cache_fname | tar xp --xattrs -C $ROOTFS_TEMP/
-
+			qemu_helper "$ROOTFS_TEMP"
 			return
 		else
 			warning_msg "Cache `basename $cache_fname` checksum not match! Clean up!"
@@ -249,7 +249,7 @@ create_rootfs_cache()
 			info_msg "Extracting $display_name $date_diff days old"
 			# may be no need progress at all its very fast
 			lz4 -dc < $cache_fname | tar xp --xattrs -C $ROOTFS_TEMP/
-
+			qemu_helper "$ROOTFS_TEMP"
 			return
 		fi
 	fi
@@ -301,7 +301,7 @@ create_rootfs_cache()
 	[[ ${PIPESTATUS[0]} -ne 0 || ! -f $ROOTFS_TEMP/debootstrap/debootstrap ]] && error_msg "Debootstrap base system first stage failed" && return -1
 
 	mkdir -p $ROOTFS_TEMP/usr/local/bin
-#	cp /usr/bin/$QEMU_BINARY $ROOTFS_TEMP/usr/local/bin
+	qemu_helper "$ROOTFS_TEMP"
 
 	mkdir -p $ROOTFS_TEMP/usr/share/keyrings
 	cp /usr/share/keyrings/*-archive-keyring.gpg $ROOTFS_TEMP/usr/share/keyrings
@@ -619,6 +619,8 @@ build_rootfs() {
 	## Logo
 	[ "$KHADAS_BOARD" = "Generic" ] || \
 		cp archives/logo/${VENDOR}/logo.img $BUILD_IMAGES
+
+	qemu_helper_deactivate "$ROOTFS_TEMP"
 
 	## Unmount to get the rootfs.img
 	sync

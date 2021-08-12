@@ -89,7 +89,8 @@ prepare_host() {
 		;;
 		bionic)
 			case $DISTRIB_RELEASE in
-				hirsute|bullseye|focal|buster) broken_ ;;
+#				hirsute|bullseye|focal|buster) broken_ ;;
+				hirsute|bullseye|buster) broken_ ;;
 			esac
 		;;
 		*)
@@ -241,6 +242,12 @@ qemu_helper() {
 		q=$(which $c)
 		[ -e "$1$q" ] || cp "$q" "$1$q"
 	done
+}
+
+qemu_helper_deactivate() {
+	[ -d "$1" ] || return 1
+	q=$(which $QEMU_BINARY)
+	rm "$1$q"
 }
 
 ## notice about need sudo
