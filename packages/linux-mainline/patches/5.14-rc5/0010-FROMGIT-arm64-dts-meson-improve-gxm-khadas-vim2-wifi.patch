@@ -1,0 +1,36 @@
+From 7835024794ddb2cde81b2de1f142975298baea2a Mon Sep 17 00:00:00 2001
+From: Artem Lapkin <email2tema@gmail.com>
+Date: Tue, 22 Jun 2021 12:43:34 +0800
+Subject: [PATCH 10/57] FROMGIT: arm64: dts: meson: improve gxm-khadas-vim2
+ wifi
+
+Improve gxm-khadas-vim2 wifi performance
+* change freq from 60Mhz to 100Mhz
+* add cap-sd-highspeed param
+
+100Mhz works well same as in meson-khadas-vim3.dtsi
+
+Signed-off-by: Artem Lapkin <art@khadas.com>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Link: https://lore.kernel.org/r/20210622044334.769791-2-art@khadas.com
+---
+ arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+index 18a4b7a6c5df..86bdc0baf032 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+@@ -307,7 +307,8 @@
+ 	#size-cells = <0>;
+ 
+ 	bus-width = <4>;
+-	max-frequency = <60000000>;
++	cap-sd-highspeed;
++	max-frequency = <100000000>;
+ 
+ 	non-removable;
+ 	disable-wp;
+-- 
+2.17.1
+
