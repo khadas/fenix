@@ -1,4 +1,4 @@
-state.KHADASVIM3 {
+state.G12BKHADASVIM3L {
 	control.1 {
 		iface MIXER
 		name 'TDMOUT_A Lane 0 Volume'

@@ -1,0 +1,55 @@
+From 495e17137e3b3a448c0480f7defd320b67a48299 Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Wed, 11 Aug 2021 11:43:47 +0800
+Subject: [PATCH 56/57] PCI: DWC: meson: add meson_mrrs_limit_quirk
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ drivers/pci/controller/dwc/pci-meson.c | 31 ++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+
+diff --git a/drivers/pci/controller/dwc/pci-meson.c b/drivers/pci/controller/dwc/pci-meson.c
+index d8c4ec085b2d..7c75bf8cd509 100644
+--- a/drivers/pci/controller/dwc/pci-meson.c
++++ b/drivers/pci/controller/dwc/pci-meson.c
+@@ -194,6 +194,37 @@ static inline struct clk *meson_pcie_probe_clock(struct device *dev,
+ 	return clk;
+ }
+ 
++static void meson_mrrs_limit_quirk(struct pci_dev *dev)
++{
++ 	struct pci_bus *bus = dev->bus;
++ 	int mrrs, mrrs_limit = 256;
++ 	static const struct pci_device_id bridge_devids[] = {
++ 		{ PCI_DEVICE(PCI_VENDOR_ID_SYNOPSYS, PCI_DEVICE_ID_SYNOPSYS_HAPSUSB3) },
++ 		{ 0, },
++ 	};
++
++ 	/* look for the matching bridge */
++ 	while (!pci_is_root_bus(bus)) {
++ 		/*
++ 		 * 256 bytes maximum read request size. They can't handle
++ 		 * anything larger than this. So force this limit on
++ 		 * any devices attached under these ports.
++ 		 */
++ 		if (!pci_match_id(bridge_devids, bus->self)){
++ 			bus = bus->parent;
++ 			continue;
++ 		}
++
++ 		mrrs = pcie_get_readrq(dev);
++ 		if (mrrs > mrrs_limit) {
++ 			pci_info(dev, "limiting MRRS %d to %d\n", mrrs, mrrs_limit);
++ 			pcie_set_readrq(dev, mrrs_limit);
++ 		}
++ 		break;
++ 	}
++}
++DECLARE_PCI_FIXUP_ENABLE(PCI_ANY_ID, PCI_ANY_ID, meson_mrrs_limit_quirk);
++
+ static int meson_pcie_probe_clocks(struct meson_pcie *mp)
+ {
+ 	struct device *dev = mp->pci.dev;
+-- 
+2.17.1
+

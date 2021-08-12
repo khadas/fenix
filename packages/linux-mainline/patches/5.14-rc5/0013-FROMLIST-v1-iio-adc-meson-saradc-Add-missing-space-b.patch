@@ -1,0 +1,31 @@
+From d55730f40d1dc7e2028ca17fb78da2f47df882be Mon Sep 17 00:00:00 2001
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date: Mon, 2 Aug 2021 08:49:58 +0000
+Subject: [PATCH 13/57] FROMLIST(v1): iio: adc: meson-saradc: Add missing space
+ between if and parenthesis
+
+Add a missing space between if and the opening parenthesis to make the
+coding style consistent across the whole driver. No functional changes
+intended.
+
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+---
+ drivers/iio/adc/meson_saradc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/iio/adc/meson_saradc.c b/drivers/iio/adc/meson_saradc.c
+index e140db3e4016..b4e16f2e957f 100644
+--- a/drivers/iio/adc/meson_saradc.c
++++ b/drivers/iio/adc/meson_saradc.c
+@@ -347,7 +347,7 @@ static int meson_sar_adc_read_raw_sample(struct iio_dev *indio_dev,
+ 	struct meson_sar_adc_priv *priv = iio_priv(indio_dev);
+ 	int regval, fifo_chan, fifo_val, count;
+ 
+-	if(!wait_for_completion_timeout(&priv->done,
++	if (!wait_for_completion_timeout(&priv->done,
+ 				msecs_to_jiffies(MESON_SAR_ADC_TIMEOUT)))
+ 		return -ETIMEDOUT;
+ 
+-- 
+2.17.1
+

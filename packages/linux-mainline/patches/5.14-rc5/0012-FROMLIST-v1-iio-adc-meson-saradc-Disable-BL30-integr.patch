@@ -1,0 +1,51 @@
+From eca691f2b9e061ed566637e116ba62f9fd03bd34 Mon Sep 17 00:00:00 2001
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date: Mon, 2 Aug 2021 08:49:04 +0000
+Subject: [PATCH 12/57] FROMLIST(v1): iio: adc: meson-saradc: Disable BL30
+ integration on G12A and newer SoCs
+
+G12A and newer don't use the SAR ADC to read the SoC temperature from
+within the firmware. Instead there's now a dedicated thermal sensor.
+Disable the BL30 integration for G12A and newer SoCs to save a few CPU
+cycles when reading samples.
+
+Adding a separate struct meson_sar_adc_data is a good idea anyways
+because starting with G12A there's some extra registers to read the
+samples in a simplified way.
+
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+---
+ drivers/iio/adc/meson_saradc.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/iio/adc/meson_saradc.c b/drivers/iio/adc/meson_saradc.c
+index 66dc452d643a..e140db3e4016 100644
+--- a/drivers/iio/adc/meson_saradc.c
++++ b/drivers/iio/adc/meson_saradc.c
+@@ -1104,6 +1104,14 @@ static const struct meson_sar_adc_param meson_sar_adc_gxl_param = {
+ 	.resolution = 12,
+ };
+ 
++static const struct meson_sar_adc_param meson_sar_adc_g12a_param = {
++	.has_bl30_integration = false,
++	.clock_rate = 1200000,
++	.bandgap_reg = MESON_SAR_ADC_REG11,
++	.regmap_config = &meson_sar_adc_regmap_config_gxbb,
++	.resolution = 12,
++};
++
+ static const struct meson_sar_adc_data meson_sar_adc_meson8_data = {
+ 	.param = &meson_sar_adc_meson8_param,
+ 	.name = "meson-meson8-saradc",
+@@ -1140,7 +1148,7 @@ static const struct meson_sar_adc_data meson_sar_adc_axg_data = {
+ };
+ 
+ static const struct meson_sar_adc_data meson_sar_adc_g12a_data = {
+-	.param = &meson_sar_adc_gxl_param,
++	.param = &meson_sar_adc_g12a_param,
+ 	.name = "meson-g12a-saradc",
+ };
+ 
+-- 
+2.17.1
+
