@@ -69,6 +69,7 @@ make_target() {
 	    diff -q "$c" .config || {
 		echo "KERNEL config updated from $c"
 		cp "$c" .config
+		KERNEL_MAKE_ARGS="olddefconfig $KERNEL_MAKE_ARGS"
 	    }
 	}
 
