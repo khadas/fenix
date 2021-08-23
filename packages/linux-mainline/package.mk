@@ -47,16 +47,24 @@ make_target() {
 	esac
 
 	c=$PKGS_DIR/$PKG_NAME/configs/${KHADAS_BOARD}.config
+	d=$PKGS_DIR/$PKG_NAME/configs/${KHADAS_BOARD}_defconfig
+	D=arch/arm64/configs/${KHADAS_BOARD}_defconfig
 
 	case $KERNEL_CONFIG in
 	    "")
 	    ;;
 	    -)
 	    c=
+	    d=
 	    ;;
 	    *.config*)
 	    for c in "$KERNEL_CONFIG" "$PKGS_DIR/$PKG_NAME/configs/$KERNEL_CONFIG" ""; do
 	    [ -e "$c" ] && break
+	    done
+	    ;;
+	    *_defconfig*)
+	    for d in "$KERNEL_CONFIG" "$PKGS_DIR/$PKG_NAME/configs/$KERNEL_CONFIG" ""; do
+	    [ -e "$d" ] && break
 	    done
 	    ;;
 	    *)
@@ -65,11 +73,19 @@ make_target() {
 	    ;;
 	esac
 
-	[ "$c" ] && {
+	[ "$c" -a -s "$c" ] && {
+	    d=
 	    diff -q "$c" .config || {
 		echo "KERNEL config updated from $c"
 		cp "$c" .config
-		KERNEL_MAKE_ARGS="olddefconfig $KERNEL_MAKE_ARGS"
+		KERNEL_MAKE_ARGS="olddefconfig savedefconfig $KERNEL_MAKE_ARGS"
+	    }
+	}
+	[ "$d" -a -s "$d" ] && {
+	    diff -q "$d" "$D" || {
+		echo "KERNEL defconfig updated from $d"
+		cp "$d" "$D"
+		KERNEL_MAKE_ARGS="${KHADAS_BOARD}_defconfig savedefconfig $KERNEL_MAKE_ARGS"
 	    }
 	}
 
