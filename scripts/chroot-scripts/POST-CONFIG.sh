@@ -42,6 +42,9 @@ DEFAULT_ROOT_PASSWORD=khadas
 [ "$ROOT_PASSWORD" = "-" ] && \
 	ROOT_PASSWORD=
 
+[ "$USER_PASSWORD" = "-" ] && \
+	USER_PASSWORD=
+
 [ "$HOST_NAME" ] || \
 	HOST_NAME=$USER_NAME
 
