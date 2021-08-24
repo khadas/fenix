@@ -1,9 +1,3 @@
-# New Developing fenix branch
-
-    git branch dev
-
-NOTE: experimental branch for testers developing and other things !!!
-
 ## Generic images
 
 New simple generic image. one image for any devices
@@ -176,5 +170,53 @@ root@hyphop:~# blkid | grep ROOTFS
 /dev/mmcblk1p2: LABEL="ROOTFS_BACKUP" UUID="99c25336-2b73-42df-acdf-0cf4ad8b46d8" TYPE="ext4" PARTLABEL="system" PARTUUID="2368e44e-02a7-ee41-8d94-38018e4d64ab"
 
 ```
+
+### DTB overlays how-to
+
+We inroduce new universal simple ways to apply DTB overlays
+
+Overlays configuration must have same path as dtb file with ".overlay.env" file extension
+
+```
+/boot/dtb/amlogic/meson-sm1-khadas-vim3l.dtb.overlay.env
+/boot/dtb/amlogic/meson-g12b-a311d-khadas-vim3.dtb.overlay.env
+/boot/dtb/amlogic/meson-g12b-s922x-khadas-vim3.dtb.overlay.env
+/boot/dtb/amlogic/meson-gxm-khadas-vim2.dtb.overlay.env
+/boot/dtb/amlogic/meson-gxl-s905x-khadas-vim.dtb.overlay.env
+```
+
+### Overlays configuration VIM3L example
+
+```
+cat /boot/dtb/amlogic/meson-sm1-khadas-vim3l.dtb.overlay.env
+
+# fdt overlays config
+fdt_overlays_dir=/dtb/amlogic/overlays/kvim3l
+fdt_overlays=i2s spdifout
+# END
+
+find /boot | grep vim3l | grep dtbo
+
+/boot/dtb/amlogic/overlays/kvim3l/uart3.dtbo
+/boot/dtb/amlogic/overlays/kvim3l/i2c3.dtbo
+/boot/dtb/amlogic/overlays/kvim3l/spdifout.dtbo
+/boot/dtb/amlogic/overlays/kvim3l/i2s.dtbo
+
+```
+### Overlays configuration syntax
+
+Its same common uboot env file syntax
+
++ fdt_overlays_dir=    - overlays path
++ fdt_overlays=        - overlays file list without or with .dtbo extension
++ # comment            - comment area
++ other_vars=          - ignored
+
+NOTE: works for EXTLINUX and same for EFI
+
+NOTE: at this moment works only for our mainline uboot modification
+
++ https://dl.khadas.com/Firmware/uboot/mainline/
++ https://github.com/khadas/khadas-uboot
 
 ..WIP..
