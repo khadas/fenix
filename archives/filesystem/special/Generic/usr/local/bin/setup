@@ -742,6 +742,14 @@ EndSection
 EOF
 } # xorg_tweaks end
 
+
+sound_setup_(){
+    echo_ "Setup sound alsa"
+    which alsactl >/dev/null 2>&1 || \
+    APT install alsa-utils
+    alsactl restore
+}
+
 ANOOP="--no-install-recommends --no-install-suggests"
 
 for a in $@; do
@@ -759,6 +767,7 @@ for a in $@; do
 	;;
 	esac
 done
+
 
 ##ACTIONS
 for a in $@; do
@@ -922,6 +931,13 @@ for a in $@; do
 	;;
 	ssh-preconfig)# ssh preconfig ...WIP...
 	ssh_preconfig_
+	;;
+	sound)# setup alsa sound
+	sound_setup_
+	;;
+	sound-test)# alsa sound test
+	sound_setup_
+	speaker-test -c2 -twav
 	;;
 	lvm-initramfs)# lvm initramfs fix
 	lvm_initramfs_
