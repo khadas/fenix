@@ -1,0 +1,28 @@
+From 256ed9e600f617cf1c75c5d0688710d3a41027b0 Mon Sep 17 00:00:00 2001
+From: Artem Lapkin <art@khadas.com>
+Date: Tue, 24 Aug 2021 11:56:07 +0800
+Subject: [PATCH 74/74] SOUND: VIM1 make overlays
+
+Signed-off-by: Artem Lapkin <art@khadas.com>
+---
+ arch/arm64/boot/dts/amlogic/overlays/kvim/Makefile | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/overlays/kvim/Makefile b/arch/arm64/boot/dts/amlogic/overlays/kvim/Makefile
+index 0155e857d..c7354f2a1 100644
+--- a/arch/arm64/boot/dts/amlogic/overlays/kvim/Makefile
++++ b/arch/arm64/boot/dts/amlogic/overlays/kvim/Makefile
+@@ -1,6 +1,9 @@
+ # SPDX-License-Identifier: GPL-2.0
+ dtbo-$(CONFIG_ARCH_MESON) += uart4.dtbo \
+-                            i2c0.dtbo
++                            i2c0.dtbo \
++                            i2s.dtbo \
++                            spdifout.dtbo \
++                            spdifout_i2s.dtbo
+ 
+ targets += $(dtbo-y)
+ 
+-- 
+2.25.1
+

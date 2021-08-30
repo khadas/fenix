@@ -42,6 +42,9 @@ DEFAULT_ROOT_PASSWORD=khadas
 [ "$ROOT_PASSWORD" = "-" ] && \
 	ROOT_PASSWORD=
 
+[ "$USER_PASSWORD" = "-" ] && \
+	USER_PASSWORD=
+
 [ "$HOST_NAME" ] || \
 	HOST_NAME=$USER_NAME
 
@@ -49,13 +52,12 @@ DEFAULT_ROOT_PASSWORD=khadas
 
 # Setup password for root user
 
-
-for KERNEL_ in $KERNEL_ $(ls /boot/*-*); do
+for KERNEL_ in $KERNEL_ $(ls /boot/*z-*); do
 	[ -e $KERNEL_ ] || {
 	echo "[e] $0 KERNEL not found $KERNEL_">&2
 	exit 1
 	}
-	KERNEL_VER=${KERNEL_##*-}
+	KERNEL_VER=${KERNEL_#*-}
 	KERNEL_LNK=/boot/zImage
 	KERNEL_IMG=vmlinuz-$KERNEL_VER
 	[ -e $KERNEL_LNK ] || {
