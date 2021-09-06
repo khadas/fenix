@@ -290,6 +290,12 @@ build_board_deb() {
 		cp $BOOT_SCRIPTS/$BOOT_INI $pkgdir/boot/boot.ini
 	fi
 
+	# Copy extlinux
+	if [ -f $BOOT_SCRIPTS/extlinux/$EXTLINUX_CONF ]; then
+		mkdir -p $pkgdir/boot/extlinux
+		cp $BOOT_SCRIPTS/extlinux/$EXTLINUX_CONF $pkgdir/boot/extlinux/extlinux.conf
+	fi
+
 	# Copy boot environment
 	if [ -f $BOOT_ENV/$BOOT_ENV_FILE ]; then
 		cp $BOOT_ENV/$BOOT_ENV_FILE $pkgdir/boot/env.txt
