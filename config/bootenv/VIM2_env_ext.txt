@@ -5,4 +5,5 @@
 #   i2c0            -- Enable I2C0 (GPIO Header PIN22 & PIN23)
 #   i2s             -- Enable I2S (GPIO Header PIN29 & PIN30 & PIN31 & PIN32)
 #   watchdog        -- Enable watchdog
+#   mpu6050-i2c     -- Enable mpu6050 (GPIO Header PIN22 & PIN23 & PIN37)
 overlays=uart4 pwm_d i2c0 i2s watchdog
