@@ -1,0 +1,302 @@
+From 1af1e881437fbdd35d7d26bf799f9847d146b22c Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Wed, 11 Aug 2021 14:41:48 +0800
+Subject: [PATCH 50/77] VIMs: add device tree overlays
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ arch/arm64/boot/dts/amlogic/Makefile              |  5 +++++
+ .../dts/amlogic/meson-gxl-s905x-khadas-vim.dts    |  4 ++--
+ .../arm64/boot/dts/amlogic/overlays/kvim/Makefile |  9 +++++++++
+ .../arm64/boot/dts/amlogic/overlays/kvim/i2c0.dts | 13 +++++++++++++
+ .../boot/dts/amlogic/overlays/kvim/uart4.dts      | 15 +++++++++++++++
+ .../boot/dts/amlogic/overlays/kvim2/Makefile      |  8 ++++++++
+ .../boot/dts/amlogic/overlays/kvim2/i2c0.dts      | 12 ++++++++++++
+ .../boot/dts/amlogic/overlays/kvim2/uart4.dts     | 14 ++++++++++++++
+ .../boot/dts/amlogic/overlays/kvim3/Makefile      |  8 ++++++++
+ .../boot/dts/amlogic/overlays/kvim3/i2c3.dts      | 15 +++++++++++++++
+ .../boot/dts/amlogic/overlays/kvim3/uart3.dts     | 14 ++++++++++++++
+ .../boot/dts/amlogic/overlays/kvim3l/Makefile     |  8 ++++++++
+ .../boot/dts/amlogic/overlays/kvim3l/i2c3.dts     | 12 ++++++++++++
+ .../boot/dts/amlogic/overlays/kvim3l/uart3.dts    | 14 ++++++++++++++
+ scripts/Makefile.lib                              |  3 +++
+ 15 files changed, 152 insertions(+), 2 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/amlogic/overlays/kvim/Makefile
+ create mode 100644 arch/arm64/boot/dts/amlogic/overlays/kvim/i2c0.dts
+ create mode 100644 arch/arm64/boot/dts/amlogic/overlays/kvim/uart4.dts
+ create mode 100644 arch/arm64/boot/dts/amlogic/overlays/kvim2/Makefile
+ create mode 100644 arch/arm64/boot/dts/amlogic/overlays/kvim2/i2c0.dts
+ create mode 100644 arch/arm64/boot/dts/amlogic/overlays/kvim2/uart4.dts
+ create mode 100644 arch/arm64/boot/dts/amlogic/overlays/kvim3/Makefile
+ create mode 100644 arch/arm64/boot/dts/amlogic/overlays/kvim3/i2c3.dts
+ create mode 100644 arch/arm64/boot/dts/amlogic/overlays/kvim3/uart3.dts
+ create mode 100644 arch/arm64/boot/dts/amlogic/overlays/kvim3l/Makefile
+ create mode 100644 arch/arm64/boot/dts/amlogic/overlays/kvim3l/i2c3.dts
+ create mode 100644 arch/arm64/boot/dts/amlogic/overlays/kvim3l/uart3.dts
+
+diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
+index 1a766fbf5502..73c42a5751d9 100644
+--- a/arch/arm64/boot/dts/amlogic/Makefile
++++ b/arch/arm64/boot/dts/amlogic/Makefile
+@@ -4,3 +4,8 @@ dtb-$(CONFIG_ARCH_MESON) += meson-g12b-s922x-khadas-vim3.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905x-khadas-vim.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-gxm-khadas-vim2.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-sm1-khadas-vim3l.dtb
++
++subdir-y       += overlays/kvim
++subdir-y       += overlays/kvim2
++subdir-y       += overlays/kvim3
++subdir-y       += overlays/kvim3l
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
+index d41aca61ae1b..70af0d6c9357 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
+@@ -147,7 +147,7 @@ hdmi_tx_tmds_out: endpoint {
+ };
+ 
+ &i2c_A {
+-	status = "okay";
++	status = "disabled";
+ 	pinctrl-0 = <&i2c_a_pins>;
+ 	pinctrl-names = "default";
+ };
+@@ -265,7 +265,7 @@ &uart_AO {
+ 
+ /* This is brought out on the UART_RX_AO_B (15) and UART_TX_AO_B (16) pins: */
+ &uart_AO_B {
+-	status = "okay";
++	status = "diabled";
+ 	pinctrl-0 = <&uart_ao_b_pins>;
+ 	pinctrl-names = "default";
+ };
+diff --git a/arch/arm64/boot/dts/amlogic/overlays/kvim/Makefile b/arch/arm64/boot/dts/amlogic/overlays/kvim/Makefile
+new file mode 100644
+index 000000000000..0155e857d4e8
+--- /dev/null
++++ b/arch/arm64/boot/dts/amlogic/overlays/kvim/Makefile
+@@ -0,0 +1,9 @@
++# SPDX-License-Identifier: GPL-2.0
++dtbo-$(CONFIG_ARCH_MESON) += uart4.dtbo \
++                            i2c0.dtbo
++
++targets += $(dtbo-y)
++
++always         := $(dtbo-y)
++clean-files    := *.dtbo
++
+diff --git a/arch/arm64/boot/dts/amlogic/overlays/kvim/i2c0.dts b/arch/arm64/boot/dts/amlogic/overlays/kvim/i2c0.dts
+new file mode 100644
+index 000000000000..eda4fc574345
+--- /dev/null
++++ b/arch/arm64/boot/dts/amlogic/overlays/kvim/i2c0.dts
+@@ -0,0 +1,13 @@
++/dts-v1/;
++/plugin/;
++
++/ {
++   fragment@0 {
++       target = <&i2c_A>;
++
++       __overlay__ {
++           status = "okay";
++       };
++   };
++};
++
+diff --git a/arch/arm64/boot/dts/amlogic/overlays/kvim/uart4.dts b/arch/arm64/boot/dts/amlogic/overlays/kvim/uart4.dts
+new file mode 100644
+index 000000000000..0eb1a0245896
+--- /dev/null
++++ b/arch/arm64/boot/dts/amlogic/overlays/kvim/uart4.dts
+@@ -0,0 +1,15 @@
++/dts-v1/;
++/plugin/;
++
++/ {
++   fragment@0 {
++       target = <&uart_AO_B>;
++
++       __overlay__ {
++           status = "okay";
++           pinctrl-0 = <&uart_ao_b_pins>;
++           pinctrl-names = "default";
++       };
++   };
++};
++
+diff --git a/arch/arm64/boot/dts/amlogic/overlays/kvim2/Makefile b/arch/arm64/boot/dts/amlogic/overlays/kvim2/Makefile
+new file mode 100644
+index 000000000000..ab737f9b327f
+--- /dev/null
++++ b/arch/arm64/boot/dts/amlogic/overlays/kvim2/Makefile
+@@ -0,0 +1,8 @@
++# SPDX-License-Identifier: GPL-2.0
++dtbo-$(CONFIG_ARCH_MESON) += uart4.dtbo \
++                            i2c0.dtbo
++
++targets += $(dtbo-y)
++
++always         := $(dtbo-y)
++clean-files    := *.dtbo *.scr
+diff --git a/arch/arm64/boot/dts/amlogic/overlays/kvim2/i2c0.dts b/arch/arm64/boot/dts/amlogic/overlays/kvim2/i2c0.dts
+new file mode 100644
+index 000000000000..78c6c03e71c3
+--- /dev/null
++++ b/arch/arm64/boot/dts/amlogic/overlays/kvim2/i2c0.dts
+@@ -0,0 +1,12 @@
++/dts-v1/;
++/plugin/;
++
++/ {
++   fragment@0 {
++       target = <&i2c_A>;
++
++       __overlay__ {
++           status = "okay";
++       };
++   };
++};
+diff --git a/arch/arm64/boot/dts/amlogic/overlays/kvim2/uart4.dts b/arch/arm64/boot/dts/amlogic/overlays/kvim2/uart4.dts
+new file mode 100644
+index 000000000000..87a6d70138fe
+--- /dev/null
++++ b/arch/arm64/boot/dts/amlogic/overlays/kvim2/uart4.dts
+@@ -0,0 +1,14 @@
++/dts-v1/;
++/plugin/;
++
++/ {
++   fragment@0 {
++       target = <&uart_AO_B>;
++
++       __overlay__ {
++           status = "okay";
++           pinctrl-0 = <&uart_ao_b_pins>;
++           pinctrl-names = "default";
++       };
++   };
++};
+diff --git a/arch/arm64/boot/dts/amlogic/overlays/kvim3/Makefile b/arch/arm64/boot/dts/amlogic/overlays/kvim3/Makefile
+new file mode 100644
+index 000000000000..caa7278a7448
+--- /dev/null
++++ b/arch/arm64/boot/dts/amlogic/overlays/kvim3/Makefile
+@@ -0,0 +1,8 @@
++# SPDX-License-Identifier: GPL-2.0
++dtbo-$(CONFIG_ARCH_MESON) += uart3.dtbo \
++                            i2c3.dtbo
++
++targets += $(dtbo-y)
++
++always         := $(dtbo-y)
++clean-files    := *.dtbo *.scr
+diff --git a/arch/arm64/boot/dts/amlogic/overlays/kvim3/i2c3.dts b/arch/arm64/boot/dts/amlogic/overlays/kvim3/i2c3.dts
+new file mode 100644
+index 000000000000..e25f3b8807a2
+--- /dev/null
++++ b/arch/arm64/boot/dts/amlogic/overlays/kvim3/i2c3.dts
+@@ -0,0 +1,15 @@
++/dts-v1/;
++/plugin/;
++
++/ {
++   fragment@0 {
++       target = <&i2c3>;
++
++       __overlay__ {
++           status = "okay";
++           pinctrl-0 = <&i2c3_sck_a_pins>, <&i2c3_sda_a_pins>;
++           pinctrl-names = "default";
++       };
++   };
++};
++
+diff --git a/arch/arm64/boot/dts/amlogic/overlays/kvim3/uart3.dts b/arch/arm64/boot/dts/amlogic/overlays/kvim3/uart3.dts
+new file mode 100644
+index 000000000000..304a14337f8e
+--- /dev/null
++++ b/arch/arm64/boot/dts/amlogic/overlays/kvim3/uart3.dts
+@@ -0,0 +1,14 @@
++/dts-v1/;
++/plugin/;
++
++/ {
++   fragment@0 {
++       target = <&uart_C>;
++
++       __overlay__ {
++           status = "okay";
++           pinctrl-names = "default";
++           pinctrl-0 = <&uart_c_pins>;
++       };
++   };
++};
+diff --git a/arch/arm64/boot/dts/amlogic/overlays/kvim3l/Makefile b/arch/arm64/boot/dts/amlogic/overlays/kvim3l/Makefile
+new file mode 100644
+index 000000000000..caa7278a7448
+--- /dev/null
++++ b/arch/arm64/boot/dts/amlogic/overlays/kvim3l/Makefile
+@@ -0,0 +1,8 @@
++# SPDX-License-Identifier: GPL-2.0
++dtbo-$(CONFIG_ARCH_MESON) += uart3.dtbo \
++                            i2c3.dtbo
++
++targets += $(dtbo-y)
++
++always         := $(dtbo-y)
++clean-files    := *.dtbo *.scr
+diff --git a/arch/arm64/boot/dts/amlogic/overlays/kvim3l/i2c3.dts b/arch/arm64/boot/dts/amlogic/overlays/kvim3l/i2c3.dts
+new file mode 100644
+index 000000000000..e9c475db89ec
+--- /dev/null
++++ b/arch/arm64/boot/dts/amlogic/overlays/kvim3l/i2c3.dts
+@@ -0,0 +1,12 @@
++/dts-v1/;
++/plugin/;
++
++/ {
++   fragment@0 {
++       target = <&i2c3>;
++
++       __overlay__ {
++           status = "okay";
++       };
++   };
++};
+diff --git a/arch/arm64/boot/dts/amlogic/overlays/kvim3l/uart3.dts b/arch/arm64/boot/dts/amlogic/overlays/kvim3l/uart3.dts
+new file mode 100644
+index 000000000000..304a14337f8e
+--- /dev/null
++++ b/arch/arm64/boot/dts/amlogic/overlays/kvim3l/uart3.dts
+@@ -0,0 +1,14 @@
++/dts-v1/;
++/plugin/;
++
++/ {
++   fragment@0 {
++       target = <&uart_C>;
++
++       __overlay__ {
++           status = "okay";
++           pinctrl-names = "default";
++           pinctrl-0 = <&uart_c_pins>;
++       };
++   };
++};
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 21e31131360a..1e694af2cc7b 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -92,6 +92,9 @@ always-y += $(patsubst %.dtb,%.dt.yaml, $(real-dtb-y))
+ always-y += $(patsubst %.dtbo,%.dt.yaml, $(real-dtb-y))
+ endif
+ 
++# Overlay targets
++extra-y		+= $(dtbo-y) $(scr-y) $(dtbotxt-y)
++
+ # Add subdir path
+ 
+ extra-y		:= $(addprefix $(obj)/,$(extra-y))
+-- 
+2.25.1
+
