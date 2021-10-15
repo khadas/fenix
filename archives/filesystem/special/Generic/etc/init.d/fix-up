@@ -53,14 +53,15 @@ esac
 
 ssh_(){
 	# Create system ssh keys if not exist
-	for a in /etc/ssh/ssh_host*; do
-	[ -e "$a" ] && break
+	for a in /etc/ssh/ssh_host*key; do
+	[ -s "$a" ] || rm $a
+	[ -s "$a" ] && return 0
+	done
 	echo_ "SSH configure keys"
 	dpkg-reconfigure -f noninteractive openssh-server
 	echo_ "SSH configure keys DONE"
 	#   systemctl is-active sshd.service || \
 	#        systemctl restart ssh
-	done
 }
 
 net_(){
