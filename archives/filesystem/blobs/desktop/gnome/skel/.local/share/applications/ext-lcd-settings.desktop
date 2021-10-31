@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Name=EXT Board LED Setting
+Name[zh_CN]=拓展板LED设置
+Comment=Configure EXT Board LED
+Comment[zh_CN]=拓展板LED设置
+Exec=/usr/local/bin/ext_board_led.sh
+Icon=/etc/fenix/icons/rgb_led.png
+Terminal=false
+Type=Application
+Categories=GNOME;GTK;Settings;DesktopSettings;
+StartupNotify=true

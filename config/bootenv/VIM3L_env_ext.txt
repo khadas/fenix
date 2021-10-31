@@ -15,4 +15,5 @@ max_freq_a55=1908
 #   watchdog        -- Enable watchdog
 #   can             -- Enable mcp2515 (GPIO Header PIN15 && PIN16 && PIN22 && PIN35 && PIN37), pwm_f/i2c3/uart3 need to be removed
 #   mpu6050-i2c     -- Enable mpu6050 (GPIO Header PIN22 & PIN23 & PIN37), pwm_f need to be removed
+#   ext_board       -- Enable for Khadas EXT Board
 overlays=uart3 pwm_f i2c3 i2s watchdog
