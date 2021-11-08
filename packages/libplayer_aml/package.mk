@@ -9,7 +9,7 @@ PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
 PKG_SITE="$GITEE_URL/numbqq/libplayer_aml"
 PKG_URL="$PKG_SITE/repository/archive/$PKG_VERSION.tar.gz"
 PKG_SOURCE_DIR="$PKG_NAME"
-PKG_SHA256="455ba1dda7ae04da44f87d5e07f7200b5ec45f59a16acb6eea6a29e1c3b316fc"
+PKG_SHA256="ae8ec4adf73be2f18d280ac0e868b7b315cafcd5140c40492485009ee4a88f25"
 }
 PKG_ARCH="arm aarch64"
 PKG_LICENSE="GPL"
