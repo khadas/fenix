@@ -1,0 +1,63 @@
+From 1dd718e46b0d498bb8cd52e20da19c6c2e453621 Mon Sep 17 00:00:00 2001
+From: Artem Lapkin <art@khadas.com>
+Date: Thu, 18 Nov 2021 10:21:03 +0800
+Subject: [PATCH v1 1/2] PCI: add PCIe Max Read Request Size
+
+Add PCIe Max Read Request Size that can handle by other specific driver.
+
+For example:
+
+DWC PCIe controller imposes limits on the Read Request Size.
+For pci-meson family it's fixed at 512 bytes by default.
+For i.MX6 family it's fixed at 512 bytes by default.
+
+Signed-off-by: Artem Lapkin <art@khadas.com>
+---
+ drivers/pci/pci.c   | 6 ++++++
+ include/linux/pci.h | 2 ++
+ 2 files changed, 8 insertions(+)
+
+V1: remake old patches
+https://lkml.org/lkml/2021/7/28/1237
+https://patchwork.kernel.org/project/linux-pci/patch/m3lf36n0d8.fsf@t19.piap.pl/
+
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 3d2fb394986a..a09363eafcee 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -118,6 +118,9 @@ enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_PEER2PEER;
+ enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_DEFAULT;
+ #endif
+ 
++/* PCIe Max Read Request Size, default 4096 no limit */
++u16 max_pcie_mrrs = 4096;
++
+ /*
+  * The default CLS is used if arch didn't set CLS explicitly and not
+  * all pci devices agree on the same value.  Arch can override either
+@@ -6014,6 +6017,9 @@ int pcie_set_readrq(struct pci_dev *dev, int rq)
+ 			rq = mps;
+ 	}
+ 
++	if (rq > max_pcie_mrrs)
++		rq = max_pcie_mrrs;
++
+ 	v = (ffs(rq) - 8) << 12;
+ 
+ 	ret = pcie_capability_clear_and_set_word(dev, PCI_EXP_DEVCTL,
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index 18a75c8e615c..f986f348787f 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -1042,6 +1042,8 @@ enum pcie_bus_config_types {
+ };
+ 
+ extern enum pcie_bus_config_types pcie_bus_config;
++/* PCIe Max Read Request Size */
++extern u16 max_pcie_mrrs;
+ 
+ extern struct bus_type pci_bus_type;
+ 
+-- 
+2.25.1
+

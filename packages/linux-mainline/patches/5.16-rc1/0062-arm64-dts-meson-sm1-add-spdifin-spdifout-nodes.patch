@@ -1,0 +1,71 @@
+From 5068d44fc67232b864ea4b62bea22ee246ac118f Mon Sep 17 00:00:00 2001
+From: Artem Lapkin <art@khadas.com>
+Date: Wed, 11 Aug 2021 10:15:29 +0800
+Subject: [PATCH 62/77] arm64: dts: meson-sm1: add spdifin spdifout nodes
+
+Signed-off-by: Artem Lapkin <art@khadas.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-sm1.dtsi | 40 ++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi b/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
+index 3d8b1f4f2001..1efdbb61edcd 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
+@@ -356,6 +356,33 @@ tdmin_lb: audio-controller@3c0 {
+ 			status = "disabled";
+ 		};
+ 
++		spdifin: audio-controller@400 {
++			compatible = "amlogic,g12a-spdifin",
++			"amlogic,axg-spdifin";
++			reg = <0x0 0x400 0x0 0x30>;
++			#sound-dai-cells = <0>;
++			sound-name-prefix = "SPDIFIN";
++			interrupts = <GIC_SPI 151 IRQ_TYPE_EDGE_RISING>;
++			clocks = <&clkc_audio AUD_CLKID_SPDIFIN>,
++			<&clkc_audio AUD_CLKID_SPDIFIN_CLK>;
++			clock-names = "pclk", "refclk";
++			resets = <&clkc_audio AUD_RESET_SPDIFIN>;
++			status = "disabled";
++		};
++
++		spdifout: audio-controller@480 {
++			compatible = "amlogic,g12a-spdifout",
++			"amlogic,axg-spdifout";
++			reg = <0x0 0x480 0x0 0x50>;
++			#sound-dai-cells = <0>;
++			sound-name-prefix = "SPDIFOUT";
++			clocks = <&clkc_audio AUD_CLKID_SPDIFOUT>,
++			<&clkc_audio AUD_CLKID_SPDIFOUT_CLK>;
++			clock-names = "pclk", "mclk";
++			resets = <&clkc_audio AUD_RESET_SPDIFOUT>;
++			status = "disabled";
++		};
++
+ 		tdmout_a: audio-controller@500 {
+ 			compatible = "amlogic,sm1-tdmout";
+ 			reg = <0x0 0x500 0x0 0x40>;
+@@ -401,6 +428,19 @@ tdmout_c: audio-controller@580 {
+ 			status = "disabled";
+ 		};
+ 
++		spdifout_b: audio-controller@680 {
++			compatible = "amlogic,g12a-spdifout",
++			"amlogic,axg-spdifout";
++			reg = <0x0 0x680 0x0 0x50>;
++			#sound-dai-cells = <0>;
++			sound-name-prefix = "SPDIFOUT_B";
++			clocks = <&clkc_audio AUD_CLKID_SPDIFOUT_B>,
++			<&clkc_audio AUD_CLKID_SPDIFOUT_B_CLK>;
++			clock-names = "pclk", "mclk";
++			resets = <&clkc_audio AUD_RESET_SPDIFOUT_B>;
++			status = "disabled";
++		};
++
+ 		toacodec: audio-controller@740 {
+ 			compatible = "amlogic,sm1-toacodec",
+ 				     "amlogic,g12a-toacodec";
+-- 
+2.25.1
+
