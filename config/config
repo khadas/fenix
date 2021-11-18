@@ -119,11 +119,11 @@ else
 fi
 
 if [ "$LINUX" == "mainline" ]; then
-	MAINLINE_LINUX_VER=$(grep "PKG_VERSION=" $PKGS_DIR/linux-mainline/package.mk | awk -F '"' '{print $2}')
+	MAINLINE_LINUX_VER=$( . "$PKGS_DIR"/linux-mainline/package.mk && echo $PKG_VERSION )
 fi
 
 if [ "$UBOOT" == "mainline" ]; then
-	MAINLINE_UBOOT_VER=$(grep "PKG_VERSION=" $PKGS_DIR/u-boot-mainline/package.mk | awk -F '"' '{print $2}')
+	MAINLINE_UBOOT_VER=$( . "$PKGS_DIR"/u-boot-mainline/package.mk && echo $PKG_VERSION )
 	[[ ${#MAINLINE_UBOOT_VER} -eq 40 ]] && MAINLINE_UBOOT_VER=${MAINLINE_UBOOT_VER:0:7}
 	LINUX_UBOOT_DEB="linux-u-boot-${KHADAS_BOARD,,}-mainline"
 else
