@@ -1,17 +1,19 @@
 PKG_NAME="linux-mainline"
-PKG_VERSION="5.14"
+#PKG_VERSION="5.14"
+#PKG_VERSION="5.15.2"
+PKG_VERSION=${PKG_VERSION:-5.16-rc1}
 PKG_VERSION_SHORT="v5.x"
-PKG_SHA256="2a39f9827954e4f991ea52c50e919b6fcc6e7301c046a8ab5029e397f3af982e"
+#PKG_SHA256=
 PKG_SOURCE_DIR="linux-${PKG_VERSION}"
 PKG_SITE="https://cdn.kernel.org/"
-#PKG_URL="https://cdn.kernel.org/pub/linux/kernel/${PKG_VERSION_SHORT}/linux-${PKG_VERSION}.tar.xz"
-PKG_URL="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/linux-${PKG_VERSION}.tar.gz"
+PKG_URL=https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/linux-${PKG_VERSION}.tar.gz
+PKG_SOURCE_NAME=linux-${PKG_VERSION}.tar.gz
+PKG_URL=https://cdn.kernel.org/pub/linux/kernel/${PKG_VERSION_SHORT}/${PKG_SOURCE_NAME}
+PKG_URL=https://git.kernel.org/torvalds/t/${PKG_SOURCE_NAME}
 PKG_ARCH="arm aarch64"
 PKG_LICENSE="GPL"
 PKG_SHORTDESC="Mainline linux"
-PKG_SOURCE_NAME="linux-${PKG_VERSION}.tar.gz"
 PKG_NEED_BUILD="YES"
-
 
 make_target() {
 

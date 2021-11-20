@@ -56,6 +56,7 @@ GRUB_CFG=/boot/grub/grub.cfg
 
 APPEND="ro quiet splash video=HDMI-A-1:1920x1080@60 net.ifnames=0"
 APPEND_DEV="earlyprintk video=HDMI-A-1:1920x1080@60 panic=10 net.ifnames=0 loglevel=9"
+APPEND_DEV="earlyprintk video=HDMI-A-1:1920x1080@60 panic= net.ifnames=0 loglevel=9"
 
 BOOT=/boot
 EXT=/boot/extlinux/extlinux.conf

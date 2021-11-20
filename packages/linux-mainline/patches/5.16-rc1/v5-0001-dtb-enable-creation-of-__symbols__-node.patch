@@ -1,0 +1,26 @@
+From 8d53516ceee25a283efe3e282852c3917f42fe4b Mon Sep 17 00:00:00 2001
+From: Artem Lapkin <art@khadas.com>
+Date: Fri, 5 Feb 2021 17:35:39 +0800
+Subject: [PATCH] dtb enable creation of __symbols__ node
+
+---
+ scripts/Makefile.lib | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 213677a5e..0dc7c2f6e 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -297,6 +297,9 @@ DTC_FLAGS += -Wnode_name_chars_strict \
+ 	-Winterrupt_provider
+ endif
+ 
++
++# enable creation of __symbols__ node
++DTC_FLAGS += -@
+ DTC_FLAGS += $(DTC_FLAGS_$(basetarget))
+ 
+ # Generate an assembly file to wrap the output of the device tree compiler
+-- 
+2.25.1
+
