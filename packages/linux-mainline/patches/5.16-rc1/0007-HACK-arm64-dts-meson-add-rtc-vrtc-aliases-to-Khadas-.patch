@@ -1,7 +1,7 @@
-From 190ab542be46861f42deeaa4c3fc19829daabbbb Mon Sep 17 00:00:00 2001
+From 3649f3b3ef683dac136e1a720e090f4736914dbd Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Thu, 21 Jan 2021 01:35:36 +0000
-Subject: [PATCH 07/77] HACK: arm64: dts: meson: add rtc/vrtc aliases to Khadas
+Subject: [PATCH 07/58] HACK: arm64: dts: meson: add rtc/vrtc aliases to Khadas
  VIM
 
 Add aliases to ensure the vrtc time (which normally proves first) is /dev/rtc1
@@ -13,7 +13,7 @@ Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
  1 file changed, 2 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
-index 60feac0179c0..df287b12975b 100644
+index 6ab1cc125b96..24af15e18026 100644
 --- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
 +++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
 @@ -29,6 +29,8 @@ button-function {
