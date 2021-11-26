@@ -1,0 +1,54 @@
+From b2c9cbcb20a5a97c378193c607c3dd91e6dc6107 Mon Sep 17 00:00:00 2001
+From: Artem Lapkin <art@khadas.com>
+Date: Mon, 15 Nov 2021 16:21:07 +0800
+Subject: [PATCH 53/58] arm64: dts: rockchip: remove mmc-hs400-enhanced-strobe
+ from rk3399-khadas-edge
+
+Remove mmc-hs400-enhanced-strobe from the rk3399-khadas-edge dts to
+improve compatibility with a wider range of eMMC chips.
+
+Before (BJTD4R 29.1 GiB):
+
+[    7.001493] mmc2: CQHCI version 5.10
+[    7.027971] mmc2: SDHCI controller on fe330000.mmc [fe330000.mmc] using ADMA
+.......
+[    7.207086] mmc2: mmc_select_hs400es failed, error -110
+[    7.207129] mmc2: error -110 whilst initialising MMC card
+[    7.308893] mmc2: mmc_select_hs400es failed, error -110
+[    7.308921] mmc2: error -110 whilst initialising MMC card
+[    7.427524] mmc2: mmc_select_hs400es failed, error -110
+[    7.427546] mmc2: error -110 whilst initialising MMC card
+[    7.590993] mmc2: mmc_select_hs400es failed, error -110
+[    7.591012] mmc2: error -110 whilst initialising MMC card
+
+After:
+
+[    6.960785] mmc2: CQHCI version 5.10
+[    6.984672] mmc2: SDHCI controller on fe330000.mmc [fe330000.mmc] using ADMA
+[    7.175021] mmc2: Command Queue Engine enabled
+[    7.175053] mmc2: new HS400 MMC card at address 0001
+[    7.175808] mmcblk2: mmc2:0001 BJTD4R 29.1 GiB
+[    7.176033] mmcblk2boot0: mmc2:0001 BJTD4R 4.00 MiB
+[    7.176245] mmcblk2boot1: mmc2:0001 BJTD4R 4.00 MiB
+[    7.176495] mmcblk2rpmb: mmc2:0001 BJTD4R 4.00 MiB, chardev (242:0)
+
+Signed-off-by: Artem Lapkin <art@khadas.com>
+---
+ arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
+index d3561f14d835..26816c557cfb 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
+@@ -721,7 +721,6 @@ ir_rx: ir-rx {
+ &sdhci {
+ 	bus-width = <8>;
+ 	mmc-hs400-1_8v;
+-	mmc-hs400-enhanced-strobe;
+ 	non-removable;
+ 	status = "okay";
+ };
+-- 
+2.25.1
+

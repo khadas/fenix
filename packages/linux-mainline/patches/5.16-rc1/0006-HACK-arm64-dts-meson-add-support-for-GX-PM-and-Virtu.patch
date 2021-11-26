@@ -1,7 +1,7 @@
-From e192d41965fc11771a31b30d8a8ab2c3641ed2fe Mon Sep 17 00:00:00 2001
+From 46a8c1fef507a85e2555fde922f98c9fc7a3626f Mon Sep 17 00:00:00 2001
 From: Neil Armstrong <narmstrong@baylibre.com>
 Date: Thu, 3 Nov 2016 15:29:25 +0100
-Subject: [PATCH 06/77] HACK: arm64: dts: meson: add support for GX PM and
+Subject: [PATCH 06/58] HACK: arm64: dts: meson: add support for GX PM and
  Virtual RTC
 
 Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
