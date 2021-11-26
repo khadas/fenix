@@ -11,7 +11,7 @@ max_freq_a73=2208
 #   pwm_f           -- Enable PWM_F (GPIO Header PIN35)
 #   i2c3            -- Enable i2c3 (GPIO Header PIN22 & PIN23)
 #   spi1            -- Enable SPI1 (GPIO Header PIN15 & PIN16 & PIN35 & PIN37), pwm_f need to be removed
-#   i2s             -- Enable I2S (GPIO Header PIN29 & PIN30 & PIN31 & PIN32 & PIN33)
+#   i2s             -- Enable I2S (GPIO Header PIN29 & PIN30 & PIN31 & PIN32 & PIN33), spdifin need to be removed
 #   os08a10         -- Enable OS08A10 Camera
 #   onewire         -- Enable onewire bus (GPIO Header PIN15)
 #   disable-ts050   -- Disable TS050 LCD
@@ -21,4 +21,5 @@ max_freq_a73=2208
 #   can             -- Enable mcp2515 (GPIO Header PIN15 && PIN16 && PIN22 && PIN35 && PIN37), pwm_f/i2c3/uart3 need to be removed
 #   mpu6050-i2c     -- Enable mpu6050 (GPIO Header PIN22 & PIN23 & PIN37), pwm_f need to be removed
 #   ext_board       -- Enable for Khadas EXT Board
+#   spdifin         -- Enable SPDIFIN (GPIO Header PIN13 & PIN35), pwm_f need to be removed
 overlays=uart3 pwm_f i2c3 i2s os08a10 watchdog
