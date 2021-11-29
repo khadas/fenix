@@ -9,7 +9,7 @@ PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
 PKG_SITE="$GITEE_URL/numbqq/mali_examples_aml"
 PKG_URL="$PKG_SITE/repository/archive/$PKG_VERSION.tar.gz"
 PKG_SOURCE_DIR="$PKG_NAME"
-PKG_SHA256="9ef7ccf385deaac966adb43a0cbc4dc5c62728603c2c62403f4e35abd78661e2"
+PKG_SHA256="a770e12fdcd4795fffa92955f48dabe1790e7998b3e139456f0eeee118e3c0eb"
 }
 PKG_ARCH="arm aarch64"
 PKG_LICENSE="GPL"
