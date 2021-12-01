@@ -91,7 +91,6 @@ CREATE_ROOTFS_CACHE_ONLY_VALUES="no | yes"
 
 
 GITHUB_URL="https://github.com"
-GITEE_URL="https://gitee.com"
 FENIX_BRANCH="master"
 [[ "$CLONE_FULL_COMMIT_LOG" == "no" ]] && GIT_CLONE_OPTIONS="--depth=1"
 

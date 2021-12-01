@@ -4,13 +4,6 @@ PKG_SHA256="4887bd23bb009b5b95cf01b184af98c518e2501c7a7deb5239924677d8463663"
 PKG_SOURCE_DIR="amremote-${PKG_VERSION}*"
 PKG_SITE="$GITHUB_URL/numbqq/amremote"
 PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
-[[ $DOWNLOAD_MIRROR == china ]] && \
-{
-PKG_SITE="$GITEE_URL/numbqq/amremote"
-PKG_URL="$PKG_SITE/repository/archive/$PKG_VERSION.tar.gz"
-PKG_SOURCE_DIR="$PKG_NAME"
-PKG_SHA256="4887bd23bb009b5b95cf01b184af98c518e2501c7a7deb5239924677d8463663"
-}
 PKG_ARCH="arm aarch64"
 PKG_LICENSE="GPL"
 PKG_SHORTDESC="Amlogic Amremote package"

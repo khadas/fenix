@@ -4,13 +4,6 @@ PKG_SHA256="a770e12fdcd4795fffa92955f48dabe1790e7998b3e139456f0eeee118e3c0eb"
 PKG_SOURCE_DIR="mali_examples_aml-${PKG_VERSION}*"
 PKG_SITE="$GITHUB_URL/numbqq/mali_examples_aml"
 PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
-[[ $DOWNLOAD_MIRROR == china ]] && \
-{
-PKG_SITE="$GITEE_URL/numbqq/mali_examples_aml"
-PKG_URL="$PKG_SITE/repository/archive/$PKG_VERSION.tar.gz"
-PKG_SOURCE_DIR="$PKG_NAME"
-PKG_SHA256="a770e12fdcd4795fffa92955f48dabe1790e7998b3e139456f0eeee118e3c0eb"
-}
 PKG_ARCH="arm aarch64"
 PKG_LICENSE="GPL"
 PKG_SHORTDESC="Mali OpenGL ES 2.0 examples."

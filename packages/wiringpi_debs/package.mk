@@ -4,13 +4,6 @@ PKG_SHA256="93a9510d9e1f3e38e3d5a90de7228115ce2f3f7d3feadc51b2c92f0e1017f7a4"
 PKG_SOURCE_DIR="wiringpi_debs-${PKG_VERSION}*"
 PKG_SITE="$GITHUB_URL/numbqq/wiringpi_debs"
 PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
-[[ $DOWNLOAD_MIRROR == china ]] && \
-{
-PKG_SITE="$GITEE_URL/numbqq/wiringpi_debs"
-PKG_URL="$PKG_SITE/repository/archive/$PKG_VERSION.tar.gz"
-PKG_SOURCE_DIR="$PKG_NAME"
-PKG_SHA256="93a9510d9e1f3e38e3d5a90de7228115ce2f3f7d3feadc51b2c92f0e1017f7a4"
-}
 PKG_ARCH="arm aarch64"
 PKG_LICENSE="GPL"
 PKG_SHORTDESC="WiringPi"

@@ -4,13 +4,6 @@ PKG_SHA256="9024f11b4786ba3aba9aa455dedb424357a52cde906f11d09118c95f9fbc22fb"
 PKG_SOURCE_DIR="npu_aml-${PKG_VERSION}*"
 PKG_SITE="$GITHUB_URL/numbqq/npu_aml"
 PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
-[[ $DOWNLOAD_MIRROR == china ]] && \
-{
-PKG_SITE="$GITEE_URL/numbqq/npu_aml"
-PKG_URL="$PKG_SITE/repository/archive/$PKG_VERSION.tar.gz"
-PKG_SOURCE_DIR="$PKG_NAME"
-PKG_SHA256="9024f11b4786ba3aba9aa455dedb424357a52cde906f11d09118c95f9fbc22fb"
-}
 PKG_ARCH="arm aarch64"
 PKG_LICENSE="GPL"
 PKG_SHORTDESC="Amlogic NPU libraries"

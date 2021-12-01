@@ -4,13 +4,6 @@ PKG_SHA256="e5f28c16a6a80c8e7507c07e719b17a8336db504349cf7cd716b24ccfb4426f0"
 PKG_SOURCE_DIR="edid-decode-deb-${PKG_VERSION}*"
 PKG_SITE="$GITHUB_URL/numbqq/edid-decode-deb"
 PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
-[[ $DOWNLOAD_MIRROR == china ]] && \
-{
-PKG_SITE="$GITEE_URL/numbqq/edid-decode-deb"
-PKG_URL="$PKG_SITE/repository/archive/$PKG_VERSION.tar.gz"
-PKG_SOURCE_DIR="$PKG_NAME"
-PKG_SHA256="e5f28c16a6a80c8e7507c07e719b17a8336db504349cf7cd716b24ccfb4426f0"
-}
 PKG_ARCH="arm aarch64"
 PKG_LICENSE="GPL"
 PKG_SHORTDESC="EDID decoder"
