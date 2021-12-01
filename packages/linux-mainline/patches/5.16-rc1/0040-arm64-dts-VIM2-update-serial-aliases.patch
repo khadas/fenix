@@ -1,0 +1,29 @@
+From bdf7bd749760c0148f8ed1d3d5e840f93d5bdc41 Mon Sep 17 00:00:00 2001
+From: Nick Xie <nick@khadas.com>
+Date: Thu, 27 May 2021 10:58:18 +0800
+Subject: [PATCH 40/58] arm64: dts: VIM2: update serial aliases
+
+Signed-off-by: Nick Xie <nick@khadas.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+index 8fbd5e62d7af..d6ddf0f54be5 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+@@ -18,7 +18,10 @@ / {
+ 
+ 	aliases {
+ 		serial0 = &uart_AO;
+-		serial2 = &uart_AO_B;
++		serial1 = &uart_A;
++		serial2 = &uart_B;
++		serial3 = &uart_C;
++		serial4 = &uart_AO_B;
+ 	};
+ 
+ 	chosen {
+-- 
+2.25.1
+
