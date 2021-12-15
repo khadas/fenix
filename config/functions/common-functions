@@ -74,7 +74,7 @@ prepare_host() {
 		return -1
 	fi
 
-	local build_host=$(lsb_release -sc)
+	local build_host=$(sed -ne 's/^VERSION_CODENAME=//p' </etc/os-release)
 	info_msg "Build host: $build_host target: $DISTRIB_RELEASE"
 
 	[ "$NO_HOST_CHECK" ] || {
