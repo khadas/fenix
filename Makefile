@@ -1,3 +1,6 @@
+all: _env_is_setup
+	@./scripts/create_image.sh
+
 _env_is_setup:
 	@if test "$(DISTRIBUTION)" -a "$(DISTRIB_RELEASE)" -a "$(DISTRIB_TYPE)" -a "$(DISTRIB_ARCH)" -a "$(KHADAS_BOARD)" -a "$(LINUX)" -a "$(UBOOT)" -a "$(INSTALL_TYPE)"; then \
 		exit 0; \
@@ -6,9 +9,6 @@ _env_is_setup:
 		echo "Run 'source env/setenv.sh' to setup environment."; \
 		exit 1; \
 	fi
-
-all: _env_is_setup
-	@./scripts/create_image.sh
 
 image: _env_is_setup
 	@echo "This script requires root privileges, trying to use sudo, please enter your passowrd!"
