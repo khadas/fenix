@@ -158,10 +158,18 @@ NAMESERVER="1.0.0.1" # default is cloudflare alternate
 ROOTFS_TYPE="ext4"
 BOOTFS_TYPE="fat"
 
-if [ "$BUILD_TYPE" == "release" ]; then
-	TZDATA="Etc/UTC" # Use 'Etc/UTC' when release images.
-else
-	TZDATA=`cat /etc/timezone` # Timezone for target is taken from host or defined here.
+TZDATA=
+# Timezone for target is taken from host, but not for release images.
+if [ "$BUILD_TYPE" != release ]; then
+	if [ -f /etc/timezone ]; then
+		TZDATA=`cat /etc/timezone`
+	elif [ -L /etc/localtime ]; then
+		TZDATA=$(readlink /etc/localtime | sed -ne 's|^.*/zoneinfo/||p')
+	fi
+fi
+if [ -z "${TZDATA}" ]; then
+	# Default to 'Etc/UTC'.
+	TZDATA=Etc/UTC
 fi
 
 # Non-interactive mode auto detect

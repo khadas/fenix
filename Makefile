@@ -1,128 +1,63 @@
-all:
-ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
-	$(call help_message)
-else
+all: _env_is_setup
 	@./scripts/create_image.sh
-endif
 
-define help_message
-	@echo "You should setup environment first."
-	@echo "Run 'source env/setenv.sh' to setup environment."
-endef
+_env_is_setup:
+	@if test "$(DISTRIBUTION)" -a "$(DISTRIB_RELEASE)" -a "$(DISTRIB_TYPE)" -a "$(DISTRIB_ARCH)" -a "$(KHADAS_BOARD)" -a "$(LINUX)" -a "$(UBOOT)" -a "$(INSTALL_TYPE)"; then \
+		exit 0; \
+	else \
+		echo "You should setup environment first."; \
+		echo "Run 'source env/setenv.sh' to setup environment."; \
+		exit 1; \
+	fi
 
-image:
-ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
-	$(call help_message)
-else
+image: _env_is_setup
 	@echo "This script requires root privileges, trying to use sudo, please enter your passowrd!"
 	@sudo -E ./scripts/make_image.sh
-endif
 
-kernel:
-ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
-	$(call help_message)
-else
+kernel: _env_is_setup
 	@./scripts/build.sh linux
-endif
 
-kernel-clean:
-ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
-	$(call help_message)
-else
+kernel-clean: _env_is_setup
 	@./scripts/build.sh linux-clean
-endif
 
-kernel-config:
-ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
-	$(call help_message)
-else
+kernel-config: _env_is_setup
 	@./scripts/build.sh linux-config
-endif
 
-kernel-saveconfig:
-ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
-	$(call help_message)
-else
+kernel-saveconfig: _env_is_setup
 	@./scripts/build.sh linux-saveconfig
-endif
 
-uboot:
-ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
-	$(call help_message)
-else
+uboot: _env_is_setup
 	@./scripts/build.sh u-boot
-endif
 
-uboot-clean:
-ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
-	$(call help_message)
-else
+uboot-clean: _env_is_setup
 	@./scripts/build.sh u-boot-clean
-endif
 
 debs: uboot kernel
-ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
-	$(call help_message)
-else
 	@./scripts/build.sh debs
-endif
 
 uboot-deb: uboot kernel
-ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
-	$(call help_message)
-else
 	@./scripts/build.sh uboot-deb
-endif
 
 uboot-image: uboot kernel
-ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
-	$(call help_message)
-else
 	@./scripts/build.sh uboot-image
-endif
-
 
 kernel-deb: kernel
-ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
-	$(call help_message)
-else
 	@./scripts/build.sh linux-deb
-endif
 
-board-deb:
-ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
-	$(call help_message)
-else
+board-deb: _env_is_setup
 	@./scripts/build.sh board-deb
-endif
 
-gpu-deb:
-ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
-	$(call help_message)
-else
+gpu-deb: _env_is_setup
 	@./scripts/build.sh gpu-deb
-endif
 
-desktop-deb:
-ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
-	$(call help_message)
-else
+desktop-deb: _env_is_setup
 	@./scripts/build.sh desktop-deb
-endif
 
-common-deb:
-ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
-	$(call help_message)
-else
+common-deb: _env_is_setup
 	@./scripts/build.sh common-deb
-endif
 
-updater-deb:
-ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
-	$(call help_message)
-else
+updater-deb: _env_is_setup
 	@./scripts/build.sh updater-deb
-endif
 
 get-make-params:
 	@./scripts/param.sh make_params
@@ -195,3 +130,5 @@ write write-help write-boot-online write-boot-emmc-online write-boot-spi-online 
 krescue krescue-write krescue-write-vim1 krescue-write-vim2 krescue-write-vim3 krescue-write-vim3l krescue-write-edge :
 	./scripts/krescue.sh "$@"
 
+
+.PHONY: _env_is_setup
