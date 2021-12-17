@@ -60,8 +60,7 @@ update_git_repo() {
 			git checkout $2
         fi
 
-        git pull origin $2
-		git pull origin --tags -f
+        git pull origin $2 --tags -f
 		[ "$NO_ASK" ] || \
 		if [ $HAVE_MODIFYCATIONS -ne 0 ]; then
 			echo -e "Press $YELLOW<Ctrl-C>$ENDCOLOR to abort compilation, $YELLOW<Enter>$ENDCOLOR to ignore and continue"
