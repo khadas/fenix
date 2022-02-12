@@ -79,7 +79,7 @@ prepare_host() {
 
 	[ "$NO_HOST_CHECK" ] || {
 		case $build_host in
-		hirsute|bullseye)
+		hirsute|bullseye|jammy)
 		## looks like can build all prev system
 		;;
 		focal|buster)
@@ -392,7 +392,7 @@ get_package_list_hash()
 
 ## create_sources_list <release> <basedir>
 ##
-## <release>: buster|bionic|focal
+## <release>: buster|bionic|focal|jammy
 ## <basedir>: path to root directory
 create_sources_list()
 {
@@ -423,7 +423,7 @@ create_sources_list()
 	EOF
 	;;
 
-	bionic|focal|hirsute)
+	bionic|focal|hirsute|jammy)
 	cat <<-EOF | tee $basedir/etc/apt/sources.list
 	deb http://${UBUNTU_MIRROR} $release main restricted universe multiverse
 	#deb-src http://${UBUNTU_MIRROR} $release main restricted universe multiverse

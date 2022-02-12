@@ -260,7 +260,7 @@ if [[ "$DISTRIB_TYPE" != "minimal" ]]; then
 		libxcb1 html2text automake libwrap0-dev libnl-3-dev libnl-genl-3-dev \
 		keyboard-configuration rsyslog"
 
-	PACKAGE_LIST_ADDITIONAL+=" alsa-utils btrfs-progs dosfstools hddtemp iotop stress sysbench screen \
+	PACKAGE_LIST_ADDITIONAL+=" alsa-utils btrfs-progs dosfstools iotop stress sysbench screen \
 		ntfs-3g vim pciutils evtest pv libfuse2 libdigest-sha-perl libproc-processtable-perl aptitude \
 		dnsutils f3 haveged hdparm rfkill vlan bash-completion hostapd git ethtool unzip ifenslave lirc \
 		iperf3 software-properties-common libnss-myhostname f2fs-tools avahi-autoipd iputils-arping \
@@ -312,7 +312,7 @@ esac
 case $DISTRIB_RELEASE in
 	buster|bullseye)
 		DEBOOTSTRAP_COMPONENTS="main"
-		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher command-not-found"
+		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher command-not-found hddtemp"
 		PACKAGE_LIST_KODI="libglu1 libmicrohttpd12 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libva-drm2 libcurl4"
 		PACKAGE_LIST_QT+=" libqt5multimediaquick5"
 		PACKAGE_LIST_MESA="libglvnd-dev libx11-dev"
@@ -321,7 +321,7 @@ case $DISTRIB_RELEASE in
 	;;
 	bionic)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
-		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found"
+		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found hddtemp"
 		PACKAGE_LIST_QT+=" libqt5multimediaquick-p5 libqgsttools-p1"
 		PACKAGE_LIST_OFFICE+=" mirage"
 		PACKAGE_LIST_KODI="mesa-utils libglu1 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libcurl4 libcrossguid0 libmariadbclient18 libmicrohttpd12 \
@@ -335,7 +335,7 @@ case $DISTRIB_RELEASE in
 	;;
 	focal|hirsute)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
-		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found"
+		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found hddtemp"
 		PACKAGE_LIST_KODI="mesa-utils libglu1 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libcurl4 libcrossguid0  libmicrohttpd12 libavahi-compat-libdnssd-dev libcec4 \
 			libfstrcmp0 libnfs13 fonts-liberation python-bluez python-pil python-simplejson libaacs0 fonts-dejavu-core libao-dev libpython2.7 libpython2.7-minimal libpython2.7-stdlib x11-utils"
 		PACKAGE_LIST_SERVER_KODI="libao4 libwayland-cursor0 libavahi-compat-libdnssd-dev libass9 libavahi-client3 libavahi-common3 libbluray2 libcdio18 libcec4 \
@@ -344,6 +344,12 @@ case $DISTRIB_RELEASE in
 			libyajl2 libsndio7.0 libcrossguid0 libao-dev libpython2.7"
 		PACKAGE_LIST_MESA="libclang-cpp11 libclc-r600 libclc-amdgcn libllvm10"
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_XSERVER $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_KODI $PACKAGE_LIST_MESA"
+		PACKAGE_LIST_DESKTOP+=" xserver-xorg-input-all pulseaudio-module-gsettings firefox language-selector-gnome viewnior"
+	;;
+	jammy)
+		DEBOOTSTRAP_COMPONENTS="main,universe"
+		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found"
+		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST"
 		PACKAGE_LIST_DESKTOP+=" xserver-xorg-input-all pulseaudio-module-gsettings firefox language-selector-gnome viewnior"
 	;;
 esac

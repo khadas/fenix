@@ -60,6 +60,9 @@ build_board_deb() {
 	# make a backup since we are unconditionally overwriting this on update
 	[ -f "/etc/default/cpufrequtils" ] && cp /etc/default/cpufrequtils /etc/default/cpufrequtils.dpkg-old
 
+	# jammy default using zstd compression, force set initramfs compression to gzip
+	sed -i "s/^COMPRESS=.*/COMPRESS=gzip/" /etc/initramfs-tools/initramfs.conf
+
 	# Workaround for FAT32 /boot partition
 	# exit if we are running chroot
 	if [ "\$(stat -c %d:%i /)" != "\$(stat -c %d:%i /proc/1/root/.)" ]; then exit 0; fi
@@ -424,7 +427,7 @@ build_board_deb() {
 			cp $ROOT/archives/filesystem/bsp/10-override-random-mac.conf $pkgdir/usr/lib/NetworkManager/conf.d/
 		;;
 
-		bionic|focal)
+		bionic|focal|jammy)
 			mkdir -p $pkgdir/usr/lib/NetworkManager/conf.d/
 			cp $ROOT/archives/filesystem/bsp/zz-override-wifi-powersave-off.conf $pkgdir/usr/lib/NetworkManager/conf.d/
 			cp $ROOT/archives/filesystem/bsp/10-override-random-mac.conf $pkgdir/usr/lib/NetworkManager/conf.d/

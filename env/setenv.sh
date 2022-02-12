@@ -199,8 +199,8 @@ unset SUPPORTED_LINUX_DESC
 
 DISTRIBUTION_ARRAY=("Ubuntu" "Debian")
 DISTRIBUTION_ARRAY_DESC=("Ubuntu" "Debian")
-Ubuntu_RELEASE_ARRAY=("bionic" "focal")
-Ubuntu_RELEASE_ARRAY_DESC=("Ubuntu 18.04" "Ubuntu 20.04")
+Ubuntu_RELEASE_ARRAY=("bionic" "focal" "jammy")
+Ubuntu_RELEASE_ARRAY_DESC=("Ubuntu 18.04" "Ubuntu 20.04" "Ubuntu 22.04")
 Debian_RELEASE_ARRAY=("buster")
 Debian_RELEASE_ARRAY_DESC=("Debian 10")
 DISTRIB_ARCH_ARRAY=("arm64")
