@@ -359,8 +359,8 @@ UBUNTU_MIRROR='ports.ubuntu.com/'
 ROOTFS_CACHE_URL="http://build.khadas.com/khadas/fenix/cache/rootfs"
 
 ## U-boot & Linux GitHub URL
-LINUX_SOURCE_URL="https://github.com/khadas/linux"
-UBOOT_SOURCE_URL="https://github.com/khadas/u-boot"
+LINUX_SOURCE_URL="${LINUX_SOURCE_URL:-https://github.com/khadas/linux}"
+UBOOT_SOURCE_URL="${UBOOT_SOURCE_URL:-https://github.com/khadas/u-boot}"
 
 if [[ $DOWNLOAD_MIRROR == china ]] ; then
 	DEBIAN_MIRROR='mirrors.tuna.tsinghua.edu.cn/debian'
