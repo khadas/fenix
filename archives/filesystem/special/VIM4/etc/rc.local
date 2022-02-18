@@ -17,8 +17,8 @@ for a in /etc/ssh/ssh_host*; do
     dpkg-reconfigure -f noninteractive openssh-server
 done
 
-# Setup LED: breathe if bootup completed
-echo 0 0 > /sys/class/leds/state_led/breath
+# Setup LED: heartbeat if bootup completed
+echo heartbeat > /sys/class/leds/pwmled/trigger
 
 # Setup cursor_blink
 
