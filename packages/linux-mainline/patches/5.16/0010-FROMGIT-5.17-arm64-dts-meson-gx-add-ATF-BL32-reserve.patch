@@ -1,0 +1,35 @@
+From ecea838913645571d7a91e5e86cd161df87b7e9a Mon Sep 17 00:00:00 2001
+From: Christian Hewitt <christianshewitt@gmail.com>
+Date: Sat, 6 Jul 2019 07:54:44 +0000
+Subject: [PATCH 10/81] FROMGIT(5.17): arm64: dts: meson-gx: add ATF BL32
+ reserved-memory region
+
+Add an additional reserved memory region for the BL32 trusted firmware
+present in many devices that boot from Amlogic vendor u-boot.
+
+Suggested-by: Mateusz Krzak <kszaquitto@gmail.com>
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-gx.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
+index e919016bc9ec..d6dc407127cd 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
+@@ -49,6 +49,12 @@ secmon_reserved_alt: secmon@5000000 {
+ 			no-map;
+ 		};
+ 
++		/* 32 MiB reserved for ARM Trusted Firmware (BL32) */
++		secmon_reserved_bl32: secmon@5300000 {
++			reg = <0x0 0x05300000 0x0 0x2000000>;
++			no-map;
++		};
++
+ 		linux,cma {
+ 			compatible = "shared-dma-pool";
+ 			reusable;
+-- 
+2.25.1
+

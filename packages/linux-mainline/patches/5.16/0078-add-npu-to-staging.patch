@@ -1,0 +1,22 @@
+From 94d277d1c94e7dd9fb61fe5c9c8490b34ff39473 Mon Sep 17 00:00:00 2001
+From: Yan <yan-wyb@foxmail.com>
+Date: Mon, 22 Nov 2021 10:49:26 +0800
+Subject: [PATCH 78/81] add npu to staging
+
+Signed-off-by: Yan <yan-wyb@foxmail.com>
+---
+ drivers/staging/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/staging/Makefile b/drivers/staging/Makefile
+index e66e19c45425..225d9129fa39 100644
+--- a/drivers/staging/Makefile
++++ b/drivers/staging/Makefile
+@@ -39,3 +39,4 @@ obj-$(CONFIG_XIL_AXIS_FIFO)	+= axis-fifo/
+ obj-$(CONFIG_FIELDBUS_DEV)     += fieldbus/
+ obj-$(CONFIG_QLGE)		+= qlge/
+ obj-$(CONFIG_WFX)		+= wfx/
++obj-$(CONFIG_ARCH_MESON) += npu/
+-- 
+2.25.1
+

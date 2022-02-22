@@ -1,0 +1,42 @@
+From 210e466d3d6085209c839b278c171194b39be3f4 Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Mon, 30 Aug 2021 13:51:11 +0800
+Subject: [PATCH 67/81] arm64: dts: meson: sm1-khadas-vim3l use one sound node
+ configuration with VIM3
+
+Khadas VIM3L board sound configuration same as Khadas VIM3, its already
+defined in meson-khadas-vim3.dtsi and no need overwrite it with different
+card names and routing configurations.
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ .../boot/dts/amlogic/meson-sm1-khadas-vim3l.dts     | 13 -------------
+ 1 file changed, 13 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+index bf9994b541f2..0667b0ca6596 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+@@ -55,19 +55,6 @@ galcore {
+ 		nn_power_version = <3>;
+ 		nn_efuse = <0xff63003c 0x20>;
+ 	};
+-
+-	sound {
+-		model = "G12B-KHADAS-VIM3L";
+-		audio-routing = "TDMOUT_A IN 0", "FRDDR_A OUT 0",
+-				"TDMOUT_A IN 1", "FRDDR_B OUT 0",
+-				"TDMOUT_A IN 2", "FRDDR_C OUT 0",
+-				"TDM_A Playback", "TDMOUT_A OUT",
+-				"TDMIN_A IN 0", "TDM_A Capture",
+-				"TDMIN_A IN 13", "TDM_A Loopback",
+-				"TODDR_A IN 0", "TDMIN_A OUT",
+-				"TODDR_B IN 0", "TDMIN_A OUT",
+-				"TODDR_C IN 0", "TDMIN_A OUT";
+-	};
+ };
+ 
+ &cpu0 {
+-- 
+2.25.1
+

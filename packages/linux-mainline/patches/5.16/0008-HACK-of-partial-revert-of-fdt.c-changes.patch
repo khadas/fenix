@@ -1,0 +1,31 @@
+From e540f63c256856198a972a624b765381e2edc15c Mon Sep 17 00:00:00 2001
+From: Frank Wang <frank@khadas.com>
+Date: Mon, 21 Feb 2022 18:22:38 +0800
+Subject: [PATCH 08/81] HACK: of: partial revert of fdt.c changes
+
+Signed-off-by: Frank Wang <frank@khadas.com>
+---
+ drivers/of/fdt.c | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index bdca35284ceb..674d12e37e65 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -480,13 +480,6 @@ static int __init early_init_dt_reserve_memory_arch(phys_addr_t base,
+ 					phys_addr_t size, bool nomap)
+ {
+ 	if (nomap) {
+-		/*
+-		 * If the memory is already reserved (by another region), we
+-		 * should not allow it to be marked nomap.
+-		 */
+-		if (memblock_is_region_reserved(base, size))
+-			return -EBUSY;
+-
+ 		return memblock_mark_nomap(base, size);
+ 	}
+ 	return memblock_reserve(base, size);
+-- 
+2.25.1
+
