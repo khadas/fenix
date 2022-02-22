@@ -9,6 +9,7 @@ setenv env_loadaddr "0x20000000"
 # Detect hardware version
 kbi init
 kbi hwver
+kbi ethmac
 
 if test "X${lcd_exist}" = "X1"; then
 	setenv panelargs "panel_exist=${lcd_exist} panel_type=${panel_type}";
