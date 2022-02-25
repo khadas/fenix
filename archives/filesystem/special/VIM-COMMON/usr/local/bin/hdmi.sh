@@ -127,6 +127,9 @@ case $mode in
 		export X=3440
 		export Y=1440
 		;;
+	 *)
+		exit 2
+		;;
 esac
 
 common_display_setup
