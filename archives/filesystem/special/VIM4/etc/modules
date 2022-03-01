@@ -28,6 +28,7 @@ amvdec_av1
 amvdec_av1_v4l
 media_sync
 jpegenc
+amvenc_multi
 
 snd_usb_audio
 snd_usbmidi_lib
