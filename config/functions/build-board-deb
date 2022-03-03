@@ -388,6 +388,13 @@ build_board_deb() {
 		cp $ROOT/archives/filesystem/blobs/asound.state/$KHADAS_BOARD/asound.state $pkgdir/var/lib/alsa/
 	fi
 
+	# HACK for jammy
+	if [ "$DISTRIB_RELEASE" == "jammy" ]; then
+		mv $pkgdir/usr/share/initramfs-tools/scripts/local.jammy $pkgdir/usr/share/initramfs-tools/scripts/local
+	else
+		rm -rf $pkgdir/usr/share/initramfs-tools/scripts/local.jammy
+	fi
+
 	# Trigger uInitrd creation after installation, to apply
 	# /etc/initramfs/post-update.d/99-uboot
 	cat <<-EOF > $pkgdir/DEBIAN/triggers
