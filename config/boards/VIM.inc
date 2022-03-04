@@ -202,17 +202,18 @@ pack_image_platform_raw() {
 	DTB2_OFFSET=0x02840000
 	LOGO_OFFSET=0x07c00000
 
-	case $KHADAS_BOARD in
-	    VIM4)
-	    ROOT_OFFSET=0x08400000
-	    LOGO_OFFSET=
-	    ;;
-	esac
-
 	PATH_BOOT="$UBOOT_IMAGE_DIR"/u-boot.bin.sd.bin
 	PATH_DTB0="$LINUX_DIR/$LINUX_DTB"
 	PATH_ROOT="$BUILD_IMAGES/rootfs.img"
 	PATH_LOGO="$BUILD_IMAGES/logo.img"
+
+	case "$KHADAS_BOARD" in
+	    VIM4)
+	    PATH_BOOT="$UBOOT_IMAGE_DIR"/u-boot.bin.sd.bin.signed
+	    ROOT_OFFSET=0x08400000
+	    LOGO_OFFSET=
+	    ;;
+	esac
 
 	F="conv=fsync,notrunc status=noxfer"
 	F1="$F,none"
