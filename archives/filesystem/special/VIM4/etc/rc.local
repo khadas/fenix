@@ -22,6 +22,12 @@ echo heartbeat > /sys/class/leds/pwmled/trigger
 
 # Setup cursor_blink
 
+# For Kernel 5.4 FAN
+[ -f /sys/class/fan/mode ] && chmod 777 /sys/class/fan/mode
+[ -f /sys/class/fan/level ] && chmod 777 /sys/class/fan/level
+[ -f /sys/class/fan/enable ] && chmod 777 /sys/class/fan/enable
+
+
 # Reboot test handle
 if cat /proc/cmdline | grep -q reboot_test > /dev/null; then
 	if ! systemctl is-active reboot-test-khadas | grep "^active$" > /dev/null; then
