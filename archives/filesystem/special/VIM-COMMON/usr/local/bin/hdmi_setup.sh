@@ -5,6 +5,12 @@ if ! which lightdm; then
 	exit
 fi
 
+if lsb_release -a | grep -q "Jammy"; then
+	UBUNTU_VER="Jammy"
+elif lsb_release -a | grep -q "Focal"; then
+	UBUNTU_VER="Focal"
+fi
+
 PIPE="/tmp/hdmi_resolution_pipe"
 resolutions=()
 tempfile=$(mktemp)
@@ -17,6 +23,7 @@ fi
 chmod 777 ${PIPE}
 
 # Established timings supported
+if [ $UBUNTU_VER == "Focal" ]; then
 edid-decode < /sys/class/amhdmitx/amhdmitx0/rawedid | grep "E:" > $tempfile
 while read line
 do
@@ -36,6 +43,13 @@ while read line
 do
     resolutions+=(`echo $line | grep -v i | awk '{print $3}'`)
 done < $tempfile
+elif [ $UBUNTU_VER == "Jammy" ]; then
+edid-decode < /sys/class/amhdmitx/amhdmitx0/rawedid | grep "S:" > $tempfile
+while read line
+do
+    resolutions+=(`echo $line | grep -v i | awk -F ":" '{print $3}' | awk '{print $1}'`)
+done < $tempfile
+fi
 
 ##################
 resolutions=(`echo ${resolutions[@]} | tr 'A-Z' 'a-z' | sed s/@/p/g`)
