@@ -4,8 +4,8 @@ resolutions_h=`edid-decode < /sys/class/amhdmitx/amhdmitx0/rawedid | sed -n '/De
 
 if [ -z "$resolutions_v" -a -z "$resolutions_h" ]
 then
-		resolutions_v=`edid-decode < /sys/class/amhdmitx/amhdmitx0/rawedid | sed -n '/Detailed/,/Display Product Name/p'| sed -n '1,5p' | sed -n '2p' | sed 's/x/ /g' | awk '{print $4}'`
-		resolutions_h=`edid-decode < /sys/class/amhdmitx/amhdmitx0/rawedid | sed -n '/Detailed/,/Display Product Name/p'| sed -n '1,5p' | sed -n '2p' | sed 's/x/ /g' | awk '{print $3}'`
+		resolutions_v=`edid-decode < /sys/class/amhdmitx/amhdmitx0/rawedid | sed -n '/Detailed/,/Display Product Name/p'| sed -n '1,5p' | sed -n '2p' | sed 's/x/ /g' | awk '{print $5}'`
+		resolutions_h=`edid-decode < /sys/class/amhdmitx/amhdmitx0/rawedid | sed -n '/Detailed/,/Display Product Name/p'| sed -n '1,5p' | sed -n '2p' | sed 's/x/ /g' | awk '{print $4}'`
 		hdmi.sh "${resolutions_h}x${resolutions_v}p60hz"
 		if [ $? -eq 0 ]
 		then
