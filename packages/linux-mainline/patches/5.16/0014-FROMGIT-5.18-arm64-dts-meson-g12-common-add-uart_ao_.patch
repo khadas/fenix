@@ -1,7 +1,7 @@
-From 21b5b717d1269f902875f9d7766f189b0dc86222 Mon Sep 17 00:00:00 2001
+From fdc8e6faf924c3ab5bcf339ab131b04f14727497 Mon Sep 17 00:00:00 2001
 From: Gary Bisson <gary.bisson@boundarydevices.com>
 Date: Mon, 3 Jan 2022 16:52:18 +0000
-Subject: [PATCH 14/81] FROMGIT(5.18): arm64: dts: meson-g12-common: add
+Subject: [PATCH 14/79] FROMGIT(5.18): arm64: dts: meson-g12-common: add
  uart_ao_b pins muxing
 
 - RX/TX signals can be mapped on 2 different pairs of pins so supporting

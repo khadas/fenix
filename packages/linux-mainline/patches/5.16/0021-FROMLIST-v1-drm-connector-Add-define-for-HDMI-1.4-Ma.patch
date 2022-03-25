@@ -1,7 +1,7 @@
-From d00dcdbf6091cde62240ae7f434e79cfcb1caa9a Mon Sep 17 00:00:00 2001
+From 394512a203d2783e158ca33f7ec0ff21930f1d02 Mon Sep 17 00:00:00 2001
 From: Maxime Ripard <maxime@cerno.tech>
 Date: Sat, 27 Nov 2021 07:26:47 +0000
-Subject: [PATCH 21/81] FROMLIST(v1): drm/connector: Add define for HDMI 1.4
+Subject: [PATCH 21/79] FROMLIST(v1): drm/connector: Add define for HDMI 1.4
  Maximum Pixel Rate
 
 A lot of drivers open-code the HDMI 1.4 maximum pixel rate in their

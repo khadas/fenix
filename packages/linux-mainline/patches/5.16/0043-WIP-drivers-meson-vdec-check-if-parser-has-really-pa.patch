@@ -1,7 +1,7 @@
-From eae8053094d304005fe4d20dae96351a8207a95e Mon Sep 17 00:00:00 2001
+From 423e213bda2fa3f0e142ed4d1dfb3d380b6c8c4a Mon Sep 17 00:00:00 2001
 From: Neil Armstrong <narmstrong@baylibre.com>
 Date: Mon, 22 Nov 2021 09:15:21 +0000
-Subject: [PATCH 43/81] WIP: drivers: meson: vdec: check if parser has really
+Subject: [PATCH 43/79] WIP: drivers: meson: vdec: check if parser has really
  parser before marking input buffer as error
 
 Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>

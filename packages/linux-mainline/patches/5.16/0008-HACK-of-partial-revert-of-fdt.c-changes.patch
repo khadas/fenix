@@ -1,7 +1,7 @@
-From e540f63c256856198a972a624b765381e2edc15c Mon Sep 17 00:00:00 2001
+From e548d7e273e1b9277d1832e7622bd3dca37535f5 Mon Sep 17 00:00:00 2001
 From: Frank Wang <frank@khadas.com>
 Date: Mon, 21 Feb 2022 18:22:38 +0800
-Subject: [PATCH 08/81] HACK: of: partial revert of fdt.c changes
+Subject: [PATCH 08/79] HACK: of: partial revert of fdt.c changes
 
 Signed-off-by: Frank Wang <frank@khadas.com>
 ---

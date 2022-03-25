@@ -1,7 +1,7 @@
-From 210e466d3d6085209c839b278c171194b39be3f4 Mon Sep 17 00:00:00 2001
+From 19797048763e9cfc3fd111249e03589c11a7ef9a Mon Sep 17 00:00:00 2001
 From: yan <yan-wyb@foxmail.com>
 Date: Mon, 30 Aug 2021 13:51:11 +0800
-Subject: [PATCH 67/81] arm64: dts: meson: sm1-khadas-vim3l use one sound node
+Subject: [PATCH 67/79] arm64: dts: meson: sm1-khadas-vim3l use one sound node
  configuration with VIM3
 
 Khadas VIM3L board sound configuration same as Khadas VIM3, its already

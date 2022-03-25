@@ -1,7 +1,7 @@
-From 67cd8a55cd534d0934fbf9a70e9c64d1eb562b5b Mon Sep 17 00:00:00 2001
+From d83afe9c80aba99653d9ef6f806bfe0fc82954e9 Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Thu, 20 Aug 2020 22:08:10 +0800
-Subject: [PATCH 56/81] builddeb: update dtb file for SD images
+Subject: [PATCH 56/79] builddeb: update dtb file for SD images
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---

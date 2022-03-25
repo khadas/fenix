@@ -1,7 +1,7 @@
-From 0ba7b2822227975a21cb9dfc771dc72ec99ef16c Mon Sep 17 00:00:00 2001
+From 3aec81bc74d4d0c69d3aa5614226ba5a5c639d5f Mon Sep 17 00:00:00 2001
 From: Neil Armstrong <narmstrong@baylibre.com>
 Date: Thu, 3 Nov 2016 15:29:23 +0100
-Subject: [PATCH 04/81] HACK: arm64: meson: add Amlogic Meson GX PM Suspend
+Subject: [PATCH 04/79] HACK: arm64: meson: add Amlogic Meson GX PM Suspend
 
 The Amlogic Meson GX SoCs uses a non-standard argument to the
 PSCI CPU_SUSPEND call to enter system suspend.

@@ -1,7 +1,7 @@
-From d7fe5d54141a4fca053bbf9ff6a2d510e7ed4cc0 Mon Sep 17 00:00:00 2001
+From e0182327b6693f87a448af5df5f7db05bb8b4ff1 Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Thu, 13 Jan 2022 03:56:12 +0000
-Subject: [PATCH 32/81] WIP: arm64: dts: meson: move pwm_ef node in P212 dtsi
+Subject: [PATCH 32/79] WIP: arm64: dts: meson: move pwm_ef node in P212 dtsi
 
 Cosmetic-only change to alpha-sort the pwm_ef node.
 

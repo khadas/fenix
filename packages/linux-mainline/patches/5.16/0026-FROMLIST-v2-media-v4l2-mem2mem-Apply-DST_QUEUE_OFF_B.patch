@@ -1,7 +1,7 @@
-From 658118b186f2e9d8cea46941d0ec06eecedb6be7 Mon Sep 17 00:00:00 2001
+From 8f49289e560feadfb2bb3b80d0c5a15f172af426 Mon Sep 17 00:00:00 2001
 From: Chen-Yu Tsai <wenst@chromium.org>
 Date: Wed, 15 Dec 2021 03:51:07 +0000
-Subject: [PATCH 26/81] FROMLIST(v2): media: v4l2-mem2mem: Apply
+Subject: [PATCH 26/79] FROMLIST(v2): media: v4l2-mem2mem: Apply
  DST_QUEUE_OFF_BASE on MMAP buffers across ioctls
 
 DST_QUEUE_OFF_BASE is applied to offset/mem_offset on MMAP capture buffers

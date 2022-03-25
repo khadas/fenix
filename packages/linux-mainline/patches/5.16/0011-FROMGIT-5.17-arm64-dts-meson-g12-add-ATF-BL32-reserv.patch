@@ -1,7 +1,7 @@
-From 7d7dc2d85ee95fc6c9a18e023fbf65cd90079e86 Mon Sep 17 00:00:00 2001
+From f326275758e012e48ec3a2bfc7713050a881172b Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Fri, 21 Jan 2022 12:03:57 +0000
-Subject: [PATCH 11/81] FROMGIT(5.17): arm64: dts: meson-g12: add ATF BL32
+Subject: [PATCH 11/79] FROMGIT(5.17): arm64: dts: meson-g12: add ATF BL32
  reserved-memory region
 
 Add an additional reserved memory region for the BL32 trusted firmware
