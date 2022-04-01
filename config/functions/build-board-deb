@@ -165,7 +165,7 @@ build_board_deb() {
 		sed -i "s/INSTALL_TYPE=.*/INSTALL_TYPE=\$imagetype/" /etc/fenix-release
 		sed -i "s/BOARD=.*/BOARD=\$khadas_board/" /etc/fenix-release
 		linux_ver=\`uname -r\`
-		if linux-version compare \$linux_ver ge 5.10; then
+		if linux-version compare \$linux_ver ge 5.12; then
 			IS_MAINLINE_KERNEL="yes"
 		fi
 	fi
