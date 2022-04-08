@@ -134,7 +134,7 @@ case $mode in
 		echo 1 > $FAN_ENABLE_NODE
 		;;
 	auto)
-		if [ "${LINUX_VER}" == "4.9" ]; then
+		if [ "${LINUX_VER}" == "4.9" ] || [ "${LINUX_VER}" == "5.4" ]; then
 			echo $AUTO_MODE > $FAN_MODE_NODE
 			echo 1 > $FAN_ENABLE_NODE
 		else
@@ -148,7 +148,7 @@ case $mode in
 		echo "Fan state: $FAN_STATE"
 		;;
 	mode)
-		if [ "${LINUX_VER}" == "4.9" ]; then
+		if [ "${LINUX_VER}" == "4.9" ] || [ "${LINUX_VER}" == "5.4" ]; then
 			echo "Fan mode: $FAN_MODE"
 			echo "Fan level: $FAN_LEVEL"
 			echo "Fan state: $FAN_STATE"
