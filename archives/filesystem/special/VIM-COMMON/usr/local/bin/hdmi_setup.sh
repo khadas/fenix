@@ -5,11 +5,7 @@ if ! which lightdm; then
 	exit
 fi
 
-if lsb_release -a | grep -q "Jammy"; then
-	UBUNTU_VER="Jammy"
-elif lsb_release -a | grep -q "Focal"; then
-	UBUNTU_VER="Focal"
-fi
+source /etc/lsb-release
 
 PIPE="/tmp/hdmi_resolution_pipe"
 resolutions=()
@@ -23,32 +19,32 @@ fi
 chmod 777 ${PIPE}
 
 # Established timings supported
-if [ $UBUNTU_VER == "Focal" ]; then
-edid-decode < /sys/class/amhdmitx/amhdmitx0/rawedid | grep "E:" > $tempfile
-while read line
-do
-    resolutions+=(`echo $line | grep -v i | awk -F ":" '{print $2}' | awk '{print $1}'`)
-done < $tempfile
+if [ "$DISTRIB_CODENAME" == "focal" ]; then
+	edid-decode < /sys/class/amhdmitx/amhdmitx0/rawedid | grep "E:" > $tempfile
+	while read line
+	do
+		resolutions+=(`echo $line | grep -v i | awk -F ":" '{print $2}' | awk '{print $1}'`)
+	done < $tempfile
 
-# Standard timings supported
-edid-decode < /sys/class/amhdmitx/amhdmitx0/rawedid | grep "S:" > $tempfile
-while read line
-do
-    resolutions+=(`echo $line | grep -v i | awk -F ":" '{print $2}' | awk '{print $1}'`)
-done < $tempfile
+	# Standard timings supported
+	edid-decode < /sys/class/amhdmitx/amhdmitx0/rawedid | grep "S:" > $tempfile
+	while read line
+	do
+		resolutions+=(`echo $line | grep -v i | awk -F ":" '{print $2}' | awk '{print $1}'`)
+	done < $tempfile
 
-# CEA modes
-edid-decode < /sys/class/amhdmitx/amhdmitx0/rawedid | grep "    VIC" | grep -v HDMI > $tempfile
-while read line
-do
-    resolutions+=(`echo $line | grep -v i | awk '{print $3}'`)
-done < $tempfile
-elif [ $UBUNTU_VER == "Jammy" ]; then
-edid-decode < /sys/class/amhdmitx/amhdmitx0/rawedid | grep "S:" > $tempfile
-while read line
-do
-    resolutions+=(`echo $line | grep -v i | awk -F ":" '{print $3}' | awk '{print $1}'`)
-done < $tempfile
+	# CEA modes
+	edid-decode < /sys/class/amhdmitx/amhdmitx0/rawedid | grep "    VIC" | grep -v HDMI > $tempfile
+	while read line
+	do
+		resolutions+=(`echo $line | grep -v i | awk '{print $3}'`)
+	done < $tempfile
+elif [ "$DISTRIB_CODENAME" == "jammy" ]; then
+	edid-decode < /sys/class/amhdmitx/amhdmitx0/rawedid | grep "S:" > $tempfile
+	while read line
+	do
+		resolutions+=(`echo $line | grep -v i | awk -F ":" '{print $3}' | awk '{print $1}'`)
+	done < $tempfile
 fi
 
 ##################
