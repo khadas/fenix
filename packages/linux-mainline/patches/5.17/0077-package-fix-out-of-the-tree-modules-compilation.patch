@@ -1,0 +1,43 @@
+From 6f5587a72a02570d1b4da909265b42d6e8aa0e6f Mon Sep 17 00:00:00 2001
+From: Nick xie <nick@khadas.com>
+Date: Thu, 9 Dec 2021 15:13:47 +0800
+Subject: [PATCH 77/80] package: fix out of the tree modules compilation
+
+Signed-off-by: Nick xie <nick@khadas.com>
+---
+ scripts/package/builddeb | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/scripts/package/builddeb b/scripts/package/builddeb
+index ca6b5fed48b3..b40e28a2ff1e 100755
+--- a/scripts/package/builddeb
++++ b/scripts/package/builddeb
+@@ -121,7 +121,7 @@ deploy_kernel_headers () {
+ 		cd $srctree
+ 		find . arch/$SRCARCH -maxdepth 1 -name Makefile\*
+ 		find include scripts -type f -o -type l
+-		find arch/$SRCARCH -name Kbuild.platforms -o -name Platform
++		find arch/$SRCARCH -name module.lds -o -name Kbuild.platforms -o -name Platform
+ 		find $(find arch/$SRCARCH -name include -o -name scripts -type d) -type f
+ 	) > debian/hdrsrcfiles
+ 
+@@ -354,6 +354,7 @@ create_package "$packagename" "$tmpdir"
+ (cd $srctree; find security/*/include -type f) >> "$objtree/debian/hdrsrcfiles"
+ (cd $srctree; find arch/$SRCARCH -name module.lds -o -name Kbuild.platforms -o -name Platform) >> "$objtree/debian/hdrsrcfiles"
+ (cd $srctree; find $(find arch/$SRCARCH -name include -o -name scripts -type d) -type f) >> "$objtree/debian/hdrsrcfiles"
++ldstemp=$(mktemp);cp scripts/module.lds $ldstemp
+ if is_enabled CONFIG_STACK_VALIDATION; then
+ 	(cd $objtree; find tools/objtool -type f -executable) >> "$objtree/debian/hdrobjfiles"
+ fi
+@@ -372,6 +373,8 @@ rm -f "$objtree/debian/hdrsrcfiles" "$objtree/debian/hdrobjfiles"
+ 
+ (cd $destdir; export sub_make_done=0; make M=scripts clean;)
+ 
++mv ${ldstemp} $destdir/scripts/module.lds
++
+ if [ "$ARCH" != "um" ]; then
+ 	create_package "$kernel_headers_packagename" "$kernel_headers_dir" "headers"
+ fi
+-- 
+2.25.1
+

@@ -1,0 +1,66 @@
+From 6852462a3b72fd5bbf75d6704b82cbccb1f0d279 Mon Sep 17 00:00:00 2001
+From: Artem Lapkin <art@khadas.com>
+Date: Tue, 10 Aug 2021 12:08:44 +0800
+Subject: [PATCH 69/80] arm64: dts: meson: add spdif out to khadas-vim
+
+Add spdif and i2s output audio support to khadas-vim
+
+Signed-off-by: Artem Lapkin <art@khadas.com>
+---
+ .../amlogic/meson-gxl-s905x-khadas-vim.dts    | 28 +++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
+index 4e09b1389d7a..c10a5a5595a5 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
+@@ -86,6 +86,13 @@ hdmi_connector_in: endpoint {
+ 		};
+ 	};
+ 
++	spdif_dit: audio-codec-0 {
++		#sound-dai-cells = <0>;
++		compatible = "linux,spdif-dit";
++		status = "okay";
++		sound-name-prefix = "DIT";
++	};
++
+ 	sound {
+ 		compatible = "amlogic,gx-sound-card";
+ 		model = "KHADAS-VIM";
+@@ -119,11 +126,32 @@ codec-0 {
+ 				sound-dai = <&hdmi_tx>;
+ 			};
+ 		};
++
++		dai-link-3 {
++			sound-dai = <&aiu AIU_CPU CPU_SPDIF_ENCODER>;
++
++			codec-0 {
++				sound-dai = <&spdif_dit>;
++			};
++		};
+ 	};
+ };
+ 
+ &aiu {
+ 	status = "okay";
++	// uncomment next block  enable SPDIF output to GPIO HEADERS
++	/*
++	pinctrl-0 = <&spdif_out_h_pins>;
++	*/
++	// uncomment next block  enable I2S output to GPIO HEADERS
++	/*
++	pinctrl-0 = <&i2s_out_ch01_pins>, <&i2s_out_lr_clk_pins>, <&i2s_out_ao_clk_pins>;
++	*/
++	// uncomment next block  enable SPDIF + I2S output to GPIO HEADERS
++	/*
++	pinctrl-0 = <&spdif_out_h_pins>, <&i2s_out_ch01_pins>, <&i2s_out_lr_clk_pins>, <&i2s_out_ao_clk_pins>;
++	*/
++	pinctrl-names = "default";
+ };
+ 
+ &cec_AO {
+-- 
+2.25.1
+
