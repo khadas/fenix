@@ -105,19 +105,21 @@ build_desktop_deb() {
 	# Mainline kernel using gdm3
 	# Legacy kernel using lightdm
 	if which gnome-session > /dev/null; then
-		if which gdm3 > /dev/null; then
-			if [ -f /boot/.next ]; then
-				DM=gdm3
-			else
-				DM=lightdm
-			fi
-			debconf-set-selections <<-EOT
-			gdm3    shared/default-x-display-manager        select  "\${DM}"
-			lightdm shared/default-x-display-manager        select  "\${DM}"
-			EOT
+		if [ "$DISTRIB_RELEASE" != "jammy" ]; then
+			if which gdm3 > /dev/null; then
+				if [ -f /boot/.next ] || linux-version compare \`uname -r\` ge 5.0; then
+					DM=gdm3
+				else
+					DM=lightdm
+				fi
+				debconf-set-selections <<-EOT
+				gdm3    shared/default-x-display-manager        select  "\${DM}"
+				lightdm shared/default-x-display-manager        select  "\${DM}"
+				EOT
 
-			echo "/usr/sbin/\${DM}" > /etc/X11/default-display-manager
-			DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true dpkg-reconfigure "\${DM}"
+				echo "/usr/sbin/\${DM}" > /etc/X11/default-display-manager
+				DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true dpkg-reconfigure "\${DM}"
+			fi
 		fi
 	fi
 
