@@ -157,6 +157,14 @@ build_desktop_deb() {
 			rm -rf $pkgdir/etc/skel/.local/share/applications/usb3-pcie-settings.desktop
 			rm -rf $pkgdir/etc/skel/.local/share/applications/cpu-frequency-setting.desktop
 		fi
+
+		if [ "$KHADAS_BOARD" == "VIM4" ]; then
+			rm -rf $pkgdir/etc/skel/.local/share/applications/xfce-usb3-pcie-settings.desktop
+			rm -rf $pkgdir/etc/skel/.local/share/applications/usb3-pcie-settings.desktop
+			rm -rf $pkgdir/etc/skel/.local/share/applications/cpu-frequency-setting.desktop
+			rm -rf $pkgdir/etc/skel/.local/share/applications/hdmi-resolution-settings.desktop
+		fi
+
 		if [ "$LINUX" == "mainline" ]; then
 			rm -rf $pkgdir/lib/systemd/system/hdmi_resolution.service
 			rm -rf $pkgdir/etc/skel/.local/share/applications/cpu-frequency-setting.desktop
