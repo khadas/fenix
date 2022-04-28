@@ -1,0 +1,127 @@
+From 19871d3d1b123478ddbeda504d1b36c356597238 Mon Sep 17 00:00:00 2001
+From: Frank Wang <frank@khadas.com>
+Date: Thu, 24 Mar 2022 16:12:09 +0800
+Subject: [PATCH 79/79] npu driver adaptation mainline
+
+Signed-off-by: Frank Wang <frank@khadas.com>
+---
+ drivers/staging/npu/Kbuild                                  | 4 ++--
+ .../allocator/default/gc_hal_kernel_allocator_dmabuf.c      | 2 ++
+ .../allocator/default/gc_hal_kernel_allocator_user_memory.c | 6 ++++--
+ drivers/staging/npu/os/linux/kernel/gc_hal_kernel_debug.h   | 2 +-
+ drivers/staging/npu/os/linux/kernel/gc_hal_kernel_debugfs.h | 2 +-
+ drivers/staging/npu/os/linux/kernel/gc_hal_kernel_os.c      | 6 ++++--
+ 6 files changed, 14 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/staging/npu/Kbuild b/drivers/staging/npu/Kbuild
+index 356fc879a30f..87d451c0c89b 100755
+--- a/drivers/staging/npu/Kbuild
++++ b/drivers/staging/npu/Kbuild
+@@ -57,7 +57,7 @@
+ # Linux build file for kernel HAL driver.
+ #
+ 
+-AQROOT = drivers/amlogic/npu
++AQROOT = drivers/staging/npu
+ 
+ include $(AQROOT)/config
+ 
+@@ -92,7 +92,7 @@ MODULE_NAME ?= galcore
+ CUSTOMER_ALLOCATOR_OBJS    ?=
+ ALLOCATOR_ARRAY_H_LOCATION ?= $(OS_KERNEL_DIR)/allocator/default/
+ 
+-EXTRA_CFLAGS += -Werror
++EXTRA_CFLAGS += -Werror -Wno-implicit-fallthrough
+ 
+ OBJS := $(OS_KERNEL_DIR)/gc_hal_kernel_device.o \
+         $(OS_KERNEL_DIR)/gc_hal_kernel_linux.o \
+diff --git a/drivers/staging/npu/os/linux/kernel/allocator/default/gc_hal_kernel_allocator_dmabuf.c b/drivers/staging/npu/os/linux/kernel/allocator/default/gc_hal_kernel_allocator_dmabuf.c
+index 67cd083dcf3c..7b396347e44c 100644
+--- a/drivers/staging/npu/os/linux/kernel/allocator/default/gc_hal_kernel_allocator_dmabuf.c
++++ b/drivers/staging/npu/os/linux/kernel/allocator/default/gc_hal_kernel_allocator_dmabuf.c
+@@ -67,6 +67,8 @@
+ #include <linux/dma-buf.h>
+ #include <linux/platform_device.h>
+ 
++MODULE_IMPORT_NS(DMA_BUF);
++
+ #define _GC_OBJ_ZONE gcvZONE_OS
+ 
+ /* Descriptor of a dma_buf imported. */
+diff --git a/drivers/staging/npu/os/linux/kernel/allocator/default/gc_hal_kernel_allocator_user_memory.c b/drivers/staging/npu/os/linux/kernel/allocator/default/gc_hal_kernel_allocator_user_memory.c
+index d39f367995af..4291d5aa346f 100644
+--- a/drivers/staging/npu/os/linux/kernel/allocator/default/gc_hal_kernel_allocator_user_memory.c
++++ b/drivers/staging/npu/os/linux/kernel/allocator/default/gc_hal_kernel_allocator_user_memory.c
+@@ -316,7 +316,7 @@ static int import_pfn_map(gckOS Os, struct um_desc *um,
+     {
+         spinlock_t *ptl;
+         pgd_t *pgd;
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION (5,9,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION (5,9,0) && LINUX_VERSION_CODE <= KERNEL_VERSION (5,12,0)
+         p4d_t *p4d;
+ #endif
+         pud_t *pud;
+@@ -334,7 +334,9 @@ static int import_pfn_map(gckOS Os, struct um_desc *um,
+     && LINUX_VERSION_CODE >= KERNEL_VERSION (4,11,0)
+         pud = pud_offset((p4d_t*)pgd, addr);
+ #else
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION (5,9,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION (5,12,0)
++ 		pud = pud_offset((p4d_t*)pgd, addr);
++#elif LINUX_VERSION_CODE >= KERNEL_VERSION (5,9,0)
+         p4d = p4d_offset(pgd, addr);
+         if (p4d_none(READ_ONCE(*p4d)))
+             goto err;
+diff --git a/drivers/staging/npu/os/linux/kernel/gc_hal_kernel_debug.h b/drivers/staging/npu/os/linux/kernel/gc_hal_kernel_debug.h
+index 742da6f5185f..04173bfc2b02 100644
+--- a/drivers/staging/npu/os/linux/kernel/gc_hal_kernel_debug.h
++++ b/drivers/staging/npu/os/linux/kernel/gc_hal_kernel_debug.h
+@@ -59,7 +59,7 @@
+ #include <gc_hal_kernel_linux.h>
+ #include <linux/spinlock.h>
+ #include <linux/time.h>
+-#include <stdarg.h>
++#include <linux/stdarg.h>
+ 
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,14,0)
+ #include <linux/nmi.h>
+diff --git a/drivers/staging/npu/os/linux/kernel/gc_hal_kernel_debugfs.h b/drivers/staging/npu/os/linux/kernel/gc_hal_kernel_debugfs.h
+index dc0257fff5d2..e8c504ddaf31 100644
+--- a/drivers/staging/npu/os/linux/kernel/gc_hal_kernel_debugfs.h
++++ b/drivers/staging/npu/os/linux/kernel/gc_hal_kernel_debugfs.h
+@@ -53,7 +53,7 @@
+ *****************************************************************************/
+ 
+ 
+-#include <stdarg.h>
++#include <linux/stdarg.h>
+ 
+ #ifndef __gc_hal_kernel_debugfs_h_
+ #define __gc_hal_kernel_debugfs_h_
+diff --git a/drivers/staging/npu/os/linux/kernel/gc_hal_kernel_os.c b/drivers/staging/npu/os/linux/kernel/gc_hal_kernel_os.c
+index 95974f822762..6add539572b8 100644
+--- a/drivers/staging/npu/os/linux/kernel/gc_hal_kernel_os.c
++++ b/drivers/staging/npu/os/linux/kernel/gc_hal_kernel_os.c
+@@ -462,7 +462,7 @@ _QueryProcessPageTable(
+         struct vm_area_struct *vma;
+         spinlock_t *ptl;
+         pgd_t *pgd;
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION (5,9,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION (5,9,0) && LINUX_VERSION_CODE <= KERNEL_VERSION (5,12,0)
+         p4d_t *p4d;
+ #endif
+         pud_t *pud;
+@@ -491,7 +491,9 @@ _QueryProcessPageTable(
+     && LINUX_VERSION_CODE >= KERNEL_VERSION (4,11,0)
+         pud = pud_offset((p4d_t*)pgd, logical);
+ #else
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION (5,9,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION (5,12,0)
++       pud = pud_offset((p4d_t*)pgd, logical);
++#elif LINUX_VERSION_CODE >= KERNEL_VERSION (5,9,0)
+         p4d = p4d_offset(pgd, logical);
+         if (p4d_none(READ_ONCE(*p4d)))
+             return gcvSTATUS_NOT_FOUND;
+-- 
+2.25.1
+

@@ -1,7 +1,7 @@
-From fb79febe3c587462050f2ca611a68c8aa258584c Mon Sep 17 00:00:00 2001
+From 9a1bcff81f96b2b1b9c96aa26c0c04282460f636 Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Thu, 13 Jan 2022 03:50:01 +0000
-Subject: [PATCH 31/81] WIP: arm64: dts: meson: add Broadcom WiFi to P212 dtsi
+Subject: [PATCH 31/79] WIP: arm64: dts: meson: add Broadcom WiFi to P212 dtsi
 
 The P212 has a combined WiFi/BT module. The BT side is already enabled
 in the dtsi but the WiFi side is not. Let's enable the WiFi module.

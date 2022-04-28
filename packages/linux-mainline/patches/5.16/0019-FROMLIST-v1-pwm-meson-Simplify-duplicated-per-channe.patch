@@ -1,7 +1,7 @@
-From 891766e545bc8a4c67251afb07e1d815bbf86e3b Mon Sep 17 00:00:00 2001
+From bc6b690546445462c07bcf5949bde8b8bafd25af Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 Date: Sat, 27 Nov 2021 07:31:03 +0000
-Subject: [PATCH 19/81] FROMLIST(v1): pwm: meson: Simplify duplicated
+Subject: [PATCH 19/79] FROMLIST(v1): pwm: meson: Simplify duplicated
  per-channel tracking
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8

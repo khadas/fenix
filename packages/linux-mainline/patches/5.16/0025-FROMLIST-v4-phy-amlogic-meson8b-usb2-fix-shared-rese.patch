@@ -1,7 +1,7 @@
-From 15ea72f7c458358262db3ec81d56bd057c0aa9bb Mon Sep 17 00:00:00 2001
+From ad136e518538b072f7ae821a4b550f66fa55bded Mon Sep 17 00:00:00 2001
 From: Amjad Ouled-Ameur <aouledameur@baylibre.com>
 Date: Mon, 6 Dec 2021 04:27:13 +0000
-Subject: [PATCH 25/81] FROMLIST(v4): phy: amlogic: meson8b-usb2: fix shared
+Subject: [PATCH 25/79] FROMLIST(v4): phy: amlogic: meson8b-usb2: fix shared
  reset control use
 
 Use reset_control_rearm() call if an error occurs in case

@@ -1,7 +1,7 @@
-From ece5434c4f1a255a79ca8fdd609dbaefed270475 Mon Sep 17 00:00:00 2001
+From 35e896f114b757cb6fd3e2bfcb0b9accb9ce5f8b Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Thu, 25 Nov 2021 11:31:43 +0000
-Subject: [PATCH 30/81] FROMLIST(v1): drivers: meson: vdec: add VP9 support to
+Subject: [PATCH 30/79] FROMLIST(v1): drivers: meson: vdec: add VP9 support to
  GXM
 
 VP9 support for GXM appears to have been missed from the original

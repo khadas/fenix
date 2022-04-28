@@ -1,7 +1,7 @@
-From 12f99d7e2777187ba1a3d925be0165bf9ec28507 Mon Sep 17 00:00:00 2001
+From 7988eff319034af93e2e8c281636d9acf0f78a29 Mon Sep 17 00:00:00 2001
 From: Matthias Reichl <hias@horus.com>
 Date: Fri, 19 Mar 2021 12:14:17 +0100
-Subject: [PATCH 45/81] WIP: ALSA: pcm: fix ELD constraints for some compressed
+Subject: [PATCH 45/79] WIP: ALSA: pcm: fix ELD constraints for some compressed
  audio formats
 
 The SADs of compressed formats like AC3 and DTS contain the channel

@@ -1,7 +1,7 @@
-From 1266fb06162c62d88ac340711c8cd73a5eec5e03 Mon Sep 17 00:00:00 2001
+From cc087364df3f99ab6c0fc4ee0ca017cb8db765da Mon Sep 17 00:00:00 2001
 From: Gary Bisson <gary.bisson@boundarydevices.com>
 Date: Mon, 3 Jan 2022 16:49:28 +0000
-Subject: [PATCH 27/81] FROMLIST(v1): pinctrl: meson-g12a: add more pwm_f
+Subject: [PATCH 27/79] FROMLIST(v1): pinctrl: meson-g12a: add more pwm_f
  options
 
 Add missing PWM_F pin muxing for GPIOA_11 and GPIOZ_12.

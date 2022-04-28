@@ -1,7 +1,7 @@
-From c6f087a2034fdb59ba1d433b4f69cd482f7f78e0 Mon Sep 17 00:00:00 2001
+From 70433be24228e3038537f9a9bfb6be7dc2b5793c Mon Sep 17 00:00:00 2001
 From: Alexander Stein <alexander.stein@mailbox.org>
 Date: Fri, 26 Nov 2021 15:46:30 +0000
-Subject: [PATCH 09/81] FROMGIT(5.17): arm64: dts: amlogic: meson-g12: Fix
+Subject: [PATCH 09/79] FROMGIT(5.17): arm64: dts: amlogic: meson-g12: Fix
  thermal-zones indent
 
 This node is currently at /soc/thermal-zones, but the later introduced

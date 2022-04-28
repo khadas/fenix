@@ -1,7 +1,7 @@
-From ea09948db09006880477250ae4732e59806b2beb Mon Sep 17 00:00:00 2001
+From 765a3126b5aaa73f9d9de63da7e789ed9f2fc441 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 Date: Sat, 27 Nov 2021 07:30:03 +0000
-Subject: [PATCH 18/81] FROMLIST(v1): pwm: meson: Drop useless check for
+Subject: [PATCH 18/79] FROMLIST(v1): pwm: meson: Drop useless check for
  channel data being NULL
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8

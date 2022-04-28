@@ -1,7 +1,7 @@
-From a9519050b2f286dca87f49bef2dd019621767d14 Mon Sep 17 00:00:00 2001
+From 930bb4efa14224d262ac084ca92343ed1e746e05 Mon Sep 17 00:00:00 2001
 From: Artem Lapkin <art@khadas.com>
 Date: Sat, 27 Nov 2021 07:36:59 +0000
-Subject: [PATCH 22/81] FROMLIST(v1): watchdog: meson_gxbb_wdt: remove
+Subject: [PATCH 22/79] FROMLIST(v1): watchdog: meson_gxbb_wdt: remove
  watchdog_stop_on_reboot()
 
 The Meson platform still has some hardware drivers problems for some

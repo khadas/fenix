@@ -1,7 +1,7 @@
-From 0c66ba7c5971028800d41f788ebba89da2f17884 Mon Sep 17 00:00:00 2001
+From ad08dd7449c8303a433ce1daf3114553120435f9 Mon Sep 17 00:00:00 2001
 From: yan <yan-wyb@foxmail.com>
 Date: Mon, 13 Sep 2021 14:11:06 +0800
-Subject: [PATCH 51/81] ETH: setup mac address from command line
+Subject: [PATCH 51/79] ETH: setup mac address from command line
 
 Signed-off-by: yan <yan-wyb@foxmail.com>
 ---
