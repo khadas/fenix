@@ -47,24 +47,26 @@ if [ "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ]; then
 		T=
 		RAW=
 		    case $IMAGE_FILE_NAME in
-			VIM1*) B=VIM1 ;;
-			VIM2*) B=VIM2 ;;
-			VIM3L*)B=VIM3L;;
-			VIM3*) B=VIM3 ;;
-			Edge*) B=Edge ;;
+			vim1*) B=VIM1 ;;
+			vim2*) B=VIM2 ;;
+			vim3l*)B=VIM3L;;
+			vim3*) B=VIM3 ;;
+			edge*) B=Edge ;;
 		    esac
 		    case $IMAGE_FILE_NAME in
-			*Ubuntu*) D=Ubuntu ;;
-			*Debian*) D=Debian ;; # maybe ;-)
+			*ubuntu*) D=Ubuntu ;;
+			*debian*) D=Debian ;; # maybe ;-)
 		    esac
-		    case $IMAGE_FILE_NAME in
-			*SD-USB*) T=SD_USB ;;
-			*EMMC*)   T=EMMC ;;
+		    T=SD_USB
+			case $IMAGE_FILE_NAME in
+			*emmc*)   T=EMMC ;;
 		    esac
-		    case $IMAGE_FILE_NAME in
-			*SD-USB*) RAW=1 ;;
-			*raw.img*) RAW=1 ;;
-		    esac
+			RAW=1
+			if echo $IMAGE_FILE_NAME | grep emmc; then
+				if ! echo $IMAGE_FILE_NAME | grep raw; then
+					RAW=
+				fi
+			fi
 
 		[ "$B" -a "$D" -a "$T" ] && \
 			BDT=$B/$D/$T
