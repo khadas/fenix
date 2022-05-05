@@ -114,9 +114,9 @@ else
 	*gnome*) T=gnome ;;
 	esac
 	case $IMAGE_FILE_NAME in
-	*focal*) R=focal ;;
-	*bionic*) R=bionic ;;
-	*buster*) R=buster ;;
+	*20.04*) R=focal ;;
+	*18.04*) R=bionic ;;
+	*10*) R=buster ;;
 	esac
 
 	echo "%%UPLOAD rootfs cache: $BUILD_IMAGES/cache/rootfs/$R-$T-arm64.* => $ROOTFS_CACHE"
