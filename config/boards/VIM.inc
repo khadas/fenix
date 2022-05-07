@@ -10,6 +10,13 @@ case "$UBOOT" in
 		UBOOT_DIR=$(realpath "$UBOOT_VENDOR_DIR")
 		UBOOT_IMAGE_DIR="$UBOOT_DIR/fip/_tmp"
 	;;
+	2019.01)
+		UBOOT_COMPILER="aarch64-elf-"
+		UBOOT_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-elf/bin"
+		[ "$UBOOT_VENDOR_DIR" ] && \
+		UBOOT_DIR=$(realpath "$UBOOT_VENDOR_DIR")
+		UBOOT_IMAGE_DIR="$UBOOT_DIR/fip/_tmp"
+	;;
 	mainline)
 		UBOOT_COMPILER="aarch64-elf-"
 		UBOOT_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-elf/bin"
@@ -33,6 +40,11 @@ case "$LINUX" in
 		KERNEL_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/bin"
 		LINUX_DIR=$(realpath "$LINUX_VENDOR_DIR")
 		;;
+	5.4)
+		KERNEL_COMPILER="aarch64-none-linux-gnu-"
+		KERNEL_COMPILER_PATH="$TOOLCHAINS/gcc-arm-aarch64-none-linux-gnu/bin"
+		LINUX_DIR=$(realpath "$LINUX_VENDOR_DIR")
+		;;
 esac
 
 BOOT_SCRIPT_BOARD="s905_autoscript.cmd"
@@ -47,14 +59,6 @@ WIFI_MODEL="Broadcom"
 ##############################
 uboot_custom_postprocess() {
 
-	# already inside ?!??
-	# cd $UBOOT_DIR
-	cd $UBOOT_DIR
-
-	# Cleanup old binaries
-	# sorry but its undefined everytime !!!????
-	#rm -rf ${FIP_BUILD_FOLDER}
-
 #	source fip/check_compile.sh
 	source fip/variables.sh "$UBOOT_DIR"
 	source fip/lib.sh
@@ -64,6 +68,9 @@ uboot_custom_postprocess() {
 	source fip/build_bl32.sh
 	source fip/build_bl33.sh
 	source fip/build_bl40.sh
+
+	# Cleanup old binaries
+	rm -rf ${FIP_BUILD_FOLDER}
 
 	# source uboot pre-build configs
 	source ${SOURCE_FILE}
@@ -200,6 +207,14 @@ pack_image_platform_raw() {
 	PATH_ROOT="$BUILD_IMAGES/rootfs.img"
 	PATH_LOGO="$BUILD_IMAGES/logo.img"
 
+	case "$KHADAS_BOARD" in
+	    VIM4)
+	    PATH_BOOT="$UBOOT_IMAGE_DIR"/u-boot.bin.sd.bin.signed
+	    ROOT_OFFSET=0x08400000
+	    LOGO_OFFSET=
+	    ;;
+	esac
+
 	F="conv=fsync,notrunc status=noxfer"
 	F1="$F,none"
 	F2="$F,progress"
@@ -213,6 +228,7 @@ pack_image_platform_raw() {
 		dd of="$IMG" if="$PATH_BOOT" $F1
 		dd of="$IMG" if="$PATH_DTB0" $F1 seek=$((DTB1_OFFSET/BS))
 		dd of="$IMG" if="$PATH_DTB0" $F1 seek=$((DTB2_OFFSET/BS))
+		[ "$LOGO_OFFSET" ] && \
 		dd of="$IMG" if="$PATH_LOGO" $F1 seek=$((LOGO_OFFSET/BS))
 		dd of="$IMG" if="$PATH_ROOT" $F2 seek=$((ROOT_OFFSET/BS))
 	)
@@ -252,14 +268,21 @@ pack_image_platform() {
 
 		D="$UPGRADE_DIR_"/Amlogic
 
-		case "$LINUX" in
-			4.9)
+		case "$UBOOT" in
+			2015.01)
 				ln -fs "$BUILD_IMAGES/logo.img"              "$D"/logo.img
 				ln -fs "$LINUX_DIR/$LINUX_DTB"               "$D"/kvim.dtb
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin         "$D"/u-boot.bin
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.sd.bin  "$D"/u-boot.bin.sd.bin
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.usb.bl2 "$D"/u-boot.bin.usb.bl2
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.usb.tpl "$D"/u-boot.bin.usb.tpl
+				;;
+			2019.01)
+				ln -fs "$BUILD_IMAGES/logo.img"						"$D"/logo.img
+				ln -fs "$LINUX_DIR/$LINUX_DTB"						"$D"/kvim.dtb
+				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.signed			"$D"/u-boot.bin.signed
+				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.sd.bin.signed	"$D"/u-boot.bin.sd.bin.signed
+				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.usb.signed		"$D"/u-boot.bin.usb.signed
 				;;
 			mainline)
 				;;

@@ -1,0 +1,53 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+ssh_(){
+# Create system ssh keys if not exist
+for a in /etc/ssh/ssh_host*key; do
+	[ -e "$a" ] || break
+	[ -s "$a" ] || rm "$a"
+	[ -s "$a" ] && return 0
+	done
+	echo "SSH configure keys"
+	dpkg-reconfigure -f noninteractive openssh-server
+	echo "SSH configure keys DONE"
+}
+
+ssh_
+
+# Setup LED: heartbeat if bootup completed
+echo heartbeat > /sys/class/leds/pwmled/trigger
+
+# Setup cursor_blink
+
+# For HDMI service
+[ -f /sys/class/graphics/fb1/blank ] && chmod 777 /sys/class/graphics/fb1/blank
+[ -f /sys/devices/virtual/graphics/fbcon/cursor_blink ] && chmod 777 /sys/devices/virtual/graphics/fbcon/cursor_blink
+[ -f /sys/class/ppmgr/ppscaler ] && chmod 777 /sys/class/ppmgr/ppscaler
+
+# For Kernel 5.4 FAN
+[ -f /sys/class/fan/mode ] && chmod 777 /sys/class/fan/mode
+[ -f /sys/class/fan/level ] && chmod 777 /sys/class/fan/level
+[ -f /sys/class/fan/enable ] && chmod 777 /sys/class/fan/enable
+
+# For WOL
+[ -f /sys/class/wol/enable ] && chmod 0660 /sys/class/wol/enable
+
+# Reboot test handle
+if cat /proc/cmdline | grep -q reboot_test > /dev/null; then
+	if ! systemctl is-active reboot-test-khadas | grep "^active$" > /dev/null; then
+		systemctl start reboot-test-khadas
+	fi
+fi
+
+exit 0

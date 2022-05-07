@@ -41,14 +41,14 @@ build_gpu_deb() {
 
 		if [ "$GPU_PLATFORM" == "fbdev" ]; then
 			### fbdev
-			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDOR}/lib/$DISTRIB_ARCH/$GPU_DESC/$GPU_VER/fbdev"
+			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDOR}/lib/$DISTRIB_ARCH/$GPU_TYPE/$GPU_VER/fbdev"
 		elif [ "$GPU_PLATFORM" == "x11" ]; then
 			### x11
-			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDOR}/lib/$DISTRIB_ARCH/$GPU_DESC/$GPU_VER/x11"
+			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDOR}/lib/$DISTRIB_ARCH/$GPU_TYPE/$GPU_VER/x11"
 		elif [ "$GPU_PLATFORM" == "wayland" ]; then
 			### wayland
-			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDOR}/lib/$DISTRIB_ARCH/$GPU_DESC/$GPU_VER/wayland/drm"
-			# local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDOR}/lib/$DISTRIB_ARCH/GPU_DESC/$GPU_VER/wayland/fbdev"
+			local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDOR}/lib/$DISTRIB_ARCH/$GPU_TYPE/$GPU_VER/wayland/drm"
+			# local gpu_lib_dir="$ROOT/archives/hwpacks/mali/${VENDOR}/lib/$DISTRIB_ARCH/$GPU_TYPE/$GPU_VER/wayland/fbdev"
 		fi
 
 		# GPU user space binary drivers

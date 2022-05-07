@@ -199,9 +199,9 @@ unset SUPPORTED_LINUX_DESC
 
 DISTRIBUTION_ARRAY=("Ubuntu" "Debian")
 DISTRIBUTION_ARRAY_DESC=("Ubuntu" "Debian")
-Ubuntu_RELEASE_ARRAY=("bionic" "focal")
-Ubuntu_RELEASE_VERSION_ARRAY=("18.04" "20.04")
-Ubuntu_RELEASE_ARRAY_DESC=("Ubuntu 18.04" "Ubuntu 20.04")
+Ubuntu_RELEASE_ARRAY=("bionic" "focal" "jammy")
+Ubuntu_RELEASE_VERSION_ARRAY=("18.04" "20.04" "22.04")
+Ubuntu_RELEASE_ARRAY_DESC=("Ubuntu 18.04" "Ubuntu 20.04" "Ubuntu 22.04")
 Debian_RELEASE_ARRAY=("buster")
 Debian_RELEASE_VERSION_ARRAY=("10")
 Debian_RELEASE_ARRAY_DESC=("Debian 10")
@@ -745,7 +745,7 @@ function choose_install_type() {
 }
 
 function lunch() {
-	if [[ "$KHADAS_BOARD" =~ VIM[123] ]]; then
+	if [[ "$KHADAS_BOARD" =~ VIM[1234] ]]; then
 		export VENDOR="Amlogic"
 		case "$KHADAS_BOARD" in
 			VIM1)
@@ -759,6 +759,9 @@ function lunch() {
 				;;
 			VIM3)
 				export CHIP="A311D"
+				;;
+			VIM4)
+				export CHIP="A311D2"
 				;;
 		esac
 	elif [[ "$KHADAS_BOARD" == "Edge" ]]; then
