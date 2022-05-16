@@ -1,6 +1,6 @@
 PKG_NAME="rkbin"
-PKG_VERSION="750302a720d6074ead976a8822ed38c7bdd341bf"
-PKG_SHA256="581aee16d7fad7c0472522c10e3ddb82429918109c76dedaabd61931f7606bb2"
+PKG_VERSION="612e733e7ea847d9a7358c27d16443ddc8d77ad8"
+PKG_SHA256="d227f05bc1838a711caf7ab8ca59ab0650a73ed315b7cd64b3ba46b265e9e914"
 PKG_SOURCE_DIR="rkbin-${PKG_VERSION}*"
 PKG_SITE="$GITHUB_URL/numbqq/rkbin"
 PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
@@ -19,9 +19,9 @@ make_host() {
 	ln -fs bin/rk33/rk3399_miniloader_spinor_v1.14.bin rk3399miniloaderall_spi.bin
 	ln -fs bin/rk33/rk3399_miniloader_v1.24.bin rk3399miniloaderall.bin
 	# For Edge2
-	ln -fs bin/rk35/rk3588_ddr_lp4_2112MHz_lp5_2736MHz_v1.04.bin rk3588_ddr.bin
-	ln -fs bin/rk35/rk3588_bl31_v1.12.elf rk3588_bl31.elf
-	ln -fs bin/rk35/rk3588_bl32_v1.06.bin rk3588_bl32.bin
-	ln -fs bin/rk35/rk3588_spl_v1.06.bin rk3588_spl.bin
+	ln -fs bin/rk35/rk3588_ddr_lp4_2112MHz_lp5_2736MHz_v1.07.bin rk3588_ddr.bin
+	ln -fs bin/rk35/rk3588_bl31_v1.22.elf rk3588_bl31.elf
+	ln -fs bin/rk35/rk3588_bl32_v1.09.bin rk3588_bl32.bin
+	ln -fs bin/rk35/rk3588_spl_v1.11.bin rk3588_spl.bin
 }
 
