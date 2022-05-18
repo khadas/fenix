@@ -57,3 +57,7 @@ optee_armtz
 
 overlay
 
+nft_chain_nat
+nft_counter
+nft_compat
+nf_tables
