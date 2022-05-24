@@ -19,10 +19,7 @@ amvdec_vc1
 amvdec_vp9
 amvdec_vp9_v4l
 amvdec_avs2
-encoder
-vpu
 amvdec_ports
-amlogic_fbc_lib
 amvdec_mavs
 amvdec_av1
 amvdec_av1_v4l
