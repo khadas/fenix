@@ -1,7 +1,7 @@
-From d6590d822d88c6eaf7d75bd3fc3d3c6b5e752e79 Mon Sep 17 00:00:00 2001
+From dff287d50e2d8ae135006d55a4517e3d4758b7d1 Mon Sep 17 00:00:00 2001
 From: Yan <yan-wyb@foxmail.com>
 Date: Mon, 22 Nov 2021 09:57:00 +0800
-Subject: [PATCH 58/81] VIMs: add gpiomem support
+Subject: [PATCH 58/79] VIMs: add gpiomem support
 
 Signed-off-by: Yan <yan-wyb@foxmail.com>
 ---

@@ -1,7 +1,7 @@
-From 8b09ff7ad5bf7cd180763f1044682a23607e7b4a Mon Sep 17 00:00:00 2001
+From 43a6b7bb5b1d554bbfe8a7fc388dd39ca20fc2e5 Mon Sep 17 00:00:00 2001
 From: David Heidelberg <david@ixit.cz>
 Date: Sat, 27 Nov 2021 07:23:35 +0000
-Subject: [PATCH 16/81] FROMLIST(v1): arm64: dts: meson: make dts use gpio-fan
+Subject: [PATCH 16/79] FROMLIST(v1): arm64: dts: meson: make dts use gpio-fan
  matrix instead of array
 
 No functional changes.

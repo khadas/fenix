@@ -1,7 +1,7 @@
-From 6bdada00dfde699c4854f3fbe6bcb8365a58527e Mon Sep 17 00:00:00 2001
+From 693ecbb9dc2768f6cf811195c604dac965810676 Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Sat, 23 May 2020 15:29:11 +0800
-Subject: [PATCH 50/81] VIM3: hack for PCIe
+Subject: [PATCH 50/79] VIM3: hack for PCIe
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---

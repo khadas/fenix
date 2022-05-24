@@ -1,7 +1,7 @@
-From e48ba2344c445e8ea0b2b201b31d7d19264d64ba Mon Sep 17 00:00:00 2001
+From a6500c04bc6da468c59aa64edf395353accb5b58 Mon Sep 17 00:00:00 2001
 From: benjamin545 <benjamin545@gmail.com>
 Date: Thu, 15 Jul 2021 14:32:33 -0400
-Subject: [PATCH 38/81] WIP: drivers: meson: vdec: remove redundant if
+Subject: [PATCH 38/79] WIP: drivers: meson: vdec: remove redundant if
  statement
 
 checking if sess->fmt_out->pixfmt is V4L2_PIX_FMT_VP9 was already done

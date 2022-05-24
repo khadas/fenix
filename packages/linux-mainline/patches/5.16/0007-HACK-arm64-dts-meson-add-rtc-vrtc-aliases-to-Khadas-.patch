@@ -1,7 +1,7 @@
-From 13f54e09f1c7fff68837cd05c98b251ed3a27c9d Mon Sep 17 00:00:00 2001
+From 28b96b8a5594046091565a9623020c1817927fc4 Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Sat, 6 Nov 2021 13:01:08 +0000
-Subject: [PATCH 07/81] HACK: arm64: dts: meson: add rtc/vrtc aliases to Khadas
+Subject: [PATCH 07/79] HACK: arm64: dts: meson: add rtc/vrtc aliases to Khadas
  VIM2
 
 Add aliases to ensure the vrtc time (which normally proves first) is /dev/rtc1

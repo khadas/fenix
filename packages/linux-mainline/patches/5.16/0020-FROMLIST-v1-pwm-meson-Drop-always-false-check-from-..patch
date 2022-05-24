@@ -1,7 +1,7 @@
-From c6ae2adb013ecae9524bf2e56d482109849bd4b3 Mon Sep 17 00:00:00 2001
+From b725acaf3f9e7d0235f2102aaff06f238428b0ce Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 Date: Sat, 27 Nov 2021 07:32:18 +0000
-Subject: [PATCH 20/81] FROMLIST(v1): pwm: meson: Drop always false check from
+Subject: [PATCH 20/79] FROMLIST(v1): pwm: meson: Drop always false check from
  .apply()
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8

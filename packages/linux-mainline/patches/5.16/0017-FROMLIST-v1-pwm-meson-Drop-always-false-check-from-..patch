@@ -1,7 +1,7 @@
-From a03fbc586961129339b4d52fe396177c75f89305 Mon Sep 17 00:00:00 2001
+From ddce75bf2274428bbb2f35267e4fac5dd92ba4f1 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 Date: Sat, 27 Nov 2021 07:29:18 +0000
-Subject: [PATCH 17/81] FROMLIST(v1): pwm: meson: Drop always false check from
+Subject: [PATCH 17/79] FROMLIST(v1): pwm: meson: Drop always false check from
  .request()
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8

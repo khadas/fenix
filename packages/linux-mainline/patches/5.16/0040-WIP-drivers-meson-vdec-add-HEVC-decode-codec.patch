@@ -1,7 +1,7 @@
-From 64d2f7b7f7a3a2125410edd867c9d0e79648da2f Mon Sep 17 00:00:00 2001
+From e57e08fab78ff8b07e2f6a39a0fe96011e0880a3 Mon Sep 17 00:00:00 2001
 From: benjamin545 <benjamin545@gmail.com>
 Date: Thu, 15 Jul 2021 17:08:42 -0400
-Subject: [PATCH 40/81] WIP: drivers: meson: vdec: add HEVC decode codec
+Subject: [PATCH 40/79] WIP: drivers: meson: vdec: add HEVC decode codec
 
 ---
  drivers/staging/media/meson/vdec/Makefile     |    2 +-

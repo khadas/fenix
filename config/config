@@ -369,10 +369,6 @@ if [[ $DOWNLOAD_MIRROR == china ]] ; then
 	DEBIAN_MIRROR='mirrors.tuna.tsinghua.edu.cn/debian'
 	UBUNTU_MIRROR='mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/'
 	ROOTFS_CACHE_URL="http://build.khadas.com/khadas/fenix/cache/rootfs"
-
-	## U-boot & Linux Gitee URL
-	LINUX_SOURCE_URL="https://gitee.com/khadas/linux"
-	UBOOT_SOURCE_URL="https://gitee.com/khadas/u-boot"
 fi
 
 # apt-cacher-ng mirror configurarion

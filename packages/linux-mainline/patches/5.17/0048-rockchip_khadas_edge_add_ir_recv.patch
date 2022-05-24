@@ -1,0 +1,49 @@
+From 4388d38d913e040537a8a82427506d8d13865e57 Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Mon, 1 Jun 2020 15:08:18 +0900
+Subject: [PATCH 48/80] rockchip_khadas_edge_add_ir_recv
+
+add missed ir receivier to Khadas Edge
+
+arm64: dts: rockchip: ir-recevier and ir_rx pinctl
+---
+ .../boot/dts/rockchip/rk3399-khadas-edge.dtsi    | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
+index 3999134d5503..26816c557cfb 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
+@@ -115,6 +115,14 @@ vsys_5v0: vsys-5v0 {
+ 		vin-supply = <&vsys>;
+ 	};
+ 
++	ir-receiver {
++		compatible = "gpio-ir-receiver";
++		gpios = <&gpio1 RK_PB6 GPIO_ACTIVE_LOW>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&ir_rx>;
++		linux,rc-map-name = "rc-khadas";
++	};
++
+ 	adc-keys {
+ 		compatible = "adc-keys";
+ 		io-channels = <&saradc 1>;
+@@ -702,6 +710,14 @@ &sdmmc {
+ 	status = "okay";
+ };
+ 
++&pinctrl {
++    ir {
++	ir_rx: ir-rx {
++	    rockchip,pins = <1 RK_PB6 RK_FUNC_GPIO &pcfg_pull_none>;
++	};
++    };
++};
++
+ &sdhci {
+ 	bus-width = <8>;
+ 	mmc-hs400-1_8v;
+-- 
+2.25.1
+
