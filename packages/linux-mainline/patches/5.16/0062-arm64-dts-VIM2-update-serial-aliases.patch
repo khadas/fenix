@@ -1,7 +1,7 @@
-From 3c2b461c43c03d36aef798d37886aa1c6592469b Mon Sep 17 00:00:00 2001
+From 136540878d45b2dc711313975bdf3273e4ff358a Mon Sep 17 00:00:00 2001
 From: Frank Wang <frank@khadas.com>
 Date: Mon, 21 Feb 2022 18:50:48 +0800
-Subject: [PATCH 62/81] arm64: dts: VIM2: update serial aliases
+Subject: [PATCH 62/79] arm64: dts: VIM2: update serial aliases
 
 Signed-off-by: Frank Wang <frank@khadas.com>
 ---

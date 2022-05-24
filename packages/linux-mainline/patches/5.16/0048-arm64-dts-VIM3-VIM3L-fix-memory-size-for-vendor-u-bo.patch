@@ -1,7 +1,7 @@
-From 8cf9c6c1b2b50924c6e5e421bad527de4bc57968 Mon Sep 17 00:00:00 2001
+From f35697828de4098b5db54d433b3e0abef56bb5af Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Mon, 7 Sep 2020 16:58:22 +0800
-Subject: [PATCH 48/81] arm64: dts: VIM3/VIM3L: fix memory size for vendor
+Subject: [PATCH 48/79] arm64: dts: VIM3/VIM3L: fix memory size for vendor
  u-boot
 
 Signed-off-by: Nick Xie <nick@khadas.com>

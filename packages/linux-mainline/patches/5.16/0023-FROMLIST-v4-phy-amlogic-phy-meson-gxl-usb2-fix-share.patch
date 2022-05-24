@@ -1,7 +1,7 @@
-From cddf9a239ab718632f4c7098269368beec3bb3fb Mon Sep 17 00:00:00 2001
+From 237f8bafbc103457988b457a035f96a42e92c4de Mon Sep 17 00:00:00 2001
 From: Amjad Ouled-Ameur <aouledameur@baylibre.com>
 Date: Mon, 6 Dec 2021 04:25:36 +0000
-Subject: [PATCH 23/81] FROMLIST(v4): phy: amlogic: phy-meson-gxl-usb2: fix
+Subject: [PATCH 23/79] FROMLIST(v4): phy: amlogic: phy-meson-gxl-usb2: fix
  shared reset controller use
 
 Use reset_control_rearm() call if an error occurs in case

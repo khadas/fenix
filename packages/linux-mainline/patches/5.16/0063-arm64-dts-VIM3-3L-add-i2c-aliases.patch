@@ -1,7 +1,7 @@
-From 54888da1622d8821e29a90d6498cc35a6f30000b Mon Sep 17 00:00:00 2001
+From f82c481f2bc032b6d200a43789bcbc8b3a4df948 Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Thu, 27 May 2021 11:18:25 +0800
-Subject: [PATCH 63/81] arm64: dts: VIM3/3L: add i2c aliases
+Subject: [PATCH 63/79] arm64: dts: VIM3/3L: add i2c aliases
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---

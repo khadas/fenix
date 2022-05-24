@@ -1,7 +1,7 @@
-From ba9e62de65153dbdbf6781db9a7c75f3eab8be54 Mon Sep 17 00:00:00 2001
+From 9e1084163dbc1bbac0473d5c42d163efda615f1d Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Wed, 2 Jun 2021 18:10:04 +0800
-Subject: [PATCH 66/81] arm64: dts: VIM3: add npu node
+Subject: [PATCH 66/79] arm64: dts: VIM3: add npu node
 
 Signed-off-by: Nick Xie <nick@khadas.com>
 ---

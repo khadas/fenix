@@ -1,7 +1,7 @@
-From 43a89fe8f1517b6b3a1dcc9b36aa979119dce183 Mon Sep 17 00:00:00 2001
+From 4613ea5b531c985c8ac16b4b96a9823f0f4fea12 Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Thu, 25 Nov 2021 11:31:43 +0000
-Subject: [PATCH 29/81] FROMLIST(v1): arm64: dts: meson: remove CPU opps below
+Subject: [PATCH 29/79] FROMLIST(v1): arm64: dts: meson: remove CPU opps below
  1GHz for g12/sm1
 
 Amlogic G12B and SM1 devices experience CPU stalls and random board

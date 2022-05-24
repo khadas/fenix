@@ -1,7 +1,7 @@
-From 93a5bda0390a88fd67f3f316ac224512027464a2 Mon Sep 17 00:00:00 2001
+From ccc57d77efb0d3b0b567c09da22b3f429ec93271 Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Tue, 18 Jan 2022 15:18:32 +0000
-Subject: [PATCH 36/81] WIP: arm64: dts: meson: remove SDIO node from Khadas
+Subject: [PATCH 36/79] WIP: arm64: dts: meson: remove SDIO node from Khadas
  VIM1
 
 Now that SDIO 100MHz max-frequency is inherited from the p212 dtsi we

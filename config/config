@@ -237,8 +237,8 @@ INFO="${GREEN}Info:${ENDCOLOR}"
 # Base system dependencies
 DEBOOTSTRAP_LIST="locales gnupg ifupdown apt-utils apt-transport-https ca-certificates bzip2 console-setup \
 	cpio cron dbus init initramfs-tools iputils-ping isc-dhcp-client kmod less libpam-systemd linux-base \
-	logrotate netbase netcat-openbsd systemd sudo ucf udev whiptail wireless-regdb crda dmsetup \
-	rsync tzdata rng-tools fdisk"
+	logrotate netbase netcat-openbsd systemd sudo ucf udev whiptail wireless-regdb dmsetup \
+	rsync tzdata fdisk"
 
 if [[ "$DISTRIB_TYPE" != "server" ]] && [[ "$DISTRIB_TYPE" != "minimal" ]]; then
 	DEBOOTSTRAP_LIST+=" libgtk2.0-bin"
@@ -251,7 +251,7 @@ DEBOOTSTRAP_LIST=$(echo $DEBOOTSTRAP_LIST | sed -e 's,\\[trn],,g')
 # Essential packages
 PACKAGE_LIST="bc cpufrequtils device-tree-compiler fping fake-hwclock psmisc chrony parted dialog \
 	ncurses-term sysfsutils toilet figlet u-boot-tools usbutils openssh-server nocache debconf-utils \
-	python3-apt make gcc libc6-dev plymouth plymouth-themes"
+	python3-apt make gcc libc6-dev plymouth plymouth-themes rng-tools"
 
 # Non-essential packages
 PACKAGE_LIST_ADDITIONAL="network-manager wireless-tools lsof htop mmc-utils wget nano sysstat net-tools \
@@ -308,7 +308,7 @@ case $DISTRIB_TYPE in
 	gnome)
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_OFFICE"
 		PACKAGE_LIST_DESKTOP+=" desktop-base software-properties-gtk gnome-terminal gnome-shell-extensions gnome-tweaks gnome-screenshot"
-		[[ $DISTRIB_RELEASE == focal ]] && PACKAGE_LIST_DESKTOP+=" yaru-theme-gtk yaru-theme-icon yaru-theme-sound"
+		([[ $DISTRIB_RELEASE == focal ]] || [[ $DISTRIB_RELEASE == jammy ]]) && PACKAGE_LIST_DESKTOP+=" yaru-theme-gtk yaru-theme-icon yaru-theme-sound"
 		[[ $DISTRIBUTION == Ubuntu ]] && PACKAGE_LIST_DESKTOP+=" ubuntu-desktop update-manager"
 	;;
 esac
@@ -316,7 +316,7 @@ esac
 case $DISTRIB_RELEASE in
 	buster|bullseye)
 		DEBOOTSTRAP_COMPONENTS="main"
-		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher command-not-found hddtemp"
+		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher command-not-found hddtemp crda"
 		PACKAGE_LIST_KODI="libglu1 libmicrohttpd12 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libva-drm2 libcurl4"
 		PACKAGE_LIST_QT+=" libqt5multimediaquick5"
 		PACKAGE_LIST_MESA="libglvnd-dev libx11-dev"
@@ -325,7 +325,7 @@ case $DISTRIB_RELEASE in
 	;;
 	bionic)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
-		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found hddtemp"
+		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found hddtemp crda"
 		PACKAGE_LIST_QT+=" libqt5multimediaquick-p5 libqgsttools-p1"
 		PACKAGE_LIST_OFFICE+=" mirage"
 		PACKAGE_LIST_KODI="mesa-utils libglu1 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libcurl4 libcrossguid0 libmariadbclient18 libmicrohttpd12 \
@@ -339,7 +339,7 @@ case $DISTRIB_RELEASE in
 	;;
 	focal|hirsute)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
-		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found hddtemp"
+		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found hddtemp crda"
 		PACKAGE_LIST_KODI="mesa-utils libglu1 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libcurl4 libcrossguid0  libmicrohttpd12 libavahi-compat-libdnssd-dev libcec4 \
 			libfstrcmp0 libnfs13 fonts-liberation python-bluez python-pil python-simplejson libaacs0 fonts-dejavu-core libao-dev libpython2.7 libpython2.7-minimal libpython2.7-stdlib x11-utils"
 		PACKAGE_LIST_SERVER_KODI="libao4 libwayland-cursor0 libavahi-compat-libdnssd-dev libass9 libavahi-client3 libavahi-common3 libbluray2 libcdio18 libcec4 \
@@ -353,8 +353,7 @@ case $DISTRIB_RELEASE in
 	jammy)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
 		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found"
-		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST"
-		PACKAGE_LIST_DESKTOP+=" xserver-xorg-input-all pulseaudio-module-gsettings firefox language-selector-gnome viewnior"
+		PACKAGE_LIST_DESKTOP+=" xserver-xorg-input-all pulseaudio-module-gsettings firefox language-selector-gnome viewnior dbus-user-session"
 	;;
 esac
 
@@ -370,10 +369,6 @@ if [[ $DOWNLOAD_MIRROR == china ]] ; then
 	DEBIAN_MIRROR='mirrors.tuna.tsinghua.edu.cn/debian'
 	UBUNTU_MIRROR='mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/'
 	ROOTFS_CACHE_URL="http://build.khadas.com/khadas/fenix/cache/rootfs"
-
-	## U-boot & Linux Gitee URL
-	LINUX_SOURCE_URL="https://gitee.com/khadas/linux"
-	UBOOT_SOURCE_URL="https://gitee.com/khadas/u-boot"
 fi
 
 # apt-cacher-ng mirror configurarion

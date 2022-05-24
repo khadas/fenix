@@ -19,10 +19,7 @@ amvdec_vc1
 amvdec_vp9
 amvdec_vp9_v4l
 amvdec_avs2
-encoder
-vpu
 amvdec_ports
-amlogic_fbc_lib
 amvdec_mavs
 amvdec_av1
 amvdec_av1_v4l
@@ -52,10 +49,12 @@ dolby_fw
 aml_drm
 adc_keypad
 
-iv009_isp_iq
-iv009_isp_lens
-iv009_isp_sensor
-iv009_isp
-
 optee
 optee_armtz
+
+overlay
+
+nft_chain_nat
+nft_counter
+nft_compat
+nf_tables

@@ -1,7 +1,7 @@
-From d51b06f0620d5d2f69366674d02c49c355f31d95 Mon Sep 17 00:00:00 2001
+From 3ffce04a13a42cd74f40e046544521c0311e05be Mon Sep 17 00:00:00 2001
 From: Amjad Ouled-Ameur <aouledameur@baylibre.com>
 Date: Mon, 6 Dec 2021 04:26:22 +0000
-Subject: [PATCH 24/81] FROMLIST(v4): phy: amlogic: meson8b-usb2: Use
+Subject: [PATCH 24/79] FROMLIST(v4): phy: amlogic: meson8b-usb2: Use
  dev_err_probe()
 
 Use the existing dev_err_probe() helper instead of open-coding the same

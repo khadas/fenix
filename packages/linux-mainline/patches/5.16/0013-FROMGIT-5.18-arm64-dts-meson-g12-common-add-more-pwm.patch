@@ -1,7 +1,7 @@
-From 0759f46f708ada0bfaa0f14a6f2e5efd220557ab Mon Sep 17 00:00:00 2001
+From 668e7f4b513dc20624d2824906126cc58698c2e5 Mon Sep 17 00:00:00 2001
 From: Gary Bisson <gary.bisson@boundarydevices.com>
 Date: Mon, 3 Jan 2022 16:51:30 +0000
-Subject: [PATCH 13/81] FROMGIT(5.18): arm64: dts: meson-g12-common: add more
+Subject: [PATCH 13/79] FROMGIT(5.18): arm64: dts: meson-g12-common: add more
  pwm_f options
 
 Add missing PWM_F pin muxing for GPIOA_11 and GPIOZ_12.

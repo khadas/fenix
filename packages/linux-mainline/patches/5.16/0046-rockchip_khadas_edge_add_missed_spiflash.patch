@@ -1,7 +1,7 @@
-From adf3ff8a0ac9896de2563b84712cec5665ef6489 Mon Sep 17 00:00:00 2001
+From 02dbe92eb68264c854766501f24344e4c36271f8 Mon Sep 17 00:00:00 2001
 From: hyphop <art@khadas.com>
 Date: Mon, 1 Jun 2020 15:06:01 +0900
-Subject: [PATCH 46/81] rockchip_khadas_edge_add_missed_spiflash
+Subject: [PATCH 46/79] rockchip_khadas_edge_add_missed_spiflash
 
 add missed spiflash to Khadas Edge
 ---

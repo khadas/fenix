@@ -1,7 +1,7 @@
-From c8b893f79ad3f7c3cf2a79291166ecb6d2262810 Mon Sep 17 00:00:00 2001
+From 7263c76d8993389fe31a57c2e16cc6ec5c546d32 Mon Sep 17 00:00:00 2001
 From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 Date: Sun, 3 Oct 2021 05:35:48 +0000
-Subject: [PATCH 15/81] FROMLIST(v1): ASoC: meson: aiu: Fix HDMI codec control
+Subject: [PATCH 15/79] FROMLIST(v1): ASoC: meson: aiu: Fix HDMI codec control
  selection
 
 The HDMI controllers on Amlogic Meson SoCs which use the AIU

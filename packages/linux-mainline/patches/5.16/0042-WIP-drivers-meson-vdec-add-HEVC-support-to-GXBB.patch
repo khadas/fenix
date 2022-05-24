@@ -1,7 +1,7 @@
-From 8b8c35da4d3f4ab7e57dd1a3bf95e78a40200a6f Mon Sep 17 00:00:00 2001
+From 191b66f3c7e726d30065cdcb940d91ec5cda4539 Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Sun, 21 Nov 2021 19:12:07 +0000
-Subject: [PATCH 42/81] WIP: drivers: meson: vdec: add HEVC support to GXBB
+Subject: [PATCH 42/79] WIP: drivers: meson: vdec: add HEVC support to GXBB
 
 It's not clear whether the GXL firmware is the same one used with GXBB
 but let's try it and see!

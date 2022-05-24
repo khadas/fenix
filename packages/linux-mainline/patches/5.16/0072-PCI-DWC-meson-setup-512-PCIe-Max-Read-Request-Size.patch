@@ -1,0 +1,30 @@
+From b18c7121430d0a9d5279bf2d545c618fc98c709b Mon Sep 17 00:00:00 2001
+From: Artem Lapkin <art@khadas.com>
+Date: Thu, 18 Nov 2021 10:22:04 +0800
+Subject: [PATCH 72/79] PCI: DWC: meson: setup 512 PCIe Max Read Request Size
+
+DWC PCIe controller imposes limits on the Read Request Size that it can
+handle.
+
+For pci-meson family it's fixed at 512 bytes by default.
+
+Signed-off-by: Artem Lapkin <art@khadas.com>
+---
+ drivers/pci/controller/dwc/pci-meson.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/pci/controller/dwc/pci-meson.c b/drivers/pci/controller/dwc/pci-meson.c
+index d8c4ec085b2d..fcdb216b178e 100644
+--- a/drivers/pci/controller/dwc/pci-meson.c
++++ b/drivers/pci/controller/dwc/pci-meson.c
+@@ -451,6 +451,7 @@ static int meson_pcie_probe(struct platform_device *pdev)
+ 		goto err_phy;
+ 	}
+ 
++	max_pcie_mrrs = 512;
+ 	platform_set_drvdata(pdev, mp);
+ 
+ 	ret = dw_pcie_host_init(&pci->pp);
+-- 
+2.25.1
+
