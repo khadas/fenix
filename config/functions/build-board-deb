@@ -146,6 +146,11 @@ build_board_deb() {
 			fi
 		fi
 	fi
+
+	if [ "\$BOARD" == "Edge2" ]; then
+		systemctl enable rockchip-isp.service
+	fi
+
 	# Patches used by hciattach
 	ln -fs /lib/firmware/brcm/BCM43438A1.hcd /lib/firmware/brcm/BCM43430A1.hcd # AP6212
 	ln -fs /lib/firmware/brcm/BCM4356A2.hcd /lib/firmware/brcm/BCM4354A2.hcd # AP6356S
