@@ -189,7 +189,7 @@ install_distribution_specific()
 			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable lircd.socket lircd.service lircd-setup.service lircd-uinput.service lircmd.service irexec.service"'
 		fi
 		;;
-	bionic|focal)
+	bionic|focal|jammy)
 		# remove doubled uname from motd
 		[[ -f $ROOTFS_TEMP/etc/update-motd.d/10-uname ]] && rm $ROOTFS_TEMP/etc/update-motd.d/10-uname
 		# remove motd news from motd.ubuntu.com
@@ -208,6 +208,8 @@ install_distribution_specific()
 			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable watchdog.service"'
 			# Disable Lirc service
 			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable lircd.socket lircd.service lircd-setup.service lircd-uinput.service lircmd.service irexec.service"'
+			# Disable hostapd
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable hostapd.service"'
 		fi
 		# Journal service adjustements
 		sed -i "s/#Storage=.*/Storage=volatile/g" $ROOTFS_TEMP/etc/systemd/journald.conf
@@ -361,6 +363,9 @@ create_rootfs_cache()
 	# this should fix resolvconf installation failure in some cases
 	chroot $ROOTFS_TEMP /bin/bash -c 'echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections'
 
+	rm $ROOTFS_TEMP/etc/resolv.conf
+	echo "nameserver $NAMESERVER" >> $ROOTFS_TEMP/etc/resolv.conf
+
 	# stage: update packages list
 	info_msg "Updating package list $DISTRIB_RELEASE"
 	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "apt-get -y $apt_extra update"'
@@ -387,11 +392,7 @@ create_rootfs_cache()
 	}
 
 	# stage: remove downloaded packages
-	chroot $ROOTFS_TEMP /bin/bash -c "apt-get clean"
-
-	# this is needed for the build process later since resolvconf generated file in /run is not saved
-	rm $ROOTFS_TEMP/etc/resolv.conf
-	echo "nameserver $NAMESERVER" >> $ROOTFS_TEMP/etc/resolv.conf
+	chroot $ROOTFS_TEMP /bin/bash -c "apt-get -y autoremove; apt-get clean"
 
 	# stage: make rootfs cache archive
 	info_msg "Ending debootstrap process and preparing cache $DISTRIB_RELEASE"
@@ -424,7 +425,7 @@ prepare_partitions()
 
 	info_msg "Preparing image file for rootfs..."
 
-	if [[ $(lsb_release -sc) =~ bionic|focal ]]; then
+	if [[ $(lsb_release -sc) =~ bionic|focal|jammy ]]; then
 		EXT4_MKOPTS="-q -F -L ROOTFS -m 2 -O ^64bit,^metadata_csum"
 	elif [[ $(lsb_release -sc) == "xenial" ]]; then
 		EXT4_MKOPTS="-q -F -L ROOTFS -m 2"

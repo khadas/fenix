@@ -1,0 +1,8 @@
+# /etc/ppp/peers/quectel-chat-disconnect
+ABORT "ERROR"
+ABORT "NO DIALTONE"
+SAY "\nSending break to the modem\n"
+""  +++
+""  +++
+""  +++
+SAY "\nGoodbay\n"

@@ -85,7 +85,7 @@ build_desktop_deb() {
 		fi
 	else
 		linux_ver=\`uname -r\`
-		if linux-version compare \$linux_ver ge 4.12; then
+		if linux-version compare \$linux_ver ge 5.10; then
 			IS_MAINLINE_KERNEL="yes"
 		fi
 	fi
@@ -105,19 +105,21 @@ build_desktop_deb() {
 	# Mainline kernel using gdm3
 	# Legacy kernel using lightdm
 	if which gnome-session > /dev/null; then
-		if which gdm3 > /dev/null; then
-			if [ -f /boot/.next ]; then
-				DM=gdm3
-			else
-				DM=lightdm
-			fi
-			debconf-set-selections <<-EOT
-			gdm3    shared/default-x-display-manager        select  "\${DM}"
-			lightdm shared/default-x-display-manager        select  "\${DM}"
-			EOT
+		if [ "$DISTRIB_RELEASE" != "jammy" ]; then
+			if which gdm3 > /dev/null; then
+				if [ -f /boot/.next ] || linux-version compare \`uname -r\` ge 5.0; then
+					DM=gdm3
+				else
+					DM=lightdm
+				fi
+				debconf-set-selections <<-EOT
+				gdm3    shared/default-x-display-manager        select  "\${DM}"
+				lightdm shared/default-x-display-manager        select  "\${DM}"
+				EOT
 
-			echo "/usr/sbin/\${DM}" > /etc/X11/default-display-manager
-			DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true dpkg-reconfigure "\${DM}"
+				echo "/usr/sbin/\${DM}" > /etc/X11/default-display-manager
+				DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true dpkg-reconfigure "\${DM}"
+			fi
 		fi
 	fi
 
@@ -155,6 +157,14 @@ build_desktop_deb() {
 			rm -rf $pkgdir/etc/skel/.local/share/applications/usb3-pcie-settings.desktop
 			rm -rf $pkgdir/etc/skel/.local/share/applications/cpu-frequency-setting.desktop
 		fi
+
+		if [ "$KHADAS_BOARD" == "VIM4" ]; then
+			rm -rf $pkgdir/etc/skel/.local/share/applications/xfce-usb3-pcie-settings.desktop
+			rm -rf $pkgdir/etc/skel/.local/share/applications/usb3-pcie-settings.desktop
+			rm -rf $pkgdir/etc/skel/.local/share/applications/cpu-frequency-setting.desktop
+			rm -rf $pkgdir/etc/skel/.local/share/applications/hdmi-resolution-settings.desktop
+		fi
+
 		if [ "$LINUX" == "mainline" ]; then
 			rm -rf $pkgdir/lib/systemd/system/hdmi_resolution.service
 			rm -rf $pkgdir/etc/skel/.local/share/applications/cpu-frequency-setting.desktop

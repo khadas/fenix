@@ -1,0 +1,23 @@
+PKG_NAME="mali-debs"
+PKG_VERSION="52fe2c85099459524d5e27310eb74584e5f9325d"
+PKG_SHA256="0aeb4a8ea7a86c3a1401435641147ea92bbb63dcc4adb29956024501aee94111"
+PKG_SOURCE_DIR="${PKG_NAME}-${PKG_VERSION}*"
+PKG_SITE="$GITHUB_URL/khadas/${PKG_NAME}"
+PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
+PKG_ARCH="arm aarch64"
+PKG_LICENSE="GPL"
+PKG_SHORTDESC="Mali Libraries"
+PKG_SOURCE_NAME="${PKG_NAME}-${PKG_VERSION}.tar.gz"
+PKG_NEED_BUILD="NO"
+
+
+make_target() {
+	:
+}
+
+makeinstall_target() {
+	mkdir -p $BUILD_DEBS/$VERSION/$KHADAS_BOARD/mali-debs
+	# Remove old debs
+	rm -rf $BUILD_DEBS/$VERSION/$KHADAS_BOARD/mali-debs/*
+	cp -r ${DISTRIB_RELEASE}/${DISTRIB_ARCH}/${KHADAS_BOARD}/* $BUILD_DEBS/$VERSION/$KHADAS_BOARD/mali-debs
+}
