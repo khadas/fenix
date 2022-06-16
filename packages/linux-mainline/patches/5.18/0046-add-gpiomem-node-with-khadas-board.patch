@@ -1,0 +1,90 @@
+From 673c6540f666f1478daaf0daa5f910219acf43ce Mon Sep 17 00:00:00 2001
+From: Yan Wang <frank@khadas.com>
+Date: Mon, 13 Jun 2022 11:34:46 +0800
+Subject: [PATCH 46/70] add gpiomem node with khadas board
+
+Signed-off-by: Yan Wang <frank@khadas.com>
+---
+ .../dts/amlogic/meson-gxl-s905x-khadas-vim.dts     | 14 ++++++++++++++
+ .../boot/dts/amlogic/meson-gxm-khadas-vim2.dts     | 14 ++++++++++++++
+ arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi | 14 ++++++++++++++
+ 3 files changed, 42 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
+index fb0dd920882f..c0a163464fd5 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
+@@ -44,6 +44,20 @@ power-button {
+ 		};
+ 	};
+ 
++	gpiomem {
++		compatible = "amlogic, gpiomem";
++		reg = <0x0 0xda834000 0x0 0x1000>;
++		dev_name = "gpiomem";
++		status = "okay";
++	};
++
++	gpiomem_ao {
++		compatible = "amlogic, gpiomem";
++		reg = <0x0 0xc8100000 0x0 0x1000>;
++		dev_name = "gpiomem-ao";
++		status = "okay";
++	};
++
+ 	led-controller {
+ 		compatible = "pwm-leds";
+ 
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+index 0dc3e6d48e82..174101f49ca8 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+@@ -73,6 +73,20 @@ power-button {
+ 		};
+ 	};
+ 
++	gpiomem {
++		compatible = "amlogic, gpiomem";
++		reg = <0x0 0xda834000 0x0 0x1000>;
++		dev_name = "gpiomem";
++		status = "okay";
++	};
++
++	gpiomem_ao {
++		compatible = "amlogic, gpiomem";
++		reg = <0x0 0xc8100000 0x0 0x1000>;
++		dev_name = "gpiomem-ao";
++		status = "okay";
++	};
++
+ 	hdmi-connector {
+ 		compatible = "hdmi-connector";
+ 		type = "a";
+diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+index c8ef7d348e5b..cdf7478cef53 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+@@ -40,6 +40,20 @@ button-function {
+ 		};
+ 	};
+ 
++	gpiomem {
++		compatible = "amlogic, gpiomem";
++		reg = <0x0 0xda834000 0x0 0x1000>;
++		dev_name = "gpiomem";
++		status = "okay";
++	};
++
++	gpiomem_ao {
++		compatible = "amlogic, gpiomem";
++		reg = <0x0 0xc8100000 0x0 0x1000>;
++		dev_name = "gpiomem-ao";
++		status = "okay";
++	};
++
+ 	leds {
+ 		compatible = "gpio-leds";
+ 
+-- 
+2.25.1
+

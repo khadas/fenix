@@ -1,0 +1,35 @@
+From 449bb35ed04fe24d065873726b06e6d655e0da32 Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Mon, 1 Jun 2020 15:06:01 +0900
+Subject: [PATCH 33/70] rockchip_khadas_edge_add_missed_spiflash
+
+add missed spiflash to Khadas Edge
+---
+ .../boot/dts/rockchip/rk3399-khadas-edge.dtsi      | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
+index 7ba3ed24084b..b2bd5542743d 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
+@@ -834,3 +834,17 @@ &vopl {
+ &vopl_mmu {
+ 	status = "okay";
+ };
++
++
++&spi1 {
++    max-freq = <104000000>;
++    status = "okay";
++
++    spiflash: flash@0 {
++    u-boot,dm-pre-reloc;
++    compatible = "winbond,w25q128fw", "jedec,spi-nor";
++    reg = <0>;
++    spi-max-frequency = <104000000>;
++    };
++};
++
+-- 
+2.25.1
+
