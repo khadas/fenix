@@ -1,4 +1,4 @@
-From 44cd144b2f60b8ddbfa066862d6ab328208a1a8b Mon Sep 17 00:00:00 2001
+From 4a5d59c80b9feea48acbfc8252b961bf5f156bc3 Mon Sep 17 00:00:00 2001
 From: yan <yan-wyb@foxmail.com>
 Date: Tue, 23 Mar 2021 15:11:45 +0800
 Subject: [PATCH 36/70] arm64: dts: VIM2: fix broken ethernet interface up/down

@@ -1,4 +1,4 @@
-From 23c955608e8a884e6d97e34d93d0202b1236d999 Mon Sep 17 00:00:00 2001
+From 78eacf4c9097b6f1e944068010e4194ad3c758df Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Mon, 7 Sep 2020 16:58:22 +0800
 Subject: [PATCH 35/70] arm64: dts: VIM3/VIM3L: fix memory size for vendor

@@ -1,4 +1,4 @@
-From e01b03afede487f2d63fdfd4906eb2cfe03b4bc8 Mon Sep 17 00:00:00 2001
+From 72821ffa1f85492fcf9100400cffe092418ad8fd Mon Sep 17 00:00:00 2001
 From: Yan Wang <frank@khadas.com>
 Date: Mon, 13 Jun 2022 11:30:31 +0800
 Subject: [PATCH 70/70] FROMGIT(5.18): arm64: dts: meson-sm1: add spdifin

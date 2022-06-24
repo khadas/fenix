@@ -1,4 +1,4 @@
-From fb1581865cd7d9f95cbf62e336fb82d3a281d080 Mon Sep 17 00:00:00 2001
+From fa162020f3309fc60f451efd1d4eb0bb28d75436 Mon Sep 17 00:00:00 2001
 From: Lucas Tanure <tanure@linux.com>
 Date: Sun, 10 Apr 2022 09:48:48 +0000
 Subject: [PATCH 13/70] FROMLIST(v2): i2c: meson: Use _SHIFT and _MASK for

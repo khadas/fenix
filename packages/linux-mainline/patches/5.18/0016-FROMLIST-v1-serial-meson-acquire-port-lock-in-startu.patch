@@ -1,4 +1,4 @@
-From 6bfc457c6d01023733f3bd65ee8b25a63c91a7bf Mon Sep 17 00:00:00 2001
+From 28d2cc6a4fb3d33086cb680b9b83ac86a84c6951 Mon Sep 17 00:00:00 2001
 From: John Ogness <john.ogness@linutronix.de>
 Date: Mon, 9 May 2022 09:33:17 +0000
 Subject: [PATCH 16/70] FROMLIST(v1): serial: meson: acquire port->lock in

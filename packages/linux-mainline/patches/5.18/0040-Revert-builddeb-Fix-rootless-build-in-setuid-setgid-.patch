@@ -1,4 +1,4 @@
-From 71726e2da0b524355285318bcf9aa866f7cf07c6 Mon Sep 17 00:00:00 2001
+From d54a7bcd730346c0981815b4a87de7ce340d4375 Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Mon, 12 Apr 2021 10:49:33 +0800
 Subject: [PATCH 40/70] Revert "builddeb: Fix rootless build in setuid/setgid

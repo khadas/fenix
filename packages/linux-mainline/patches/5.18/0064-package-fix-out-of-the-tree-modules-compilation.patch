@@ -1,4 +1,4 @@
-From 716a7b28da36d10f16b148878f0162191c3f26be Mon Sep 17 00:00:00 2001
+From 78e78eaccaa277e2d9bff2f337a96779b30e809e Mon Sep 17 00:00:00 2001
 From: Nick xie <nick@khadas.com>
 Date: Thu, 9 Dec 2021 15:13:47 +0800
 Subject: [PATCH 64/70] package: fix out of the tree modules compilation

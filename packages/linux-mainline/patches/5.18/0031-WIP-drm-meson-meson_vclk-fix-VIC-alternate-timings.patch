@@ -1,4 +1,4 @@
-From 480f6d46694c9abb727070d7603c09d6d12e54b7 Mon Sep 17 00:00:00 2001
+From d669f2a3d41eba539d6dd568755505d067f14849 Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Sun, 13 Feb 2022 08:53:39 +0000
 Subject: [PATCH 31/70] WIP: drm/meson/meson_vclk: fix VIC alternate timings

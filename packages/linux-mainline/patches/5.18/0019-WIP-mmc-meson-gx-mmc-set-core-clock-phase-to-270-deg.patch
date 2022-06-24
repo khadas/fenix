@@ -1,4 +1,4 @@
-From c8d6c6b918906f2142e4ae3edefa95ebec96282a Mon Sep 17 00:00:00 2001
+From 8b57180ae06f2fa329c47074d92db57cef2dcd11 Mon Sep 17 00:00:00 2001
 From: Neil Armstrong <narmstrong@baylibre.com>
 Date: Thu, 14 Jan 2021 17:43:02 +0100
 Subject: [PATCH 19/70] WIP: mmc: meson-gx-mmc: set core clock phase to 270

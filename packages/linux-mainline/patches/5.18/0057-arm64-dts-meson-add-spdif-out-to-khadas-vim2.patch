@@ -1,4 +1,4 @@
-From f446ca7dae0a966a7106228f6f80f11283c4fbf1 Mon Sep 17 00:00:00 2001
+From 45852fc78b7f30177ef518b8f4055719cdaf6365 Mon Sep 17 00:00:00 2001
 From: Artem Lapkin <art@khadas.com>
 Date: Tue, 10 Aug 2021 12:10:00 +0800
 Subject: [PATCH 57/70] arm64: dts: meson: add spdif out to khadas-vim2

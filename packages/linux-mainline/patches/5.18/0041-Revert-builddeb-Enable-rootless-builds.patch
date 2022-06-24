@@ -1,4 +1,4 @@
-From 60af0d4abe0b704157ded65630ae61f242b91d54 Mon Sep 17 00:00:00 2001
+From 25b1fb89d9cddf22bdb51c803ada0db15789e841 Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Mon, 12 Apr 2021 10:50:02 +0800
 Subject: [PATCH 41/70] Revert "builddeb: Enable rootless builds"

@@ -1,4 +1,4 @@
-From 03e25b366956d8ee7d31cbf253eac47f98e5d7b7 Mon Sep 17 00:00:00 2001
+From 192be6cd4eabf39a36283d20f8bf3f598fa44077 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 23 Dec 2018 02:24:38 +0100
 Subject: [PATCH 18/70] WIP: ASoC: hdmi-codec: reorder channel allocation list

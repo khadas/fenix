@@ -1,4 +1,4 @@
-From 880eb5420f9208a5223d8ef9da4b4a3789eb12e3 Mon Sep 17 00:00:00 2001
+From 680ef9496b8d545d5b8c3597fab2b0852e9834df Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Tue, 18 Jan 2022 15:18:32 +0000
 Subject: [PATCH 25/70] WIP: arm64: dts: meson: remove SDIO node from Khadas

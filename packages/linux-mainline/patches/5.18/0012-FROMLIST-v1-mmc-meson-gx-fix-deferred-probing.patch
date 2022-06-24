@@ -1,4 +1,4 @@
-From f2dc95f1875165c1ee944f2ff6af886ac1244aba Mon Sep 17 00:00:00 2001
+From 05835cb874d934552f5b4f7572e25660a947f113 Mon Sep 17 00:00:00 2001
 From: Sergey Shtylyov <s.shtylyov@omp.ru>
 Date: Fri, 24 Dec 2021 06:09:57 +0000
 Subject: [PATCH 12/70] FROMLIST(v1): mmc: meson-gx: fix deferred probing

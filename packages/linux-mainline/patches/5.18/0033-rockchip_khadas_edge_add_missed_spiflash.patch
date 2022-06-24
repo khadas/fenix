@@ -1,4 +1,4 @@
-From 449bb35ed04fe24d065873726b06e6d655e0da32 Mon Sep 17 00:00:00 2001
+From 619016f7660946ffc90a33d107d69a5e0aab3a33 Mon Sep 17 00:00:00 2001
 From: hyphop <art@khadas.com>
 Date: Mon, 1 Jun 2020 15:06:01 +0900
 Subject: [PATCH 33/70] rockchip_khadas_edge_add_missed_spiflash

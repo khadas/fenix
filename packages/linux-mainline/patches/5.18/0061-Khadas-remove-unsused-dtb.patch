@@ -1,4 +1,4 @@
-From 58c986e7dd9ca353e1296a08d03e55c7eddc0eec Mon Sep 17 00:00:00 2001
+From dea95633df9a44e4957fe061f3d8a4c75efa654f Mon Sep 17 00:00:00 2001
 From: Yan Wang <frank@khadas.com>
 Date: Mon, 13 Jun 2022 10:57:08 +0800
 Subject: [PATCH 61/70] Khadas: remove unsused dtb

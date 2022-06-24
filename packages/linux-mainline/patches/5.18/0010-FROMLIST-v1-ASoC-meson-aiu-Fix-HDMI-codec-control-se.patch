@@ -1,4 +1,4 @@
-From ecd7c53b98af80eb2bd8d3cb49176f6467914949 Mon Sep 17 00:00:00 2001
+From 2aeb012af674adf0727743b6d2a4cb3fd0c9d289 Mon Sep 17 00:00:00 2001
 From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 Date: Sun, 3 Oct 2021 05:35:48 +0000
 Subject: [PATCH 10/70] FROMLIST(v1): ASoC: meson: aiu: Fix HDMI codec control

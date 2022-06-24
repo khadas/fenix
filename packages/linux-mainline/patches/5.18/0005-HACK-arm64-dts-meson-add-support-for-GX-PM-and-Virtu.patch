@@ -1,4 +1,4 @@
-From b085d0da36da9e831f002934028817f5c879296b Mon Sep 17 00:00:00 2001
+From b4ab28c0f5a5adeed30696abd7d4bb88786b253a Mon Sep 17 00:00:00 2001
 From: Neil Armstrong <narmstrong@baylibre.com>
 Date: Thu, 3 Nov 2016 15:29:25 +0100
 Subject: [PATCH 05/70] HACK: arm64: dts: meson: add support for GX PM and

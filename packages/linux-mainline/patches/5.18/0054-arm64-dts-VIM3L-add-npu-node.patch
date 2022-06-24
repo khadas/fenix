@@ -1,4 +1,4 @@
-From 795f98891674025909d3d7b30bb49fe5c84c9275 Mon Sep 17 00:00:00 2001
+From 6e0e326ebb489a1f504cc8772992495d7155633b Mon Sep 17 00:00:00 2001
 From: yan <yan-wyb@foxmail.com>
 Date: Wed, 11 Aug 2021 11:26:31 +0800
 Subject: [PATCH 54/70] arm64: dts: VIM3L: add npu node
