@@ -1,4 +1,4 @@
-From 272b6d57bf15b87b88171a09af86c4b2ad10665d Mon Sep 17 00:00:00 2001
+From 9a5cdff790518ee75e4b24c09db2aa3108bec873 Mon Sep 17 00:00:00 2001
 From: Neil Armstrong <narmstrong@baylibre.com>
 Date: Thu, 3 Nov 2016 15:29:23 +0100
 Subject: [PATCH 04/70] HACK: arm64: meson: add Amlogic Meson GX PM Suspend

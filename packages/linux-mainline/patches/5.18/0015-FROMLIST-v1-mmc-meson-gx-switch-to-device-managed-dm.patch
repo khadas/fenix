@@ -1,4 +1,4 @@
-From e08b05f08d53064f3aa675488fa79018da9b907e Mon Sep 17 00:00:00 2001
+From c87b2ecb69712d1c5167acb88a67859aefc7124f Mon Sep 17 00:00:00 2001
 From: Heiner Kallweit <hkallweit1@gmail.com>
 Date: Sun, 17 Apr 2022 05:34:29 +0000
 Subject: [PATCH 15/70] FROMLIST(v1): mmc: meson-gx: switch to device-managed

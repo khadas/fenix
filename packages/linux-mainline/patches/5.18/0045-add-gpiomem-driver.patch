@@ -1,4 +1,4 @@
-From 89ee1270e693ba25e67ae8bcb0671cf070f828a1 Mon Sep 17 00:00:00 2001
+From 81bfd90f29eb445b19faee2b8c5090cdb1055615 Mon Sep 17 00:00:00 2001
 From: Yan Wang <frank@khadas.com>
 Date: Mon, 13 Jun 2022 11:33:42 +0800
 Subject: [PATCH 45/70] add gpiomem driver

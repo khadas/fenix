@@ -1,4 +1,4 @@
-From 54b90c8447199f8e1e096ffb5583d636070880de Mon Sep 17 00:00:00 2001
+From f5bfc4429a9d380a1339b7011e77252c109d6942 Mon Sep 17 00:00:00 2001
 From: Artem Lapkin <art@khadas.com>
 Date: Thu, 12 Aug 2021 12:21:20 +0800
 Subject: [PATCH 58/70] arm64: dts: meson: khadas-vim3: remake simple sound for
@@ -18,7 +18,7 @@ Signed-off-by: Artem Lapkin <art@khadas.com>
  1 file changed, 53 insertions(+), 32 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-index 98613029c6e4..93878c63726a 100644
+index 21aacf7ef36c..0b65c6ccfda4 100644
 --- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
 +++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
 @@ -190,20 +190,20 @@ hdmi_connector_in: endpoint {

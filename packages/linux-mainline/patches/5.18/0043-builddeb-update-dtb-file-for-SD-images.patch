@@ -1,4 +1,4 @@
-From ffe06d8997361c814fe9f049da70baf91b8edd59 Mon Sep 17 00:00:00 2001
+From fb9b8712978d57409ad28d2bf56cc72aad4d546f Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Thu, 20 Aug 2020 22:08:10 +0800
 Subject: [PATCH 43/70] builddeb: update dtb file for SD images

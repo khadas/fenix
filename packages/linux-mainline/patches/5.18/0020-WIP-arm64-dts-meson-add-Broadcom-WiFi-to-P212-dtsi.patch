@@ -1,4 +1,4 @@
-From fb02286e32ea9fcc25171b7e636fae47b1e5cd50 Mon Sep 17 00:00:00 2001
+From a48207ad4d6f4dbd12a00df8a596bbfd14426bb7 Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Thu, 13 Jan 2022 03:50:01 +0000
 Subject: [PATCH 20/70] WIP: arm64: dts: meson: add Broadcom WiFi to P212 dtsi

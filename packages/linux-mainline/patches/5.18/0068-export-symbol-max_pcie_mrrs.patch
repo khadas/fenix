@@ -1,4 +1,4 @@
-From 3e368ea45e46df2c11466878a00a44d8d14ee139 Mon Sep 17 00:00:00 2001
+From 4f4a8b38323989df1755aa6e275ccab48582d547 Mon Sep 17 00:00:00 2001
 From: Zhang Ning <1408979+zhangn1985@user.noreply.gitee.com>
 Date: Sun, 1 May 2022 10:19:03 +0800
 Subject: [PATCH 68/70] export symbol max_pcie_mrrs

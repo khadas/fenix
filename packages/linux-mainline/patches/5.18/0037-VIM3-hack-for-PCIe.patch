@@ -1,4 +1,4 @@
-From 035b4369c0502f8cdf83443a22b4436b798220f7 Mon Sep 17 00:00:00 2001
+From 8a9ccd960610610bead21521329b57342a21a606 Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Sat, 23 May 2020 15:29:11 +0800
 Subject: [PATCH 37/70] VIM3: hack for PCIe

@@ -1,4 +1,4 @@
-From a5277b2a401f49c30c2c182cc93adda245c9f056 Mon Sep 17 00:00:00 2001
+From dfcde13770a186a16186925e0a435ca8952fe842 Mon Sep 17 00:00:00 2001
 From: hyphop <art@khadas.com>
 Date: Mon, 1 Jun 2020 15:08:18 +0900
 Subject: [PATCH 34/70] rockchip_khadas_edge_add_ir_recv

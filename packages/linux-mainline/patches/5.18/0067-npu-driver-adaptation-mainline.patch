@@ -1,4 +1,4 @@
-From 02d2f76ac0526804eabc1646c8c092de23091741 Mon Sep 17 00:00:00 2001
+From 7130a27691aebec0a1dfc66d270c1804bc8ab035 Mon Sep 17 00:00:00 2001
 From: Frank Wang <frank@khadas.com>
 Date: Thu, 24 Mar 2022 16:12:09 +0800
 Subject: [PATCH 67/70] npu driver adaptation mainline

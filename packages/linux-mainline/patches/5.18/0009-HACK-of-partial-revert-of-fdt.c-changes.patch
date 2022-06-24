@@ -1,4 +1,4 @@
-From ea7856693af577b06656c77f23ff3bdc7873be86 Mon Sep 17 00:00:00 2001
+From d73a9f51bda79ae970c838cb8a1880b55831138a Mon Sep 17 00:00:00 2001
 From: Stefan Agner <stefan@agner.ch>
 Date: Wed, 15 Sep 2021 05:00:45 +0000
 Subject: [PATCH 09/70] HACK: of: partial revert of fdt.c changes

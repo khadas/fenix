@@ -1,4 +1,4 @@
-From 8e02c5deb265eb6c9a36103e5b6dc16858cd10c5 Mon Sep 17 00:00:00 2001
+From 7c1f332a0af3498041b9738f0e25fd7fb3daa022 Mon Sep 17 00:00:00 2001
 From: yan <yan-wyb@foxmail.com>
 Date: Mon, 30 Aug 2021 13:51:11 +0800
 Subject: [PATCH 55/70] arm64: dts: meson: sm1-khadas-vim3l use one sound node

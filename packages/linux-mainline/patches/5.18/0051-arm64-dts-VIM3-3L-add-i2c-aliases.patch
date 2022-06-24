@@ -1,4 +1,4 @@
-From afcddb7cd8ea1543e0c48299d15874f543c00fcc Mon Sep 17 00:00:00 2001
+From 1bcb87b3a892d19c9ae42759987d516f2ecf1199 Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Thu, 27 May 2021 11:18:25 +0800
 Subject: [PATCH 51/70] arm64: dts: VIM3/3L: add i2c aliases
@@ -9,7 +9,7 @@ Signed-off-by: Nick Xie <nick@khadas.com>
  1 file changed, 5 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-index 73872d037918..98613029c6e4 100644
+index dfcb6650f8b2..21aacf7ef36c 100644
 --- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
 +++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
 @@ -17,6 +17,11 @@ aliases {

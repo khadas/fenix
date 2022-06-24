@@ -1,4 +1,4 @@
-From e413a955c24fffacf94be486f3f975a6adc17cf6 Mon Sep 17 00:00:00 2001
+From 436d6eadb6e402eb2916347782bb14649318cc5c Mon Sep 17 00:00:00 2001
 From: Yan <yan-wyb@foxmail.com>
 Date: Mon, 22 Nov 2021 10:05:21 +0800
 Subject: [PATCH 63/70] dtb enable creation of __symbols__ node

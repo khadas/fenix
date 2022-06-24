@@ -1,4 +1,4 @@
-From 53a7909a491bdeb072437af01be8ecbfda65f3b7 Mon Sep 17 00:00:00 2001
+From cf6011053023e2e6f3b641d4b1b40722c5acdc8f Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Mon, 3 Jan 2022 10:44:17 +0000
 Subject: [PATCH 08/70] HACK: usb: hub: disable autosuspend for Genesys Logic

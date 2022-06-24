@@ -1,4 +1,4 @@
-From aa04a1fdbbb8cf7d48f6685474a97db5e6d03670 Mon Sep 17 00:00:00 2001
+From a088b01e19db45d83f9d34f6971361d7a012727a Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Sat, 15 May 2021 17:12:53 +0800
 Subject: [PATCH 47/70] add device model to /proc/cpuinfo

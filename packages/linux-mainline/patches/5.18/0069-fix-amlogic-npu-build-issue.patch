@@ -1,4 +1,4 @@
-From a8b8a4b1e79cd13d1f2c830975935da7f17eb07e Mon Sep 17 00:00:00 2001
+From e521c918bfd0c47c8c1f5237e5cc0e28a511a3f7 Mon Sep 17 00:00:00 2001
 From: Zhang Ning <1408979+zhangn1985@user.noreply.gitee.com>
 Date: Sun, 1 May 2022 10:13:40 +0800
 Subject: [PATCH 69/70] fix amlogic npu build issue

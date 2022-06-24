@@ -1,4 +1,4 @@
-From 6d4b4d768d728ef715b9daf1a8f4e4b41626ca01 Mon Sep 17 00:00:00 2001
+From 9988663f323553f7821503af2d2cb6f137e23c8a Mon Sep 17 00:00:00 2001
 From: Frank Wang <frank@khadas.com>
 Date: Mon, 21 Feb 2022 18:52:23 +0800
 Subject: [PATCH 52/70] VIM1/VIM2: add i2c aliases

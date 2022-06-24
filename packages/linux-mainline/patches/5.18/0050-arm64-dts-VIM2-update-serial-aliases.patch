@@ -1,4 +1,4 @@
-From c8463c4bee4bdd62639c7b62621b91764c2160b7 Mon Sep 17 00:00:00 2001
+From 15cc421fb7b6a1f7c580d324d97a71f8a00d8b5e Mon Sep 17 00:00:00 2001
 From: Frank Wang <frank@khadas.com>
 Date: Mon, 21 Feb 2022 18:50:48 +0800
 Subject: [PATCH 50/70] arm64: dts: VIM2: update serial aliases

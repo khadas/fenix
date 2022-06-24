@@ -1,4 +1,4 @@
-From 14bce957fe8cdca18d45272ea56c3cea7c689368 Mon Sep 17 00:00:00 2001
+From c9c8e88e76ef91ef5a4b4cb9ff714c594d5f64c9 Mon Sep 17 00:00:00 2001
 From: Lucas Tanure <tanure@linux.com>
 Date: Sun, 10 Apr 2022 09:50:15 +0000
 Subject: [PATCH 14/70] FROMLIST(v2): i2c: meson: Use 50% duty cycle for I2C

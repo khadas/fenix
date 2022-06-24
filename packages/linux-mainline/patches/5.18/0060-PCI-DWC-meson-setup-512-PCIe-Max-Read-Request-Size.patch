@@ -1,4 +1,4 @@
-From d47a66f7e6045ed7025c89b28dd1288a58c62439 Mon Sep 17 00:00:00 2001
+From 5cc7bdfc4c482fa1fa8d0ee0a30b5c65dc5f0131 Mon Sep 17 00:00:00 2001
 From: Artem Lapkin <art@khadas.com>
 Date: Thu, 18 Nov 2021 10:22:04 +0800
 Subject: [PATCH 60/70] PCI: DWC: meson: setup 512 PCIe Max Read Request Size

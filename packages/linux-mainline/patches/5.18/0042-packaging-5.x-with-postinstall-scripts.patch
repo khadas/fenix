@@ -1,4 +1,4 @@
-From 7f1b52344ce3bd13668c6fe57e8562f9e6b42a52 Mon Sep 17 00:00:00 2001
+From 321d4c333ee2acdd0ce146ee3dc1c4e575003d0e Mon Sep 17 00:00:00 2001
 From: Nick Xie <nick@khadas.com>
 Date: Sat, 10 Apr 2021 09:35:10 +0800
 Subject: [PATCH 42/70] packaging 5.x with postinstall scripts

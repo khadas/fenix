@@ -1,4 +1,4 @@
-From cf01fcdb44a7abf726c995d0d0afc6b4cf5bab85 Mon Sep 17 00:00:00 2001
+From f86367045b1c9b487870733e3a73388cbbe98bc9 Mon Sep 17 00:00:00 2001
 From: David Heidelberg <david@ixit.cz>
 Date: Sat, 27 Nov 2021 07:23:35 +0000
 Subject: [PATCH 11/70] FROMLIST(v1): arm64: dts: meson: make dts use gpio-fan
