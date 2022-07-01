@@ -12,4 +12,4 @@
 /usr/sbin/rfkill unblock 0
 /bin/sleep 1
 
-/usr/local/bin/hciattach -n -s 115200 /dev/ttyS0 bcm43xx 1500000
+/usr/local/bin/hciattach -n -s 115200 /dev/ttyS9 bcm43xx 1500000

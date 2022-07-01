@@ -35,12 +35,10 @@ rootpart=$(findmnt -n -o SOURCE /) # i.e. /dev/mmcblk0p1
 rootdevice=$(lsblk -n -o PKNAME $rootpart) # i.e. mmcblk0
 chmod 666 /dev/$rootdevice
 
-# WOL
-[ -f /sys/class/wol/enable ] && chmod 666 /sys/class/wol/enable
-# Cooling
-[ -f /sys/class/thermal/cooling_device0/cur_state ] && chmod 666 /sys/class/thermal/cooling_device0/cur_state
-[ -f /sys/class/hwmon/hwmon0/mode ] && chmod 666 /sys/class/hwmon/hwmon0/mode
-[ -f /sys/class/hwmon/hwmon0/enable ] && chmod 666 /sys/class/hwmon/hwmon0/enable
+#Fan
+[ -f /sys/class/fan/mode ] && chmod 777 /sys/class/fan/mode
+[ -f /sys/class/fan/level ] && chmod 777 /sys/class/fan/level
+[ -f /sys/class/fan/enable ] && chmod 777 /sys/class/fan/enable
 
 
 # Reboot test handle
