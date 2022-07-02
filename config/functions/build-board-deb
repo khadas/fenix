@@ -82,6 +82,7 @@ build_board_deb() {
 		if [ "\$bootfstype" = "vfat" ]; then
 			rm -rf /boot/aml_boot.ini
 			rm -rf /boot/boot.ini
+			rm -rf /boot/extlinux/extlinux.conf
 			rm -rf /boot/env.txt
 			rm -rf /boot/uEnv.txt
 			rm -rf /boot/fan.sh
