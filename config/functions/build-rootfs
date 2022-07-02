@@ -533,6 +533,10 @@ prepare_partitions()
 		sed -i s/rootdev=.*/rootdev=$rootfs_uuid/g $ROOTFS/boot/env.txt
 	fi
 
+	if [[ -f $ROOTFS_TEMP/boot/uEnv.txt ]]; then
+		sed -i s/rootdev=root=.*/rootdev=root=$rootfs_uuid/g $ROOTFS/boot/uEnv.txt
+	fi
+
 	# create /etc/fstab
 	echo "# <file system>                              <mount point>   <type>  <options>                                                             <dump>  <pass>" > $ROOTFS/etc/fstab
 	echo "tmpfs                                          /tmp            tmpfs   defaults,nosuid                                                          0   0" >> $ROOTFS/etc/fstab

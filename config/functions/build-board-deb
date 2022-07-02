@@ -83,6 +83,7 @@ build_board_deb() {
 			rm -rf /boot/aml_boot.ini
 			rm -rf /boot/boot.ini
 			rm -rf /boot/env.txt
+			rm -rf /boot/uEnv.txt
 			rm -rf /boot/fan.sh
 			rm -rf /boot/s905_autoscript
 			rm -rf /boot/aml_autoscript
@@ -214,9 +215,10 @@ build_board_deb() {
 		[ -f /var/lib/alsa/asound.state ] && rm /var/lib/alsa/asound.state
 	fi
 
-	# Fix env.txt
+	# Fix env.txt / uEnv.txt
 	rootdev=\$(sed -e 's/^.*root=//' -e 's/ .*\$//' < /proc/cmdline)
-	sed -i s/rootdev=.*/rootdev=\$rootdev/g /boot/env.txt
+	[ -f /boot/env.txt ] &&  sed -i s/rootdev=.*/rootdev=\$rootdev/g /boot/env.txt
+	[ -f /boot/uEnv.txt ] && sed -i s/rootdev=root=.*/rootdev=root=\$rootdev/g /boot/uEnv.txt
 
 	systemctl --no-reload enable fenix-zram-config.service fenix-hardware-optimize.service >/dev/null 2>&1
 
@@ -276,16 +278,19 @@ build_board_deb() {
 	# Copy boot scripts
 	mkdir -p $pkgdir/boot
 	if [ "$VENDOR" == "Amlogic" ]; then
-		cp $BOOT_SCRIPTS/$BOOT_SCRIPT_VENDOR $pkgdir/boot
-		cp $BOOT_SCRIPTS/$BOOT_SCRIPT_BOARD $pkgdir/boot
-
-		$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$CHIP autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_BOARD $pkgdir/boot/${BOOT_SCRIPT_BOARD%.cmd*}
-		# For mainline u-boot to load autoscript
-		cp $pkgdir/boot/${BOOT_SCRIPT_BOARD%.cmd*} $pkgdir/boot/boot.scr
-		$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$VENDOR autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_VENDOR $pkgdir/boot/${BOOT_SCRIPT_VENDOR%.txt}
-		cd $pkgdir/boot
-		zip ${BOOT_SCRIPT_VENDOR%.txt}.zip ${BOOT_SCRIPT_VENDOR%.txt} ${BOOT_SCRIPT_VENDOR}
-		cd -
+		if [ -f $BOOT_SCRIPTS/$BOOT_SCRIPT_BOARD ]; then
+			cp $BOOT_SCRIPTS/$BOOT_SCRIPT_BOARD $pkgdir/boot
+			$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$CHIP autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_BOARD $pkgdir/boot/${BOOT_SCRIPT_BOARD%.cmd*}
+			# For mainline u-boot to load autoscript
+			cp $pkgdir/boot/${BOOT_SCRIPT_BOARD%.cmd*} $pkgdir/boot/boot.scr
+		fi
+		if [ -f $BOOT_SCRIPTS/$BOOT_SCRIPT_VENDOR ]; then
+			cp $BOOT_SCRIPTS/$BOOT_SCRIPT_VENDOR $pkgdir/boot
+			$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$VENDOR autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_VENDOR $pkgdir/boot/${BOOT_SCRIPT_VENDOR%.txt}
+			cd $pkgdir/boot
+			zip ${BOOT_SCRIPT_VENDOR%.txt}.zip ${BOOT_SCRIPT_VENDOR%.txt} ${BOOT_SCRIPT_VENDOR}
+			cd -
+		fi
 	fi
 
 	# Copy boot.ini
@@ -306,6 +311,9 @@ build_board_deb() {
 		if [ -f $BOOT_ENV/$BOOT_ENV_FILE_EXT ]; then
 			cat $BOOT_ENV/$BOOT_ENV_FILE_EXT >> $pkgdir/boot/env.txt
 		fi
+	fi
+	if [ -f $BOOT_ENV/$BOOT_ENV_FILE_NEW ]; then
+		cp $BOOT_ENV/$BOOT_ENV_FILE_NEW $pkgdir/boot/uEnv.txt
 	fi
 
 	# Copy boot script for Rockchip platform

@@ -1,0 +1,7 @@
+#############################DO NOT TOUCH THIS OPTION#############################
+rootdev=root=PLACEHOLDER
+#############################DO NOT TOUCH THIS OPTION#############################
+## Add user args here, spilt with space.
+## e.g. Add bootargs 'test1=111 test2=222'
+## boot_user_args=test1=111 test2=222
+boot_user_args=
