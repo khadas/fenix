@@ -164,7 +164,9 @@ build_board_deb() {
 		khadas_board="\${tmp##*khadas_board=}"
 		khadas_board="\${khadas_board%% *}"
 
-		sed -i "s/INSTALL_TYPE=.*/INSTALL_TYPE=\$imagetype/" /etc/fenix-release
+		if grep -q INSTALL_TYPE /etc/fenix-release; then
+			sed -i "s/INSTALL_TYPE=.*/INSTALL_TYPE=\$imagetype/" /etc/fenix-release
+		fi
 		sed -i "s/BOARD=.*/BOARD=\$khadas_board/" /etc/fenix-release
 		linux_ver=\`uname -r\`
 		if linux-version compare \$linux_ver ge 5.10; then
@@ -439,6 +441,10 @@ build_board_deb() {
 	FENIX_GIT_VERSION=`git -C "$ROOT" describe --abbrev=7 --dirty --always --tags 2> /dev/null`
 	#############################################
 	EOF
+
+	if [ "$KHADAS_BOARD" == "VIM4" ]; then
+		sed -i '/INSTALL_TYPE/d' $pkgdir/etc/fenix-release
+	fi
 
 	case $DISTRIB_RELEASE in
 		buster)
