@@ -1,5 +1,6 @@
 #############################DO NOT TOUCH THIS OPTION#############################
 rootdev=root=PLACEHOLDER
+partitiontype=partition_type=PLACEHOLDER
 #############################DO NOT TOUCH THIS OPTION#############################
 ## Add user args here, spilt with space.
 ## e.g. Add bootargs 'test1=111 test2=222'

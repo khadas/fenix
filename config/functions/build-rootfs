@@ -535,6 +535,11 @@ prepare_partitions()
 
 	if [[ -f $ROOTFS_TEMP/boot/uEnv.txt ]]; then
 		sed -i s/rootdev=root=.*/rootdev=root=$rootfs_uuid/g $ROOTFS/boot/uEnv.txt
+		if [ "$INSTALL_TYPE" == "SD-USB" ]; then
+			sed -i s/partition_type=.*/partition_type=generic/g $ROOTFS/boot/uEnv.txt
+		else
+			sed -i s/partition_type=.*/partition_type=vendor/g $ROOTFS/boot/uEnv.txt
+		fi
 	fi
 
 	# create /etc/fstab
