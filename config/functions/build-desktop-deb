@@ -107,7 +107,7 @@ build_desktop_deb() {
 	if which gnome-session > /dev/null; then
 		if [ "$DISTRIB_RELEASE" != "jammy" ]; then
 			if which gdm3 > /dev/null; then
-				if [ -f /boot/.next ] || linux-version compare \`uname -r\` ge 5.0; then
+				if [ -f /boot/.next ]; then
 					DM=gdm3
 				else
 					DM=lightdm
