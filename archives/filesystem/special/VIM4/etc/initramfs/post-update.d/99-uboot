@@ -1,5 +1,5 @@
 #!/bin/sh
 
 initrdtemp="/boot/initrd.img-$1"
-ln -sf $(basename $initrdtemp) /boot/initrd.img > /dev/null 2>&1 || mv $initrdtemp /boot/initrd.img
+ln -sf $(basename $initrdtemp) /boot/initrd.img > /dev/null 2>&1 || cp $initrdtemp /boot/initrd.img
 exit 0
