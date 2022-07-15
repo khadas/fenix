@@ -427,8 +427,10 @@ prepare_partitions()
 
 	if [[ $(lsb_release -sc) =~ bionic|focal|jammy ]]; then
 		EXT4_MKOPTS="-q -F -L ROOTFS -m 2 -O ^64bit,^metadata_csum"
+		BOOT_EXT4_MKOPTS="-q -F -L BOOT -m 2 -O ^64bit,^metadata_csum"
 	elif [[ $(lsb_release -sc) == "xenial" ]]; then
 		EXT4_MKOPTS="-q -F -L ROOTFS -m 2"
+		BOOT_EXT4_MKOPTS="-q -F -L BOOT -m 2"
 	fi
 
 	# calculate rootfs size
@@ -498,17 +500,22 @@ prepare_partitions()
 
 		check_loop_device "$IMAGE_LOOP_DEV"
 
-		mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
+		if [ "$BOOTFS_TYPE" == "vfat" ]; then
+			mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
+		elif [ "$BOOTFS_TYPE" == "ext4" ]; then
+			mkfs.ext4 $BOOT_EXT4_MKOPTS "${IMAGE_LOOP_DEV_BOOT}"
+		fi
 		mkfs.ext4 $EXT4_MKOPTS "${IMAGE_LOOP_DEV_ROOTFS}"
 		rm -rf $ROOTFS && mkdir -p $ROOTFS
 		mount "${IMAGE_LOOP_DEV_ROOTFS}" $ROOTFS
 		mkdir -p $ROOTFS/boot
-		mount "${IMAGE_LOOP_DEV_BOOT}" $ROOTFS/boot
+		mount -t $BOOTFS_TYPE "${IMAGE_LOOP_DEV_BOOT}" $ROOTFS/boot
 		local rootfs_uuid="UUID=$(blkid -s UUID -o value $IMAGE_LOOP_DEV_ROOTFS)"
 		local bootfs_uuid="UUID=$(blkid -s UUID -o value $IMAGE_LOOP_DEV_BOOT)"
 	fi
 
 	rm -rf $ROOTFS/lost+found
+	rm -rf $ROOTFS/boot/lost+found
 
 	info_msg "Copying files to root directory..."
 
@@ -533,12 +540,25 @@ prepare_partitions()
 		sed -i s/rootdev=.*/rootdev=$rootfs_uuid/g $ROOTFS/boot/env.txt
 	fi
 
+	if [[ -f $ROOTFS_TEMP/boot/uEnv.txt ]]; then
+		sed -i s/rootdev=root=.*/rootdev=root=$rootfs_uuid/g $ROOTFS/boot/uEnv.txt
+		if [ "$INSTALL_TYPE" == "SD-USB" ]; then
+			sed -i s/partition_type=.*/partition_type=generic/g $ROOTFS/boot/uEnv.txt
+		else
+			sed -i s/partition_type=.*/partition_type=vendor/g $ROOTFS/boot/uEnv.txt
+		fi
+	fi
+
 	# create /etc/fstab
 	echo "# <file system>                              <mount point>   <type>  <options>                                                             <dump>  <pass>" > $ROOTFS/etc/fstab
 	echo "tmpfs                                          /tmp            tmpfs   defaults,nosuid                                                          0   0" >> $ROOTFS/etc/fstab
 	echo "$rootfs_uuid      /               ext4    defaults,noatime,nodiratime,commit=600,errors=remount-ro,x-gvfs-hide     0   1" >> $ROOTFS/etc/fstab
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		echo "$bootfs_uuid                                 /boot           vfat    defaults                                                                 0   2" >> $ROOTFS/etc/fstab
+		if [ "$BOOTFS_TYPE" == "vfat" ]; then
+			echo "$bootfs_uuid                                 /boot           vfat    defaults                                                                 0   2" >> $ROOTFS/etc/fstab
+		else
+			echo "$bootfs_uuid      /boot               ext4    defaults,noatime,nodiratime,commit=600,errors=remount-ro,x-gvfs-hide     0   1" >> $ROOTFS/etc/fstab
+		fi
 	fi
 
 	[ "$DEBUG" ] && {
