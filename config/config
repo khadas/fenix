@@ -160,7 +160,7 @@ NAMESERVER="1.0.0.1" # default is cloudflare alternate
 
 
 ROOTFS_TYPE="ext4"
-BOOTFS_TYPE="fat"
+BOOTFS_TYPE="vfat"
 
 TZDATA=
 # Timezone for target is taken from host, but not for release images.
