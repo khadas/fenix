@@ -748,6 +748,9 @@ function lunch() {
 	if [[ "$KHADAS_BOARD" =~ VIM[1234] ]]; then
 		export VENDOR="Amlogic"
 		case "$KHADAS_BOARD" in
+			VIM1S)
+				export CHIP="S905Y4"
+				;;
 			VIM1)
 				export CHIP="S905X"
 				;;
