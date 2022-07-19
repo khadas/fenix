@@ -468,25 +468,43 @@ prepare_partitions()
 		IMAGE_SIZE=$((rootfs_image_size + 300)) # SD/USB image szie = BOOT(256MB) + ROOTFS
 		info_msg "Create SD/USB image..."
 		dd if=/dev/zero of=${BUILD_IMAGES}/${IMAGE_FILE_NAME} bs=1M count=0 seek=$IMAGE_SIZE
-		fdisk "${BUILD_IMAGES}/${IMAGE_FILE_NAME}" <<-EOF
-		o
-		n
-		p
-		1
-		32768
-		524287
-		a
-		t
-		b
-		n
-		p
-		2
-		524288
 
-		p
-		w
+		if [ "$GENERIC_IMAGE_PARTITION_TABLE" != "gpt" ]; then
 
-		EOF
+			fdisk "${BUILD_IMAGES}/${IMAGE_FILE_NAME}" <<-EOF
+			o
+			n
+			p
+			1
+			32768
+			524287
+			a
+			t
+			b
+			n
+			p
+			2
+			524288
+
+			p
+			w
+
+			EOF
+		else
+			fdisk "${BUILD_IMAGES}/${IMAGE_FILE_NAME}" <<-EOF
+			g
+			n
+			1
+			32768
+			524287
+			n
+			2
+			524288
+
+			p
+			w
+			EOF
+		fi
 
 		IMAGE_LOOP_DEV="$(losetup --show -f ${BUILD_IMAGES}/${IMAGE_FILE_NAME})"
 		if [[ -z $IMAGE_LOOP_DEV ]]; then
