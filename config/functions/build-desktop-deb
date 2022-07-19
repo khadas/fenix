@@ -45,6 +45,9 @@ build_desktop_deb() {
 	# Set up post remove script
 	cat <<-EOF > $pkgdir/DEBIAN/postrm
 	#!/bin/sh
+
+	rm -rf /etc/environment.d/90fenix.conf
+
 	exit 0
 	EOF
 
@@ -107,7 +110,7 @@ build_desktop_deb() {
 	if which gnome-session > /dev/null; then
 		if [ "$DISTRIB_RELEASE" != "jammy" ]; then
 			if which gdm3 > /dev/null; then
-				if [ -f /boot/.next ] || linux-version compare \`uname -r\` ge 5.0; then
+				if [ -f /boot/.next ]; then
 					DM=gdm3
 				else
 					DM=lightdm
@@ -121,6 +124,13 @@ build_desktop_deb() {
 				DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true dpkg-reconfigure "\${DM}"
 			fi
 		fi
+	fi
+
+	if [ "$DISTRIB_RELEASE" == "jammy" ]; then
+		cat <<-EOT> /etc/environment.d/90fenix.conf
+		SDL_VIDEODRIVER=wayland
+		QT_QPA_PLATFORM=wayland
+		EOT
 	fi
 
 	exit 0

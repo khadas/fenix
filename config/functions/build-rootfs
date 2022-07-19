@@ -427,8 +427,10 @@ prepare_partitions()
 
 	if [[ $(lsb_release -sc) =~ bionic|focal|jammy ]]; then
 		EXT4_MKOPTS="-q -F -L ROOTFS -m 2 -O ^64bit,^metadata_csum"
+		BOOT_EXT4_MKOPTS="-q -F -L BOOT -m 2 -O ^64bit,^metadata_csum"
 	elif [[ $(lsb_release -sc) == "xenial" ]]; then
 		EXT4_MKOPTS="-q -F -L ROOTFS -m 2"
+		BOOT_EXT4_MKOPTS="-q -F -L BOOT -m 2"
 	fi
 
 	# calculate rootfs size
@@ -466,25 +468,43 @@ prepare_partitions()
 		IMAGE_SIZE=$((rootfs_image_size + 300)) # SD/USB image szie = BOOT(256MB) + ROOTFS
 		info_msg "Create SD/USB image..."
 		dd if=/dev/zero of=${BUILD_IMAGES}/${IMAGE_FILE_NAME} bs=1M count=0 seek=$IMAGE_SIZE
-		fdisk "${BUILD_IMAGES}/${IMAGE_FILE_NAME}" <<-EOF
-		o
-		n
-		p
-		1
-		32768
-		524287
-		a
-		t
-		b
-		n
-		p
-		2
-		524288
 
-		p
-		w
+		if [ "$GENERIC_IMAGE_PARTITION_TABLE" != "gpt" ]; then
 
-		EOF
+			fdisk "${BUILD_IMAGES}/${IMAGE_FILE_NAME}" <<-EOF
+			o
+			n
+			p
+			1
+			32768
+			524287
+			a
+			t
+			b
+			n
+			p
+			2
+			524288
+
+			p
+			w
+
+			EOF
+		else
+			fdisk "${BUILD_IMAGES}/${IMAGE_FILE_NAME}" <<-EOF
+			g
+			n
+			1
+			32768
+			524287
+			n
+			2
+			524288
+
+			p
+			w
+			EOF
+		fi
 
 		IMAGE_LOOP_DEV="$(losetup --show -f ${BUILD_IMAGES}/${IMAGE_FILE_NAME})"
 		if [[ -z $IMAGE_LOOP_DEV ]]; then
@@ -498,17 +518,22 @@ prepare_partitions()
 
 		check_loop_device "$IMAGE_LOOP_DEV"
 
-		mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
+		if [ "$BOOTFS_TYPE" == "vfat" ]; then
+			mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
+		elif [ "$BOOTFS_TYPE" == "ext4" ]; then
+			mkfs.ext4 $BOOT_EXT4_MKOPTS "${IMAGE_LOOP_DEV_BOOT}"
+		fi
 		mkfs.ext4 $EXT4_MKOPTS "${IMAGE_LOOP_DEV_ROOTFS}"
 		rm -rf $ROOTFS && mkdir -p $ROOTFS
 		mount "${IMAGE_LOOP_DEV_ROOTFS}" $ROOTFS
 		mkdir -p $ROOTFS/boot
-		mount "${IMAGE_LOOP_DEV_BOOT}" $ROOTFS/boot
+		mount -t $BOOTFS_TYPE "${IMAGE_LOOP_DEV_BOOT}" $ROOTFS/boot
 		local rootfs_uuid="UUID=$(blkid -s UUID -o value $IMAGE_LOOP_DEV_ROOTFS)"
 		local bootfs_uuid="UUID=$(blkid -s UUID -o value $IMAGE_LOOP_DEV_BOOT)"
 	fi
 
 	rm -rf $ROOTFS/lost+found
+	rm -rf $ROOTFS/boot/lost+found
 
 	info_msg "Copying files to root directory..."
 
@@ -533,12 +558,25 @@ prepare_partitions()
 		sed -i s/rootdev=.*/rootdev=$rootfs_uuid/g $ROOTFS/boot/env.txt
 	fi
 
+	if [[ -f $ROOTFS_TEMP/boot/uEnv.txt ]]; then
+		sed -i s/rootdev=root=.*/rootdev=root=$rootfs_uuid/g $ROOTFS/boot/uEnv.txt
+		if [ "$INSTALL_TYPE" == "SD-USB" ]; then
+			sed -i s/partition_type=.*/partition_type=generic/g $ROOTFS/boot/uEnv.txt
+		else
+			sed -i s/partition_type=.*/partition_type=vendor/g $ROOTFS/boot/uEnv.txt
+		fi
+	fi
+
 	# create /etc/fstab
 	echo "# <file system>                              <mount point>   <type>  <options>                                                             <dump>  <pass>" > $ROOTFS/etc/fstab
 	echo "tmpfs                                          /tmp            tmpfs   defaults,nosuid                                                          0   0" >> $ROOTFS/etc/fstab
 	echo "$rootfs_uuid      /               ext4    defaults,noatime,nodiratime,commit=600,errors=remount-ro,x-gvfs-hide     0   1" >> $ROOTFS/etc/fstab
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		echo "$bootfs_uuid                                 /boot           vfat    defaults                                                                 0   2" >> $ROOTFS/etc/fstab
+		if [ "$BOOTFS_TYPE" == "vfat" ]; then
+			echo "$bootfs_uuid                                 /boot           vfat    defaults                                                                 0   2" >> $ROOTFS/etc/fstab
+		else
+			echo "$bootfs_uuid      /boot               ext4    defaults,noatime,nodiratime,commit=600,errors=remount-ro,x-gvfs-hide     0   1" >> $ROOTFS/etc/fstab
+		fi
 	fi
 
 	[ "$DEBUG" ] && {

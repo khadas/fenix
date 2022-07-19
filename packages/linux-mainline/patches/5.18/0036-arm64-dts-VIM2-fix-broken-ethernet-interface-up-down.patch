@@ -1,0 +1,29 @@
+From 4a5d59c80b9feea48acbfc8252b961bf5f156bc3 Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Tue, 23 Mar 2021 15:11:45 +0800
+Subject: [PATCH 36/70] arm64: dts: VIM2: fix broken ethernet interface up/down
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+index c5e3b5587135..0dc3e6d48e82 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+@@ -236,7 +236,10 @@ external_phy: ethernet-phy@0 {
+ 
+ 		reset-assert-us = <10000>;
+ 		reset-deassert-us = <80000>;
+-		reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
++		// no need it
++		// broken ifconfig eth0 down && ifconfig eth0 up # never up again with next line
++		// reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
++		max-speed = <1000>;
+ 
+ 		interrupt-parent = <&gpio_intc>;
+ 		/* MAC_INTR on GPIOZ_15 */
+-- 
+2.25.1
+
