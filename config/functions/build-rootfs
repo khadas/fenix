@@ -491,19 +491,10 @@ prepare_partitions()
 
 			EOF
 		else
-			fdisk "${BUILD_IMAGES}/${IMAGE_FILE_NAME}" <<-EOF
-			g
-			n
-			1
-			32768
-			524287
-			n
-			2
-			524288
-
-			p
-			w
-			EOF
+			parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} mklabel gpt
+			parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} unit s mkpart boot 32768 524287
+			parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} unit s mkpart rootfs 524288 "100%"
+			parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} set 1 boot on
 		fi
 
 		IMAGE_LOOP_DEV="$(losetup --show -f ${BUILD_IMAGES}/${IMAGE_FILE_NAME})"
