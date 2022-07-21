@@ -352,7 +352,12 @@ create_rootfs_cache()
 
 	# stage: install key
 	cp $CONFIG/fenix.key $ROOTFS_TEMP
-	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "cat fenix.key | apt-key add -"'
+	APT_VERSION=$(LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "apt --version | cut -d\" \" -f2")
+	if linux-version compare "${APT_VERSION}" ge 2.4.1; then
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "cat fenix.key | gpg --dearmor -o /etc/apt/trusted.gpg.d/fenix.gpg"'
+	else
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "cat fenix.key | apt-key add -"'
+	fi
 	rm $ROOTFS_TEMP/fenix.key
 
 	# add armhf arhitecture to arm64
