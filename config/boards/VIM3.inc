@@ -66,13 +66,7 @@ build_deb_packages_platform() {
 		rm -rf $BUILD/.stamps/npu_aml
 		build_package "npu_aml:target"
 
-		info_msg "Building tengine_libs_deb packages..."
-		# FIXME
-		# remove build stamp to force build for other arch
-		rm -rf $BUILD/.stamps/tengine_libs_deb
-		build_package "tengine_libs_deb:target"
-
-		if [ "$LINUX" == "4.9" ]; then
+		if [ "$LINUX" == "4.9" ] && [ "$DISTRIB_RELEASE" != "jammy" ]; then
 
 			info_msg "Building Kodi packages..."
 			# FIXME
@@ -157,10 +151,7 @@ install_deb_packages_platform() {
 		info_msg "Installing npu_aml packages..."
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/npu_aml/*.deb
 
-		info_msg "Installing tengine_libs_deb packages..."
-		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/tengine_libs_deb/*.deb
-
-		if [ "$LINUX" == "4.9" ]; then
+		if [ "$LINUX" == "4.9" ] && [ "$DISTRIB_RELEASE" != "jammy" ] ; then
 			# Install Kodi in chroot
 			info_msg "Installing Kodi packages..."
 			if [ $DISTRIB_RELEASE == "bionic" ]; then

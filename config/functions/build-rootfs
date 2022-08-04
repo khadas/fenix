@@ -352,7 +352,12 @@ create_rootfs_cache()
 
 	# stage: install key
 	cp $CONFIG/fenix.key $ROOTFS_TEMP
-	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "cat fenix.key | apt-key add -"'
+	APT_VERSION=$(LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "apt --version | cut -d\" \" -f2")
+	if linux-version compare "${APT_VERSION}" ge 2.4.1; then
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "cat fenix.key | gpg --dearmor -o /etc/apt/trusted.gpg.d/fenix.gpg"'
+	else
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "cat fenix.key | apt-key add -"'
+	fi
 	rm $ROOTFS_TEMP/fenix.key
 
 	# add armhf arhitecture to arm64
@@ -468,25 +473,34 @@ prepare_partitions()
 		IMAGE_SIZE=$((rootfs_image_size + 300)) # SD/USB image szie = BOOT(256MB) + ROOTFS
 		info_msg "Create SD/USB image..."
 		dd if=/dev/zero of=${BUILD_IMAGES}/${IMAGE_FILE_NAME} bs=1M count=0 seek=$IMAGE_SIZE
-		fdisk "${BUILD_IMAGES}/${IMAGE_FILE_NAME}" <<-EOF
-		o
-		n
-		p
-		1
-		32768
-		524287
-		a
-		t
-		b
-		n
-		p
-		2
-		524288
 
-		p
-		w
+		if [ "$GENERIC_IMAGE_PARTITION_TABLE" != "gpt" ]; then
 
-		EOF
+			fdisk "${BUILD_IMAGES}/${IMAGE_FILE_NAME}" <<-EOF
+			o
+			n
+			p
+			1
+			32768
+			524287
+			a
+			t
+			b
+			n
+			p
+			2
+			524288
+
+			p
+			w
+
+			EOF
+		else
+			parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} mklabel gpt
+			parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} unit s mkpart boot 32768 524287
+			parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} unit s mkpart rootfs 524288 "100%"
+			parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} set 1 boot on
+		fi
 
 		IMAGE_LOOP_DEV="$(losetup --show -f ${BUILD_IMAGES}/${IMAGE_FILE_NAME})"
 		if [[ -z $IMAGE_LOOP_DEV ]]; then
