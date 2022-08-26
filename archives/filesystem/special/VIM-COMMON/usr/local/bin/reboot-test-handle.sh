@@ -17,4 +17,4 @@ done
 echo "Rebooting ..." > /dev/tty1
 
 sync
-reboot -f reboot_test
+reboot reboot_test

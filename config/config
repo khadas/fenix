@@ -94,7 +94,7 @@ GITHUB_URL="https://github.com"
 FENIX_BRANCH="master"
 [[ "$CLONE_FULL_COMMIT_LOG" == "no" ]] && GIT_CLONE_OPTIONS="--depth=1"
 
-ROOTFSCACHE_VERSION=7
+ROOTFSCACHE_VERSION=8
 DATE=$(date +%F | sed 's/-//g')
 IMAGE_VERSION="${VERSION}-${DATE:2}"
 [[ "$BUILD_TYPE" != "release" ]] && SUFFIX=-develop
