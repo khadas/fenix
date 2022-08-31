@@ -387,9 +387,6 @@ build_board_deb() {
 	cp $ROOT/archives/logo/bmp/* $pkgdir/usr/share/fenix/logo
 	# Install png logo
 	cp $ROOT/archives/logo/png/*.png $pkgdir/usr/share/fenix/logo
-	# Install logo to boot
-	mkdir -p $pkgdir/boot
-	cp $ROOT/archives/logo/bmp/* $pkgdir/boot
 
 	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$DISTRIB_RELEASE" == "bionic" ]; then
 		# Blacklist lima.ko
