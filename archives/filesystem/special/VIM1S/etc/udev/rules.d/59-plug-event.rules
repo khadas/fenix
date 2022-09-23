@@ -1,0 +1,1 @@
+SUBSYSTEM=="amhdmitx",ACTION=="change",ENV{hdmitx_hpd}=="1",RUN+="/usr/local/bin/hot_plug_event.sh"
