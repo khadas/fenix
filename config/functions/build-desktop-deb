@@ -28,6 +28,7 @@ build_desktop_deb() {
 	Installed-Size: 1
 	Section: xorg
 	Priority: optional
+	Replaces: pulseaudio
 	Recommends: ${desktop_deb_dependencies}
 	Provides: fenix-desktop-package
 	Description: Fenix desktop for ${DISTRIBUTION}-${DISTRIB_RELEASE} on $KHADAS_BOARD
@@ -211,6 +212,12 @@ build_desktop_deb() {
 				sed -i 's/exa/glamor/g' $pkgdir/etc/X11/xorg.conf.d/${MODESETTING_CONF}
 			fi
 		fi
+	fi
+
+	# Install pulseaudio configurations
+	if [ -f $ROOT/archives/filesystem/blobs/desktop/pulseaudio/default.pa.${DISTRIB_RELEASE,,}.${KHADAS_BOARD,,}.${LINUX} ]; then
+		mkdir -p $pkgdir/etc/pulse
+		cp $ROOT/archives/filesystem/blobs/desktop/pulseaudio/default.pa.${DISTRIB_RELEASE,,}.${KHADAS_BOARD,,}.${LINUX} $pkgdir/etc/pulse/default.pa
 	fi
 
 	# Add dependencies file

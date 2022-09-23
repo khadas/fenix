@@ -1,0 +1,1 @@
+KERNEL=="mpp*", MODE="0666", GROUP="video"

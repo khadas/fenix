@@ -1,0 +1,12 @@
+[Unit]
+Description=Rockchip isp server daemon
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/rockchip-isp.sh start
+ExecStop=/usr/bin/rockchip-isp.sh stop
+TimeoutStartSec=0
+#Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
