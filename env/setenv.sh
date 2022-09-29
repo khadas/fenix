@@ -770,7 +770,7 @@ function lunch() {
 	elif [[ "$KHADAS_BOARD" =~ Edge[12] ]]; then
 		export VENDOR="Rockchip"
 		case "$KHADAS_BOARD" in
-			Edge)
+			Edge1)
 				export CHIP="RK3399"
 				;;
 			Edge2)
