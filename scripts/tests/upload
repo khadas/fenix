@@ -47,19 +47,19 @@ if [ "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ]; then
 		T=
 		RAW=
 		    case $IMAGE_FILE_NAME in
-			vim1*) B=VIM1 ;;
-			vim2*) B=VIM2 ;;
-			vim3l*)B=VIM3L;;
-			vim3*) B=VIM3 ;;
-			edge*) B=Edge ;;
+			vim1*) B=vim1 ;;
+			vim2*) B=vim2 ;;
+			vim3l*)B=vim3l;;
+			vim3*) B=vim3 ;;
+			edge1*) B=edge1 ;;
 		    esac
 		    case $IMAGE_FILE_NAME in
-			*ubuntu*) D=Ubuntu ;;
-			*debian*) D=Debian ;; # maybe ;-)
+			*ubuntu*) D=ubuntu ;;
+			*debian*) D=debian ;; # maybe ;-)
 		    esac
-		    T=SD_USB
+		    T=generic
 			case $IMAGE_FILE_NAME in
-			*emmc*)   T=EMMC ;;
+			*emmc*)   T=emmc ;;
 		    esac
 			RAW=1
 			if echo $IMAGE_FILE_NAME | grep emmc; then
@@ -69,12 +69,12 @@ if [ "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ]; then
 			fi
 
 		[ "$B" -a "$D" -a "$T" ] && \
-			BDT=$B/$D/$T
+			BDT=$B/firmware/$D/$T
 
 		[ "$BUILD_TYPE" = "release" ] && {
 
 		    [ "$BDT" ] && \
-		    UPLOAD_REL=/storage/Firmware/$BDT
+		    UPLOAD_REL=/storage/products/$BDT
 
 		    echo "%%UPLOAD-REL: $f_ => $UPLOAD_REL"
 
