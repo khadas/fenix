@@ -85,7 +85,7 @@ if [ "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ]; then
 
 		    [ "$BDT" -a "$RAW" ] && {
 			TO="/storage/Firmware/Krescue/images/$f_"
-			$SUDO_ ln -sf "../../$BDT/$f_" "$TO"
+			$SUDO_ ln -sf "$UPLOAD_REL/$f_" "$TO"
 			echo "%%UPLOAD_LINK_KRESCUE: $TO"
 		    }
 		} # release upload END
@@ -95,7 +95,7 @@ if [ "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ]; then
 		[ "$BDT" ] && {
 		    TO="$UPLOAD_/$BDT/$f_"
 		    $SUDO_ mkdir -p "$UPLOAD_/$BDT"
-		    $SUDO_ ln -sf "../../../$f_" "$TO"
+		    $SUDO_ ln -sf "$UPLOAD_REL/$f_" "$TO"
 		    echo "%%UPLOAD_LINK: $TO"
 		}
 
