@@ -51,7 +51,10 @@ if [ "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ]; then
 			vim2*) B=vim2 ;;
 			vim3l*)B=vim3l;;
 			vim3*) B=vim3 ;;
+			vim4*) B=vim4 ;;
+			vim1s*) B=vim1s ;;
 			edge1*) B=edge1 ;;
+			edge2*) B=edge2 ;;
 		    esac
 		    case $IMAGE_FILE_NAME in
 			*ubuntu*) D=ubuntu ;;
