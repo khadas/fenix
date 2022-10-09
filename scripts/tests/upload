@@ -47,14 +47,14 @@ if [ "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ]; then
 		T=
 		RAW=
 		    case $IMAGE_FILE_NAME in
-			vim1*) B=vim1 ;;
-			vim2*) B=vim2 ;;
-			vim3l*)B=vim3l;;
-			vim3*) B=vim3 ;;
-			vim4*) B=vim4 ;;
-			vim1s*) B=vim1s ;;
-			edge1*) B=edge1 ;;
-			edge2*) B=edge2 ;;
+			vim1-*) B=vim1 ;;
+			vim2-*) B=vim2 ;;
+			vim3l-*)B=vim3l;;
+			vim3-*) B=vim3 ;;
+			vim4-*) B=vim4 ;;
+			vim1s-*) B=vim1s ;;
+			edge1-*) B=edge1 ;;
+			edge2-*) B=edge2 ;;
 		    esac
 		    case $IMAGE_FILE_NAME in
 			*ubuntu*) D=ubuntu ;;
