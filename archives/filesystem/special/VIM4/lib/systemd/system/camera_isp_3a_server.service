@@ -1,0 +1,11 @@
+[Unit]
+Description=ISP Service
+#Before=ipc-property.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/iv009_isp -n 2
+
+[Install]
+WantedBy=multi-user.target

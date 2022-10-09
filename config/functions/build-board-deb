@@ -149,6 +149,10 @@ build_board_deb() {
 		fi
 	fi
 
+	if [ "\$BOARD" == "VIM4" ]; then
+		systemctl enable camera_isp_3a_server.service
+	fi
+
 	if [ "\$BOARD" == "Edge2" ]; then
 		systemctl enable rockchip-isp.service
 	fi
