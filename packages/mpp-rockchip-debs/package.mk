@@ -1,6 +1,6 @@
 PKG_NAME="mpp-rockchip-debs"
-PKG_VERSION="77565ada034de8babfac06677eb1dff0f1ff79e0"
-PKG_SHA256="9033f87bc15f2dd43cba3a1ec053aa1af9ddbcc92ba60c758d9532103541907a"
+PKG_VERSION="6cdeb6f2f03ef15f1216352cc1d5581cf9e11d04"
+PKG_SHA256="b14475949b187f4f9077a8c88c75b636c42aecf07bff2d1593c283ff0bd3ecdc"
 PKG_SOURCE_DIR="mpp-rockchip-debs-${PKG_VERSION}*"
 PKG_SITE="$GITHUB_URL/numbqq/mpp-rockchip-debs"
 PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
