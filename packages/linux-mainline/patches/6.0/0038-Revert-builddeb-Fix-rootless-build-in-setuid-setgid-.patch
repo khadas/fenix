@@ -1,0 +1,27 @@
+From 4e3a6d15394c7d5f5d81c29b0639d3d0839ba522 Mon Sep 17 00:00:00 2001
+From: Nick Xie <nick@khadas.com>
+Date: Mon, 12 Apr 2021 10:49:33 +0800
+Subject: [PATCH 38/70] Revert "builddeb: Fix rootless build in setuid/setgid
+ directory"
+
+This reverts commit d1889589a4f54b2d1d7075d608b596d6fcfd3d96.
+---
+ scripts/package/builddeb | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/scripts/package/builddeb b/scripts/package/builddeb
+index 67cd420dcf89..69fdd07a95a6 100755
+--- a/scripts/package/builddeb
++++ b/scripts/package/builddeb
+@@ -45,8 +45,6 @@ create_package() {
+ 	chmod -R go-w "$pdir"
+ 	# in case we are in a restrictive umask environment like 0077
+ 	chmod -R a+rX "$pdir"
+-	# in case we build in a setuid/setgid directory
+-	chmod -R ug-s "$pdir"
+ 
+ 	# Create the package
+ 	dpkg-gencontrol -p$pname -P"$pdir"
+-- 
+2.34.1
+

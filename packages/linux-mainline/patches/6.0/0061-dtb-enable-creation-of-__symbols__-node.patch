@@ -1,0 +1,26 @@
+From 4cb78c2e82342667f8af4f422d3134a66c9973e1 Mon Sep 17 00:00:00 2001
+From: Yan <yan-wyb@foxmail.com>
+Date: Mon, 22 Nov 2021 10:05:21 +0800
+Subject: [PATCH 61/70] dtb enable creation of __symbols__ node
+
+Signed-off-by: Yan <yan-wyb@foxmail.com>
+---
+ scripts/Makefile.lib | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 3fb6a99e78c4..cb49791bda8d 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -328,6 +328,8 @@ DTC_FLAGS += -Wnode_name_chars_strict \
+ 	-Winterrupt_provider
+ endif
+ 
++# enable creation of __symbols__ node
++DTC_FLAGS += -@
+ DTC_FLAGS += $(DTC_FLAGS_$(basetarget))
+ 
+ # Set -@ if the target is a base DTB that overlay is applied onto
+-- 
+2.34.1
+
