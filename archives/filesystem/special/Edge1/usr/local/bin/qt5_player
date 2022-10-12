@@ -1,0 +1,10 @@
+#!/bin/sh
+
+export DISPLAY=:0.0
+#export GST_DEBUG=*:5
+#export GST_DEBUG_FILE=/tmp/2.txt
+
+#Gstreamer Display: kmssink(qt eglfs),rkximagesink(x11), waylandsink(wayland)
+
+export QT_GSTREAMER_WIDGET_VIDEOSINK=rkximagesink
+DISPLAY=:0.0 /usr/lib/aarch64-linux-gnu/qt5/examples/multimediawidgets/player/player

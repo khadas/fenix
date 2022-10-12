@@ -370,6 +370,7 @@ prepare_packages() {
 
 	if [ "$VENDOR" == "Rockchip" ]; then
 		build_package "rkbin:host"
+		build_package "rkbin_edge1:host"
 	fi
 }
 

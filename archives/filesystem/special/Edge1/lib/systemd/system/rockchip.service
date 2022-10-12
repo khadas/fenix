@@ -1,0 +1,14 @@
+#start
+[Unit]
+Description=Setup rockchip platform environment
+Before=lightdm.service
+After=resize-helper.service
+
+[Service]
+Type=simple
+ExecStart=/etc/init.d/rockchip.sh
+
+[Install]
+WantedBy=multi-user.target
+#end
+

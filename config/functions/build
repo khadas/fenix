@@ -148,7 +148,7 @@ build_linux() {
 
 	info_msg "Build linux..."
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
-	make ARCH=arm64 $LINUX_DEFCONFIG
+	make ARCH=arm64 CROSS_COMPILE="${KERNEL_COMPILER}" $LINUX_DEFCONFIG
 	make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE="${CCACHE} ${KERNEL_COMPILER}" Image dtbs  modules $EXTRA_MAKE_ARGS
 }
 
@@ -350,7 +350,7 @@ config_linux() {
 	if [ "$LINUX" == "mainline" ]; then
 		cp $PKGS_DIR/linux-mainline/configs/${KHADAS_BOARD}.config "$LINUX_DIR"/.config
 	else
-		make ARCH=arm64 $LINUX_DEFCONFIG -C"$LINUX_DIR"
+		make ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} $LINUX_DEFCONFIG -C"$LINUX_DIR"
 	fi
 
 	make ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} menuconfig -C"$LINUX_DIR"
