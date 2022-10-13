@@ -126,7 +126,7 @@ build_deb_packages_platform() {
 		fi
 	fi
 
-	if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" != "bionic" ] && [ "$DISTRIB_TYPE" != "server" ]; then
+	if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" != "bionic" ] && [ "$DISTRIB_RELEASE" != "jammy" ] && [ "$DISTRIB_TYPE" != "server" ]; then
 		info_msg "Building mesa..."
 		# FIXME
 		# remove build stamp to force build for other arch
@@ -202,7 +202,7 @@ install_deb_packages_platform() {
 		fi
 	fi
 
-	if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_TYPE" != "server" ]; then
+	if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" != "jammy" ] && [ "$DISTRIB_TYPE" != "server" ]; then
 		# Install mesa in chroot
 		info_msg "Installing mesa..."
 

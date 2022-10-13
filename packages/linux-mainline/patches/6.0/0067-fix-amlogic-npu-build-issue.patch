@@ -1,0 +1,29 @@
+From c12858fa2a93c21257ae1c523ab51fcbc857c66b Mon Sep 17 00:00:00 2001
+From: Zhang Ning <1408979+zhangn1985@user.noreply.gitee.com>
+Date: Sun, 1 May 2022 10:13:40 +0800
+Subject: [PATCH 67/70] fix amlogic npu build issue
+
+when build kernel out of source tree, the include dir is incorrect.
+this makes build fail.
+
+add $(VPATH) to npu Kbuild AQROOT to fix the issue
+---
+ drivers/staging/npu/Kbuild | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/npu/Kbuild b/drivers/staging/npu/Kbuild
+index 87d451c0c89b..116efa4c29aa 100755
+--- a/drivers/staging/npu/Kbuild
++++ b/drivers/staging/npu/Kbuild
+@@ -57,7 +57,7 @@
+ # Linux build file for kernel HAL driver.
+ #
+ 
+-AQROOT = drivers/staging/npu
++AQROOT = $(VPATH)/drivers/staging/npu
+ 
+ include $(AQROOT)/config
+ 
+-- 
+2.34.1
+
