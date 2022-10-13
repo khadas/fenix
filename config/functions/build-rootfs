@@ -265,20 +265,20 @@ create_rootfs_cache()
 
 	# stage: debootstrap base system
 
-	APT_PROXY_ADDR=${APT_PROXY_ADDR#*://} # strip http:// prefix
-	case $APT_PROXY_ADDR in
-	    ""|auto) # scan apt proxys
-	    echo "[i] APT_PROXY: scanning ..."
-	    for APT_PROXY_ADDR in _gateway:3142 localhost:3142 ""; do
-		[ "$APT_PROXY_ADDR" ] && \
-		curl -s -I -m1 $APT_PROXY_ADDR | grep -m1 -q 406 && break
-	    done
-	    ;;
-	esac
-
-	echo "[i] APT_PROXY: $APT_PROXY_ADDR"
-
 	if [[ $NO_APT_CACHER != yes ]]; then
+		APT_PROXY_ADDR=${APT_PROXY_ADDR#*://} # strip http:// prefix
+		case $APT_PROXY_ADDR in
+			""|auto) # scan apt proxys
+				echo "[i] APT_PROXY: scanning ..."
+				for APT_PROXY_ADDR in _gateway:3142 localhost:3142 ""; do
+					[ "$APT_PROXY_ADDR" ] && \
+					curl -s -I -m1 $APT_PROXY_ADDR | grep -m1 -q 406 && break
+				done
+			;;
+		esac
+
+		echo "[i] APT_PROXY: $APT_PROXY_ADDR"
+
 		# apt-cacher-ng apt-get proxy parameter
 		if [ "$APT_PROXY_ADDR" ]; then
 		local apt_extra="-o Acquire::http::Proxy=\"http://$APT_PROXY_ADDR\""
@@ -499,7 +499,7 @@ prepare_partitions()
 			parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} mklabel gpt
 			parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} unit s mkpart boot 32768 524287
 			parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} unit s mkpart rootfs 524288 "100%"
-			parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} set 1 boot on
+			#parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} set 1 boot on
 		fi
 
 		IMAGE_LOOP_DEV="$(losetup --show -f ${BUILD_IMAGES}/${IMAGE_FILE_NAME})"

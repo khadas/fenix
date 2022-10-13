@@ -357,6 +357,7 @@ prepare_toolchains() {
 	build_package "gcc-linaro-arm-none-eabi:host"
 	build_package "gcc-linaro-aarch64-elf:host"
 	build_package "gcc-arm-aarch64-none-linux-gnu:host"
+	build_package "gcc-arm-aarch64-none-linux-gnu-mainline:host"
 	build_package "gcc-riscv-none-embed:host"
 
 	return 0
@@ -370,6 +371,7 @@ prepare_packages() {
 
 	if [ "$VENDOR" == "Rockchip" ]; then
 		build_package "rkbin:host"
+		build_package "rkbin_edge1:host"
 	fi
 }
 

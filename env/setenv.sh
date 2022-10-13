@@ -748,6 +748,9 @@ function lunch() {
 	if [[ "$KHADAS_BOARD" =~ VIM[1234] ]]; then
 		export VENDOR="Amlogic"
 		case "$KHADAS_BOARD" in
+			VIM1S)
+				export CHIP="S905Y4"
+				;;
 			VIM1)
 				export CHIP="S905X"
 				;;
@@ -764,11 +767,14 @@ function lunch() {
 				export CHIP="A311D2"
 				;;
 		esac
-	elif [[ "$KHADAS_BOARD" == "Edge" ]]; then
+	elif [[ "$KHADAS_BOARD" =~ Edge[12] ]]; then
 		export VENDOR="Rockchip"
 		case "$KHADAS_BOARD" in
-			Edge)
+			Edge1)
 				export CHIP="RK3399"
+				;;
+			Edge2)
+				export CHIP="RK3588S"
 				;;
 		esac
 	fi

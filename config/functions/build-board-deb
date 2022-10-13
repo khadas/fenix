@@ -148,6 +148,15 @@ build_board_deb() {
 			fi
 		fi
 	fi
+
+	if [ "\$BOARD" == "VIM4" ]; then
+		systemctl enable camera_isp_3a_server.service
+	fi
+
+	if [ "\$BOARD" == "Edge2" ]; then
+		systemctl enable rockchip-isp.service
+	fi
+
 	# Patches used by hciattach
 	ln -fs /lib/firmware/brcm/BCM43438A1.hcd /lib/firmware/brcm/BCM43430A1.hcd # AP6212
 	ln -fs /lib/firmware/brcm/BCM4356A2.hcd /lib/firmware/brcm/BCM4354A2.hcd # AP6356S
@@ -169,7 +178,7 @@ build_board_deb() {
 		fi
 		sed -i "s/BOARD=.*/BOARD=\$khadas_board/" /etc/fenix-release
 		linux_ver=\`uname -r\`
-		if linux-version compare \$linux_ver ge 5.10; then
+		if linux-version compare \$linux_ver ge 5.12; then
 			IS_MAINLINE_KERNEL="yes"
 		fi
 	fi
@@ -326,8 +335,10 @@ build_board_deb() {
 	# Copy boot script for Rockchip platform
 	if [ "$VENDOR" == "Rockchip" ]; then
 		mkdir -p $pkgdir/boot
-		cp $BOOT_SCRIPTS/$BOOT_SCRIPT_BOARD $pkgdir/boot
-		$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$CHIP autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_BOARD $pkgdir/boot/boot.scr
+		if [ -f $BOOT_SCRIPTS/$BOOT_SCRIPT_BOARD ]; then
+			cp $BOOT_SCRIPTS/$BOOT_SCRIPT_BOARD $pkgdir/boot
+			$UTILS_DIR/mkimage -A arm64 -O linux -T script -C none -a 0 -e 0 -n "$CHIP autoscript" -d $pkgdir/boot/$BOOT_SCRIPT_BOARD $pkgdir/boot/boot.scr
+		fi
 	fi
 
 	# Copy Wi-Fi & BT firmware

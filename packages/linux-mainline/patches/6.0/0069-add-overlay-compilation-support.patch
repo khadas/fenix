@@ -1,0 +1,96 @@
+From d435f8ac25efc50f80fd4e0690af0f54a91d53be Mon Sep 17 00:00:00 2001
+From: Yan Wang <frank@khadas.com>
+Date: Tue, 11 Oct 2022 20:47:18 +0800
+Subject: [PATCH 69/70] add overlay compilation support
+
+Signed-off-by: Yan Wang <frank@khadas.com>
+---
+ scripts/Makefile.dtbinst | 14 +++++++++++++-
+ scripts/Makefile.lib     | 23 +++++++++++++++++++++++
+ 2 files changed, 36 insertions(+), 1 deletion(-)
+
+diff --git a/scripts/Makefile.dtbinst b/scripts/Makefile.dtbinst
+index 190d781e84f4..6540de71182b 100644
+--- a/scripts/Makefile.dtbinst
++++ b/scripts/Makefile.dtbinst
+@@ -18,9 +18,12 @@ include $(srctree)/scripts/Kbuild.include
+ include $(src)/Makefile
+ 
+ dtbs    := $(addprefix $(dst)/, $(dtb-y) $(if $(CONFIG_OF_ALL_DTBS),$(dtb-)))
++dtbos   := $(addprefix $(dst)/, $(dtbo-y))
++scrs    := $(addprefix $(dst)/, $(scr-y))
++readmes := $(addprefix $(dst)/, $(dtbotxt-y))
+ subdirs := $(addprefix $(obj)/, $(subdir-y) $(subdir-m))
+ 
+-__dtbs_install: $(dtbs) $(subdirs)
++__dtbs_install: $(dtbs) $(dtbos) $(scrs) $(readmes) $(subdirs)
+ 	@:
+ 
+ quiet_cmd_dtb_install = INSTALL $@
+@@ -32,6 +35,15 @@ $(dst)/%.dtb: $(obj)/%.dtb
+ $(dst)/%.dtbo: $(obj)/%.dtbo
+ 	$(call cmd,dtb_install)
+ 
++$(dst)/%.dtbo: $(obj)/%.dtbo
++	$(call cmd,dtb_install)
++
++$(dst)/%.scr: $(obj)/%.scr
++	$(call cmd,dtb_install)
++
++$(dst)/README.meson-overlays: $(src)/README.meson-overlays
++	$(call cmd,dtb_install)
++
+ PHONY += $(subdirs)
+ $(subdirs):
+ 	$(Q)$(MAKE) $(dtbinst)=$@ dst=$(patsubst $(obj)/%,$(dst)/%,$@)
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index cb49791bda8d..466640d8780f 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -87,6 +87,9 @@ base-dtb-y := $(foreach m, $(multi-dtb-y), $(firstword $(call suffix-search, $m,
+ 
+ always-y			+= $(dtb-y)
+ 
++# Overlay targets
++extra-y        += $(dtbo-y) $(scr-y) $(dtbotxt-y)
++
+ # Add subdir path
+ 
+ extra-y		:= $(addprefix $(obj)/,$(extra-y))
+@@ -312,6 +315,9 @@ quiet_cmd_gzip = GZIP    $@
+ DTC ?= $(objtree)/scripts/dtc/dtc
+ DTC_FLAGS += -Wno-interrupt_provider
+ 
++# Overlay support
++DTC_FLAGS += -@ -Wno-unit_address_format -Wno-simple_bus_reg
++
+ # Disable noisy checks by default
+ ifeq ($(findstring 1,$(KBUILD_EXTRA_WARN)),)
+ DTC_FLAGS += -Wno-unit_address_vs_reg \
+@@ -385,6 +391,23 @@ endef
+ $(obj)/%.dtb: $(src)/%.dts $(DTC) $(DT_TMP_SCHEMA) FORCE
+ 	$(call if_changed_rule,dtc)
+ 
++quiet_cmd_dtco = DTCO    $@
++cmd_dtco = mkdir -p $(dir ${dtc-tmp}) ; \
++	$(CPP) $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ; \
++	$(DTC) -O dtb -o $@ -b 0 \
++		-i $(dir $<) $(DTC_FLAGS) \
++		-d $(depfile).dtc.tmp $(dtc-tmp) ; \
++	 cat $(depfile).pre.tmp $(depfile).dtc.tmp > $(depfile)
++
++$(obj)/%.dtbo: $(src)/%.dts FORCE
++	$(call if_changed_dep,dtco)
++
++quiet_cmd_scr = MKIMAGE $@
++cmd_scr = mkimage -C none -A $(ARCH) -T script -d $< $@
++
++$(obj)/%.scr: $(src)/%.scr-cmd FORCE
++	$(call if_changed,scr)
++
+ $(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
+ 	$(call if_changed_dep,dtc)
+ 
+-- 
+2.34.1
+

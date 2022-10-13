@@ -1,0 +1,13 @@
+[Unit]
+Description=Panel Setup
+DefaultDependencies=no
+After=plymouth-quit.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/panel_setup.sh
+RemainAfterExit=no
+
+[Install]
+WantedBy=sysinit.target
+

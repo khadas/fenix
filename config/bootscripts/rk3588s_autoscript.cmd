@@ -1,0 +1,1 @@
+rk3399_autoscript.cmd
