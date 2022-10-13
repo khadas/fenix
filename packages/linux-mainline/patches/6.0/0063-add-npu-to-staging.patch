@@ -1,0 +1,22 @@
+From 0aeffbc54ce9f551864c4dd2a86cf47bcdcd12ca Mon Sep 17 00:00:00 2001
+From: Yan Wang <frank@khadas.com>
+Date: Mon, 10 Oct 2022 18:07:04 +0800
+Subject: [PATCH 63/70] add npu to staging
+
+Signed-off-by: Yan Wang <frank@khadas.com>
+---
+ drivers/staging/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/staging/Makefile b/drivers/staging/Makefile
+index 1d9ae39fea14..f7d87c23d707 100644
+--- a/drivers/staging/Makefile
++++ b/drivers/staging/Makefile
+@@ -31,3 +31,4 @@ obj-$(CONFIG_PI433)		+= pi433/
+ obj-$(CONFIG_XIL_AXIS_FIFO)	+= axis-fifo/
+ obj-$(CONFIG_FIELDBUS_DEV)     += fieldbus/
+ obj-$(CONFIG_QLGE)		+= qlge/
++obj-$(CONFIG_ARCH_MESON) += npu/
+-- 
+2.34.1
+
