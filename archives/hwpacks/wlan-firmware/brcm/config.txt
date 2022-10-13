@@ -8,3 +8,4 @@ nv_by_chip=5 \
 17236 2 nvram_ap6356.txt \
 17241 9 nvram_ap6359sa.txt \
 43752 2 nvram_ap6275s.txt
+wl_preinit=pm2_sleep_ret=2000
