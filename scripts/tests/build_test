@@ -423,12 +423,15 @@ TEST_ML)
 ## CHK           - build check for every commit
 
 # VIM1 Release Images
-VIM1-ubuntu-server-bionic-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $VIM1 $BIONIC $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
+#VIM1-ubuntu-server-bionic-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $VIM1 $BIONIC $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
 #VIM1-ubuntu-xfce-bionic-vendor-emmc-REL-CHK)                ( source  $SETENV -d -q -s $VIM1 $BIONIC $XFCE $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
 #VIM1-ubuntu-server-bionic-vendor-sdusb-REL)                 ( source  $SETENV -d -q -s $VIM1 $BIONIC $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM1-ubuntu-xfce-bionic-vendor-sdusb-REL)                   ( source  $SETENV -d -q -s $VIM1 $BIONIC $XFCE $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM1-ubuntu-server-focal-mainline-sdusb-REL-TEST)           ( source  $SETENV -d -q -s $VIM1 $FOCAL $SERVER $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM1-ubuntu-gnome-focal-mainline-sdusb-REL-TEST)            ( source  $SETENV -d -q -s $VIM1 $FOCAL $GNOME $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
+VIM1-ubuntu-server-jammy-mainline-sdusb-REL-TEST)            ( source  $SETENV -d -q -s $VIM1 $JAMMY $SERVER $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
+VIM1-ubuntu-gnome-jammy-mainline-sdusb-REL-TEST)             ( source  $SETENV -d -q -s $VIM1 $JAMMY $GNOME $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
+
 # VIM1 Test Images
 VIM1-ubuntu-minimal-focal-mainline-sdusb)                   ( source  $SETENV -d -q -s $VIM1 $FOCAL $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 
@@ -445,12 +448,15 @@ VIM1-debian-xfce-buster-mainline-sdusb)                     ( source  $SETENV -d
 VIM1-debian-minimal-buster-mainline-sdusb)                  ( source  $SETENV -d -q -s $VIM1 $BUSTER $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 
 # VIM2 Release Images
-VIM2-ubuntu-server-bionic-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $VIM2 $BIONIC $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
+#VIM2-ubuntu-server-bionic-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $VIM2 $BIONIC $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
 #VIM2-ubuntu-xfce-bionic-vendor-emmc-REL-CHK)                ( source  $SETENV -d -q -s $VIM2 $BIONIC $XFCE $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
 #VIM2-ubuntu-server-bionic-vendor-sdusb-REL)                 ( source  $SETENV -d -q -s $VIM2 $BIONIC $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM2-ubuntu-xfce-bionic-vendor-sdusb-REL)                   ( source  $SETENV -d -q -s $VIM2 $BIONIC $XFCE $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM2-ubuntu-server-focal-mainline-sdusb-REL-TEST)           ( source  $SETENV -d -q -s $VIM2 $FOCAL $SERVER $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM2-ubuntu-gnome-focal-mainline-sdusb-REL-TEST)            ( source  $SETENV -d -q -s $VIM2 $FOCAL $GNOME $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
+VIM2-ubuntu-server-jammy-mainline-sdusb-REL-TEST)            ( source  $SETENV -d -q -s $VIM2 $JAMMY $SERVER $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
+VIM2-ubuntu-gnome-jammy-mainline-sdusb-REL-TEST)             ( source  $SETENV -d -q -s $VIM2 $JAMMY $GNOME $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
+
 # VIM2 Test Images
 VIM2-ubuntu-minimal-focal-mainline-sdusb)                   ( source  $SETENV -d -q -s $VIM2 $FOCAL $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 
@@ -467,12 +473,15 @@ VIM2-debian-xfce-buster-mainline-sdusb)                     ( source  $SETENV -d
 VIM2-debian-minimal-buster-mainline-sdusb)                  ( source  $SETENV -d -q -s $VIM2 $BUSTER $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 
 # VIM3 Release Images
-VIM3-ubuntu-server-focal-vendor-emmc-REL-CHK)               ( source  $SETENV -d -q -s $VIM3 $FOCAL $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
+#VIM3-ubuntu-server-focal-vendor-emmc-REL-CHK)               ( source  $SETENV -d -q -s $VIM3 $FOCAL $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
 #VIM3-ubuntu-gnome-focal-vendor-emmc-REL-CHK)                ( source  $SETENV -d -q -s $VIM3 $FOCAL $GNOME $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
 #VIM3-ubuntu-server-focal-vendor-sdusb-REL)                  ( source  $SETENV -d -q -s $VIM3 $FOCAL $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM3-ubuntu-gnome-focal-vendor-sdusb-REL)                   ( source  $SETENV -d -q -s $VIM3 $FOCAL $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM3-ubuntu-server-focal-mainline-sdusb-REL-TEST)           ( source  $SETENV -d -q -s $VIM3 $FOCAL $SERVER $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM3-ubuntu-gnome-focal-mainline-sdusb-REL-TEST)            ( source  $SETENV -d -q -s $VIM3 $FOCAL $GNOME $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3-ubuntu-server-jammy-mainline-sdusb-REL-TEST)            ( source  $SETENV -d -q -s $VIM3 $JAMMY $SERVER $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3-ubuntu-gnome-jammy-mainline-sdusb-REL-TEST)             ( source  $SETENV -d -q -s $VIM3 $JAMMY $GNOME $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
+
 # VIM3 Test Images
 VIM3-ubuntu-minimal-focal-vendor-emmc)                      ( source  $SETENV -d -q -s $VIM3 $FOCAL $MINI $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
 VIM3-ubuntu-minimal-focal-vendor-sdusb)                     ( source  $SETENV -d -q -s $VIM3 $FOCAL $MINI $USB $CMP && make -C "$MAKEDIR") & ;;
@@ -492,12 +501,15 @@ VIM3-debian-xfce-buster-mainline-sdusb)                     ( source  $SETENV -d
 VIM3-debian-minimal-buster-mainline-sdusb)                  ( source  $SETENV -d -q -s $VIM3 $BUSTER $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 
 # VIM3L Release Images
-VIM3L-ubuntu-server-focal-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $VIM3L $FOCAL $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
+#VIM3L-ubuntu-server-focal-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $VIM3L $FOCAL $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
 #VIM3L-ubuntu-gnome-focal-vendor-emmc-REL-CHK)               ( source  $SETENV -d -q -s $VIM3L $FOCAL $GNOME $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
 #VIM3L-ubuntu-server-focal-vendor-sdusb-REL)                 ( source  $SETENV -d -q -s $VIM3L $FOCAL $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM3L-ubuntu-gnome-focal-vendor-sdusb-REL)                  ( source  $SETENV -d -q -s $VIM3L $FOCAL $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM3L-ubuntu-server-focal-mainline-sdusb-REL-TEST)          ( source  $SETENV -d -q -s $VIM3L $FOCAL $SERVER $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM3L-ubuntu-gnome-focal-mainline-sdusb-REL-TEST)           ( source  $SETENV -d -q -s $VIM3L $FOCAL $GNOME $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3L-ubuntu-server-jammy-mainline-sdusb-REL-TEST)           ( source  $SETENV -d -q -s $VIM3L $JAMMY $SERVER $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
+VIM3L-ubuntu-gnome-jammy-mainline-sdusb-REL-TEST)            ( source  $SETENV -d -q -s $VIM3L $JAMMY $GNOME $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
+
 # VIM3L Test Images
 VIM3L-ubuntu-minimal-focal-vendor-emmc)                     ( source  $SETENV -d -q -s $VIM3L $FOCAL $MINI $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
 VIM3L-ubuntu-minimal-focal-vendor-sdusb)                    ( source  $SETENV -d -q -s $VIM3L $FOCAL $MINI $USB $CMP && make -C "$MAKEDIR") & ;;
@@ -517,26 +529,29 @@ VIM3L-debian-xfce-buster-mainline-sdusb)                    ( source  $SETENV -d
 VIM3L-debian-minimal-buster-mainline-sdusb)                 ( source  $SETENV -d -q -s $VIM3L $BUSTER $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 
 # VIM4 Release Images
-VIM4-ubuntu-server-jammy-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $VIM4 $JAMMY $SERVER $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
-VIM4-ubuntu-gnome-jammy-vendor-emmc-REL-CHK)               ( source  $SETENV -d -q -s $VIM4 $JAMMY $GNOME $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
-VIM4-ubuntu-server-jammy-vendor-sdusb-REL)                 ( source  $SETENV -d -q -s $VIM4 $JAMMY $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
-VIM4-ubuntu-gnome-jammy-vendor-sdusb-REL)                  ( source  $SETENV -d -q -s $VIM4 $JAMMY $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
+#VIM4-ubuntu-server-jammy-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $VIM4 $JAMMY $SERVER $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
+#VIM4-ubuntu-gnome-jammy-vendor-emmc-REL-CHK)               ( source  $SETENV -d -q -s $VIM4 $JAMMY $GNOME $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
+#VIM4-ubuntu-server-jammy-vendor-sdusb-REL)                 ( source  $SETENV -d -q -s $VIM4 $JAMMY $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
+#VIM4-ubuntu-gnome-jammy-vendor-sdusb-REL)                  ( source  $SETENV -d -q -s $VIM4 $JAMMY $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
 # VIM4 Test Images
 
 # VIM1S Release Images
-VIM1S-ubuntu-server-jammy-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $VIM1S $JAMMY $SERVER $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
-VIM1S-ubuntu-gnome-jammy-vendor-emmc-REL-CHK)               ( source  $SETENV -d -q -s $VIM1S $JAMMY $GNOME $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
-VIM1S-ubuntu-server-jammy-vendor-sdusb-REL)                 ( source  $SETENV -d -q -s $VIM1S $JAMMY $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
-VIM1S-ubuntu-gnome-jammy-vendor-sdusb-REL)                  ( source  $SETENV -d -q -s $VIM1S $JAMMY $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
+#VIM1S-ubuntu-server-jammy-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $VIM1S $JAMMY $SERVER $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
+#VIM1S-ubuntu-gnome-jammy-vendor-emmc-REL-CHK)               ( source  $SETENV -d -q -s $VIM1S $JAMMY $GNOME $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
+#VIM1S-ubuntu-server-jammy-vendor-sdusb-REL)                 ( source  $SETENV -d -q -s $VIM1S $JAMMY $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
+#VIM1S-ubuntu-gnome-jammy-vendor-sdusb-REL)                  ( source  $SETENV -d -q -s $VIM1S $JAMMY $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
 # VIM1S Test Images
 
 # Edge Release Images
-Edge-ubuntu-server-bionic-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $EDGE $BIONIC $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
+#Edge-ubuntu-server-bionic-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $EDGE $BIONIC $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
 #Edge-ubuntu-lxde-bionic-vendor-emmc-REL-CHK)                ( source  $SETENV -d -q -s $EDGE $BIONIC $LXDE $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
 #Edge-ubuntu-server-bionic-vendor-sdusb-REL)                 ( source  $SETENV -d -q -s $EDGE $BIONIC $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #Edge-ubuntu-lxde-bionic-vendor-sdusb-REL)                   ( source  $SETENV -d -q -s $EDGE $BIONIC $LXDE $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #Edge-ubuntu-server-focal-mainline-sdusb-REL-TEST)           ( source  $SETENV -d -q -s $EDGE $FOCAL $SERVER $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #Edge-ubuntu-gnome-focal-mainline-sdusb-REL-TEST)            ( source  $SETENV -d -q -s $EDGE $FOCAL $GNOME $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
+Edge-ubuntu-server-jammy-mainline-sdusb-REL-TEST)            ( source  $SETENV -d -q -s $EDGE $JAMMY $SERVER $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
+Edge-ubuntu-gnome-jammy-mainline-sdusb-REL-TEST)             ( source  $SETENV -d -q -s $EDGE $JAMMY $GNOME $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
+
 # Edge Test Images
 Edge-ubuntu-minimal-focal-vendor-emmc)                      ( source  $SETENV -d -q -s $EDGE $FOCAL $MINI $EMMC $CMP && make -C "$MAKEDIR" && make image -C "$MAKEDIR" $RAW) & ;;
 Edge-ubuntu-minimal-focal-vendor-sdusb)                     ( source  $SETENV -d -q -s $EDGE $FOCAL $MINI $USB $CMP && make -C "$MAKEDIR") & ;;
@@ -556,10 +571,10 @@ Edge-debian-xfce-buster-mainline-sdusb)                     ( source  $SETENV -d
 Edge-debian-minimal-buster-mainline-sdusb)                  ( source  $SETENV -d -q -s $EDGE $BUSTER $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 
 # Edge2 Release Images
-Edge2-ubuntu-server-jammy-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $EDGE2 $JAMMY $SERVER $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
-Edge2-ubuntu-gnome-jammy-vendor-emmc-REL-CHK)               ( source  $SETENV -d -q -s $EDGE2 $JAMMY $GNOME $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
-Edge2-ubuntu-server-jammy-vendor-sdusb-REL)                 ( source  $SETENV -d -q -s $EDGE2 $JAMMY $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
-Edge2-ubuntu-gnome-jammy-vendor-sdusb-REL)                  ( source  $SETENV -d -q -s $EDGE2 $JAMMY $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
+#Edge2-ubuntu-server-jammy-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $EDGE2 $JAMMY $SERVER $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
+#Edge2-ubuntu-gnome-jammy-vendor-emmc-REL-CHK)               ( source  $SETENV -d -q -s $EDGE2 $JAMMY $GNOME $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
+#Edge2-ubuntu-server-jammy-vendor-sdusb-REL)                 ( source  $SETENV -d -q -s $EDGE2 $JAMMY $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
+#Edge2-ubuntu-gnome-jammy-vendor-sdusb-REL)                  ( source  $SETENV -d -q -s $EDGE2 $JAMMY $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
 # Edge2 Test Images
 
 # Rootfs Cache Only
