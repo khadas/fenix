@@ -26,7 +26,7 @@ for a in /etc/ssh/ssh_host*key; do
 ssh_
 
 # Setup LED: heartbeat if bootup completed
-#echo heartbeat > /sys/class/leds/pwmled/trigger
+echo heartbeat > /sys/class/leds/pwmled/trigger
 
 # Setup cursor_blink
 
