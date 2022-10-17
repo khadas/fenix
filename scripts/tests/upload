@@ -85,12 +85,6 @@ if [ "$CREATE_ROOTFS_CACHE_ONLY" != "yes" ]; then
 		    $SUDO_ mkdir -p "$UPLOAD_REL"
 		    $SUDO_ cp "$f" "$UPLOAD_REL"
 		    echo "%%UPLOAD_FILE: $UPLOAD_REL/$f_"
-
-		    [ "$BDT" -a "$RAW" ] && {
-			TO="/storage/Firmware/Krescue/images/$f_"
-			$SUDO_ ln -sf "$UPLOAD_REL/$f_" "$TO"
-			echo "%%UPLOAD_LINK_KRESCUE: $TO"
-		    }
 		} # release upload END
 
 		echo "%%UPLOAD: $f_ => $UPLOAD_"
