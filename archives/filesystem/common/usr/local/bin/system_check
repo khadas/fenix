@@ -37,6 +37,8 @@ elif [ "$model" == "Khadas VIM3L" ]; then
 	board_type_name="VIM3L"
 elif [ "$model" == "Khadas VIM4" ]; then
 	board_type_name="VIM4"
+elif [ "$model" == "Khadas VIM1S" ]; then
+	board_type_name="VIM1S"
 fi
 
 if [[ -n $board_type_name && $BOARD != $board_type_name ]]; then
