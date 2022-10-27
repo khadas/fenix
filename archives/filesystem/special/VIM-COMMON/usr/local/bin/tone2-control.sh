@@ -1,9 +1,13 @@
 #!/bin/bash
 
+source /etc/fenix-release
+
 CONFIG_FIEL="/usr/share/fenix/tone2/tone2.conf"
 
-CONTROL1=15
-CONTROL2=17
+if [ "$BOARD" == "VIM4" ] || [ "$BOARD" == "VIM1S" ]; then
+	CONTROL1=15
+	CONTROL2=17
+fi
 
 if [ -f "$CONFIG_FIEL" ]; then
 	gpio mode $CONTROL1 out

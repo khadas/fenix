@@ -5,6 +5,14 @@ if ! which lightdm; then
     exit
 fi
 
+source /etc/fenix-release
+
+if [ "$BOARD" == "VIM1S" ]; then
+	OVERLAY_FILE="/boot/dtb/amlogic/kvim1s.dtb.overlay.env"
+elif [ "$BOARD" == "VIM4" ]; then
+	OVERLAY_FILE="/boot/dtb/amlogic/kvim4.dtb.overlay.env"
+fi
+
 CONFIG_DIR="/usr/share/fenix/tone2"
 CONFIG_FIEL="/usr/share/fenix/tone2/tone2.conf"
 
@@ -34,7 +42,7 @@ selected_mode=$(zenity --height=275 \
 
 echo "$selected_mode"
 
-OVERLAY_ARRAY=`cat /boot/dtb/amlogic/kvim1s.dtb.overlay.env`
+OVERLAY_ARRAY=`cat $OVERLAY_FILE`
 
 echo $OVERLAY_ARRAY
 
@@ -118,7 +126,7 @@ else
 	fi
 fi
 
-echo "$OVERLAY_ARRAY" | sudo tee /boot/dtb/amlogic/kvim1s.dtb.overlay.env
+echo "$OVERLAY_ARRAY" | sudo tee $OVERLAY_FILE
 
 sync
 
