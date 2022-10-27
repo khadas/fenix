@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Name=Tone2 Setting
+Name[zh_CN]=Tone2设置
+Comment=Configure Tone2
+Comment[zh_CN]=Tone2设置
+Exec=/usr/local/bin/tone2.sh
+Icon=/etc/fenix/icons/tone2.png
+Terminal=false
+Type=Application
+Categories=GNOME;GTK;Settings;DesktopSettings;
+StartupNotify=true

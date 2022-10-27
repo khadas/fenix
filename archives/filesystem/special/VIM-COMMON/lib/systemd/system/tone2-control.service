@@ -1,0 +1,11 @@
+[Unit]
+Description=Tone2 Control
+DefaultDependencies=no
+After=local-fs.target
+
+[Service]
+ExecStart=/usr/local/bin/tone2-control.sh
+
+[Install]
+WantedBy=multi-user.target
+
