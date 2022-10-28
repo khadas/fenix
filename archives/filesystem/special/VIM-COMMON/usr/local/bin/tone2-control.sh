@@ -7,6 +7,12 @@ CONFIG_FIEL="/usr/share/fenix/tone2/tone2.conf"
 if [ "$BOARD" == "VIM4" ] || [ "$BOARD" == "VIM1S" ]; then
 	CONTROL1=15
 	CONTROL2=17
+elif [ "$BOARD" == "VIM3" ] || [ "$BOARD" == "VIM3L" ] || [ "$BOARD" == "VIM1" ]; then
+	CONTROL1=15
+	CONTROL2=16
+elif [ "$BOARD" == "VIM2" ]; then
+	CONTROL1=18
+	CONTROL2=19
 fi
 
 if [ -f "$CONFIG_FIEL" ]; then
