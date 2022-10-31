@@ -79,7 +79,7 @@ build_desktop_deb() {
 		# Updata default configuration
 		[ -d /etc/skel/.config ] && cp -arf /etc/skel/.config /home/khadas
 		[ -d /etc/skel/.local ] && cp -arf /etc/skel/.local /home/khadas
-		chown khadas:khadas /home/khadas/.* -R
+		(cd /home/khadas; chown khadas:khadas * -R)
 	fi
 
 	if [ "\$(stat -c %d:%i /)" != "\$(stat -c %d:%i /proc/1/root/.)" ]; then
