@@ -80,6 +80,7 @@ build_desktop_deb() {
 		[ -d /etc/skel/.config ] && cp -arf /etc/skel/.config /home/khadas
 		[ -d /etc/skel/.local ] && cp -arf /etc/skel/.local /home/khadas
 		(cd /home/khadas; chown khadas:khadas * -R)
+		chown root:root /home/
 	fi
 
 	if [ "\$(stat -c %d:%i /)" != "\$(stat -c %d:%i /proc/1/root/.)" ]; then
