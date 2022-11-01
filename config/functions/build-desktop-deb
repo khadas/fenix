@@ -79,7 +79,8 @@ build_desktop_deb() {
 		# Updata default configuration
 		[ -d /etc/skel/.config ] && cp -arf /etc/skel/.config /home/khadas
 		[ -d /etc/skel/.local ] && cp -arf /etc/skel/.local /home/khadas
-		(cd /home/khadas; chown khadas:khadas * -R)
+		chown khadas:khadas /home/khadas/.config -R
+		chown khadas:khadas /home/khadas/.local -R
 		chown root:root /home/
 	fi
 
