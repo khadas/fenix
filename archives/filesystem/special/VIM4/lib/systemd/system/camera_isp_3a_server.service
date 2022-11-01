@@ -1,5 +1,6 @@
 [Unit]
 Description=ISP Service
+ConditionPathExists=/dev/video50
 #Before=ipc-property.service
 
 [Service]
