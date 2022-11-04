@@ -33,7 +33,7 @@ case "$LINUX" in
 	mainline)
 		KERNEL_COMPILER="aarch64-none-linux-gnu-"
 		KERNEL_COMPILER_PATH="$TOOLCHAINS/gcc-arm-aarch64-none-linux-gnu-mainline/bin"
-		LINUX_DIR="$BUILD/linux-mainline-*"
+		LINUX_DIR=$(realpath "$LINUX_VENDOR_DIR")
 		;;
 	4.9)
 		KERNEL_COMPILER="aarch64-linux-gnu-"
