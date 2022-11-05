@@ -137,14 +137,12 @@ build_board_deb() {
 
 	# Bluez looks firmware in /etc/firmware/
 	. /etc/fenix-release
-	if [ "\$VENDOR" == "Amlogic" ]; then
-		ln -sf /lib/firmware /etc/firmware
-		if [[ "\$BOARD" =~ "VIM3" ]]; then
-			if linux-version compare \`uname -r\` lt 5.10; then
-				systemctl enable panel.service
-				if [ "\$BOARD" == "VIM3" ]; then
-					systemctl enable camera_isp_3a_server.service
-				fi
+	ln -sf /lib/firmware /etc/firmware
+	if [[ "\$BOARD" =~ "VIM3" ]]; then
+		if linux-version compare \`uname -r\` lt 5.10; then
+			systemctl enable panel.service
+			if [ "\$BOARD" == "VIM3" ]; then
+				systemctl enable camera_isp_3a_server.service
 			fi
 		fi
 	fi
@@ -154,7 +152,7 @@ build_board_deb() {
 	fi
 
 	if [ "\$BOARD" == "Edge2" ]; then
-		systemctl enable rockchip-isp.service
+		systemctl enable rockchip-isp.service bluetooth-khadas.service
 	fi
 
 	# Patches used by hciattach
