@@ -165,16 +165,18 @@ build_board_deb() {
 			IS_MAINLINE_KERNEL="yes"
 		fi
 	else
-		tmp=\$(cat /proc/cmdline)
-		imagetype="\${tmp##*imagetype=}"
-		imagetype="\${imagetype%% *}"
-		khadas_board="\${tmp##*khadas_board=}"
-		khadas_board="\${khadas_board%% *}"
+		if [ "\$BOARD" == "VIM1" ] || [ "\$BOARD" == "VIM2" ] || [ "\$BOARD" == "VIM3" ] || [ "\$BOARD" == "VIM3L" ] || [ "\$BOARD" == "Edge1" ]; then
+			tmp=\$(cat /proc/cmdline)
+			imagetype="\${tmp##*imagetype=}"
+			imagetype="\${imagetype%% *}"
+			khadas_board="\${tmp##*khadas_board=}"
+			khadas_board="\${khadas_board%% *}"
 
-		if grep -q INSTALL_TYPE /etc/fenix-release; then
-			sed -i "s/INSTALL_TYPE=.*/INSTALL_TYPE=\$imagetype/" /etc/fenix-release
+			if grep -q INSTALL_TYPE /etc/fenix-release; then
+				sed -i "s/INSTALL_TYPE=.*/INSTALL_TYPE=\$imagetype/" /etc/fenix-release
+			fi
+			sed -i "s/BOARD=.*/BOARD=\$khadas_board/" /etc/fenix-release
 		fi
-		sed -i "s/BOARD=.*/BOARD=\$khadas_board/" /etc/fenix-release
 		linux_ver=\`uname -r\`
 		if linux-version compare \$linux_ver ge 5.12; then
 			IS_MAINLINE_KERNEL="yes"
@@ -451,7 +453,7 @@ build_board_deb() {
 	#############################################
 	EOF
 
-	if [ "$KHADAS_BOARD" == "VIM4" ]; then
+	if [ "$KHADAS_BOARD" == "VIM4" ] || [ "$KHADAS_BOARD" == "VIM1S" ] || [ "$KHADAS_BOARD" == "Edge2" ]; then
 		sed -i '/INSTALL_TYPE/d' $pkgdir/etc/fenix-release
 	fi
 
