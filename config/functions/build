@@ -88,12 +88,11 @@ build_uboot() {
 build_linux() {
 	ret=0
 
-	if [ "$LINUX" == "mainline" ]; then
-		rm -rf $BUILD/.stamps/linux-mainline/
-		build_package "linux-mainline:target"
-
-		return 0
-	fi
+#	if [ "$LINUX" == "mainline" ]; then
+#		rm -rf $BUILD/.stamps/linux-mainline/
+#		build_package "linux-mainline:target"
+#		return 0
+#	fi
 
 	if [ "$LINUX_GIT_BRANCH" == "" ] || [ "$LINUX_DTB" == "" ]; then
 		[ "$LINUX_GIT_BRANCH" == "" ] && error_msg "'LINUX_GIT_BRANCH' is empty!"
@@ -147,6 +146,7 @@ build_linux() {
 	[ ! "$BUILD_LINUX_NOOP" ] || return 0
 
 	info_msg "Build linux..."
+	echo "${KERNEL_COMPILER} $KERNEL_COMPILER_PATH"
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
 	make ARCH=arm64 CROSS_COMPILE="${KERNEL_COMPILER}" $LINUX_DEFCONFIG
 	make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE="${CCACHE} ${KERNEL_COMPILER}" Image dtbs  modules $EXTRA_MAKE_ARGS
@@ -347,11 +347,11 @@ config_linux() {
 	}
 
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
-	if [ "$LINUX" == "mainline" ]; then
-		cp $PKGS_DIR/linux-mainline/configs/${KHADAS_BOARD}.config "$LINUX_DIR"/.config
-	else
+#	if [ "$LINUX" == "mainline" ]; then
+#		cp $PKGS_DIR/linux-mainline/configs/${KHADAS_BOARD}.config "$LINUX_DIR"/.config
+#	else
 		make ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} $LINUX_DEFCONFIG -C"$LINUX_DIR"
-	fi
+#	fi
 
 	make ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} menuconfig -C"$LINUX_DIR"
 }
@@ -366,10 +366,10 @@ save_linux_config() {
 	}
 
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
-	if [ "$LINUX" == "mainline" ]; then
-		cp "$LINUX_DIR"/.config $PKGS_DIR/linux-mainline/configs/${KHADAS_BOARD}.config
-	else
+#	if [ "$LINUX" == "mainline" ]; then
+#		cp "$LINUX_DIR"/.config $PKGS_DIR/linux-mainline/configs/${KHADAS_BOARD}.config
+#	else
 		make ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} savedefconfig -C"$LINUX_DIR"
 		mv "$LINUX_DIR"/defconfig "$LINUX_DIR"/arch/arm64/configs/$LINUX_DEFCONFIG
-	fi
+#	fi
 }
