@@ -41,8 +41,12 @@ install_common()
 	fi
 
 	# Install linux headers deb in chroot
-	if [ -f $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${LINUX_IMAGE_DEB/image/headers}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
-		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${LINUX_IMAGE_DEB/image/headers}_${VERSION}_${DISTRIB_ARCH}.deb
+	if [ "$SKIP_HEADER_DEB" != "yes" ]; then
+		if [ -f $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${LINUX_IMAGE_DEB/image/headers}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${LINUX_IMAGE_DEB/image/headers}_${VERSION}_${DISTRIB_ARCH}.deb
+		fi
+	else
+		warning_msg "Skip install header package ..."
 	fi
 
 	# Install linux firmware in chroot
