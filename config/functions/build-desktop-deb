@@ -229,7 +229,7 @@ build_desktop_deb() {
 
 	# Create desktop deb file
 	info_msg "Building package: $pkgname"
-	fakeroot dpkg-deb -b $pkgdir ${pkgdir}.deb
+	fakeroot dpkg-deb -b -Zxz $pkgdir ${pkgdir}.deb
 	mkdir -p $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}
 	cp ${pkgdir}.deb $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}
 	# Cleanup
