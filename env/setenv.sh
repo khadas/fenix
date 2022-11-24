@@ -202,9 +202,9 @@ DISTRIBUTION_ARRAY_DESC=("Ubuntu" "Debian")
 Ubuntu_RELEASE_ARRAY=("bionic" "focal" "jammy")
 Ubuntu_RELEASE_VERSION_ARRAY=("18.04" "20.04" "22.04")
 Ubuntu_RELEASE_ARRAY_DESC=("Ubuntu 18.04" "Ubuntu 20.04" "Ubuntu 22.04")
-Debian_RELEASE_ARRAY=("buster")
-Debian_RELEASE_VERSION_ARRAY=("10")
-Debian_RELEASE_ARRAY_DESC=("Debian 10")
+Debian_RELEASE_ARRAY=("buster" "bullseye")
+Debian_RELEASE_VERSION_ARRAY=("10" "11")
+Debian_RELEASE_ARRAY_DESC=("Debian 10" "Debian 11")
 DISTRIB_ARCH_ARRAY=("arm64")
 Ubuntu_TYPE_ARRAY=("server" "minimal" "xfce" "lxde" "gnome")
 Ubuntu_TYPE_ARRAY_DESC=("Headless Image With Essential Packages"\
@@ -212,11 +212,12 @@ Ubuntu_TYPE_ARRAY_DESC=("Headless Image With Essential Packages"\
 						"Desktop Image With XFCE Desktop"\
 						"Desktop Image With LXDE Desktop"\
 						"Desktop Image With GNOME Desktop")
-Debian_TYPE_ARRAY=("server" "minimal" "xfce" "lxde")
+Debian_TYPE_ARRAY=("server" "minimal" "xfce" "lxde" "gnome")
 Debian_TYPE_ARRAY_DESC=("Headless Image With Essential Packages"\
 						"Minimal Image With Very Basic Packages"\
 						"Desktop Image With XFCE Desktop"\
-						"Desktop Image With LXDE Desktop")
+						"Desktop Image With LXDE Desktop"\
+						"Desktop Image With GNOME Desktop")
 INSTALL_TYPE_ARRAY=("EMMC" "SD-USB")
 INSTALL_TYPE_ARRAY_DESC=("Image For Writing to eMMC Storage With USB Burning Tool"\
 						 "Image For Writing to SD/USB Storage")

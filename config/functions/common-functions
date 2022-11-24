@@ -394,7 +394,7 @@ get_package_list_hash()
 
 ## create_sources_list <release> <basedir>
 ##
-## <release>: buster|bionic|focal|jammy
+## <release>: buster|bullseye|bionic|focal|jammy
 ## <basedir>: path to root directory
 create_sources_list()
 {

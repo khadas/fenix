@@ -283,7 +283,7 @@ PACKAGE_LIST_DESKTOP="xserver-xorg xserver-xorg-video-fbdev gvfs-backends gvfs-f
 	policykit-1 profile-sync-daemon gnome-orca numix-gtk-theme gnome-system-tools lightdm lightdm-gtk-greeter gufw yad zenity guvcview onboard"
 
 PACKAGE_LIST_OFFICE="gedit galculator hexchat mpv gtk2-engines gtk2-engines-murrine gtk2-engines-pixbuf \
-	thunderbird system-config-printer-common system-config-printer paprefs dbus-x11 tango-icon-theme libreoffice libreoffice-style-tango fbi \
+	thunderbird system-config-printer-common system-config-printer paprefs dbus-x11 tango-icon-theme libreoffice fbi \
 	cups-pk-helper cups geany atril xarchiver meld remmina kazam avahi-daemon transmission"
 
 PACKAGE_LIST_XSERVER="libunwind8 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xf86dri0 libxcb-xkb1 libxcb-xv0 \
@@ -326,12 +326,12 @@ case $DISTRIB_RELEASE in
 		PACKAGE_LIST_MESA="libglvnd-dev libx11-dev"
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_KODI $PACKAGE_LIST_MESA"
 		PACKAGE_LIST_DESKTOP+=" numix-icon-theme chromium mirage"
+		[[ "$DISTRIB_RELEASE" == "buster" ]] && PACKAGE_LIST_DESKTOP+=" libreoffice-style-tango"
 	;;
 	bionic)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
 		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found hddtemp crda"
 		PACKAGE_LIST_QT+=" libqt5multimediaquick-p5 libqgsttools-p1"
-		PACKAGE_LIST_OFFICE+=" mirage"
 		PACKAGE_LIST_KODI="mesa-utils libglu1 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libcurl4 libcrossguid0 libmariadbclient18 libmicrohttpd12 \
 			libavahi-compat-libdnssd-dev libcec4 libfstrcmp0 libnfs11 fonts-liberation python-bluez python-pil python-simplejson libaacs0 fonts-dejavu-core libao-dev"
 		PACKAGE_LIST_SERVER_KODI="libao4 libwayland-cursor0 libavahi-compat-libdnssd-dev libass9 libavahi-client3 libavahi-common3 libbluray2 libcdio17 libcec4 \
@@ -339,7 +339,7 @@ case $DISTRIB_RELEASE in
 			libxslt1.1 mesa-utils x11-utils fonts-liberation fonts-dejavu-core python-bluez python-pil python-simplejson libgif7 libvorbisfile3 libaacs0 libgnutls30 \
 			libyajl2 libsndio6.1 libcrossguid0 libao-dev"
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_XSERVER $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_QT $PACKAGE_LIST_KODI"
-		PACKAGE_LIST_DESKTOP+=" chromium-browser xserver-xorg-input-all firefox pulseaudio-module-gconf libgnome2-perl language-selector-gnome"
+		PACKAGE_LIST_DESKTOP+=" chromium-browser xserver-xorg-input-all firefox pulseaudio-module-gconf libgnome2-perl language-selector-gnome mirage libreoffice-style-tango"
 	;;
 	focal|hirsute)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
@@ -352,12 +352,12 @@ case $DISTRIB_RELEASE in
 			libyajl2 libsndio7.0 libcrossguid0 libao-dev libpython2.7"
 		PACKAGE_LIST_MESA="libclang-cpp11 libclc-r600 libclc-amdgcn libllvm10"
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_XSERVER $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_KODI $PACKAGE_LIST_MESA"
-		PACKAGE_LIST_DESKTOP+=" xserver-xorg-input-all pulseaudio-module-gsettings firefox language-selector-gnome viewnior"
+		PACKAGE_LIST_DESKTOP+=" xserver-xorg-input-all pulseaudio-module-gsettings firefox language-selector-gnome viewnior libreoffice-style-tango"
 	;;
 	jammy)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
 		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found"
-		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER xserver-xorg-input-all pulseaudio-module-gsettings firefox language-selector-gnome viewnior dbus-user-session"
+		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER xserver-xorg-input-all pulseaudio-module-gsettings firefox language-selector-gnome viewnior dbus-user-session libreoffice-style-tango"
 	;;
 esac
 

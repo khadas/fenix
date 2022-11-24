@@ -458,7 +458,7 @@ build_board_deb() {
 	fi
 
 	case $DISTRIB_RELEASE in
-		buster)
+		buster|bullseye)
 			mkdir -p $pkgdir/usr/lib/NetworkManager/conf.d/
 			cp $ROOT/archives/filesystem/bsp/zz-override-wifi-powersave-off.conf $pkgdir/usr/lib/NetworkManager/conf.d/
 			cp $ROOT/archives/filesystem/bsp/10-override-random-mac.conf $pkgdir/usr/lib/NetworkManager/conf.d/
