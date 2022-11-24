@@ -121,7 +121,7 @@ if sudo -lS &> /dev/null << EOF
 $password
 EOF
 then
-	sudo sed -i "s/fan_mode=.*/fan_mode=$selected_mode/g" /boot/env.txt
+	sudo sed -i "s/fan_mode=.*/fan_mode=fan=$selected_mode/g" /boot/uEnv.txt
 fi
 
 sync
