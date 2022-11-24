@@ -332,11 +332,12 @@ MINI="DISTRIB_TYPE=minimal"
 SERVER="DISTRIB_TYPE=server"
 XFCE="DISTRIB_TYPE=xfce"
 LXDE="DISTRIB_TYPE=lxde"
+GNOME="DISTRIB_TYPE=gnome"
 BIONIC="DISTRIBUTION=Ubuntu DISTRIB_RELEASE=bionic DISTRIB_RELEASE_VERSION=18.04"
 FOCAL="DISTRIBUTION=Ubuntu DISTRIB_RELEASE=focal DISTRIB_RELEASE_VERSION=20.04"
 JAMMY="DISTRIBUTION=Ubuntu DISTRIB_RELEASE=jammy DISTRIB_RELEASE_VERSION=22.04"
 BUSTER="DISTRIBUTION=Debian DISTRIB_RELEASE=buster DISTRIB_RELEASE_VERSION=10"
-GNOME="DISTRIB_TYPE=gnome"
+BULLSEYE="DISTRIBUTION=Debian DISTRIB_RELEASE=bullseye DISTRIB_RELEASE_VERSION=11"
 
 ROOTFS_CACHE_ONLY="CREATE_ROOTFS_CACHE_ONLY=yes"
 
@@ -599,6 +600,12 @@ buster-minimal-CACHE)                                       ( source  $SETENV -d
 buster-server-CACHE)                                        ( source  $SETENV -d -q -s $VIM1 $BUSTER $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
 buster-xfce-CACHE)                                          ( source  $SETENV -d -q -s $VIM1 $BUSTER $XFCE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
 buster-lxde-CACHE)                                          ( source  $SETENV -d -q -s $VIM1 $BUSTER $LXDE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+
+bullseye-minimal-CACHE)                                     ( source  $SETENV -d -q -s $VIM1 $BULLSEYE $MINI $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+bullseye-server-CACHE)                                      ( source  $SETENV -d -q -s $VIM1 $BULLSEYE $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+bullseye-xfce-CACHE)                                        ( source  $SETENV -d -q -s $VIM1 $BULLSEYE $XFCE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+bullseye-lxde-CACHE)                                        ( source  $SETENV -d -q -s $VIM1 $BULLSEYE $LXDE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+bullseye-gnome-CACHE)                                       ( source  $SETENV -d -q -s $VIM1 $BULLSEYE $GNOME $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
 
 #TEST_LIST_END
     *)
