@@ -36,6 +36,12 @@ else
 	LIST_MENU_VALUE=(FALSE FALSE)
 fi
 
+if [ ${LINUX_VER::3} == "5.4" ];then
+	config_file='/boot/uEnv.txt'
+else
+	config_file='/boot/env.txt'
+fi
+
 index=0
 for i in ${LIST_MENU[@]}
 do
@@ -121,7 +127,8 @@ if sudo -lS &> /dev/null << EOF
 $password
 EOF
 then
-	sudo sed -i "s/fan_mode=.*/fan_mode=$selected_mode/g" /boot/env.txt
+	sudo sed -i "s/fan_mode=.*/fan_mode=$selected_mode/g" $config_file
+
 fi
 
 sync
