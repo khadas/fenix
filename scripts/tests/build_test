@@ -580,33 +580,33 @@ Edge-debian-minimal-buster-mainline-sdusb)                  ( source  $SETENV -d
 # Edge2 Test Images
 
 # Rootfs Cache Only
-bionic-minimal-CACHE)                                       ( source  $SETENV -d -q -s $VIM4 $BIONIC $MINI $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
-bionic-server-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $BIONIC $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
-bionic-xfce-CACHE)                                          ( source  $SETENV -d -q -s $VIM4 $BIONIC $XFCE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
-bionic-lxde-CACHE)                                          ( source  $SETENV -d -q -s $VIM4 $BIONIC $LXDE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+#bionic-minimal-CACHE)                                       ( source  $SETENV -d -q -s $VIM4 $BIONIC $MINI $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+#bionic-server-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $BIONIC $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+#bionic-xfce-CACHE)                                          ( source  $SETENV -d -q -s $VIM4 $BIONIC $XFCE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+#bionic-lxde-CACHE)                                          ( source  $SETENV -d -q -s $VIM4 $BIONIC $LXDE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
 
-focal-minimal-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $FOCAL $MINI $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
-focal-server-CACHE)                                         ( source  $SETENV -d -q -s $VIM4 $FOCAL $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
-focal-xfce-CACHE)                                           ( source  $SETENV -d -q -s $VIM4 $FOCAL $XFCE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
-focal-lxde-CACHE)                                           ( source  $SETENV -d -q -s $VIM4 $FOCAL $LXDE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
-focal-gnome-CACHE)                                          ( source  $SETENV -d -q -s $VIM4 $FOCAL $GNOME $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+#focal-minimal-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $FOCAL $MINI $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+#focal-server-CACHE)                                         ( source  $SETENV -d -q -s $VIM4 $FOCAL $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+#focal-xfce-CACHE)                                           ( source  $SETENV -d -q -s $VIM4 $FOCAL $XFCE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+#focal-lxde-CACHE)                                           ( source  $SETENV -d -q -s $VIM4 $FOCAL $LXDE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+#focal-gnome-CACHE)                                          ( source  $SETENV -d -q -s $VIM4 $FOCAL $GNOME $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
 
-jammy-minimal-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $JAMMY $MINI $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
-jammy-server-CACHE)                                         ( source  $SETENV -d -q -s $VIM4 $JAMMY $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
-jammy-xfce-CACHE)                                           ( source  $SETENV -d -q -s $VIM4 $JAMMY $XFCE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
-jammy-lxde-CACHE)                                           ( source  $SETENV -d -q -s $VIM4 $JAMMY $LXDE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
-jammy-gnome-CACHE)                                          ( source  $SETENV -d -q -s $VIM4 $JAMMY $GNOME $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+#jammy-minimal-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $JAMMY $MINI $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+#jammy-server-CACHE)                                         ( source  $SETENV -d -q -s $VIM4 $JAMMY $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+#jammy-xfce-CACHE)                                           ( source  $SETENV -d -q -s $VIM4 $JAMMY $XFCE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+#jammy-lxde-CACHE)                                           ( source  $SETENV -d -q -s $VIM4 $JAMMY $LXDE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+#jammy-gnome-CACHE)                                          ( source  $SETENV -d -q -s $VIM4 $JAMMY $GNOME $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
 
-buster-minimal-CACHE)                                       ( source  $SETENV -d -q -s $VIM4 $BUSTER $MINI $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
-buster-server-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $BUSTER $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
-buster-xfce-CACHE)                                          ( source  $SETENV -d -q -s $VIM4 $BUSTER $XFCE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
-buster-lxde-CACHE)                                          ( source  $SETENV -d -q -s $VIM4 $BUSTER $LXDE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+#buster-minimal-CACHE)                                       ( source  $SETENV -d -q -s $VIM4 $BUSTER $MINI $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+#buster-server-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $BUSTER $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+#buster-xfce-CACHE)                                          ( source  $SETENV -d -q -s $VIM4 $BUSTER $XFCE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+#buster-lxde-CACHE)                                          ( source  $SETENV -d -q -s $VIM4 $BUSTER $LXDE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
 
 bullseye-minimal-CACHE)                                     ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $MINI $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
-bullseye-server-CACHE)                                      ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
-bullseye-xfce-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $XFCE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
-bullseye-lxde-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $LXDE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
-bullseye-gnome-CACHE)                                       ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $GNOME $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
+#bullseye-server-CACHE)                                      ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
+#bullseye-xfce-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $XFCE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
+#bullseye-lxde-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $LXDE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
+#bullseye-gnome-CACHE)                                       ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $GNOME $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
 
 #TEST_LIST_END
     *)
