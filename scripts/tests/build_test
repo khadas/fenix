@@ -603,10 +603,10 @@ Edge-debian-minimal-buster-mainline-sdusb)                  ( source  $SETENV -d
 #buster-lxde-CACHE)                                          ( source  $SETENV -d -q -s $VIM4 $BUSTER $LXDE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
 
 bullseye-minimal-CACHE)                                     ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $MINI $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
-#bullseye-server-CACHE)                                      ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
-#bullseye-xfce-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $XFCE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
-#bullseye-lxde-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $LXDE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
-#bullseye-gnome-CACHE)                                       ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $GNOME $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
+bullseye-server-CACHE)                                      ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
+bullseye-xfce-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $XFCE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
+bullseye-lxde-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $LXDE $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
+bullseye-gnome-CACHE)                                       ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $GNOME $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
 
 #TEST_LIST_END
     *)
