@@ -111,7 +111,7 @@ build_desktop_deb() {
 	# Mainline kernel using gdm3
 	# Legacy kernel using lightdm
 	if which gnome-session > /dev/null; then
-		if [ "$DISTRIB_RELEASE" != "jammy" ]; then
+		if [ "$DISTRIB_RELEASE" != "jammy" ] || [ "$LINUX" == "4.9" ] || [ "$LINUX" == "4.4" ]; then
 			if which gdm3 > /dev/null; then
 				if [ -f /boot/.next ]; then
 					DM=gdm3
