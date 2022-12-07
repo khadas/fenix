@@ -225,6 +225,7 @@ build_board_deb() {
 		fi
 		# Remove unused files for legacy kernel
 		[ "\$BOARD" != "Edge2" ] && [ -f /var/lib/alsa/asound.state ] && rm /var/lib/alsa/asound.state
+		[ -f /var/lib/alsa/asound.state ] && alsactl restore > /dev/null 2>&1
 	fi
 
 	# Fix env.txt / uEnv.txt
