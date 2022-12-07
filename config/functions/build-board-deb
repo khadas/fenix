@@ -224,7 +224,7 @@ build_board_deb() {
 			sed -i 's/iv009_isp//g' /etc/modules
 		fi
 		# Remove unused files for legacy kernel
-		[ -f /var/lib/alsa/asound.state ] && rm /var/lib/alsa/asound.state
+		[ "\$BOARD" != "Edge2" ] && [ -f /var/lib/alsa/asound.state ] && rm /var/lib/alsa/asound.state
 	fi
 
 	# Fix env.txt / uEnv.txt
