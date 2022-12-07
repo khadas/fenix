@@ -13,7 +13,7 @@ fi
 # Only for Ubuntu
 [ $DISTRIB_ID != Ubuntu ] && exit
 
-if linux-version compare `uname -r` ge 4.12; then
+if [ -f /boot/.next ]; then
 	LINUX=mainline
 else
 	VERSION=`uname -r | awk -F "." '{print $1}'`
