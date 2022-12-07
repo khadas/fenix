@@ -50,7 +50,7 @@ load-module module-switch-on-connect
 # Load sink
 load-module module-alsa-sink device="hw:0,0" sink_name=dp_output sink_properties="device.description='DP Output' device.icon_name='video-display'"
 load-module module-alsa-sink device="hw:1,0" sink_name=hdmi_output sink_properties="device.description='HDMI Output' device.icon_name='video-display'"
-load-module module-alsa-sink device="hw:3,0" sink_name=codec_output sink_properties="device.description='Audio Jack' device.icon_name='audio-headphones'"
+load-module module-alsa-sink device="hw:3,0" sink_name=codec_output sink_properties="device.description='Audio Codec' device.icon_name='audio-headphones'"
 # Load combined sink
 #load-module module-combine-sink sink_name=combined_output slaves=hdmi_output,dp_output sink_properties="device.description='Combined HDMI + DP Output' device.icon_name='audio-card-symbolic'"
 # Load source
