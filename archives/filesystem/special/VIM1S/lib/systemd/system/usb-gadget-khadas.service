@@ -1,0 +1,12 @@
+[Unit]
+Description=USB Gadget
+DefaultDependencies=no
+After=systemd-update-utmp-runlevel.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/usb-gadget
+RemainAfterExit=true
+
+[Install]
+WantedBy=sysinit.target
