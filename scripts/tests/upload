@@ -120,8 +120,8 @@ else
 	*22.04*) R=jammy ;;
 	*20.04*) R=focal ;;
 	*18.04*) R=bionic ;;
-	*10*) R=buster ;;
-	*11*) R=bullseye ;;
+	*-10-*) R=buster ;;
+	*-11-*) R=bullseye ;;
 	esac
 
 	echo "%%UPLOAD rootfs cache: $BUILD_IMAGES/cache/rootfs/$R-$T-arm64.* => $ROOTFS_CACHE"
