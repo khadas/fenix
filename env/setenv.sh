@@ -800,7 +800,8 @@ ${p_// /$'\n'}
 == ONE LINE CONFIG ==================
 source $BASH_SOURCE -q -s $p_
 "
-	echo2 "Environment setup done. Type 'make' to build."
+	echo2 "End of the environment setup."
+	echo2 "Execute 'make' to start the build or try 'make help'."
 }
 
 ask_yes_no(){
