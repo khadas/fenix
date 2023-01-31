@@ -118,6 +118,12 @@ build_desktop_deb() {
 				else
 					DM=lightdm
 				fi
+
+				# Fix Ubuntu 20.04 Gnome desktop for VIM4/1S/Edge2
+				if [ "$KHADAS_BOARD" == "VIM4" ] || [ "$KHADAS_BOARD" == "VIM1S" ] || [ "$KHADAS_BOARD" == "Edge2" ]; then
+					DM=gdm3
+				fi
+
 				debconf-set-selections <<-EOT
 				gdm3    shared/default-x-display-manager        select  "\${DM}"
 				lightdm shared/default-x-display-manager        select  "\${DM}"
