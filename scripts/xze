@@ -11,19 +11,20 @@ USAGE
 
     xze [ARGS] FILE
 
-    -3 fast compression
-    -9 max slow compression
+    -3                   # fast compression
+    -9                   # max slow compression
 
-    -T#thread
-    -B#blocksize in M
-    -f - rewrite output file
-    -c | -C - ready for krescue check
+    -T#thread            #
+    -B#blocksize in M    #
+    -f                   # rewrite output file
+    -c | -C              # check is krescue ready
 
-    -MM | --meta         - krescue meta
-    -mn | --mote-remove  - remove meta
+    -mn | --meta-remove  # remove meta
+    -MM | --meta         # krescue meta
+    tag=value            # meta tags
 
-    -p           - add padding
-    --help - full help
+    -p                   # add padding
+    --help               # full help
 
 META USAGE
 
@@ -35,7 +36,7 @@ META USAGE
 	--meta \
 	label=FreeBSD \
 	builder=Serega \
-	date="$(TZ= date)" \
+	date="$(LANG=C TZ= date)" \
 	match=BOARD=Edge \
 	link=http://dev.kubsu.ru/images/ \
 	duration=60 \
@@ -142,7 +143,7 @@ for a in $@; do
 	META_POST="##KRESCUE-META## ##KRESCUE##END"
 	break
 	;;
-	-mn|--remove-meta)
+	-mn|--meta--remove|--remove-meta)
 	META_REMOVE=1
 	;;
 	-p)
@@ -320,7 +321,7 @@ META(){
 	    ;;
 	    match)
 	    REQ_match="$m2"
-	    META_POST="asd=asd $META_POST"
+	    META_POST=" $META_POST"
 	    ;;
 	    board)
 	    m1=match
