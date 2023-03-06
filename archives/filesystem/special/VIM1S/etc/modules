@@ -58,3 +58,9 @@ nft_chain_nat
 nft_counter
 nft_compat
 nf_tables
+xt_conntrack
+xt_MASQUERADE
+xt_addrtype
+veth
+
+binfmt_misc
