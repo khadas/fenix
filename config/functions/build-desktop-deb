@@ -161,6 +161,9 @@ build_desktop_deb() {
 	if [ -d $ROOT/archives/filesystem/blobs/desktop/${DISTRIB_TYPE} ]; then
 		mkdir -p $pkgdir/etc/skel
 		cp -R $ROOT/archives/filesystem/blobs/desktop/${DISTRIB_TYPE}/skel/. $pkgdir/etc/skel
+		if [ -d $ROOT/archives/filesystem/blobs/desktop/${DISTRIB_TYPE}/skel/$KHADAS_BOARD/ ]; then
+			cp -R $ROOT/archives/filesystem/blobs/desktop/${DISTRIB_TYPE}/skel/$KHADAS_BOARD/. $pkgdir/etc/skel
+		fi
 	fi
 
 	# Install icons
