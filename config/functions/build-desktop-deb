@@ -140,6 +140,8 @@ build_desktop_deb() {
 		SDL_VIDEODRIVER=wayland
 		QT_QPA_PLATFORM=wayland
 		EOT
+		sed -i 's/#WaylandEnable=.*/WaylandEnable=true/g' /etc/gdm3/custom.conf
+		sed -i 's/WaylandEnable=.*/WaylandEnable=true/g' /etc/gdm3/custom.conf
 	fi
 
 	exit 0
