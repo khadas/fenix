@@ -36,8 +36,8 @@ LIST_MENU=(I2S USB Disable)
 
 selected_mode=$(zenity --height=275 \
                 --list --radiolist \
-                --title 'FAN Setting' \
-                --text 'Select FAN Mode' \
+                --title 'Tone2 Setting' \
+                --text 'Select Tone2 Mode' \
                 --window-icon /etc/fenix/icons/tone2.png \
                 --column 'Select' \
                 --column 'Mode' \
