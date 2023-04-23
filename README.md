@@ -10,12 +10,11 @@
 
 Supported build host:
 
-* `Ubuntu 18.04 Bionic x64`
-  * `Building Ubuntu 18.04 Bionic image`
-* `Ubuntu 20.04 Focal x64`
-  * `Building Ubuntu 18.04 Bionic image`
+* `Ubuntu 22.04 Focal x64`
   * `Building Ubuntu 20.04 Focal image`
+  * `Building Ubuntu 22.04 Jammy image`
   * `Building Debian 10 Buster image`
+  * `Building Debian 11 Bullseye image`
 * `Docker`
 
 ## How to use
