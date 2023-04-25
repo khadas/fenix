@@ -116,33 +116,48 @@ case $mode in
 		;;
 	low)
 		echo 1 > $FAN_ENABLE_NODE
+		sleep 0.01
 		echo $MANUAL_MODE > $FAN_MODE_NODE
+		sleep 0.01
 		echo $LEVEL_LOW > $FAN_LEVEL_NODE
+		sleep 0.01
 		;;
 	mid)
 		echo 1 > $FAN_ENABLE_NODE
+		sleep 0.01
 		echo $MANUAL_MODE > $FAN_MODE_NODE
+		sleep 0.01
 		echo $LEVEL_MID > $FAN_LEVEL_NODE
+		sleep 0.01
 		;;
 	high)
 		echo 1 > $FAN_ENABLE_NODE
+		sleep 0.01
 		echo $MANUAL_MODE > $FAN_MODE_NODE
+		sleep 0.01
 		echo $LEVEL_HIGH > $FAN_LEVEL_NODE
+		sleep 0.01
 		;;
 	on)
 		echo $AUTO_MODE > $FAN_MODE_NODE
+		sleep 0.01
 		echo 1 > $FAN_ENABLE_NODE
+		sleep 0.01
 		;;
 	auto)
 		if [ "${LINUX_VER}" == "4.9" ] || [ "${LINUX_VER}" == "5.4" ]; then
 			echo $AUTO_MODE > $FAN_MODE_NODE
+			sleep 0.01
 			echo 1 > $FAN_ENABLE_NODE
+			sleep 0.01
 		else
 			echo 50000 > $FAN_CONTROL_NODE
+			sleep 0.01
 		fi
 		;;
 	manual)
 		echo 20000 > $FAN_CONTROL_NODE
+		sleep 0.01
 		;;
 	mode-off)
 		echo "Fan state: $FAN_STATE"
