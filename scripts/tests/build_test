@@ -475,10 +475,10 @@ VIM2-debian-xfce-buster-mainline-sdusb)                     ( source  $SETENV -d
 VIM2-debian-minimal-buster-mainline-sdusb)                  ( source  $SETENV -d -q -s $VIM2 $BUSTER $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 
 # VIM3 Release Images
-VIM3-ubuntu-server-focal-vendor-emmc-REL-CHK)               ( source  $SETENV -d -q -s $VIM3 $FOCAL $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
-VIM3-ubuntu-gnome-focal-vendor-emmc-REL-CHK)                ( source  $SETENV -d -q -s $VIM3 $FOCAL $GNOME $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
-VIM3-ubuntu-server-focal-vendor-sdusb-REL)                  ( source  $SETENV -d -q -s $VIM3 $FOCAL $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
-VIM3-ubuntu-gnome-focal-vendor-sdusb-REL)                   ( source  $SETENV -d -q -s $VIM3 $FOCAL $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
+#VIM3-ubuntu-server-focal-vendor-emmc-REL-CHK)               ( source  $SETENV -d -q -s $VIM3 $FOCAL $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
+#VIM3-ubuntu-gnome-focal-vendor-emmc-REL-CHK)                ( source  $SETENV -d -q -s $VIM3 $FOCAL $GNOME $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
+#VIM3-ubuntu-server-focal-vendor-sdusb-REL)                  ( source  $SETENV -d -q -s $VIM3 $FOCAL $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
+#VIM3-ubuntu-gnome-focal-vendor-sdusb-REL)                   ( source  $SETENV -d -q -s $VIM3 $FOCAL $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM3-ubuntu-server-focal-mainline-sdusb-REL-TEST)           ( source  $SETENV -d -q -s $VIM3 $FOCAL $SERVER $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM3-ubuntu-gnome-focal-mainline-sdusb-REL-TEST)            ( source  $SETENV -d -q -s $VIM3 $FOCAL $GNOME $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM3-ubuntu-server-jammy-mainline-sdusb-REL-TEST)            ( source  $SETENV -d -q -s $VIM3 $JAMMY $SERVER $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
@@ -503,10 +503,10 @@ VIM3-debian-xfce-buster-mainline-sdusb)                     ( source  $SETENV -d
 VIM3-debian-minimal-buster-mainline-sdusb)                  ( source  $SETENV -d -q -s $VIM3 $BUSTER $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 
 # VIM3L Release Images
-VIM3L-ubuntu-server-focal-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $VIM3L $FOCAL $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
-VIM3L-ubuntu-gnome-focal-vendor-emmc-REL-CHK)               ( source  $SETENV -d -q -s $VIM3L $FOCAL $GNOME $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
-VIM3L-ubuntu-server-focal-vendor-sdusb-REL)                 ( source  $SETENV -d -q -s $VIM3L $FOCAL $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
-VIM3L-ubuntu-gnome-focal-vendor-sdusb-REL)                  ( source  $SETENV -d -q -s $VIM3L $FOCAL $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
+#VIM3L-ubuntu-server-focal-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $VIM3L $FOCAL $SERVER $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
+#VIM3L-ubuntu-gnome-focal-vendor-emmc-REL-CHK)               ( source  $SETENV -d -q -s $VIM3L $FOCAL $GNOME $EMMC $CMP && make -C "$MAKEDIR"  && make image -C "$MAKEDIR"  $RAW) & ;;
+#VIM3L-ubuntu-server-focal-vendor-sdusb-REL)                 ( source  $SETENV -d -q -s $VIM3L $FOCAL $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
+#VIM3L-ubuntu-gnome-focal-vendor-sdusb-REL)                  ( source  $SETENV -d -q -s $VIM3L $FOCAL $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM3L-ubuntu-server-focal-mainline-sdusb-REL-TEST)          ( source  $SETENV -d -q -s $VIM3L $FOCAL $SERVER $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM3L-ubuntu-gnome-focal-mainline-sdusb-REL-TEST)           ( source  $SETENV -d -q -s $VIM3L $FOCAL $GNOME $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM3L-ubuntu-server-jammy-mainline-sdusb-REL-TEST)           ( source  $SETENV -d -q -s $VIM3L $JAMMY $SERVER $ML $USB $CMP && make -C "$MAKEDIR" ) & ;;
