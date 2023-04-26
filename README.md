@@ -10,7 +10,7 @@
 
 Supported build host:
 
-* `Ubuntu 22.04 Focal x64`
+* `Ubuntu 22.04 Jammy x64`
   * `Building Ubuntu 20.04 Focal image`
   * `Building Ubuntu 22.04 Jammy image`
   * `Building Debian 10 Buster image`
