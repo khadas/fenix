@@ -30,7 +30,7 @@ UBOOT_IMAGE_FILES="u-boot.bin u-boot.bin.sd.bin"
 UBOOT_FORCE_REBUILD="yes"
 
 case "$LINUX" in
-	mainline)
+	mainline|5.15)
 		KERNEL_COMPILER="aarch64-none-linux-gnu-"
 		KERNEL_COMPILER_PATH="$TOOLCHAINS/gcc-arm-aarch64-none-linux-gnu-mainline/bin"
 		LINUX_DIR=$(realpath "$LINUX_VENDOR_DIR")
@@ -46,6 +46,8 @@ case "$LINUX" in
 		LINUX_DIR=$(realpath "$LINUX_VENDOR_DIR")
 		;;
 esac
+
+LINUX_DEFCONFIG_DIR="$LINUX_DIR/arch/arm64/configs"
 
 BOOT_SCRIPT_BOARD="s905_autoscript.cmd"
 BOOT_SCRIPT_VENDOR="aml_autoscript.txt"
@@ -203,7 +205,7 @@ pack_image_platform_raw() {
 	LOGO_OFFSET=0x07c00000
 
 	PATH_BOOT="$UBOOT_IMAGE_DIR"/u-boot.bin.sd.bin
-	PATH_DTB0="$LINUX_DIR/$LINUX_DTB"
+	PATH_DTB0="$LINUX_DTB"
 	PATH_ROOT="$BUILD_IMAGES/rootfs.img"
 	PATH_LOGO="$BUILD_IMAGES/logo.img"
 
@@ -271,7 +273,7 @@ pack_image_platform() {
 		case "$UBOOT" in
 			2015.01)
 				ln -fs "$BUILD_IMAGES/logo.img"              "$D"/logo.img
-				ln -fs "$LINUX_DIR/$LINUX_DTB"               "$D"/kvim.dtb
+				ln -fs "$LINUX_DTB"               "$D"/kvim.dtb
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin         "$D"/u-boot.bin
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.sd.bin  "$D"/u-boot.bin.sd.bin
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.usb.bl2 "$D"/u-boot.bin.usb.bl2
@@ -279,7 +281,7 @@ pack_image_platform() {
 				;;
 			2019.01)
 				ln -fs "$BUILD_IMAGES/logo.img"						"$D"/logo.img
-				ln -fs "$LINUX_DIR/$LINUX_DTB"						"$D"/kvim.dtb
+				ln -fs "$LINUX_DTB"						"$D"/kvim.dtb
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.signed			"$D"/u-boot.bin.signed
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.sd.bin.signed	"$D"/u-boot.bin.sd.bin.signed
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.usb.signed		"$D"/u-boot.bin.usb.signed

@@ -1,0 +1,29 @@
+#!/bin/sh
+
+set -e
+
+PREREQ=""
+
+prereqs()
+{
+	echo "${PREREQ}"
+}
+
+case "${1}" in
+	prereqs)
+		prereqs
+		exit 0
+		;;
+esac
+
+. /usr/share/initramfs-tools/hook-functions
+
+if [ -x /sbin/insmod ]
+then
+	copy_exec /sbin/insmod /bin
+
+	LIBC_DIR=$(ldd /sbin/insmod | sed -nr 's#.* => (/lib.*)/libc\.so\.[0-9.-]+ \(0x[[:xdigit:]]+\)$#\1#p')
+	find -L "$LIBC_DIR" -maxdepth 1 -name 'libgcc_s.*' -type f | while read so; do
+		copy_exec "$so"
+	done
+fi

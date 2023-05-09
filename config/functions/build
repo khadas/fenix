@@ -66,14 +66,23 @@ build_uboot() {
 	update_git_repo "$PWD" "$UBOOT_GIT_BRANCH"
 
 	info_msg "Build u-boot..."
-	export PATH=$UBOOT_COMPILER_PATH:$PATH
-	if [ "$UBOOT_FORCE_REBUILD" == "yes" ]; then
-		info_msg "U-boot: Force cleaning..."
-		make distclean
+
+	if [[ $(type -t uboot_custom_build) == function ]]; then
+		export PATH=$UBOOT_COMPILER_PATH:$PATH
+		export PATH=$UBOOT_COMPILER_PATH:$PATH
+		export CROSS_COMPILE=aarch64-elf-
+		uboot_custom_build
+		export CROSS_COMPILE=
+	else
+		export PATH=$UBOOT_COMPILER_PATH:$PATH
+		if [ "$UBOOT_FORCE_REBUILD" == "yes" ]; then
+			info_msg "U-boot: Force cleaning..."
+			make distclean
+		fi
+		rm -rf .config *.bin *.img
+		make $UBOOT_DEFCONFIG
+		make -j${NR_JOBS} CROSS_COMPILE="${CCACHE} ${UBOOT_COMPILER}"
 	fi
-	rm -rf .config *.bin *.img
-	make $UBOOT_DEFCONFIG
-	make -j${NR_JOBS} CROSS_COMPILE="${CCACHE} ${UBOOT_COMPILER}"
 
 	if [[ $(type -t uboot_custom_postprocess) == function ]]; then
 		uboot_custom_postprocess
@@ -108,6 +117,15 @@ build_linux() {
 		[ $? != 0 ] && error_msg "Failed to clone 'linux'" && return -1
 	fi
 
+	if [ -n "$LINUX_COMMON_DRIVERS_GIT_BRANCH" ]; then
+		if [ ! -d "$LINUX_COMMON_DRIVERS_DIR"/.git ]; then
+			info_msg "Linux common drivers repository does not exist, clone linux common drviers repository('$LINUX_COMMON_DRIVERS_GIT_BRANCH') from '$LINUX_COMMON_DRIVERS_SOURCE_URL'..."
+			## Clone linux common drivers from Khadas GitHub
+			git clone $GIT_CLONE_OPTIONS $LINUX_COMMON_DRIVERS_SOURCE_URL -b $LINUX_COMMON_DRIVERS_GIT_BRANCH "$LINUX_COMMON_DRIVERS_DIR"
+			[ $? != 0 ] && error_msg "Failed to clone 'linux common drivers'" && return -1
+		fi
+	fi
+
 	cd "$LINUX_VENDOR_DIR"
 	touch .scmversion
 
@@ -139,8 +157,35 @@ build_linux() {
 		info_msg "Linux: Already on branch '$LINUX_GIT_BRANCH'"
 	fi
 
+	if [ -n "$LINUX_COMMON_DRIVERS_GIT_BRANCH" ]; then
+		cd "$LINUX_COMMON_DRIVERS_DIR"
+		# Need to fetch common drivers
+		if ! git branch | grep "^* $LINUX_COMMON_DRIVERS_GIT_BRANCH$" > /dev/null; then
+			if ! git branch | grep "^  $LINUX_COMMON_DRIVERS_GIT_BRANCH$" > /dev/null; then
+				# New branch? Try to fetch it.
+				info_msg "Fetching '$LINUX_COMMON_DRIVERS_GIT_BRANCH' from '$LINUX_COMMON_DRIVERS_SOURCE_URL'..."
+				git fetch origin $LINUX_COMMON_DRIVERS_GIT_BRANCH:$LINUX_COMMON_DRIVERS_GIT_BRANCH
+			fi
+
+			info_msg "Linux common drivers: Switch to branch '$LINUX_COMMON_DRIVERS_GIT_BRANCH'"
+
+			# Check modifications
+			check_modifications || {
+				error_msg "Linux common drivers: can't checkout to branch '$LINUX_COMMON_DRIVERS_GIT_BRANCH', please commit your modifications and try again!"
+				return -1
+			}
+
+			git checkout $LINUX_COMMON_DRIVERS_GIT_BRANCH
+			[ $? != 0 ] && error_msg "Linux common drivers: Switch to branch '$LINUX_COMMON_DRIVERS_GIT_BRANCH' failed." && return -1
+		else
+			info_msg "Linux common drivers: Already on branch '$LINUX_COMMON_DRIVERS_GIT_BRANCH'"
+		fi
+		cd - > /dev/null
+	fi
+
 	# Update linux
-	update_git_repo "$PWD" "$LINUX_GIT_BRANCH"
+	update_git_repo "$LINUX_VENDOR_DIR" "$LINUX_GIT_BRANCH"
+	[ -n "$LINUX_COMMON_DRIVERS_GIT_BRANCH" ] && update_git_repo "$LINUX_COMMON_DRIVERS_DIR" "$LINUX_COMMON_DRIVERS_GIT_BRANCH"
 
 	# no need build just prepare
 	[ ! "$BUILD_LINUX_NOOP" ] || return 0
@@ -210,7 +255,7 @@ build_uboot_deb() {
 	# For amlogic platform, we need to update the dtb for u-boot
 	# Only for vendor u-boot & kernel
 	if [ "$VENDOR" == "Amlogic" ] && [ "$LINUX" != "mainline" ]; then
-		cp "$LINUX_DIR/$LINUX_DTB" "$pkgdir"/usr/lib/u-boot/dtb.img
+		cp "$LINUX_DTB" "$pkgdir"/usr/lib/u-boot/dtb.img
 	fi
 
 	cat <<-EOF > $pkgdir/usr/lib/u-boot/platform_install.sh
@@ -370,6 +415,6 @@ save_linux_config() {
 #		cp "$LINUX_DIR"/.config $PKGS_DIR/linux-mainline/configs/${KHADAS_BOARD}.config
 #	else
 		make ARCH=arm64 CROSS_COMPILE=${KERNEL_COMPILER} savedefconfig -C"$LINUX_DIR"
-		mv "$LINUX_DIR"/defconfig "$LINUX_DIR"/arch/arm64/configs/$LINUX_DEFCONFIG
+		mv "$LINUX_DIR"/defconfig $LINUX_DEFCONFIG_DIR/$LINUX_DEFCONFIG
 #	fi
 }

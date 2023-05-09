@@ -27,6 +27,9 @@ BUILD="$ROOT/build"
 [ "$LINUX_VENDOR_DIR" ] || \
 LINUX_VENDOR_DIR="$BUILD"/linux
 
+[ "$LINUX_COMMON_DRIVERS_DIR" ] || \
+LINUX_COMMON_DRIVERS_DIR="$LINUX_VENDOR_DIR"/common_drivers
+
 [ "$UBOOT_VENDOR_DIR" ] || \
 UBOOT_VENDOR_DIR="$BUILD"/u-boot
 
@@ -368,6 +371,7 @@ ROOTFS_CACHE_URL="http://build.khadas.com/khadas/fenix/cache/rootfs"
 
 ## U-boot & Linux GitHub URL
 LINUX_SOURCE_URL="${LINUX_SOURCE_URL:-https://github.com/khadas/linux}"
+LINUX_COMMON_DRIVERS_SOURCE_URL="${LINUX_COMMON_DRIVERS_SOURCE_URL:-https://github.com/khadas/common_drivers}"
 UBOOT_SOURCE_URL="${UBOOT_SOURCE_URL:-https://github.com/khadas/u-boot}"
 
 if [[ $DOWNLOAD_MIRROR == china ]] ; then
