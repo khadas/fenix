@@ -139,7 +139,7 @@ build_board_deb() {
 	. /etc/fenix-release
 	ln -sf /lib/firmware /etc/firmware
 	if [[ "\$BOARD" =~ "VIM3" ]]; then
-		if linux-version compare \`uname -r\` lt 5.10; then
+		if linux-version compare \`uname -r\` lt 6.0; then
 			systemctl enable panel.service
 			if [ "\$BOARD" == "VIM3" ]; then
 				systemctl enable camera_isp_3a_server.service
@@ -178,7 +178,7 @@ build_board_deb() {
 			sed -i "s/BOARD=.*/BOARD=\$khadas_board/" /etc/fenix-release
 		fi
 		linux_ver=\`uname -r\`
-		if linux-version compare \$linux_ver ge 5.12; then
+		if linux-version compare \$linux_ver ge 6.0; then
 			IS_MAINLINE_KERNEL="yes"
 		fi
 	fi

@@ -2,7 +2,7 @@
 
 linux_ver=`uname -a | awk '{print $3}'`
 
-if linux-version compare $linux_ver ge 5.10; then
+if [ -f /boot/.next ]; then
 	## Mainline kernel
 	bt_tty="ttyAML1"
 

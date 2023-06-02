@@ -5,7 +5,7 @@ if ! which lightdm; then
 	exit
 fi
 
-if linux-version compare `uname -r` ge 4.12; then
+if [ -f /boot/.next ]; then
 	IS_MAINLINE_KERNEL=yes
 fi
 

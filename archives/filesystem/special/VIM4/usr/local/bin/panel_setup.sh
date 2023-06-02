@@ -2,7 +2,7 @@
 
 linux_version=`uname -r`
 
-if linux-version compare $linux_version ge 5.6; then
+if [ -f /boot/.next ]; then
 	# ignore for mainline kernel
 	echo "Ignore for mainline kernel..."
 	exit 0
