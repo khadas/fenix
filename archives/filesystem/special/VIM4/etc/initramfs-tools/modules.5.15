@@ -9,38 +9,19 @@
 #
 # raid1
 # sd_mod
-amlogic-uart
+
 amlogic-gkitool
+amlogic-debug-iotrace
+amlogic-uart
+amlogic-hwspinlock
+amlogic-debug
 amlogic-memory-debug
-amlogic-secmon
 amlogic-clk
 amlogic-clk-soc-t7
+amlogic-aoclk-g12a
 amlogic-gpio
-amlogic-pinctrl
 amlogic-pinctrl-soc-t7
 amlogic-mailbox
-amlogic-pwm
-pwm-regulator
-amlogic-power
-amlogic-cpuinfo
-amlogic-cpufreq
 amlogic-reset
-amlogic-efuse-unifykey
+amlogic-power
 amlogic-mmc
-amlogic-i2c
-amlogic-spi
-amlogic-rng
-amlogic-tee
-videobuf-core
-dvb-core
-amlogic-pm
-amlogic-input
-amlogic-watchdog
-aml-dvb
-# aml_media
-amlogic-adc
-amlogic-rtc-virtual
-amlogic-thermal
-amlogic-irblaster
-amlogic-inphy
-# aml_drm
