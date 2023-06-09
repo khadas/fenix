@@ -216,6 +216,8 @@ build_board_deb() {
 		# Update modules
 		[ -f /etc/modules.mainlne ] && rm /etc/modules.mainlne
 		[ -f /etc/modules.$LINUX ] && mv /etc/modules.$LINUX /etc/modules
+		# Update modules configs
+		[ -f /etc/modprobe.d/dhd.conf.$LINUX ] && mv /etc/modprobe.d/dhd.conf.$LINUX /etc/modprobe.d/dhd.conf
 		if [ "\$BOARD" == "VIM2" ]; then
 			sed -i 's/mali//g' /etc/modules
 		elif [ "\$BOARD" == "VIM3L" ]; then

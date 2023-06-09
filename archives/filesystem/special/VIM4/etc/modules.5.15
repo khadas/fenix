@@ -42,3 +42,5 @@ cfg80211
 mac80211
 v4l2-fwnode
 v4l2-async
+
+dhd
