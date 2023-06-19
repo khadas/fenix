@@ -44,3 +44,4 @@ v4l2-fwnode
 v4l2-async
 
 dhd
+zram
