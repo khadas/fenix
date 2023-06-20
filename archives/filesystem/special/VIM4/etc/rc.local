@@ -35,6 +35,10 @@ echo heartbeat > /sys/class/leds/pwmled/trigger
 [ -f /sys/devices/virtual/graphics/fbcon/cursor_blink ] && chmod 777 /sys/devices/virtual/graphics/fbcon/cursor_blink
 [ -f /sys/class/ppmgr/ppscaler ] && chmod 777 /sys/class/ppmgr/ppscaler
 
+# For HDMIIN
+[ -f /sys/class/graphics/fb0/blank ] && chmod 0660 /sys/class/graphics/fb0/blank
+[ -c /dev/binderfs/binder ] && chmod 0660 /dev/binderfs/binder
+
 # For Kernel 5.4 FAN
 [ -f /sys/class/fan/mode ] && chmod 777 /sys/class/fan/mode
 [ -f /sys/class/fan/level ] && chmod 777 /sys/class/fan/level
