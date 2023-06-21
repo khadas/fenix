@@ -1,22 +1,10 @@
 /*
- * Media controller test application
+ * Copyright (c) 2021 Amlogic, Inc. All rights reserved.
  *
- * Copyright (C) 2010-2014 Ideas on board SPRL
+ * This source code is subject to the terms and conditions defined in the
+ * file 'LICENSE' which is part of this source code package.
  *
- * Contact: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published
- * by the Free Software Foundation; either version 2.1 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * Description:
  */
 
 #ifndef __MEDIAPI_H__
@@ -42,6 +30,7 @@ typedef struct stream_configuration{
 
 typedef struct media_stream {
     char media_dev_name[64];
+    char lens_ent_name[32];
     char sensor_ent_name[32];
     char csiphy_ent_name[32];
     char adap_ent_name[32];
@@ -55,6 +44,7 @@ typedef struct media_stream {
 
     struct media_device  *media_dev;
 
+    struct media_entity  *lens_ent;
     struct media_entity  *sensor_ent;
     struct media_entity  *csiphy_ent;
     struct media_entity  *adap_ent;

@@ -16,27 +16,26 @@
  */
 
 #if 1
-#define ERR printf
+#define ERR(fmt, ...) do{if(1) printf("%s[%d]: " fmt"\n", __func__, __LINE__,##__VA_ARGS__);}while(0)
 #else
 #define ERR //
 #endif
 
 #if 1
-#define MSG printf
+#define MSG(fmt, ...) do{if(1) printf("%s[%d]: " fmt"\n", __func__, __LINE__,##__VA_ARGS__);}while(0)
 #else
 #define MSG //
 #endif
 
 #if 1
-#define INFO printf
+#define INFO(fmt, ...) do{if(1) printf("%s[%d]: " fmt"\n", __func__, __LINE__,##__VA_ARGS__);}while(0)
 #else
 #define INFO //
 #endif
 
 #if 1
-#define DBG printf
+#define DBG(fmt, ...) do{if(1) printf("%s[%d]: " fmt"\n", __func__, __LINE__,##__VA_ARGS__);}while(0)
 #else
 #define DBG //
 #endif
-
 #endif // __METADATA_API_H__

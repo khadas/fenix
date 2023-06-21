@@ -13,15 +13,15 @@
 #include <stdint.h>
 
 #define ISO_NUM_MAX     (10)
-#define RATIO_NUM_MAX   (8)
+#define RATIO_NUM_MAX     (8)
 
 typedef enum CALIBRATION_TYPE {
     CALIBRATION_TOP_CTL                   ,
     CALIBRATION_RES_CTL                   ,
     CALIBRATION_AWB_CTL                   ,
     CALIBRATION_AWB_CT_POS                ,
-    CALIBRATION_AWB_CT_RG_COMPENSATION    ,
-    CALIBRATION_AWB_CT_BG_COMPENSATION    ,
+    CALIBRATION_AWB_CT_RG_COMPENSATION       ,
+    CALIBRATION_AWB_CT_BG_COMPENSATION       ,
     CALIBRATION_AWB_CT_WGT                ,
     CALIBRATION_AWB_CT_DYN_CVRANGE        ,
     CALIBRATION_AE_CTL                    ,
@@ -164,6 +164,7 @@ typedef enum CALIBRATION_TYPE {
     CALIBRATION_DECMP1                    ,
     CALIBRATION_DYM_CUSTOM_SETTING        ,
     CALIBRATION_AWB_PRESET                ,
+
     CALIBRATION_TOTAL_SIZE                ,
 } CALIBRATION_TYPE_E;
 
@@ -193,6 +194,7 @@ typedef enum
     AML_MBI_ISP_QueryWBinfo,
     AML_MBI_ISP_QueryEXPinfo,
     AML_MBI_ISP_IRAttr,
+    AML_MBI_ISP_AERoiAttr,
     AISP_3A_MAX,
 
     AML_MBI_ISP_SaturationAttr,
@@ -217,6 +219,7 @@ typedef enum
     AML_MBI_ISP_SNRAttr,
     AML_MBI_ISP_TNRAttr,
     AML_MBI_ISP_CNRAttr,
+    AML_MBI_ISP_PURPLEAttr,
     AML_MBI_ISP_DMSAttr,
     AML_MBI_ISP_NPAttr,
     AML_MBI_ISP_CrAttr,
@@ -239,7 +242,7 @@ typedef struct LookupTable {
 } LookupTable;
 
 typedef struct _AIspCalibrations {
-    LookupTable *pstcalibrations[CALIBRATION_TOTAL_SIZE];
+    LookupTable *calibrations[CALIBRATION_TOTAL_SIZE];
 } AIspCalibrations;
 
 typedef struct aisp_calib_info_s {

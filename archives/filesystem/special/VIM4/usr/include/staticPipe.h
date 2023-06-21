@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2021 Amlogic, Inc. All rights reserved.
+ *
+ * This source code is subject to the terms and conditions defined in the
+ * file 'LICENSE' which is part of this source code package.
+ *
+ * Description:
+ */
+
 #ifndef __STATIC_PIPE_H__
 #define __STATIC_PIPE_H__
 
@@ -16,9 +25,8 @@ namespace android {
 class staticPipe {
   public:
     static int fetchPipeMaxResolution(media_stream_t *stream, uint32_t& width, uint32_t &height);
-    static int fetchSensorFormat(media_stream_t *stream, int hdrEnable, uint32_t fps);
+    static int fetchSensorFormat(media_stream_t *stream, int hdrEnable);
     static sensorType fetchSensorType(media_stream_t *stream);
-    static int fetchSensorOTP(media_stream_t * stream, aisp_calib_info_t *otp);
 };
 }
 #endif

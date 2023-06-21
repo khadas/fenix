@@ -356,14 +356,14 @@ typedef struct {
 typedef struct {
     aml_ccm_str_lut   ccm_adj;
     aml_ccm_coef_lut  ccm_lut;
-} aml_isp_satutation_auto_s;
+} aml_isp_salutation_auto_s;
 
 typedef struct {
     aml_isp_op_type op_type;
     aml_isp_saturation_manual manual_attr;
     union {
     aml_isp_saturation_auto   auto_attr;
-    aml_isp_satutation_auto_s auto_attr_s;
+    aml_isp_salutation_auto_s auto_attr_s;
     };
 } aml_isp_saturation_attr;
 
@@ -1311,7 +1311,7 @@ typedef struct {
     aml_isp_colormatrix_manual_s manual_attr;
     union {
     aml_isp_colormatrix_auto_s   auto_attr;
-    aml_isp_satutation_auto_s    auto_attr_s;
+    aml_isp_salutation_auto_s    auto_attr_s;
     };
 } aml_isp_colormatrix_attr;
 
