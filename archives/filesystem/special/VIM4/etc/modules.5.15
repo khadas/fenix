@@ -77,5 +77,14 @@ media_sync
 amlogic-jpegenc
 amlogic-multienc
 
+nft_chain_nat
+nft_counter
+nft_compat
+nf_tables
+xt_conntrack
+xt_MASQUERADE
+xt_addrtype
+veth
+
 dhd
 zram
