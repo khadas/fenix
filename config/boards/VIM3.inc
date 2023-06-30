@@ -67,31 +67,33 @@ build_deb_packages_platform() {
 		rm -rf $BUILD/.stamps/npu_aml
 		build_package "npu_aml:target"
 
-		if [ "$LINUX" == "4.9" ] && [ "$DISTRIB_RELEASE" != "jammy" ]; then
+		if [ "$LINUX" == "4.9" ]; then
 
-			info_msg "Building Kodi packages..."
-			# FIXME
-			# remove build stamp to force build for other arch
-			rm -rf $BUILD/.stamps/kodi_aml
-			build_package "kodi_aml:target"
+			if [ "$DISTRIB_RELEASE" != "jammy" ]; then
+				info_msg "Building Kodi packages..."
+				# FIXME
+				# remove build stamp to force build for other arch
+				rm -rf $BUILD/.stamps/kodi_aml
+				build_package "kodi_aml:target"
 
-			info_msg "Building libplayer_aml packages..."
-			# FIXME
-			# remove build stamp to force build for other arch
-			rm -rf $BUILD/.stamps/libplayer_aml
-			build_package "libplayer_aml:target"
+				info_msg "Building libplayer_aml packages..."
+				# FIXME
+				# remove build stamp to force build for other arch
+				rm -rf $BUILD/.stamps/libplayer_aml
+				build_package "libplayer_aml:target"
+
+				info_msg "Building gstreamer_aml packages..."
+				# FIXME
+				# remove build stamp to force build for other arch
+				rm -rf $BUILD/.stamps/gstreamer_aml
+				build_package "gstreamer_aml:target"
+			fi
 
 			info_msg "Building amremote packages..."
 			# FIXME
 			# remove build stamp to force build for other arch
 			rm -rf $BUILD/.stamps/amremote
 			build_package "amremote:target"
-
-			info_msg "Building gstreamer_aml packages..."
-			# FIXME
-			# remove build stamp to force build for other arch
-			rm -rf $BUILD/.stamps/gstreamer_aml
-			build_package "gstreamer_aml:target"
 
 			if [ "$DISTRIB_RELEASE" == "bionic" ]; then
 				info_msg "Building opencv3 packages..."
@@ -101,23 +103,25 @@ build_deb_packages_platform() {
 				build_package "opencv3:target"
 			fi
 
-			info_msg "Building edid-decode-deb packages..."
-			# FIXME
-			# remove build stamp to force build for other arch
-			rm -rf $BUILD/.stamps/edid-decode-deb
-			build_package "edid-decode-deb:target"
+			if [ "$DISTRIB_RELEASE" != "jammy" ]; then
+				info_msg "Building edid-decode-deb packages..."
+				# FIXME
+				# remove build stamp to force build for other arch
+				rm -rf $BUILD/.stamps/edid-decode-deb
+				build_package "edid-decode-deb:target"
 
-			info_msg "Building mali_examples_aml packages..."
-			# FIXME
-			# remove build stamp to force build for other arch
-			rm -rf $BUILD/.stamps/mali_examples_aml
-			build_package "mali_examples_aml:target"
+				info_msg "Building mali_examples_aml packages..."
+				# FIXME
+				# remove build stamp to force build for other arch
+				rm -rf $BUILD/.stamps/mali_examples_aml
+				build_package "mali_examples_aml:target"
 
-			info_msg "Building libcec..."
-			# FIXME
-			# remove build stamp to force build for other arch
-			rm -rf $BUILD/.stamps/libcec_debs
-			build_package "libcec_debs:target"
+				info_msg "Building libcec..."
+				# FIXME
+				# remove build stamp to force build for other arch
+				rm -rf $BUILD/.stamps/libcec_debs
+				build_package "libcec_debs:target"
+			fi
 
 			info_msg "Building encoder..."
 			# FIXME
@@ -152,29 +156,32 @@ install_deb_packages_platform() {
 		info_msg "Installing npu_aml packages..."
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/npu_aml/*.deb
 
-		if [ "$LINUX" == "4.9" ] && [ "$DISTRIB_RELEASE" != "jammy" ] ; then
-			# Install Kodi in chroot
-			info_msg "Installing Kodi packages..."
-			if [ $DISTRIB_RELEASE == "bionic" ]; then
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi/*.deb
-			elif [ $DISTRIB_RELEASE == "focal" ]; then
-				debs=$(ls $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi/deps/*.deb)
-				for deb in $debs
-				do
-					install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi/deps/$(basename $deb)
-				done
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi/kodi-bin_*.deb
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi/kodi_*.deb
-			fi
+		if [ "$LINUX" == "4.9" ]; then
 
-			info_msg "Installing libplayer_aml packages..."
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libplayer_aml/*.deb
+			if [ "$DISTRIB_RELEASE" != "jammy" ]; then
+				# Install Kodi in chroot
+				info_msg "Installing Kodi packages..."
+				if [ $DISTRIB_RELEASE == "bionic" ]; then
+					install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi/*.deb
+				elif [ $DISTRIB_RELEASE == "focal" ]; then
+					debs=$(ls $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi/deps/*.deb)
+					for deb in $debs
+					do
+						install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi/deps/$(basename $deb)
+					done
+					install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi/kodi-bin_*.deb
+					install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi/kodi_*.deb
+				fi
+
+				info_msg "Installing libplayer_aml packages..."
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libplayer_aml/*.deb
+
+				info_msg "Installing gstreamer_aml packages..."
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/*.deb
+			fi
 
 			info_msg "Installing amremote packages..."
 			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote/*.deb
-
-			info_msg "Installing gstreamer_aml packages..."
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/*.deb
 
 			if [ "$DISTRIB_RELEASE" == "bionic" ]; then
 				info_msg "Installing opencv3 packages..."
@@ -184,19 +191,21 @@ install_deb_packages_platform() {
 			# Enable khadas remote
 			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable amlogic-remotecfg.service"'
 
-			info_msg "Installing edid-decode-deb packages..."
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/edid-decode-deb/*.deb
+			if [ "$DISTRIB_RELEASE" != "jammy" ]; then
+				info_msg "Installing edid-decode-deb packages..."
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/edid-decode-deb/*.deb
 
-			info_msg "Installing mali_examples_aml packages..."
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mali_examples_aml/*.deb
+				info_msg "Installing mali_examples_aml packages..."
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mali_examples_aml/*.deb
 
-			# Install libcec in chroot
-			info_msg "Installing libcec..."
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/libcec4_*.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/libcec_*.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/libcec4-*.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/python3-libcec_*.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/cec-utils_*.deb
+				# Install libcec in chroot
+				info_msg "Installing libcec..."
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/libcec4_*.deb
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/libcec_*.deb
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/libcec4-*.deb
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/python3-libcec_*.deb
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/cec-utils_*.deb
+			fi
 
 			# Install encoder libriries in chroot
 			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/encoder/*.deb
