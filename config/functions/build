@@ -70,7 +70,7 @@ build_uboot() {
 	if [[ $(type -t uboot_custom_build) == function ]]; then
 		export PATH=$UBOOT_COMPILER_PATH:$PATH
 		export PATH=$UBOOT_COMPILER_PATH:$PATH
-		export CROSS_COMPILE=aarch64-elf-
+		export CROSS_COMPILE=$UBOOT_COMPILER
 		uboot_custom_build
 		export CROSS_COMPILE=
 	else

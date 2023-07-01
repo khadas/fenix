@@ -24,7 +24,7 @@ tweaks_platform() {
 	if [ "$LINUX" != "mainline" ]; then
 		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable panel.service"'
 		if [ "$DISTRIB_TYPE" != "server" ]; then
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable tone2-control.service"'
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable tone2-control.service"'
 			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable hdmi_resolution.service"'
 		fi
 	fi
@@ -38,13 +38,20 @@ tweaks_platform() {
 
 	# Create boot links
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/zImage zImage"'
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/uInitrd uInitrd"'
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/dtb/$(basename $LINUX_DTB) dtb.img"'
+		if [ "$LINUX" != "5.15" ]; then
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/zImage zImage"'
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/uInitrd uInitrd"'
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/dtb/$(basename $LINUX_DTB) dtb.img"'
+		else
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/Image Image"'
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/initrd.img initrd.img"'
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/dtb/amlogic/$(basename $LINUX_DTB) dtb.img"'
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/dtb dtb"'
+		fi
 	else
 		# Setup default DTB for SD/USB images
-		if [ "$LINUX" == "mainline" ]; then
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "cp /boot/dtb/amlogic/$(basename $LINUX_DTB) /boot/dtb.img"'
+		if [ "$LINUX" == "mainline" ] || [ "$LINUX" == "5.15" ]; then
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs dtb/amlogic/$(basename $LINUX_DTB) /boot/dtb.img || cp /boot/dtb/amlogic/$(basename $LINUX_DTB) /boot/dtb.img"'
 		else
 			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "cp /boot/dtb/$(basename $LINUX_DTB) /boot/dtb.img"'
 		fi

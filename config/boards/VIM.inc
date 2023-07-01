@@ -3,7 +3,7 @@
 ## VIM series common part
 ##########################
 case "$UBOOT" in
-	2015.01)
+	2015.01|2015.01-5.15)
 		UBOOT_COMPILER="aarch64-none-elf-"
 		UBOOT_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-none-elf/bin:$TOOLCHAINS/gcc-linaro-arm-none-eabi/bin"
 		[ "$UBOOT_VENDOR_DIR" ] && \
@@ -271,7 +271,7 @@ pack_image_platform() {
 		D="$UPGRADE_DIR_"/Amlogic
 
 		case "$UBOOT" in
-			2015.01)
+			2015.01|2015.01-5.15)
 				ln -fs "$BUILD_IMAGES/logo.img"              "$D"/logo.img
 				ln -fs "$LINUX_DTB"               "$D"/kvim.dtb
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin         "$D"/u-boot.bin
