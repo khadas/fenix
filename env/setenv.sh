@@ -394,18 +394,12 @@ file '$ROOT/config/boards/${KHADAS_BOARD}.conf'? Please add it!"
 function choose_linux_version() {
 	echo_
 	echo_ "Choose linux version:"
-	# FIXME
-	if [ "$UBOOT" == "mainline" ]; then
-		SUPPORTED_LINUX=("mainline")
-	else
-		if [ "$KHADAS_BOARD" != "Generic" ]; then
-			SUPPORTED_LINUX=(`echo ${SUPPORTED_LINUX[@]} | sed s/mainline//g`)
-		fi
-	fi
 
 	i=0
 
-	LINUX_VERSION_ARRAY_LEN=${#SUPPORTED_LINUX[@]}
+	_SUPPORTED_LINUX=(${SUPPORTED_LINUX[$UBOOT]})
+
+	LINUX_VERSION_ARRAY_LEN=${#_SUPPORTED_LINUX[@]}
 	if [ $LINUX_VERSION_ARRAY_LEN == 0 ]; then
 		DIE "Missing 'SUPPORTED_LINUX' in board configuration
 file '$ROOT/config/boards/${KHADAS_BOARD}.conf'? Please add it!"
@@ -414,8 +408,8 @@ file '$ROOT/config/boards/${KHADAS_BOARD}.conf'? Please add it!"
 
 	while [[ $i -lt ${LINUX_VERSION_ARRAY_LEN} ]]
 	do
-		echo_ "$((${i}+1)). linux-${SUPPORTED_LINUX[$i]}"
-		[ "${SUPPORTED_LINUX[$i]}" = "$LINUX" ] && return 0
+		echo_ "$((${i}+1)). linux-${_SUPPORTED_LINUX[$i]}"
+		[ "${_SUPPORTED_LINUX[$i]}" = "$LINUX" ] && return 0
 		let i++
 	done
 	
@@ -426,7 +420,7 @@ file '$ROOT/config/boards/${KHADAS_BOARD}.conf'? Please add it!"
 
 	# no need ask if only one choose ;-)
 	[ "$LINUX_VERSION_ARRAY_LEN" = 1 ] && echo_ -n "only one choose " && \
-		LINUX=$SUPPORTED_LINUX && return 0
+		LINUX=$_SUPPORTED_LINUX && return 0
 
 	local DEFAULT_NUM
 	DEFAULT_NUM=1
@@ -453,7 +447,7 @@ file '$ROOT/config/boards/${KHADAS_BOARD}.conf'? Please add it!"
 		if [ -n "`echo $ANSWER | sed -n '/^[0-9][0-9]*$/p'`" ]; then
 			if [ $ANSWER -le ${LINUX_VERSION_ARRAY_LEN} ] && [ $ANSWER -gt 0 ]; then
 				index=$((${ANSWER}-1))
-				LINUX="${SUPPORTED_LINUX[$index]}"
+				LINUX="${_SUPPORTED_LINUX[$index]}"
 			else
 				wrong_num
 			fi
