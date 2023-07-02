@@ -152,7 +152,11 @@ write_uboot_platform()
 write_uboot_platform_ext()
 {
 	dd if="$1/u-boot.bin" of=/dev/bootloader conv=fsync bs=1 seek=512 > /dev/null 2>&1
+	# Enable write access for /dev/mmcblk0boot0
+	[ -f /sys/block/mmcblk0boot0/force_ro ] && echo 0 > /sys/block/mmcblk0boot0/force_ro
 	dd if="$1/u-boot.bin" of=/dev/mmcblk0boot0 conv=fsync bs=1 seek=512 > /dev/null 2>&1
+	# Enable write access for /dev/mmcblk0boot1
+	[ -f /sys/block/mmcblk0boot1/force_ro ] && echo 0 > /sys/block/mmcblk0boot1/force_ro
 	dd if="$1/u-boot.bin" of=/dev/mmcblk0boot1 conv=fsync bs=1 seek=512 > /dev/null 2>&1
 }
 
