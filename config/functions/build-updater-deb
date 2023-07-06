@@ -34,7 +34,7 @@ build_updater_deb() {
 				updater_deb_dependencies+="python3-wiringpi"
 				;;
 		esac
-	elif [ "$LINUX" != "mainline" ] && [ "$DISTRIBUTION" == "Ubuntu" ] && [ "$DISTRIB_RELEASE" == "focal" ]; then
+	elif [ "$LINUX" == "4.9" ] && [ "$DISTRIBUTION" == "Ubuntu" ] && [ "$DISTRIB_RELEASE" == "focal" ]; then
 		case $KHADAS_BOARD in
 			VIM3)
 				updater_deb_dependencies+="wiringpi, python3-wiringpi, kodi, kodi-bin, encoder-libs-aml"
