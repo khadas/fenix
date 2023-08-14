@@ -136,6 +136,16 @@ build_deb_packages_platform() {
 			rm -rf $BUILD/.stamps/encoder_libs_deb_aml
 			build_package "encoder_libs_deb_aml:target"
 		fi
+
+		if [ "$LINUX" == "5.15" ]; then
+			if [ "$DISTRIB_RELEASE" == "jammy" ]; then
+				info_msg "Building mali-debs package..."
+				# FIXME
+				# remove build stamp to force build for other arch
+				rm -rf $BUILD/.stamps/mali-debs
+				build_package "mali-debs:target"
+			fi
+		fi
 	fi
 
 	if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" != "bionic" ] && [ "$DISTRIB_RELEASE" != "jammy" ] && [ "$DISTRIB_TYPE" != "server" ]; then
@@ -216,6 +226,13 @@ install_deb_packages_platform() {
 
 			# Install encoder libriries in chroot
 			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/encoder/*.deb
+		fi
+
+		if [ "$LINUX" == "5.15" ]; then
+			if [ "$DISTRIB_RELEASE" == "jammy" ]; then
+				info_msg "Installing mali-debs package ..."
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/mali-debs/${GPU_PLATFORM}/*.deb
+			fi
 		fi
 	fi
 
