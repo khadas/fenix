@@ -144,6 +144,53 @@ build_deb_packages_platform() {
 				# remove build stamp to force build for other arch
 				rm -rf $BUILD/.stamps/mali-debs
 				build_package "mali-debs:target"
+
+				info_msg "Building OPTEE userspace package..."
+				# FIXME
+				# remove build stamp to force build for other arch
+				rm -rf $BUILD/.stamps/optee_userspace_deb_aml
+				build_package "optee_userspace_deb_aml:target"
+
+				info_msg "Building OPTEE video firmware package..."
+				# FIXME
+				# remove build stamp to force build for other arch
+				rm -rf $BUILD/.stamps/optee_video_firmware_deb_aml
+				build_package "optee_video_firmware_deb_aml:target"
+
+				info_msg "Building libion package..."
+				# FIXME
+				# remove build stamp to force build for other arch
+				rm -rf $BUILD/.stamps/libion_deb_aml
+				build_package "libion_deb_aml:target"
+
+				info_msg "Building libge2d package..."
+				# FIXME
+				# remove build stamp to force build for other arch
+				rm -rf $BUILD/.stamps/libge2d_deb_aml
+				build_package "libge2d_deb_aml:target"
+
+				info_msg "Building libjpegenc package..."
+				# FIXME
+				# remove build stamp to force build for other arch
+				rm -rf $BUILD/.stamps/libjpegenc_deb_aml
+				build_package "libjpegenc_deb_aml:target"
+
+				# FIXME
+				# remove build stamp to force build for other arch
+				rm -rf $BUILD/.stamps/libamvenc_deb_aml
+				build_package "libamvenc_deb_aml:target"
+
+				info_msg "Building multimedia package..."
+				# FIXME
+				# remove build stamp to force build for other arch
+				rm -rf $BUILD/.stamps/multimedia_debs_aml
+				build_package "multimedia_debs_aml:target"
+
+				info_msg "Building gstreamer_aml package..."
+				# FIXME
+				# remove build stamp to force build for other arch
+				rm -rf $BUILD/.stamps/gstreamer_aml
+				build_package "gstreamer_aml:target"
 			fi
 		fi
 	fi
@@ -232,6 +279,31 @@ install_deb_packages_platform() {
 			if [ "$DISTRIB_RELEASE" == "jammy" ]; then
 				info_msg "Installing mali-debs package ..."
 				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/mali-debs/${GPU_PLATFORM}/*.deb
+
+				info_msg "Installing OPTEE userspace package..."
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/optee_userspace_deb_aml/*.deb
+
+				info_msg "Installing OPTEE video firmware package..."
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/optee_video_firmware_deb_aml/*.deb
+
+				info_msg "Installing libion package..."
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libion_deb_aml/*.deb
+
+				info_msg "Installing libge2d package..."
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libge2d_deb_aml/*.deb
+
+				info_msg "Installing libjpegenc package..."
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libjpegenc_deb_aml/*.deb
+
+				info_msg "Installing libamvenc package..."
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libamvenc_deb_aml/*.deb
+
+				# Multimdia
+				info_msg "Installing multimdia package..."
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/multimedia_debs_aml/gst-aml-drmbufferpool-plugins_*.deb
+
+				info_msg "Installing gstreamer_aml package..."
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/*.deb
 			fi
 		fi
 	fi
