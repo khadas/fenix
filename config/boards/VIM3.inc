@@ -191,6 +191,12 @@ build_deb_packages_platform() {
 				# remove build stamp to force build for other arch
 				rm -rf $BUILD/.stamps/gstreamer_aml
 				build_package "gstreamer_aml:target"
+
+				info_msg "Building meson-display package..."
+				# FIXME
+				# remove build stamp to force build for other arch
+				rm -rf $BUILD/.stamps/meson-display-deb-aml
+				build_package "meson-display-deb-aml:target"
 			fi
 		fi
 	fi
@@ -304,6 +310,9 @@ install_deb_packages_platform() {
 
 				info_msg "Installing gstreamer_aml package..."
 				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/*.deb
+
+				info_msg "Installing meson-display package..."
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/meson-display-deb-aml/*.deb
 			fi
 		fi
 	fi
