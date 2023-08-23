@@ -263,7 +263,7 @@ PACKAGE_LIST="bc cpufrequtils device-tree-compiler fping fake-hwclock psmisc chr
 
 # Non-essential packages
 PACKAGE_LIST_ADDITIONAL="network-manager wireless-tools lsof htop mmc-utils wget nano sysstat net-tools \
-	resolvconf iozone3 jq libcrack2 cracklib-runtime curl rfkill bison flex libssl-dev"
+	resolvconf iozone3 jq libcrack2 cracklib-runtime curl rfkill bison flex libssl-dev xterm"
 
 if [[ "$DISTRIB_TYPE" != "minimal" ]]; then
 
@@ -281,7 +281,7 @@ if [[ "$DISTRIB_TYPE" != "minimal" ]]; then
 		modemmanager mobile-broadband-provider-info zlib1g-dev avahi-utils"
 fi
 
-PACKAGE_LIST_DESKTOP="xserver-xorg xserver-xorg-video-fbdev gvfs-backends gvfs-fuse xfonts-base xinit x11-xserver-utils xterm thunar-volman \
+PACKAGE_LIST_DESKTOP="xserver-xorg xserver-xorg-video-fbdev gvfs-backends gvfs-fuse xfonts-base xinit x11-xserver-utils thunar-volman \
 	network-manager-gnome network-manager-openvpn-gnome gnome-keyring gcr libgck-1-0 p11-kit pasystray pavucontrol pulseaudio \
 	pavumeter pulseaudio-module-bluetooth blueman libpam-gnome-keyring libgl1-mesa-dri gparted synaptic apt-xapian-index \
 	policykit-1 profile-sync-daemon gnome-orca numix-gtk-theme gnome-system-tools lightdm lightdm-gtk-greeter gufw yad zenity guvcview onboard"
