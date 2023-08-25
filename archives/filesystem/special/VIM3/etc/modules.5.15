@@ -6,7 +6,6 @@ sha1-ce
 zsmalloc
 ntfs3
 gpio-regulator
-zram
 system_heap
 mdio-mux
 pcs_xpcs
