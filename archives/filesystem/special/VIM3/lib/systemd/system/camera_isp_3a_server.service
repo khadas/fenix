@@ -1,5 +1,6 @@
 [Unit]
 Description=Camera ISP 3A server service
+ConditionPathExists=/dev/video50
 DefaultDependencies=no
 
 [Service]
