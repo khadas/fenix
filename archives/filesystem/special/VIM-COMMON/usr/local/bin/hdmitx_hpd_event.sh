@@ -11,14 +11,11 @@ fi
 
 if [ ! -d /usr/share/desktop-base ]; then
 	## For server
-	hdmimode=`cat /sys/class/display/mode`
-	if [ "$hdmimode" == "dummy_l" ]; then
-		drm-setcrtc -d meson -s 0 > /dev/null 2>&1
-		sleep 0.5
-		echo 1 > /sys/class/graphics/fb0/blank
-		sleep 0.5
-		echo 0 > /sys/class/graphics/fb0/blank
-	fi
+	drm-setcrtc -d meson -s 0 > /dev/null 2>&1
+	sleep 0.5
+	echo 1 > /sys/class/graphics/fb0/blank
+	sleep 0.5
+	echo 0 > /sys/class/graphics/fb0/blank
 else
 	## For desktop
 	## Restart the GDM service when hdmitx plugin
