@@ -309,7 +309,26 @@ install_deb_packages_platform() {
 				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/multimedia_debs_aml/gst-aml-drmbufferpool-plugins_*.deb
 
 				info_msg "Installing gstreamer_aml package..."
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/*.deb
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/${LINUX}/gstreamer-aml_*.deb
+				# gstreamer1.0
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/${LINUX}/gstreamer1.0-debs/libgstreamer1.0-0_*.deb
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/${LINUX}/gstreamer1.0-debs/gir1.2-gstreamer-1.0_*.deb
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/${LINUX}/gstreamer1.0-debs/gstreamer1.0-tools_*.deb
+				# gst-plugins-base1.0
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/${LINUX}/gst-plugins-base1.0-debs/libgstreamer-plugins-base1.0-0_*.deb
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/${LINUX}/gst-plugins-base1.0-debs/libgstreamer-gl1.0-0_*.deb
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/${LINUX}/gst-plugins-base1.0-debs/gstreamer1.0-plugins-base_*.deb
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/${LINUX}/gst-plugins-base1.0-debs/gstreamer1.0-plugins-base-apps_*.deb
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/${LINUX}/gst-plugins-base1.0-debs/gstreamer1.0-x_*.deb
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/${LINUX}/gst-plugins-base1.0-debs/gstreamer1.0-alsa_*.deb
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/${LINUX}/gst-plugins-base1.0-debs/gir1.2-gst-plugins-base-1.0_*.deb
+				# gst-plugins-good1.0
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/${LINUX}/gst-plugins-good1.0-debs/libgstreamer-plugins-good1.0-0_*.deb
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/${LINUX}/gst-plugins-good1.0-debs/gstreamer1.0-plugins-good_*.deb
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/${LINUX}/gst-plugins-good1.0-debs/gstreamer1.0-pulseaudio_*.deb
+				# gst-plugins-bad1.0
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/${LINUX}/gst-plugins-bad1.0-debs/libgstreamer-plugins-bad1.0-0_*.deb
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/${LINUX}/gst-plugins-bad1.0-debs/gstreamer1.0-plugins-bad_*.deb
 
 				info_msg "Installing meson-display package..."
 				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/meson-display-deb-aml/*.deb
