@@ -1,8 +1,0 @@
-[Unit]
-Description=External Watchdog
-After=multi-user.target
-
-[Service]
-ExecStart=/usr/local/bin/external-watchdog.sh start
-ExecStop=/usr/local/bin/dis-external-watchdog.sh stop
-RemainAfterExit=No
