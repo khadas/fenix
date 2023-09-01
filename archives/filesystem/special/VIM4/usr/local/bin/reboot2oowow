@@ -1,0 +1,5 @@
+#!/bin/bash
+
+sudo i2cset -f -y 6 0x18 0x91 0x00
+
+exit
