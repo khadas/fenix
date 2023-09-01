@@ -360,7 +360,7 @@ case $DISTRIB_RELEASE in
 	;;
 	jammy)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
-		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found"
+		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found libgrpc++1 libboost-system1.74.0"
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER xserver-xorg-input-all pulseaudio-module-gsettings firefox language-selector-gnome viewnior dbus-user-session libreoffice-style-tango"
 	;;
 esac
