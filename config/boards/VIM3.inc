@@ -19,41 +19,41 @@ tweaks_platform() {
 	echo "ttyAML0" >> $ROOTFS_TEMP/etc/securetty
 
 	# Enable services
-	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable fan.service"'
+	execute_in_chroot "systemctl --no-reload enable fan.service"
 
 	if [ "$LINUX" != "mainline" ]; then
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable panel.service"'
+		execute_in_chroot "systemctl --no-reload enable panel.service"
 		if [ "$DISTRIB_TYPE" != "server" ]; then
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable tone2-control.service"'
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable hdmi_resolution.service"'
+			execute_in_chroot "systemctl --no-reload enable tone2-control.service"
+			execute_in_chroot "systemctl --no-reload enable hdmi_resolution.service"
 		fi
 	fi
 
 	if [ "$LINUX" != "mainline" ]; then
-		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable bluetooth-khadas.service"'
+		execute_in_chroot "systemctl --no-reload enable bluetooth-khadas.service"
 		if [ "$KHADAS_BOARD" == "VIM3" ]; then
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable camera_isp_3a_server.service"'
+			execute_in_chroot "systemctl --no-reload enable camera_isp_3a_server.service"
 		fi
 	fi
 
 	# Create boot links
 	if [ "$INSTALL_TYPE" == "EMMC" ]; then
 		if [ "$LINUX" != "5.15" ]; then
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/zImage zImage"'
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/uInitrd uInitrd"'
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/dtb/$(basename $LINUX_DTB) dtb.img"'
+			execute_in_chroot "ln -fs /boot/zImage zImage"
+			execute_in_chroot "ln -fs /boot/uInitrd uInitrd"
+			execute_in_chroot "ln -fs /boot/dtb/$(basename $LINUX_DTB) dtb.img"
 		else
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/Image Image"'
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/initrd.img initrd.img"'
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/dtb/amlogic/$(basename $LINUX_DTB) dtb.img"'
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/dtb dtb"'
+			execute_in_chroot "ln -fs /boot/Image Image"
+			execute_in_chroot "ln -fs /boot/initrd.img initrd.img"
+			execute_in_chroot "ln -fs /boot/dtb/amlogic/$(basename $LINUX_DTB) dtb.img"
+			execute_in_chroot "ln -fs /boot/dtb dtb"
 		fi
 	else
 		# Setup default DTB for SD/USB images
 		if [ "$LINUX" == "mainline" ] || [ "$LINUX" == "5.15" ]; then
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs dtb/amlogic/$(basename $LINUX_DTB) /boot/dtb.img || cp /boot/dtb/amlogic/$(basename $LINUX_DTB) /boot/dtb.img"'
+			execute_in_chroot "ln -fs dtb/amlogic/$(basename $LINUX_DTB) /boot/dtb.img || cp /boot/dtb/amlogic/$(basename $LINUX_DTB) /boot/dtb.img"
 		else
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "cp /boot/dtb/$(basename $LINUX_DTB) /boot/dtb.img"'
+			execute_in_chroot "cp /boot/dtb/$(basename $LINUX_DTB) /boot/dtb.img"
 		fi
 	fi
 }

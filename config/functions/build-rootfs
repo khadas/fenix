@@ -25,7 +25,7 @@ install_common()
 	info_msg "Setup timezone to '$TZDATA'"
 	echo $TZDATA > $ROOTFS_TEMP/etc/timezone
 	ln -sf ../usr/share/zoneinfo/$TZDATA  "$ROOTFS_TEMP"/etc/localtime
-	LC_ALL=C LANG=C chroot "$ROOTFS_TEMP" /bin/bash -c "dpkg-reconfigure -f noninteractive tzdata"
+	execute_in_chroot "dpkg-reconfigure -f noninteractive tzdata"
 
 	# initial date for fake-hwclock
 	date -u '+%Y-%m-%d %H:%M:%S' > $ROOTFS_TEMP/etc/fake-hwclock.data
@@ -111,7 +111,7 @@ install_common()
 	sed -i 's/#\?PermitRootLogin .*/PermitRootLogin yes/' $ROOTFS_TEMP/etc/ssh/sshd_config
 
 	# Enable additional services
-	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable resize2fs.service system-check.service"'
+	execute_in_chroot "systemctl --no-reload enable resize2fs.service system-check.service"
 
 	# Disable repeated messages due to xconsole not being installed.
 	[[ -f $ROOTFS_TEMP/etc/rsyslog.d/50-default.conf ]] && sed '/daemon\.\*\;mail.*/,/xconsole/ s/.*/#&/' -i $ROOTFS_TEMP/etc/rsyslog.d/50-default.conf
@@ -188,11 +188,11 @@ install_distribution_specific()
 
 		if [ "$DISTRIB_TYPE" != "minimal" ]; then
 			# disable watchdog
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable watchdog.service"'
+			execute_in_chroot "systemctl disable watchdog.service"
 			# Disable Lirc service
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable lircd.socket lircd.service lircd-setup.service lircd-uinput.service lircmd.service irexec.service"'
+			execute_in_chroot "systemctl disable lircd.socket lircd.service lircd-setup.service lircd-uinput.service lircmd.service irexec.service"
 			# Disable hostapd
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable hostapd.service"'
+			execute_in_chroot "systemctl disable hostapd.service"
 		fi
 		;;
 	bionic|focal|jammy)
@@ -208,14 +208,14 @@ install_distribution_specific()
 		EOF
 		# DNS fix
 		sed -i "s/#DNS=.*/DNS=$NAMESERVER/g" $ROOTFS_TEMP/etc/systemd/resolved.conf
-		chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload mask ondemand.service"
+		execute_in_chroot "systemctl --no-reload mask ondemand.service"
 		if [ "$DISTRIB_TYPE" != "minimal" ]; then
 			# disable watchdog
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable watchdog.service"'
+			execute_in_chroot "systemctl disable watchdog.service"
 			# Disable Lirc service
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable lircd.socket lircd.service lircd-setup.service lircd-uinput.service lircmd.service irexec.service"'
+			execute_in_chroot "systemctl disable lircd.socket lircd.service lircd-setup.service lircd-uinput.service lircmd.service irexec.service"
 			# Disable hostapd
-			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl disable hostapd.service"'
+			execute_in_chroot "systemctl disable hostapd.service"
 		fi
 		# Journal service adjustements
 		sed -i "s/#Storage=.*/Storage=volatile/g" $ROOTFS_TEMP/etc/systemd/journald.conf
@@ -317,7 +317,7 @@ create_rootfs_cache()
 	info_msg "Installing base system - Stage 2/2"
 	echo 'chroot $ROOTFS_TEMP /bin/bash -c "/debootstrap/debootstrap --second-stage"'
 
-	chroot $ROOTFS_TEMP /bin/bash -c "/debootstrap/debootstrap --second-stage" || {
+	execute_in_chroot "/debootstrap/debootstrap --second-stage" || {
 		for l in $ROOTFS_TEMP/debootstrap/debootstrap.log; do
 			[ -e $l ] || continue # its OK not error
 			tail -n10 $l
@@ -621,8 +621,8 @@ prepare_rootfs() {
 
 	# remove service start blockers
 	rm -f $ROOTFS_TEMP/sbin/initctl $ROOTFS_TEMP/sbin/start-stop-daemon
-	chroot $ROOTFS_TEMP /bin/bash -c "dpkg-divert --quiet --local --rename --remove /sbin/initctl"
-	chroot $ROOTFS_TEMP /bin/bash -c "dpkg-divert --quiet --local --rename --remove /sbin/start-stop-daemon"
+	execute_in_chroot "dpkg-divert --quiet --local --rename --remove /sbin/initctl"
+	execute_in_chroot "dpkg-divert --quiet --local --rename --remove /sbin/start-stop-daemon"
 	rm -f $ROOTFS_TEMP/usr/sbin/policy-rc.d
 }
 
