@@ -141,11 +141,13 @@ build_deb_packages_platform() {
 
 		if [ "$LINUX" == "5.15" ]; then
 			if [ "$DISTRIB_RELEASE" == "jammy" ]; then
-				info_msg "Building mali-debs package..."
-				# FIXME
-				# remove build stamp to force build for other arch
-				rm -rf $BUILD/.stamps/mali-debs
-				build_package "mali-debs:target"
+				if [ "$DISTRIB_TYPE" != "server" ]; then
+					info_msg "Building mali-debs package..."
+					# FIXME
+					# remove build stamp to force build for other arch
+					rm -rf $BUILD/.stamps/mali-debs
+					build_package "mali-debs:target"
+				fi
 
 				info_msg "Building OPTEE userspace package..."
 				# FIXME
@@ -285,8 +287,10 @@ install_deb_packages_platform() {
 
 		if [ "$LINUX" == "5.15" ]; then
 			if [ "$DISTRIB_RELEASE" == "jammy" ]; then
-				info_msg "Installing mali-debs package ..."
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/mali-debs/${GPU_PLATFORM}/*.deb
+				if [ "$DISTRIB_TYPE" != "server" ]; then
+					info_msg "Installing mali-debs package ..."
+					install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/mali-debs/${GPU_PLATFORM}/*.deb
+				fi
 
 				info_msg "Installing OPTEE userspace package..."
 				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/optee_userspace_deb_aml/*.deb
