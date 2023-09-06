@@ -17,6 +17,8 @@ source config/boards/VIM.inc
 tweaks_platform() {
 	echo "#Serial console allow root" >> $ROOTFS_TEMP/etc/securetty
 	echo "ttyAML0" >> $ROOTFS_TEMP/etc/securetty
+	# Setup GST environment
+	echo "export GST_DEFAULT_V4L2_BUF_MODE=DMA_BUF_IMPORT" >> $ROOTFS_TEMP/etc/bash.bashrc
 
 	# Enable services
 	execute_in_chroot "systemctl --no-reload enable fan.service"
