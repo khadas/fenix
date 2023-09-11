@@ -28,7 +28,6 @@ usermod -aG sudo,adm $USERNAME
 
 # Set default terminal
 [ -f /etc/bash.bashrc ] && sed -i -e '$a\resize > /dev/null' /etc/bash.bashrc
-[ -f /etc/bash.bashrc ] && echo "export TERM=xterm" >> /etc/bash.bashrc
 
 # Clean ssh keys
 rm -f /etc/ssh/ssh_host*
