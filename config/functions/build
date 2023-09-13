@@ -312,6 +312,7 @@ build_uboot_deb() {
 			write_uboot_platform_ext \$DIR
 			echo "Reseting u-boot environment variables ..."
 			[ -b /dev/env ] && dd if=/dev/zero of=/dev/env bs=1M count=1 > /dev/null 2>&1
+			[ -b /dev/mmcblk0p3 ] && dd if=/dev/zero of=/dev/mmcblk0p3 bs=1M count=1 > /dev/null 2>&1
 			sync
 		else
 			if [[ -b \$DEVICE ]]; then
