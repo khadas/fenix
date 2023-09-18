@@ -76,3 +76,5 @@ media_sync
 amlogic-encoder
 amlogic-jpegenc
 amlogic-vpu
+
+galcore
