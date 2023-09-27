@@ -66,7 +66,8 @@ echo "[i] FENIX (${0#*/}) BUILD: $BUILD | DL: $DOWNLOAD_PKG_DIR | sudo: $sudo"
 ##################################### Configurations ##################################
 MAKE_PARAMS="BUILD_TYPE DOWNLOAD_MIRROR NO_CCACHE COMPRESS_IMAGE INSTALL_TYPE_RAW \
 			 CLONE_FULL_COMMIT_LOG FORCE_BUILD_KERNEL_DEB SKIP_ROOTFS_CACHE_DOWNLOAD \
-			 FORCE_CREATE_ROOTFS_CACHE CREATE_ROOTFS_CACHE_ONLY NO_APT_CACHER SKIP_HEADER_DEB"
+			 FORCE_CREATE_ROOTFS_CACHE CREATE_ROOTFS_CACHE_ONLY NO_APT_CACHER SKIP_HEADER_DEB \
+			 TEST_IMAGE"
 
 ## Available values
 BUILD_TYPE_VALUES="develop | release"
@@ -81,6 +82,7 @@ FORCE_CREATE_ROOTFS_CACHE_VALUES="no | yes"
 CREATE_ROOTFS_CACHE_ONLY_VALUES="no | yes"
 NO_APT_CACHER_VALUES="yes | no"
 SKIP_HEADER_DEB_VALUES="no | yes"
+TEST_IMAGE_VALUES="no | yes"
 
 ## Default values
 [[ -z $NO_CCACHE ]] && NO_CCACHE=no
@@ -95,6 +97,7 @@ SKIP_HEADER_DEB_VALUES="no | yes"
 [[ -z $CREATE_ROOTFS_CACHE_ONLY ]] && CREATE_ROOTFS_CACHE_ONLY=no
 [[ -z $NO_APT_CACHER ]] && NO_APT_CACHER=yes
 [[ -z $SKIP_HEADER_DEB ]] && SKIP_HEADER_DEB=no
+[[ -z $TEST_IMAGE ]] && TEST_IMAGE=no
 
 
 GITHUB_URL="https://github.com"
@@ -105,6 +108,7 @@ ROOTFSCACHE_VERSION=8
 DATE=$(date +%F | sed 's/-//g')
 IMAGE_VERSION="${VERSION}-${DATE:2}"
 [[ "$BUILD_TYPE" != "release" ]] && SUFFIX=-develop
+[[ "$TEST_IMAGE" == "yes" ]] && SUFFIX=${SUFFIX}-test-only
 
 NR_JOBS_MAX=20
 NR_CPUS=$(grep -c processor /proc/cpuinfo)
