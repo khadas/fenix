@@ -25,6 +25,7 @@ aml_fixed_area_cma
 tee
 optee
 amlogic-socinfo
+amlogic-input
 amlogic-hifidsp
 amlogic-led
 amlogic-jtag
