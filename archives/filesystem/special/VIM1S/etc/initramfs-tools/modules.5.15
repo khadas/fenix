@@ -1,0 +1,27 @@
+# List of modules that you want to include in your initramfs.
+# They will be loaded at boot time in the order below.
+#
+# Syntax:  module_name [args ...]
+#
+# You must run update-initramfs(8) to effect this change.
+#
+# Examples:
+#
+# raid1
+# sd_mod
+
+amlogic-gkitool
+amlogic-debug-iotrace
+amlogic-uart
+amlogic-hwspinlock
+amlogic-debug
+amlogic-memory-debug
+amlogic-clk
+amlogic-clk-soc-s4
+amlogic-aoclk-g12a
+amlogic-gpio
+amlogic-pinctrl-soc-s4
+amlogic-mailbox
+amlogic-reset
+amlogic-power
+amlogic-mmc
