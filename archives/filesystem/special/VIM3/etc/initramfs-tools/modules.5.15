@@ -29,7 +29,9 @@ amlogic-cpufreq
 amlogic-efuse-unifykey
 cqhci
 amlogic-mmc
+amlogic-i2c
 amlogic-rng
 tee
 amlogic-tee
 optee
+gpio-pca953x
