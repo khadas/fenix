@@ -25,7 +25,6 @@ aml_fixed_area_cma
 tee
 optee
 amlogic-socinfo
-amlogic-input
 amlogic-hifidsp
 amlogic-led
 amlogic-jtag
@@ -38,6 +37,7 @@ amlogic-snd-codec-tl1
 amlogic-snd-codec-tas5707
 amlogic-snd-codec-tas5805
 amlogic-snd-codec-ad82128
+amlogic-input
 cfg80211
 mac80211
 v4l2-fwnode
@@ -74,8 +74,6 @@ amvdec_avs2_v4l
 amvdec_mavs_v4l
 amvdec_avs2_fb_v4l
 media_sync
-amlogic-jpegenc
-amlogic-multienc
 
 nft_chain_nat
 nft_counter
