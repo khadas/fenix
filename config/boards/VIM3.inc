@@ -33,9 +33,6 @@ tweaks_platform() {
 
 	if [ "$LINUX" != "mainline" ]; then
 		execute_in_chroot "systemctl --no-reload enable bluetooth-khadas.service"
-		if [ "$KHADAS_BOARD" == "VIM3" ]; then
-			execute_in_chroot "systemctl --no-reload enable camera_isp_3a_server.service"
-		fi
 	fi
 
 	# Create boot links
