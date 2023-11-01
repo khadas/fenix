@@ -14,6 +14,7 @@ amlogic-debug-iotrace
 amlogic-uart
 amlogic-hwspinlock
 amlogic-debug
+page_trace
 amlogic-memory-debug
 amlogic-secmon
 amlogic-clk
@@ -22,6 +23,8 @@ amlogic-aoclk-g12a
 amlogic-gpio
 amlogic-pinctrl-soc-g12a
 amlogic-mailbox
+amlogic-pwm
+pwm-regulator
 amlogic-reset
 amlogic-power
 amlogic-cpuinfo
@@ -30,6 +33,7 @@ amlogic-efuse-unifykey
 cqhci
 amlogic-mmc
 amlogic-i2c
+amlogic-spi
 amlogic-rng
 tee
 amlogic-tee
