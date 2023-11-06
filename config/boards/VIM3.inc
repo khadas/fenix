@@ -131,7 +131,7 @@ build_deb_packages_platform() {
 		fi
 	fi
 
-	if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" != "bionic" ] && [ "$DISTRIB_RELEASE" != "jammy" ] && [ "$DISTRIB_TYPE" != "server" ]; then
+	if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" == "focal" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_TYPE" != "minimal" ]; then
 		info_msg "Building mesa..."
 		# FIXME
 		# remove build stamp to force build for other arch
@@ -212,27 +212,25 @@ install_deb_packages_platform() {
 		fi
 	fi
 
-	if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" != "jammy" ] && [ "$DISTRIB_TYPE" != "server" ]; then
+	if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" == "focal" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_TYPE" != "minimal" ]; then
 		# Install mesa in chroot
 		info_msg "Installing mesa..."
 
-		if [ "$DISTRIB_RELEASE" == "focal" ]; then
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libd3dadapter9-mesa_*_arm64.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libegl1-mesa_*_arm64.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgbm1_*_arm64.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libglapi-mesa_*_arm64.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgl1-mesa-dri_*_arm64.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgles2-mesa_*_arm64.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libegl-mesa0_*_arm64.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libglx-mesa0_*_arm64.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgl1-mesa-glx_*_arm64.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libosmesa6_*_arm64.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libwayland-egl1-mesa_*_arm64.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/mesa-opencl-icd_*_arm64.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/mesa-va-drivers_*_arm64.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/mesa-vdpau-drivers_*_arm64.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/mesa-vulkan-drivers_*_arm64.deb
-			#install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/mesa-common-dev_*_arm64.deb
-		fi
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libd3dadapter9-mesa_*_arm64.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libegl1-mesa_*_arm64.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgbm1_*_arm64.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libglapi-mesa_*_arm64.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgl1-mesa-dri_*_arm64.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgles2-mesa_*_arm64.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libegl-mesa0_*_arm64.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libglx-mesa0_*_arm64.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgl1-mesa-glx_*_arm64.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libosmesa6_*_arm64.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libwayland-egl1-mesa_*_arm64.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/mesa-opencl-icd_*_arm64.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/mesa-va-drivers_*_arm64.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/mesa-vdpau-drivers_*_arm64.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/mesa-vulkan-drivers_*_arm64.deb
+		#install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/mesa-common-dev_*_arm64.deb
 	fi
 }
