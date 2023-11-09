@@ -1,0 +1,2 @@
+# GNSS
+KERNEL=="mhi*", MODE="0666"
