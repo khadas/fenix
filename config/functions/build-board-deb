@@ -152,7 +152,7 @@ build_board_deb() {
 	fi
 
 	if [ "\$BOARD" == "Edge2" ]; then
-		systemctl enable rockchip-isp.service bluetooth-khadas.service edeg2-station.service fix-gdm-wayland.service
+		systemctl enable rockchip-isp.service bluetooth-khadas.service edge2-station.service fix-gdm-wayland.service
 	fi
 
 	# Patches used by hciattach
