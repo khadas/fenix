@@ -34,7 +34,6 @@ amlogic-efuse-unifykey
 cqhci
 amlogic-mmc
 amlogic-i2c
-amlogic-spi
 amlogic-rng
 tee
 amlogic-tee

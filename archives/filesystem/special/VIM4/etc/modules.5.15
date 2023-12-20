@@ -38,6 +38,7 @@ amlogic-snd-codec-tl1
 amlogic-snd-codec-tas5707
 amlogic-snd-codec-tas5805
 amlogic-snd-codec-ad82128
+amlogic-spi
 cfg80211
 mac80211
 v4l2-fwnode
