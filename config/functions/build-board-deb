@@ -345,6 +345,11 @@ build_board_deb() {
 		fi
 	fi
 
+	# Remove mali_csffw.bin if panfork is disabled
+	if [[ "$KHADAS_BOARD" == "Edge2" && "$PANFORK_SUPPORT" != "yes" ]]; then
+		rm $pkgdir/lib/firmware/mali_csffw.bin
+	fi
+
 	# Copy Wi-Fi & BT firmware
 	if [ "$WIFI_MODEL" == "Broadcom" ]; then
 		# Copy Wi-Fi firmware
