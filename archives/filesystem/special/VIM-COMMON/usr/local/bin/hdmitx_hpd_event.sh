@@ -11,7 +11,20 @@ fi
 
 if [ ! -d /usr/share/desktop-base ]; then
 	## For server
-	drm-setcrtc -d meson -s 0 > /dev/null 2>&1
+	## Get hdmi resolution
+	for x in $(cat /proc/cmdline); do
+		case ${x} in
+			hdmimode=*)
+				hdmimode=${x#*=}
+			;;
+		esac
+	done
+
+	if [ $hdmimode == none ]; then
+		drm-setcrtc -d meson -s 0 > /dev/null 2>&1
+	else
+		drm-setcrtc -d meson -m ${hdmimode} -s 0 > /dev/null 2>&1
+	fi
 	sleep 0.5
 	echo 1 > /sys/class/graphics/fb0/blank
 	sleep 0.5
