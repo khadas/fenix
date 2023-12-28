@@ -427,6 +427,31 @@ build_board_deb() {
 	[ -f $pkgdir/etc/initramfs-tools/modules.$LINUX ] && mv $pkgdir/etc/initramfs-tools/modules.$LINUX $pkgdir/etc/initramfs-tools/modules
 	rm -rf $pkgdir/etc/initramfs-tools/modules.*
 
+	# Generate module load order in initramfs
+	if [ -e $pkgdir/etc/initramfs-tools/modules ]; then
+		module_count=0
+		pre_module=
+		while read -r m; do
+			# Skip empty lines
+			if [ -z "$m" ];  then
+				continue
+			fi
+			# Skip comments - d?ash removes whitespace prefix
+			com=$(printf "%.1s" "${m}")
+			if [ "$com" = "#" ]; then
+				continue
+			fi
+			module_count=$((module_count + 1))
+			if [ $module_count -gt 1 ]; then
+				echo "softdep $m pre: $pre_module" >> $pkgdir/etc/modprobe.d/initramfs-modules-load-order.conf
+			else
+				echo "# Initramfs modules load order" > $pkgdir/etc/modprobe.d/initramfs-modules-load-order.conf
+			fi
+			pre_module=$m
+
+		done < $pkgdir/etc/initramfs-tools/modules
+	fi
+
 	# Trigger uInitrd creation after installation, to apply
 	# /etc/initramfs/post-update.d/99-uboot
 	cat <<-EOF > $pkgdir/DEBIAN/triggers

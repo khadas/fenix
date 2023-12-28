@@ -9,12 +9,14 @@
 #
 # raid1
 # sd_mod
+#
+
 amlogic-gkitool
 amlogic-debug-iotrace
 amlogic-uart
 amlogic-hwspinlock
-amlogic-debug
 page_trace
+amlogic-debug
 amlogic-memory-debug
 amlogic-secmon
 amlogic-clk
@@ -33,8 +35,24 @@ amlogic-efuse-unifykey
 cqhci
 amlogic-mmc
 amlogic-i2c
+amlogic-spi
 amlogic-rng
 tee
 amlogic-tee
 optee
+videobuf-core
+dvb-core
+amlogic-pm
+amlogic-input
+amlogic-watchdog
+amlogic-dvb
+aml_media
+amlogic-camera
+amlogic-adc
+amlogic-thermal
+amlogic-usb
+amlogic-irblaster
+amlogic-phy-debug
+amlogic-inphy
+aml_drm
 gpio-pca953x
