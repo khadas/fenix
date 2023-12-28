@@ -236,8 +236,8 @@ build_board_deb() {
 	partition_type=\$(sed -e 's/^.*partition_type=//' -e 's/ .*\$//' < /proc/cmdline)
 	[ -f /boot/env.txt ] &&  sed -i s/rootdev=.*/rootdev=\$rootdev/g /boot/env.txt
 	if [ -f /boot/uEnv.txt ]; then
-		sed -i 's/rootdev=root=.*/rootdev=root=\$rootdev/g' /boot/uEnv.txt
-		sed -i 's/partitiontype=partition_type=.*/partitiontype=partition_type=\$partition_type/g' /boot/uEnv.txt
+		sed -i "s/rootdev=root=.*/rootdev=root=\$rootdev/g" /boot/uEnv.txt
+		sed -i "s/partitiontype=partition_type=.*/partitiontype=partition_type=\$partition_type/g" /boot/uEnv.txt
 	fi
 
 	systemctl --no-reload enable fenix-zram-config.service fenix-hardware-optimize.service >/dev/null 2>&1
