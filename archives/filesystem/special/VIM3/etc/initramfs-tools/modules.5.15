@@ -35,6 +35,7 @@ amlogic-efuse-unifykey
 cqhci
 amlogic-mmc
 amlogic-i2c
+gpio-pca953x
 amlogic-spi
 amlogic-rng
 tee
@@ -55,4 +56,3 @@ amlogic-irblaster
 amlogic-phy-debug
 amlogic-inphy
 aml_drm
-gpio-pca953x
