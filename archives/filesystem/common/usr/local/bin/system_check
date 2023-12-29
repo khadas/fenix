@@ -2,6 +2,17 @@
 
 . /etc/fenix-release
 
+if [ "$VENDOR" == "Amlogic" ]; then
+	linux_version=`uname -r`
+	major_version=$(echo "$linux_version" | cut -d '.' -f 1,2)
+	target_version="5.15"
+
+	if [ "$major_version" = "$target_version" ]; then
+		echo "Ignore for 5.15 kernel..."
+		exit 0
+	fi
+fi
+
 for arg in $(cat /proc/cmdline); do
 	case $arg in
 		board_type=*)
