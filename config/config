@@ -27,6 +27,9 @@ BUILD="$ROOT/build"
 [ "$LINUX_VENDOR_DIR" ] || \
 LINUX_VENDOR_DIR="$BUILD"/linux
 
+[ "$LINUX_COMMON_DRIVERS_DIR" ] || \
+LINUX_COMMON_DRIVERS_DIR="$LINUX_VENDOR_DIR"/common_drivers
+
 [ "$UBOOT_VENDOR_DIR" ] || \
 UBOOT_VENDOR_DIR="$BUILD"/u-boot
 
@@ -63,7 +66,8 @@ echo "[i] FENIX (${0#*/}) BUILD: $BUILD | DL: $DOWNLOAD_PKG_DIR | sudo: $sudo"
 ##################################### Configurations ##################################
 MAKE_PARAMS="BUILD_TYPE DOWNLOAD_MIRROR NO_CCACHE COMPRESS_IMAGE INSTALL_TYPE_RAW \
 			 CLONE_FULL_COMMIT_LOG FORCE_BUILD_KERNEL_DEB SKIP_ROOTFS_CACHE_DOWNLOAD \
-			 FORCE_CREATE_ROOTFS_CACHE CREATE_ROOTFS_CACHE_ONLY NO_APT_CACHER SKIP_HEADER_DEB"
+			 FORCE_CREATE_ROOTFS_CACHE CREATE_ROOTFS_CACHE_ONLY NO_APT_CACHER SKIP_HEADER_DEB \
+			 TEST_IMAGE"
 
 ## Available values
 BUILD_TYPE_VALUES="develop | release"
@@ -78,6 +82,7 @@ FORCE_CREATE_ROOTFS_CACHE_VALUES="no | yes"
 CREATE_ROOTFS_CACHE_ONLY_VALUES="no | yes"
 NO_APT_CACHER_VALUES="yes | no"
 SKIP_HEADER_DEB_VALUES="no | yes"
+TEST_IMAGE_VALUES="no | yes"
 
 ## Default values
 [[ -z $NO_CCACHE ]] && NO_CCACHE=no
@@ -92,6 +97,7 @@ SKIP_HEADER_DEB_VALUES="no | yes"
 [[ -z $CREATE_ROOTFS_CACHE_ONLY ]] && CREATE_ROOTFS_CACHE_ONLY=no
 [[ -z $NO_APT_CACHER ]] && NO_APT_CACHER=yes
 [[ -z $SKIP_HEADER_DEB ]] && SKIP_HEADER_DEB=no
+[[ -z $TEST_IMAGE ]] && TEST_IMAGE=no
 
 
 GITHUB_URL="https://github.com"
@@ -102,6 +108,7 @@ ROOTFSCACHE_VERSION=8
 DATE=$(date +%F | sed 's/-//g')
 IMAGE_VERSION="${VERSION}-${DATE:2}"
 [[ "$BUILD_TYPE" != "release" ]] && SUFFIX=-develop
+[[ "$TEST_IMAGE" == "yes" ]] && SUFFIX=${SUFFIX}-test-only
 
 NR_JOBS_MAX=20
 NR_CPUS=$(grep -c processor /proc/cpuinfo)
@@ -260,7 +267,7 @@ PACKAGE_LIST="bc cpufrequtils device-tree-compiler fping fake-hwclock psmisc chr
 
 # Non-essential packages
 PACKAGE_LIST_ADDITIONAL="network-manager wireless-tools lsof htop mmc-utils wget nano sysstat net-tools \
-	resolvconf iozone3 jq libcrack2 cracklib-runtime curl rfkill bison flex libssl-dev"
+	resolvconf iozone3 jq libcrack2 cracklib-runtime curl rfkill bison flex libssl-dev xterm"
 
 if [[ "$DISTRIB_TYPE" != "minimal" ]]; then
 
@@ -278,7 +285,7 @@ if [[ "$DISTRIB_TYPE" != "minimal" ]]; then
 		modemmanager mobile-broadband-provider-info zlib1g-dev avahi-utils"
 fi
 
-PACKAGE_LIST_DESKTOP="xserver-xorg xserver-xorg-video-fbdev gvfs-backends gvfs-fuse xfonts-base xinit x11-xserver-utils xterm thunar-volman \
+PACKAGE_LIST_DESKTOP="xserver-xorg xserver-xorg-video-fbdev gvfs-backends gvfs-fuse xfonts-base xinit x11-xserver-utils thunar-volman \
 	network-manager-gnome network-manager-openvpn-gnome gnome-keyring gcr libgck-1-0 p11-kit pasystray pavucontrol pulseaudio \
 	pavumeter pulseaudio-module-bluetooth blueman libpam-gnome-keyring libgl1-mesa-dri gparted synaptic apt-xapian-index \
 	policykit-1 profile-sync-daemon gnome-orca numix-gtk-theme gnome-system-tools lightdm lightdm-gtk-greeter gufw yad zenity guvcview onboard"
@@ -357,8 +364,8 @@ case $DISTRIB_RELEASE in
 	;;
 	jammy)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
-		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found"
-		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER xserver-xorg-input-all pulseaudio-module-gsettings firefox language-selector-gnome viewnior dbus-user-session libreoffice-style-tango"
+		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found libgrpc++1 libboost-system1.74.0"
+		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER xserver-xorg-input-all pulseaudio-module-gsettings language-selector-gnome viewnior dbus-user-session libreoffice-style-tango"
 	;;
 esac
 
@@ -368,6 +375,7 @@ ROOTFS_CACHE_URL="http://build.khadas.com/khadas/fenix/cache/rootfs"
 
 ## U-boot & Linux GitHub URL
 LINUX_SOURCE_URL="${LINUX_SOURCE_URL:-https://github.com/khadas/linux}"
+LINUX_COMMON_DRIVERS_SOURCE_URL="${LINUX_COMMON_DRIVERS_SOURCE_URL:-https://github.com/khadas/common_drivers}"
 UBOOT_SOURCE_URL="${UBOOT_SOURCE_URL:-https://github.com/khadas/u-boot}"
 
 if [[ $DOWNLOAD_MIRROR == china ]] ; then

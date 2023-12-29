@@ -13,7 +13,7 @@ build_gpu_deb() {
 	local pkgdir="$BUILD_IMAGES/.tmp/${pkgname}_${VERSION}-${GPU_VER}_${DISTRIB_ARCH}"
 
 	if [[ "$KHADAS_BOARD" == "VIM1" ]] || [[ "$KHADAS_BOARD" =~ "VIM3" ]]; then
-		if [ "$LINUX" == "mainline" ]; then
+		if [ "$LINUX" == "mainline" ] || [ "$LINUX" == "5.15" ]; then
 			return
 		fi
 

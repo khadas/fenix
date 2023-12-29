@@ -1,12 +1,21 @@
 #!/bin/sh
 
 linux_version=`uname -r`
+major_version=$(echo "$linux_version" | cut -d '.' -f 1,2)
+target_version="5.15"
 
-if linux-version compare $linux_version ge 5.6; then
+
+if [ -f /boot/.next ]; then
 	# ignore for mainline kernel
 	echo "Ignore for mainline kernel..."
 	exit 0
 fi
+
+if [ "$major_version" = "$target_version" ]; then
+        echo "Ignore for 5.15 kernel..."
+        exit 0
+fi
+
 
 for x in $(cat /proc/cmdline); do
 	case ${x} in

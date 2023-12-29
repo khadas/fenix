@@ -9,7 +9,7 @@ FAN="/usr/local/bin/fan.sh"
 
 LINUX_VER=`uname -r`
 
-if [ ${LINUX_VER::3} == "4.9" ] || [ ${LINUX_VER::3} == "5.4" ];then
+if [ ${LINUX_VER::3} == "4.9" ] || [ ${LINUX_VER::3} == "5.4" ] || [ ${LINUX_VER::4} == "5.15" ];then
 	_fan_mode=$(${FAN} mode | grep "Fan mode:" | awk '{print $3}')
 	_fan_level=$(${FAN} mode | grep "Fan level:" | awk '{print $3}')
 	_fan_state=$(${FAN} mode | grep "Fan state:" | awk '{print $3}')
@@ -28,7 +28,7 @@ else
 fi
 DEFAULT_FAN_MODE=${fan_mode}
 
-if [ ${LINUX_VER::3} == "4.9" ] || [ ${LINUX_VER::3} == "5.4" ];then
+if [ ${LINUX_VER::3} == "4.9" ] || [ ${LINUX_VER::3} == "5.4" ] || [ ${LINUX_VER::4} == "5.15" ];then
 	LIST_MENU=(off low mid high auto)
 	LIST_MENU_VALUE=(FALSE FALSE FALSE FALSE FALSE)
 else
@@ -36,7 +36,7 @@ else
 	LIST_MENU_VALUE=(FALSE FALSE)
 fi
 
-if [ ${LINUX_VER::3} == "5.4" ];then
+if [ ${LINUX_VER::3} == "5.4" ] || [ ${LINUX_VER::4} == "5.15" ];then
 	config_file='/boot/uEnv.txt'
 else
 	config_file='/boot/env.txt'
@@ -53,7 +53,7 @@ done
 
 LIST_MENU_VALUE[$index]=TRUE
 
-if [ ${LINUX_VER::3} == "4.9" ] || [ ${LINUX_VER::3} == "5.4" ];then
+if [ ${LINUX_VER::3} == "4.9" ] || [ ${LINUX_VER::3} == "5.4" ] || [ ${LINUX_VER::4} == "5.15" ];then
 selected_mode=$(zenity --height=275 \
 				--list --radiolist \
 				--title 'FAN Setting' \

@@ -36,5 +36,11 @@ KERNEL=="vfm_grabber", MODE="0666"
 # gsensor
 KERNEL=="accel", MODE="0666"
 
+# heap
+KERNEL=="system-uncached", MODE="0777"
+KERNEL=="heap-gfx", MODE="0777"
+KERNEL=="heap-secure", MODE="0777"
+KERNEL=="heap-codecmm", MODE="0777"
+
 # Others
 KERNEL=="env", MODE="0666"

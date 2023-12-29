@@ -26,6 +26,9 @@ USER_PASSWORD_ENCRYPTED=`perl -e 'printf("%s\n", crypt($ARGV[0], "password"))' "
 useradd -m -p "$USER_PASSWORD_ENCRYPTED" -s /bin/bash $USERNAME
 usermod -aG sudo,adm $USERNAME
 
+# Set default terminal
+[ -f /etc/bash.bashrc ] && sed -i -e '$a\resize > /dev/null' /etc/bash.bashrc
+
 # Clean ssh keys
 rm -f /etc/ssh/ssh_host*
 

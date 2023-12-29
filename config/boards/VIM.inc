@@ -3,7 +3,7 @@
 ## VIM series common part
 ##########################
 case "$UBOOT" in
-	2015.01)
+	2015.01|2015.01-5.15)
 		UBOOT_COMPILER="aarch64-none-elf-"
 		UBOOT_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-none-elf/bin:$TOOLCHAINS/gcc-linaro-arm-none-eabi/bin"
 		[ "$UBOOT_VENDOR_DIR" ] && \
@@ -30,7 +30,7 @@ UBOOT_IMAGE_FILES="u-boot.bin u-boot.bin.sd.bin"
 UBOOT_FORCE_REBUILD="yes"
 
 case "$LINUX" in
-	mainline)
+	mainline|5.15)
 		KERNEL_COMPILER="aarch64-none-linux-gnu-"
 		KERNEL_COMPILER_PATH="$TOOLCHAINS/gcc-arm-aarch64-none-linux-gnu-mainline/bin"
 		LINUX_DIR=$(realpath "$LINUX_VENDOR_DIR")
@@ -46,6 +46,8 @@ case "$LINUX" in
 		LINUX_DIR=$(realpath "$LINUX_VENDOR_DIR")
 		;;
 esac
+
+LINUX_DEFCONFIG_DIR="$LINUX_DIR/arch/arm64/configs"
 
 BOOT_SCRIPT_BOARD="s905_autoscript.cmd"
 BOOT_SCRIPT_VENDOR="aml_autoscript.txt"
@@ -149,9 +151,19 @@ write_uboot_platform()
 ## Write u-boot for vendor u-boot
 write_uboot_platform_ext()
 {
-	dd if="$1/u-boot.bin" of=/dev/bootloader conv=fsync bs=1 seek=512 > /dev/null 2>&1
-	dd if="$1/u-boot.bin" of=/dev/mmcblk0boot0 conv=fsync bs=1 seek=512 > /dev/null 2>&1
-	dd if="$1/u-boot.bin" of=/dev/mmcblk0boot1 conv=fsync bs=1 seek=512 > /dev/null 2>&1
+	# 4.9 kernel has /dev/bootloader
+	[ -b /dev/bootloader ] && dd if="$1/u-boot.bin" of=/dev/bootloader conv=fsync bs=512 seek=1 > /dev/null 2>&1
+	# Update u-boot partition, 5.15 kernel dosen't have /dev/bootloader
+	[ -b /dev/mmcblk0p1 ] && dd if="$1/u-boot.bin" of=/dev/mmcblk0p1 conv=fsync bs=512 seek=1 > /dev/null 2>&1
+	# Enable write access for /dev/mmcblk0boot0
+	[ -f /sys/block/mmcblk0boot0/force_ro ] && echo 0 > /sys/block/mmcblk0boot0/force_ro
+	dd if="$1/u-boot.bin" of=/dev/mmcblk0boot0 conv=fsync bs=512 seek=1 > /dev/null 2>&1
+	# Enable write access for /dev/mmcblk0boot1
+	[ -f /sys/block/mmcblk0boot1/force_ro ] && echo 0 > /sys/block/mmcblk0boot1/force_ro
+	dd if="$1/u-boot.bin" of=/dev/mmcblk0boot1 conv=fsync bs=512 seek=1 > /dev/null 2>&1
+	# Disable write access for /dev/mmcblk0boot0/1
+	[ -f /sys/block/mmcblk0boot0/force_ro ] && echo 1 > /sys/block/mmcblk0boot0/force_ro
+	[ -f /sys/block/mmcblk0boot1/force_ro ] && echo 1 > /sys/block/mmcblk0boot1/force_ro
 }
 
 setup_write_uboot_platform()
@@ -203,7 +215,7 @@ pack_image_platform_raw() {
 	LOGO_OFFSET=0x07c00000
 
 	PATH_BOOT="$UBOOT_IMAGE_DIR"/u-boot.bin.sd.bin
-	PATH_DTB0="$LINUX_DIR/$LINUX_DTB"
+	PATH_DTB0="$LINUX_DTB"
 	PATH_ROOT="$BUILD_IMAGES/rootfs.img"
 	PATH_LOGO="$BUILD_IMAGES/logo.img"
 
@@ -269,9 +281,9 @@ pack_image_platform() {
 		D="$UPGRADE_DIR_"/Amlogic
 
 		case "$UBOOT" in
-			2015.01)
+			2015.01|2015.01-5.15)
 				ln -fs "$BUILD_IMAGES/logo.img"              "$D"/logo.img
-				ln -fs "$LINUX_DIR/$LINUX_DTB"               "$D"/kvim.dtb
+				ln -fs "$LINUX_DTB"               "$D"/kvim.dtb
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin         "$D"/u-boot.bin
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.sd.bin  "$D"/u-boot.bin.sd.bin
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.usb.bl2 "$D"/u-boot.bin.usb.bl2
@@ -279,7 +291,7 @@ pack_image_platform() {
 				;;
 			2019.01)
 				ln -fs "$BUILD_IMAGES/logo.img"						"$D"/logo.img
-				ln -fs "$LINUX_DIR/$LINUX_DTB"						"$D"/kvim.dtb
+				ln -fs "$LINUX_DTB"						"$D"/kvim.dtb
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.signed			"$D"/u-boot.bin.signed
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.sd.bin.signed	"$D"/u-boot.bin.sd.bin.signed
 				ln -fs "$UBOOT_IMAGE_DIR"/u-boot.bin.usb.signed		"$D"/u-boot.bin.usb.signed

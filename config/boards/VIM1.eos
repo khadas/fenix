@@ -1,0 +1,341 @@
+#!/bin/bash
+
+#= Khadas VIM1 with Amlogic S905X SoC
+
+SUPPORTED_UBOOT=("2015.01" "mainline")
+SUPPORTED_UBOOT_DESC=("U-boot 2015.01" "U-boot Mainline")
+declare -A SUPPORTED_LINUX SUPPORTED_LINUX_DESC
+SUPPORTED_LINUX["2015.01"]="4.9"
+SUPPORTED_LINUX_DESC["2015.01"]="Linux 4.9"
+SUPPORTED_LINUX["mainline"]="mainline"
+SUPPORTED_LINUX_DESC["mainline"]="Linux Mainline"
+
+DISTRIBUTION_ARRAY=("Ubuntu" "Debian")
+DISTRIBUTION_ARRAY_DESC=("Ubuntu" "Debian")
+Ubuntu_RELEASE_ARRAY=("bionic" "focal")
+Ubuntu_RELEASE_VERSION_ARRAY=("18.04" "20.04")
+Ubuntu_RELEASE_ARRAY_DESC=("Ubuntu 18.04" "Ubuntu 20.04")
+Debian_RELEASE_ARRAY=("buster" "bullseye")
+Debian_RELEASE_VERSION_ARRAY=("10" "11")
+Debian_RELEASE_ARRAY_DESC=("Debian 10" "Debian 11")
+DISTRIB_ARCH_ARRAY=("arm64")
+Ubuntu_TYPE_ARRAY=("server" "minimal" "xfce" "gnome")
+Ubuntu_TYPE_ARRAY_DESC=("Headless Image With Essential Packages"\
+						"Minimal Image With Very Basic Packages"\
+						"Desktop Image With XFCE Desktop"\
+						"Desktop Image With GNOME Desktop")
+Debian_TYPE_ARRAY=("server" "minimal" "xfce" "gnome")
+Debian_TYPE_ARRAY_DESC=("Headless Image With Essential Packages"\
+						"Minimal Image With Very Basic Packages"\
+						"Desktop Image With XFCE Desktop"\
+						"Desktop Image With GNOME Desktop")
+INSTALL_TYPE_ARRAY=("EMMC" "SD-USB")
+INSTALL_TYPE_ARRAY_DESC=("Image For Writing to eMMC Storage With USB Burning Tool"\
+						 "Image For Writing to SD/USB Storage")
+
+####################################
+## Include VIM series common part
+####################################
+source config/boards/VIM.inc
+
+case "$UBOOT" in
+	2015.01)
+		UBOOT_DEFCONFIG="kvim_defconfig"
+		UBOOT_GIT_BRANCH="khadas-vims-v2015.01"
+		;;
+	mainline)
+		UBOOT_DEFCONFIG="khadas-vim_defconfig"
+		UBOOT_GIT_BRANCH="master"
+		;;
+esac
+
+
+case "$LINUX" in
+	mainline)
+		LINUX_DTB="$LINUX_DIR/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dtb"
+		LINUX_GIT_BRANCH="khadas-linux-6.2.y"
+		LINUX_DEFCONFIG="${LINUX_DEFCONFIG:-kvims_defconfig}"
+		SERIALCON="ttyAML0"
+		GPU_VER=""
+		GPU_PLATFORM=""
+		GPU_TYPE=""
+		MODESETTING_CONF="01-lima.conf"
+		;;
+	4.9)
+		LINUX_DTB="$LINUX_DIR/arch/arm64/boot/dts/amlogic/kvim_linux.dtb"
+		LINUX_GIT_BRANCH="khadas-vims-4.9.y"
+		LINUX_DEFCONFIG="${LINUX_DEFCONFIG:-kvims_defconfig}"
+		SERIALCON="ttyS0"
+		GPU_VER="r7p0"
+		GPU_PLATFORM="fbdev"
+		GPU_TYPE="m450"
+		MODESETTING_CONF=""
+		;;
+esac
+
+####
+GPU_MODEL="arm-mali-utgard-m450"
+
+CPUMIN=500000
+CPUMAX=1536000
+GOVERNOR=conservative
+
+BOOT_ENV_FILE_EXT="VIM1_env_ext.txt"
+
+#### Packing image
+IMAGE_PACKAGE_CONF=package_gx.conf
+IMAGE_PLATFORM_CONF=platform_gx.conf
+
+####################################
+## tweaks for platform
+tweaks_platform() {
+	echo "#Serial console allow root" >> $ROOTFS_TEMP/etc/securetty
+	echo "ttyAML0" >> $ROOTFS_TEMP/etc/securetty
+
+	# Enable services
+	eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable fan.service"'
+
+	if [ "$LINUX" != "mainline" ]; then
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable bluetooth-khadas.service"'
+	fi
+
+	if [ "$DISTRIB_TYPE" != "server" ] && [ "$LINUX" != "mainline" ]; then
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable hdmi_resolution.service"'
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable tone2-control.service"'
+	fi
+
+	# Create boot links
+	if [ "$INSTALL_TYPE" == "EMMC" ]; then
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/zImage zImage"'
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/uInitrd uInitrd"'
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "ln -fs /boot/dtb/$(basename $LINUX_DTB) dtb.img"'
+	else
+		# Setup default DTB for SD/USB images
+		if [ "$LINUX" == "mainline" ]; then
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "cp /boot/dtb/amlogic/$(basename $LINUX_DTB) /boot/dtb.img"'
+		else
+			eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "cp /boot/dtb/$(basename $LINUX_DTB) /boot/dtb.img"'
+		fi
+	fi
+}
+
+## Build deb packages for platform
+build_deb_packages_platform() {
+
+	if [ "$DISTRIB_TYPE" == "minimal" ]; then
+		warning_msg "Ignore build platform packages for minimal image."
+		return 0
+	fi
+
+	if [ "$LINUX" == "4.9" ] && [ "$DISTRIBUTION" == "Ubuntu" ] && [ "$DISTRIB_RELEASE" != "jammy" ]; then
+		info_msg "Building Kodi packages..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/kodi_aml
+		build_package "kodi_aml:target"
+
+		info_msg "Building libplayer_aml packages..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/libplayer_aml
+		build_package "libplayer_aml:target"
+
+		info_msg "Building amremote packages..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/amremote
+		build_package "amremote:target"
+
+		info_msg "Building gstreamer_aml packages..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/gstreamer_aml
+		build_package "gstreamer_aml:target"
+
+		info_msg "Building edid-decode-deb packages..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/edid-decode-deb
+		build_package "edid-decode-deb:target"
+
+		info_msg "Building mali_examples_aml packages..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/mali_examples_aml
+		build_package "mali_examples_aml:target"
+
+		info_msg "Building libcec..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/libcec_debs
+		build_package "libcec_debs:target"
+
+		info_msg "Building encoder..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/encoder_libs_deb_aml
+		build_package "encoder_libs_deb_aml:target"
+	fi
+
+	if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" != "bionic" ] && [ "$DISTRIB_RELEASE" != "jammy" ] && [ "$DISTRIB_TYPE" != "server" ]; then
+		info_msg "Building mesa..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/mesa_debs
+		build_package "mesa_debs:target"
+	fi
+}
+
+## Install deb packages for platform
+install_deb_packages_platform() {
+
+	if [ "$DISTRIB_TYPE" == "minimal" ]; then
+		warning_msg "Ignore install platform packages for minimal image."
+		return 0
+	fi
+
+	if [ "$LINUX" == "4.9" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
+
+		cd $ROOT
+		# Install Kodi in chroot
+		info_msg "Installing Kodi packages..."
+		if [ $DISTRIB_RELEASE == "bionic" ]; then
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi/*.deb
+		elif [ $DISTRIB_RELEASE == "focal" ]; then
+			debs=$(ls $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi/deps/*.deb)
+			for deb in $debs
+			do
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi/deps/$(basename $deb)
+			done
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi/kodi-bin_*.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/kodi/kodi_*.deb
+		fi
+
+		# Install libplayer_aml in chroot
+		info_msg "Installing libplayer_aml packages..."
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libplayer_aml/*.deb
+
+		# Install amremote in chroot
+		info_msg "Installing amremote packages..."
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/amremote/*.deb
+
+		# Install gstreamer_aml in chroot
+		info_msg "Installing gstreamer_aml packages..."
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/*.deb
+
+		# Enable khadas remote
+		eval 'LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "systemctl --no-reload enable amlogic-remotecfg.service"'
+
+		info_msg "Installing edid-decode-deb packages..."
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/edid-decode-deb/*.deb
+
+		info_msg "Installing mali_examples_aml packages..."
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mali_examples_aml/*.deb
+
+		# Install libcec in chroot
+		info_msg "Installing libcec..."
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/libcec4_*.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/libcec_*.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/libcec4-*.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/python3-libcec_*.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libcec/cec-utils_*.deb
+
+		# Install encoder libriries in chroot
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/encoder/*.deb
+	fi
+
+	if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_RELEASE" != "jammy" ]; then
+		# Install mesa in chroot
+		info_msg "Installing mesa..."
+
+		if [ "$DISTRIB_RELEASE" == "buster" ]; then
+			# update libdrm
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libdrm/libdrm-common_*_all.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libdrm/libdrm2_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libdrm/libdrm2-dbgsym_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libdrm/libdrm-amdgpu1_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libdrm/libdrm-amdgpu1-dbgsym_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libdrm/libdrm-etnaviv1_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libdrm/libdrm-etnaviv1-dbgsym_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libdrm/libdrm-freedreno1_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libdrm/libdrm-freedreno1-dbgsym_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libdrm/libdrm-nouveau2_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libdrm/libdrm-nouveau2-dbgsym_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libdrm/libdrm-radeon1_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libdrm/libdrm-radeon1-dbgsym_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libdrm/libdrm-tegra0_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libdrm/libdrm-tegra0-dbgsym_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libdrm/libdrm-dev_*_arm64.deb
+
+			# update libglvnd
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libglvnd-core-dev_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libglvnd0_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libglvnd0-dbgsym_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libglvnd-dev_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libglx0_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libglx0-dbgsym_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libgl1_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libgl1-dbgsym_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libegl1_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libegl1-dbgsym_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libgl-dev_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libegl-dev_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libgles1_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libgles1-dbgsym_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libgles2_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libgles2-dbgsym_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libgles-dev_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libglx-dev_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libopengl0_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libopengl0-dbgsym_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/libglvnd/libopengl-dev_*_arm64.deb
+
+			# install mesa
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libd3dadapter9-mesa_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libd3dadapter9-mesa-dev_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libegl1-mesa_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libegl1-mesa-dev_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgbm1_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgbm1-dbgsym_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgbm-dev_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgl1-mesa-dev_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libglapi-mesa_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libglapi-mesa-dbgsym_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgl1-mesa-dri_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgl1-mesa-dri-dbgsym_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgles2-mesa_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgles2-mesa-dev_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libegl-mesa0_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libegl-mesa0-dbgsym_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libglx-mesa0_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libglx-mesa0-dbgsym_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgl1-mesa-glx_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libosmesa6_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libosmesa6-dbgsym_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libosmesa6-dev_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libwayland-egl1-mesa_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/mesa-common-dev_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/mesa-opencl-icd_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/mesa-va-drivers_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/mesa-vdpau-drivers_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/mesa-vulkan-drivers_*_arm64.deb
+		elif [ "$DISTRIB_RELEASE" == "focal" ]; then
+			# update mesa
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libd3dadapter9-mesa_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libegl1-mesa_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgbm1_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libglapi-mesa_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgl1-mesa-dri_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgles2-mesa_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libegl-mesa0_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libglx-mesa0_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libgl1-mesa-glx_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libosmesa6_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/libwayland-egl1-mesa_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/mesa-opencl-icd_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/mesa-va-drivers_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/mesa-vdpau-drivers_*_arm64.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/mesa/mesa/mesa-vulkan-drivers_*_arm64.deb
+		fi
+	fi
+}

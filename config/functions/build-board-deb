@@ -139,7 +139,7 @@ build_board_deb() {
 	. /etc/fenix-release
 	ln -sf /lib/firmware /etc/firmware
 	if [[ "\$BOARD" =~ "VIM3" ]]; then
-		if linux-version compare \`uname -r\` lt 5.10; then
+		if linux-version compare \`uname -r\` lt 6.0; then
 			systemctl enable panel.service
 			if [ "\$BOARD" == "VIM3" ]; then
 				systemctl enable camera_isp_3a_server.service
@@ -178,7 +178,7 @@ build_board_deb() {
 			sed -i "s/BOARD=.*/BOARD=\$khadas_board/" /etc/fenix-release
 		fi
 		linux_ver=\`uname -r\`
-		if linux-version compare \$linux_ver ge 5.12; then
+		if linux-version compare \$linux_ver ge 6.0; then
 			IS_MAINLINE_KERNEL="yes"
 		fi
 	fi
@@ -215,6 +215,9 @@ build_board_deb() {
 		fi
 		# Update modules
 		[ -f /etc/modules.mainlne ] && rm /etc/modules.mainlne
+		[ -f /etc/modules.$LINUX ] && mv /etc/modules.$LINUX /etc/modules
+		# Update modules configs
+		[ -f /etc/modprobe.d/dhd.conf.$LINUX ] && mv /etc/modprobe.d/dhd.conf.$LINUX /etc/modprobe.d/dhd.conf
 		if [ "\$BOARD" == "VIM2" ]; then
 			sed -i 's/mali//g' /etc/modules
 		elif [ "\$BOARD" == "VIM3L" ]; then
@@ -233,8 +236,8 @@ build_board_deb() {
 	partition_type=\$(sed -e 's/^.*partition_type=//' -e 's/ .*\$//' < /proc/cmdline)
 	[ -f /boot/env.txt ] &&  sed -i s/rootdev=.*/rootdev=\$rootdev/g /boot/env.txt
 	if [ -f /boot/uEnv.txt ]; then
-		sed -i s/rootdev=root=.*/rootdev=root=\$rootdev/g /boot/uEnv.txt
-		sed -i s/partitiontype=partition_type=.*/partitiontype=partition_type=\$partition_type/g /boot/uEnv.txt
+		sed -i "s/rootdev=root=.*/rootdev=root=\$rootdev/g" /boot/uEnv.txt
+		sed -i "s/partitiontype=partition_type=.*/partitiontype=partition_type=\$partition_type/g" /boot/uEnv.txt
 	fi
 
 	systemctl --no-reload enable fenix-zram-config.service fenix-hardware-optimize.service >/dev/null 2>&1
@@ -420,6 +423,33 @@ build_board_deb() {
 		mv $pkgdir/usr/share/initramfs-tools/scripts/local.jammy $pkgdir/usr/share/initramfs-tools/scripts/local
 	else
 		rm -rf $pkgdir/usr/share/initramfs-tools/scripts/local.jammy
+	fi
+	[ -f $pkgdir/etc/initramfs-tools/modules.$LINUX ] && mv $pkgdir/etc/initramfs-tools/modules.$LINUX $pkgdir/etc/initramfs-tools/modules
+	rm -rf $pkgdir/etc/initramfs-tools/modules.*
+
+	# Generate module load order in initramfs
+	if [ -e $pkgdir/etc/initramfs-tools/modules ]; then
+		module_count=0
+		pre_module=
+		while read -r m; do
+			# Skip empty lines
+			if [ -z "$m" ];  then
+				continue
+			fi
+			# Skip comments - d?ash removes whitespace prefix
+			com=$(printf "%.1s" "${m}")
+			if [ "$com" = "#" ]; then
+				continue
+			fi
+			module_count=$((module_count + 1))
+			if [ $module_count -gt 1 ]; then
+				echo "softdep $m pre: $pre_module" >> $pkgdir/etc/modprobe.d/initramfs-modules-load-order.conf
+			else
+				echo "# Initramfs modules load order" > $pkgdir/etc/modprobe.d/initramfs-modules-load-order.conf
+			fi
+			pre_module=$m
+
+		done < $pkgdir/etc/initramfs-tools/modules
 	fi
 
 	# Trigger uInitrd creation after installation, to apply

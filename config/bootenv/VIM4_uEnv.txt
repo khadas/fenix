@@ -1,0 +1,14 @@
+#############################DO NOT TOUCH THIS OPTION#############################
+rootdev=root=PLACEHOLDER
+partitiontype=partition_type=PLACEHOLDER
+#############################DO NOT TOUCH THIS OPTION#############################
+## Setup console
+consoles=console=ttyS0,921600 console=tty0
+
+## Setup FAN mode
+fan_mode=auto
+
+## Add user args here, spilt with space.
+## e.g. Add bootargs 'test1=111 test2=222'
+## boot_user_args=test1=111 test2=222
+boot_user_args=

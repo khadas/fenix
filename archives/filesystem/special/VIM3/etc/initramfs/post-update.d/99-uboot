@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [ ${1::4} == "5.15" ]; then
+    initrdtemp="/boot/initrd.img-$1"
+    ln -sf $(basename $initrdtemp) /boot/initrd.img > /dev/null 2>&1 || cp $initrdtemp /boot/initrd.img
+else
+    . /etc/fenix-release
+
+    echo "update-initramfs: Converting to u-boot format" >&2
+    tempname="/boot/uInitrd-$1"
+    mkimage -A $INITRD_ARCH -O linux -T ramdisk -C none -n uInitrd -d $2 $tempname > /dev/null
+    ln -sf $(basename $tempname) /boot/uInitrd > /dev/null 2>&1 || mv $tempname /boot/uInitrd
+fi
+
+exit 0

@@ -8,6 +8,7 @@
 # mount_chroot
 # umount_chroot
 # install_deb_chroot
+# execute_in_chroot
 # do_umount
 # cleanup
 # check_loop_device
@@ -313,6 +314,19 @@ do_umount() {
 	if mount | grep $1 > /dev/null; then
 		umount $1
     fi
+}
+
+# Execute command in chroot
+execute_in_chroot() {
+	local cmd=$1
+	[ "$cmd" ] || {
+	    error_msg "Command required!"
+	    return 1
+	}
+	info_msg "Executing '$cmd' in chroot..."
+	mount_chroot "$ROOTFS_TEMP"
+	LC_ALL=C LANG=C chroot $ROOTFS_TEMP /bin/bash -c "$cmd"
+	umount_chroot "$ROOTFS_TEMP"
 }
 
 ## Cleanup
