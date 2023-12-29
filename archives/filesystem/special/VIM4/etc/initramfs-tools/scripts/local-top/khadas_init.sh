@@ -5,6 +5,15 @@ if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/.)" ]; then
 	exit 0
 fi
 
+linux_version=`uname -r`
+major_version=$(echo "$linux_version" | cut -d '.' -f 1,2)
+target_version="5.15"
+
+if [ "$major_version" = "$target_version" ]; then
+	echo "Ignore for 5.15 kernel..."
+	exit 0
+fi
+
 panel_exist=0
 
 for x in $(cat /proc/cmdline); do
