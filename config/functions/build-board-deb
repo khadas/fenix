@@ -288,7 +288,11 @@ build_board_deb() {
 		# Add fenix repository
 		if [ "$BUILD_TYPE" == "release" ]; then
 			mkdir -p $pkgdir/etc/apt/sources.list.d
-			echo "deb http://dl.khadas.com/repos/${KHADAS_BOARD,,}/ ${DISTRIB_RELEASE} main" > $pkgdir/etc/apt/sources.list.d/fenix.list
+			if [ "$VENDOR" == "Amlogic" ] && [ "$LINUX" == "5.15" ]; then
+				echo "deb http://dl.khadas.com/repos/${KHADAS_BOARD,,}-${LINUX}/ ${DISTRIB_RELEASE} main" > $pkgdir/etc/apt/sources.list.d/fenix.list
+			else
+				echo "deb http://dl.khadas.com/repos/${KHADAS_BOARD,,}/ ${DISTRIB_RELEASE} main" > $pkgdir/etc/apt/sources.list.d/fenix.list
+			fi
 		fi
 	fi
 
