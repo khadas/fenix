@@ -99,6 +99,11 @@ install_common()
 		tweaks_platform
 	fi
 
+	# Customize platform
+	if [[ $(type -t customize_platform) == function ]]; then
+		customize_platform
+	fi
+
 	# Clean ssh keys
 	rm -f $ROOTFS_TEMP/etc/ssh/ssh_host*
 
