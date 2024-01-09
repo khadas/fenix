@@ -541,7 +541,7 @@ TEST_ML)
 #VIM3L-debian-minimal-buster-mainline-sdusb)                 ( source  $SETENV -d -q -s $VIM3L $BUSTER $MINI $ML $USB $CMP && make -C "$MAKEDIR") & ;;
 
 # VIM4 Release Images
-#VIM4-ubuntu-server-jammy-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $VIM4 $JAMMY $SERVER $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
+VIM4-ubuntu-server-jammy-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $VIM4 $JAMMY $SERVER $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM4-ubuntu-gnome-jammy-vendor-emmc-REL-CHK)               ( source  $SETENV -d -q -s $VIM4 $JAMMY $GNOME $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM4-ubuntu-server-jammy-vendor-sdusb-REL)                 ( source  $SETENV -d -q -s $VIM4 $JAMMY $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #VIM4-ubuntu-gnome-jammy-vendor-sdusb-REL)                  ( source  $SETENV -d -q -s $VIM4 $JAMMY $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
