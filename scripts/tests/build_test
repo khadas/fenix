@@ -247,7 +247,7 @@ RUN(){
 	export SKIP_ROOTFS_CACHE_DOWNLOAD=yes
 
     [ "$BUILD" ] || \
-    BUILD=../fenix.build
+    BUILD=$(realpath ../fenix.build)
 
     [ "$DOWNLOAD_PKG_DIR" ] || \
     DOWNLOAD_PKG_DIR=../fenix.dl
