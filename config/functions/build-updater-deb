@@ -44,6 +44,12 @@ build_updater_deb() {
 				;;
 		esac
 		updater_deb_conflicts+="opencv3"
+	elif [ "$LINUX" != "mainline" ] && [ "$DISTRIBUTION" == "Ubuntu" ] && [ "$DISTRIB_RELEASE" == "jammy" ]; then
+		case $KHADAS_BOARD in
+			Edge2)
+				updater_deb_dependencies+="camera-engine-rkaiq"
+				;;
+		esac
 	elif [ "$LINUX" == "mainline" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
 		case $KHADAS_BOARD in
 			VIM1)
