@@ -1,6 +1,6 @@
 PKG_NAME="rkaiq-rockchip-debs"
-PKG_VERSION="7b5516059bc526fa4d2f7ca1e22facae84a9bd10"
-PKG_SHA256="332f51bc6d3cf7ba3c5ce425a830afda49ceb60789eadfcc8823152583cac720"
+PKG_VERSION="07d3843cca9b2723ac846e1d1cbb85e873d0f098"
+PKG_SHA256="c0fadfe926563b6b286272b9c74261197daf1d992d6e4ae71b84289c84ea9bc6"
 PKG_SOURCE_DIR="rkaiq-rockchip-debs-${PKG_VERSION}*"
 PKG_SITE="$GITHUB_URL/numbqq/rkaiq-rockchip-debs"
 PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
