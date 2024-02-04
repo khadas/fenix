@@ -267,16 +267,16 @@ DEBOOTSTRAP_LIST=$(echo $DEBOOTSTRAP_LIST | sed -e 's,\\[trn],,g')
 # Essential packages
 PACKAGE_LIST="bc cpufrequtils device-tree-compiler fping fake-hwclock psmisc chrony parted dialog \
 	ncurses-term sysfsutils toilet figlet u-boot-tools usbutils openssh-server nocache debconf-utils \
-	python3-apt make gcc libc6-dev plymouth plymouth-themes rng-tools"
+	python3-apt make gcc libc6-dev plymouth plymouth-themes"
 
 # Non-essential packages
 PACKAGE_LIST_ADDITIONAL="network-manager wireless-tools lsof htop mmc-utils wget nano sysstat net-tools \
-	resolvconf iozone3 jq libcrack2 cracklib-runtime curl rfkill bison flex libssl-dev xterm"
+	resolvconf jq libcrack2 cracklib-runtime curl rfkill bison flex libssl-dev xterm"
 
 if [[ "$DISTRIB_TYPE" != "minimal" ]]; then
 
 	PACKAGE_LIST+=" bridge-utils build-essential fbset iw wpasupplicant unattended-upgrades unicode-data \
-		expect iptables mc abootimg libc6 libdrm2 libgcc1 libstdc++6 libx11-6 libx11-xcb1 libxcb-dri2-0 \
+		expect iptables mc abootimg libc6 libdrm2 libstdc++6 libx11-6 libx11-xcb1 libxcb-dri2-0 \
 		libxcb1 html2text automake libwrap0-dev libnl-3-dev libnl-genl-3-dev \
 		keyboard-configuration rsyslog"
 
@@ -290,12 +290,12 @@ if [[ "$DISTRIB_TYPE" != "minimal" ]]; then
 fi
 
 PACKAGE_LIST_DESKTOP="xserver-xorg xserver-xorg-video-fbdev gvfs-backends gvfs-fuse xfonts-base xinit x11-xserver-utils thunar-volman \
-	network-manager-gnome network-manager-openvpn-gnome gnome-keyring gcr libgck-1-0 p11-kit pasystray pavucontrol pulseaudio \
-	pavumeter pulseaudio-module-bluetooth blueman libpam-gnome-keyring libgl1-mesa-dri gparted synaptic apt-xapian-index \
-	policykit-1 profile-sync-daemon gnome-orca numix-gtk-theme gnome-system-tools lightdm lightdm-gtk-greeter gufw yad zenity guvcview onboard"
+	network-manager-gnome network-manager-openvpn-gnome gnome-keyring gcr libgck-1-0 p11-kit pasystray pavucontrol \
+	pavumeter blueman libpam-gnome-keyring libgl1-mesa-dri gparted synaptic apt-xapian-index \
+	policykit-1 profile-sync-daemon numix-gtk-theme gnome-system-tools lightdm lightdm-gtk-greeter gufw yad zenity guvcview onboard"
 
 PACKAGE_LIST_OFFICE="gedit galculator hexchat mpv gtk2-engines gtk2-engines-murrine gtk2-engines-pixbuf \
-	thunderbird system-config-printer-common system-config-printer paprefs dbus-x11 tango-icon-theme libreoffice fbi \
+	thunderbird system-config-printer-common system-config-printer dbus-x11 tango-icon-theme libreoffice fbi \
 	cups-pk-helper cups geany atril xarchiver meld remmina kazam avahi-daemon transmission"
 
 PACKAGE_LIST_XSERVER="libunwind8 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xf86dri0 libxcb-xkb1 libxcb-xv0 \
@@ -332,17 +332,27 @@ esac
 case $DISTRIB_RELEASE in
 	buster|bullseye)
 		DEBOOTSTRAP_COMPONENTS="main"
-		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher command-not-found hddtemp crda"
+		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher command-not-found hddtemp crda libgcc1 rng-tools iozone3"
 		PACKAGE_LIST_KODI="libglu1 libmicrohttpd12 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libva-drm2 libcurl4"
 		PACKAGE_LIST_QT+=" libqt5multimediaquick5"
 		PACKAGE_LIST_MESA="libglvnd-dev libx11-dev"
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_KODI $PACKAGE_LIST_MESA"
-		PACKAGE_LIST_DESKTOP+=" numix-icon-theme chromium mirage"
+		PACKAGE_LIST_DESKTOP+=" numix-icon-theme chromium mirage gnome-orca pulseaudio pulseaudio-module-bluetooth"
+		PACKAGE_LIST_OFFICE+="paprefs"
 		[[ "$DISTRIB_RELEASE" == "buster" ]] && PACKAGE_LIST_DESKTOP+=" libreoffice-style-tango"
+	;;
+	bookworm)
+		DEBOOTSTRAP_COMPONENTS="main"
+		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher command-not-found rng-tools-debian libgcc-s1"
+		PACKAGE_LIST_KODI="libglu1-mesa libmicrohttpd12 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libva-drm2 libcurl4"
+		PACKAGE_LIST_QT+=" libqt5multimediaquick5"
+		PACKAGE_LIST_MESA="libglvnd-dev libx11-dev"
+		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_KODI $PACKAGE_LIST_MESA"
+		PACKAGE_LIST_DESKTOP+=" numix-icon-theme chromium mirage task-gnome-desktop"
 	;;
 	bionic)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
-		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found hddtemp crda"
+		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found hddtemp crda libgcc1 rng-tools iozone3"
 		PACKAGE_LIST_QT+=" libqt5multimediaquick-p5 libqgsttools-p1"
 		PACKAGE_LIST_KODI="mesa-utils libglu1 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libcurl4 libcrossguid0 libmariadbclient18 libmicrohttpd12 \
 			libavahi-compat-libdnssd-dev libcec4 libfstrcmp0 libnfs11 fonts-liberation python-bluez python-pil python-simplejson libaacs0 fonts-dejavu-core libao-dev"
@@ -351,11 +361,13 @@ case $DISTRIB_RELEASE in
 			libxslt1.1 mesa-utils x11-utils fonts-liberation fonts-dejavu-core python-bluez python-pil python-simplejson libgif7 libvorbisfile3 libaacs0 libgnutls30 \
 			libyajl2 libsndio6.1 libcrossguid0 libao-dev"
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_XSERVER $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_QT $PACKAGE_LIST_KODI"
-		PACKAGE_LIST_DESKTOP+=" chromium-browser xserver-xorg-input-all firefox pulseaudio-module-gconf libgnome2-perl language-selector-gnome mirage libreoffice-style-tango"
+		PACKAGE_LIST_DESKTOP+=" chromium-browser xserver-xorg-input-all firefox pulseaudio-module-gconf libgnome2-perl language-selector-gnome gnome-orca mirage \
+			libreoffice-style-tango pulseaudio pulseaudio-module-bluetooth"
+		PACKAGE_LIST_OFFICE+="paprefs"
 	;;
 	focal|hirsute)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
-		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found hddtemp crda"
+		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found hddtemp crda libgcc1 rng-tools iozone3"
 		PACKAGE_LIST_KODI="mesa-utils libglu1 libpcrecpp0v5 libssh-4 libtag1v5 libtinyxml2.6.2v5 libcurl4 libcrossguid0  libmicrohttpd12 libavahi-compat-libdnssd-dev libcec4 \
 			libfstrcmp0 libnfs13 fonts-liberation python-bluez python-pil python-simplejson libaacs0 fonts-dejavu-core libao-dev libpython2.7 libpython2.7-minimal libpython2.7-stdlib x11-utils"
 		PACKAGE_LIST_SERVER_KODI="libao4 libwayland-cursor0 libavahi-compat-libdnssd-dev libass9 libavahi-client3 libavahi-common3 libbluray2 libcdio18 libcec4 \
@@ -364,12 +376,14 @@ case $DISTRIB_RELEASE in
 			libyajl2 libsndio7.0 libcrossguid0 libao-dev libpython2.7"
 		PACKAGE_LIST_MESA="libclang-cpp11 libclc-r600 libclc-amdgcn libllvm10"
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_XSERVER $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_KODI $PACKAGE_LIST_MESA"
-		PACKAGE_LIST_DESKTOP+=" xserver-xorg-input-all pulseaudio-module-gsettings firefox language-selector-gnome viewnior libreoffice-style-tango"
+		PACKAGE_LIST_DESKTOP+=" xserver-xorg-input-all gnome-orca pulseaudio pulseaudio-module-bluetooth pulseaudio-module-gsettings firefox language-selector-gnome viewnior libreoffice-style-tango"
+		PACKAGE_LIST_OFFICE+="paprefs"
 	;;
 	jammy)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
-		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found libgrpc++1 libboost-system1.74.0"
-		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER xserver-xorg-input-all pulseaudio-module-gsettings language-selector-gnome viewnior dbus-user-session libreoffice-style-tango"
+		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found libgrpc++1 libboost-system1.74.0 libgcc1 rng-tools iozone3"
+		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER xserver-xorg-input-all gnome-orca pulseaudio pulseaudio-module-bluetooth pulseaudio-module-gsettings language-selector-gnome viewnior dbus-user-session libreoffice-style-tango"
+		PACKAGE_LIST_OFFICE+="paprefs"
 	;;
 esac
 
