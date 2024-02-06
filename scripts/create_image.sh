@@ -125,9 +125,18 @@ prepare_packages
     NO_BUILD_UBOOT=1 && NO_BUILD_LINUX=1 && NO_BUILD_DEBS=1 && \
     info_msg "Creating rootfs cache only"
 
-[ "$NO_BUILD_UBOOT" ] || build_uboot
-[ "$NO_BUILD_LINUX" ] || build_linux
-[ "$NO_BUILD_DEBS"  ] || build_debs
+[ "$NO_BUILD_UBOOT" ] || build_uboot || {
+	error_msg "Build U-Boot failed!"
+	exit 1
+}
+[ "$NO_BUILD_LINUX" ] || build_linux || {
+	error_msg "Build Linux failed!"
+	exit 1
+}
+[ "$NO_BUILD_DEBS"  ] || build_debs || {
+	error_msg "Build debs failed!"
+	exit 1
+}
 
 cd $ROOT
 
