@@ -331,13 +331,18 @@ execute_in_chroot() {
 
 ## Cleanup
 cleanup() {
-    cd $ROOT
-    echo "Cleanup..."
-    sync
+	cd $ROOT
+	echo "Cleanup..."
+	sync
 
-    trap - INT TERM EXIT
+	trap - INT TERM EXIT
 
-    unmount_deep "$ROOTFS_TEMP" "$ROOTFS"
+	unmount_deep "$ROOTFS_TEMP" "$ROOTFS"
+	if [ -b "$IMAGE_LOOP_DEV" ]; then
+		if losetup --list | grep -q "$IMAGE_LOOP_DEV"; then
+			losetup -d "${IMAGE_LOOP_DEV}"
+		fi
+	fi
 }
 
 # Check & Create loop device if not exist

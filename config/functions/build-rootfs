@@ -513,12 +513,14 @@ prepare_partitions()
 			#parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} set 1 boot on
 		fi
 
+		export IMAGE_LOOP_DEV
 		IMAGE_LOOP_DEV="$(losetup --show -f ${BUILD_IMAGES}/${IMAGE_FILE_NAME})"
+		info_msg "Allocated loop device: $IMAGE_LOOP_DEV"
 		if [[ -z $IMAGE_LOOP_DEV ]]; then
 			error_msg "Unable to find free loop device!"
 			return -1
 		fi
-		export IMAGE_LOOP_DEV
+
 		IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
 		IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
 		partprobe "${IMAGE_LOOP_DEV}"
@@ -597,6 +599,7 @@ prepare_partitions()
 	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
 		umount $ROOTFS/boot
 		losetup -d "${IMAGE_LOOP_DEV}"
+		unset IMAGE_LOOP_DEV
 	fi
 	umount $ROOTFS
 }
