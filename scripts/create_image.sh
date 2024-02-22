@@ -77,9 +77,6 @@ build_debs() {
 		fi
 	fi
 
-	# Build GPU deb
-	build_gpu_deb
-
 	# Build board deb
 	build_board_deb
 

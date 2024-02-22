@@ -47,9 +47,6 @@ kernel-deb: kernel
 board-deb: _env_is_setup
 	@./scripts/build.sh board-deb
 
-gpu-deb: _env_is_setup
-	@./scripts/build.sh gpu-deb
-
 desktop-deb: _env_is_setup
 	@./scripts/build.sh desktop-deb
 
@@ -97,7 +94,6 @@ help:
 	@echo "  board-deb             - Build board debian package."
 	@echo "  common-deb            - Build common debian package."
 	@echo "  desktop-deb           - Build desktop debian package."
-	@echo "  gpu-deb               - Build gpu debian package."
 	@echo "  debs                  - Build all debian packages."
 	@echo "  image                 - Pack update image."
 	@echo "  clean                 - Cleanup."
