@@ -18,6 +18,15 @@ source config/config
 ## Functions
 source config/functions/functions
 #################################################################
+## Double check cleanup
+echo -n -e "${YELLOW}Warning:${ENDCOLOR}" "Do you want to perform cleanup? [N/y] "
+read ANSWER
+if [ "$ANSWER" != "Y" ] && [ "$ANSWER" != "y" ]; then
+	info_msg "Cleanup canceled."
+	exit
+fi
+
+exit
 
 check_active_session
 
