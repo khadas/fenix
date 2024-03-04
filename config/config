@@ -292,7 +292,7 @@ fi
 PACKAGE_LIST_DESKTOP="xserver-xorg xserver-xorg-video-fbdev gvfs-backends gvfs-fuse xfonts-base xinit x11-xserver-utils thunar-volman \
 	network-manager-gnome network-manager-openvpn-gnome gnome-keyring gcr libgck-1-0 p11-kit pasystray pavucontrol \
 	pavumeter blueman libpam-gnome-keyring libgl1-mesa-dri gparted synaptic apt-xapian-index \
-	policykit-1 profile-sync-daemon numix-gtk-theme gnome-system-tools lightdm lightdm-gtk-greeter gufw yad zenity guvcview onboard"
+	policykit-1 profile-sync-daemon numix-gtk-theme gnome-system-tools gufw yad zenity guvcview onboard"
 
 PACKAGE_LIST_OFFICE="gedit galculator hexchat mpv gtk2-engines gtk2-engines-murrine gtk2-engines-pixbuf \
 	thunderbird system-config-printer-common system-config-printer dbus-x11 tango-icon-theme libreoffice fbi \
