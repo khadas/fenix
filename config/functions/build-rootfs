@@ -200,7 +200,7 @@ install_distribution_specific()
 			execute_in_chroot "systemctl disable hostapd.service"
 		fi
 		;;
-	bionic|focal|jammy)
+	bionic|focal|jammy|noble)
 		# remove doubled uname from motd
 		[[ -f $ROOTFS_TEMP/etc/update-motd.d/10-uname ]] && rm $ROOTFS_TEMP/etc/update-motd.d/10-uname
 		# remove motd news from motd.ubuntu.com
@@ -440,13 +440,12 @@ prepare_partitions()
 	fi
 
 	info_msg "Preparing image file for rootfs..."
-
-	if [[ $(lsb_release -sc) =~ bionic|focal|jammy ]]; then
-		EXT4_MKOPTS="-q -F -L ROOTFS -m 2 -O ^64bit,^metadata_csum"
-		BOOT_EXT4_MKOPTS="-q -F -L BOOT -m 2 -O ^64bit,^metadata_csum"
-	elif [[ $(lsb_release -sc) == "xenial" ]]; then
+	if [[ $(lsb_release -sc) == "xenial" ]]; then
 		EXT4_MKOPTS="-q -F -L ROOTFS -m 2"
 		BOOT_EXT4_MKOPTS="-q -F -L BOOT -m 2"
+	else
+		EXT4_MKOPTS="-q -F -L ROOTFS -m 2 -O ^64bit,^metadata_csum"
+		BOOT_EXT4_MKOPTS="-q -F -L BOOT -m 2 -O ^64bit,^metadata_csum"
 	fi
 
 	# calculate rootfs size

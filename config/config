@@ -385,6 +385,12 @@ case $DISTRIB_RELEASE in
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER xserver-xorg-input-all gnome-orca pulseaudio pulseaudio-module-bluetooth pulseaudio-module-gsettings language-selector-gnome viewnior dbus-user-session libreoffice-style-tango"
 		PACKAGE_LIST_OFFICE+="paprefs"
 	;;
+	noble)
+		DEBOOTSTRAP_COMPONENTS="main,universe"
+		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found libgrpc++1 libboost-system1.74.0 libgcc1 rng-tools iozone3"
+		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER xserver-xorg-input-all pulseaudio pulseaudio-module-bluetooth pulseaudio-module-gsettings language-selector-gnome viewnior dbus-user-session libreoffice-style-tango"
+		PACKAGE_LIST_OFFICE+="paprefs"
+	;;
 esac
 
 DEBIAN_MIRROR='httpredir.debian.org/debian'

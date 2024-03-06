@@ -135,7 +135,7 @@ build_desktop_deb() {
 		fi
 	fi
 
-	if [ "$DISTRIB_RELEASE" == "jammy" ]; then
+	if [ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "noble" ]; then
 		cat <<-EOT> /etc/environment.d/90fenix.conf
 		SDL_VIDEODRIVER=wayland
 		QT_QPA_PLATFORM=wayland

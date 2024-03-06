@@ -22,7 +22,6 @@
 # post_create_image
 # download_rootfs_cache
 # copy_ota_debs
-
 ## Print error message
 ## $1 - message
 
@@ -80,8 +79,13 @@ prepare_host() {
 
 	[ "$NO_HOST_CHECK" ] || {
 		case $build_host in
-		hirsute|bullseye|jammy)
+		noble)
 		## looks like can build all prev system
+		;;
+		hirsute|bullseye|jammy)
+			case $DISTRIB_RELEASE in
+				noble) broken_ ;;
+			esac
 		;;
 		focal|buster)
 			case $DISTRIB_RELEASE in
@@ -132,9 +136,9 @@ prepare_host() {
 	# maybe need clean some packages from this list !?
 	local hostdeps="wget ca-certificates device-tree-compiler pv bc lzop zip binfmt-support build-essential ccache debootstrap ntpdate \
 			gawk gcc-arm-linux-gnueabihf qemu-user-static u-boot-tools uuid-dev zlib1g-dev unzip libusb-1.0-0-dev fakeroot \
-			parted pkg-config libncurses5-dev whiptail debian-keyring debian-archive-keyring f2fs-tools libfile-fcntllock-perl rsync libssl-dev \
+			parted pkg-config whiptail debian-keyring debian-archive-keyring f2fs-tools libfile-fcntllock-perl rsync libssl-dev \
 			nfs-kernel-server btrfs-progs ncurses-term p7zip-full kmod dosfstools libc6-dev-armhf-cross \
-			curl patchutils liblz4-tool libpython2.7-dev linux-base swig aptly acl \
+			curl patchutils liblz4-tool linux-base swig aptly acl \
 			locales ncurses-base pixz dialog systemd-container udev lib32stdc++6 libc6-i386 lib32ncurses5 lib32tinfo5 \
 			bison libbison-dev flex libfl-dev lib32z1 libglib2.0-dev xxd"
 
@@ -148,13 +152,17 @@ prepare_host() {
 	# Getting ready for new hosts
 	case $build_host in
 		bionic)
-		hostdeps+=" python libpython-dev"
+		hostdeps+=" python libpython-dev libpython2.7-dev libncurses5-dev"
 		;;
-		*)
-		hostdeps+=" python2 python3"
+		hirsute|bullseye|jammy)
+		hostdeps+=" python2 python3 libpython2.7-dev libncurses5-dev"
 		hostdeps="${hostdeps/lib32ncurses5 lib32tinfo5/lib32ncurses6 lib32tinfo6}"
+		;;
+		noble)
+		hostdeps+=" python3"
+		hostdeps="${hostdeps/lib32ncurses5 lib32tinfo5/lib32ncurses6 lib32tinfo6}"
+		;;
 	esac
-
 
 	# warning: apt-cacher-ng will fail if installed and used both on host and in container/chroot environment with shared network
 	# set NO_APT_CACHER=yes to prevent installation errors in such case
@@ -204,7 +212,7 @@ prepare_host() {
 	for p in python python2; do
 		which $p 1>/dev/null || \
 		for m in python2 python3; do
-			w=$(which $m)
+			w=$(which $m) || true
 			if [ "$w" ]; then
 				echo ln -sf $w $BUILD/bin/$p
 				ln -sf $w $BUILD/bin/$p
@@ -413,7 +421,7 @@ get_package_list_hash()
 
 ## create_sources_list <release> <basedir>
 ##
-## <release>: buster|bullseye|bionic|focal|jammy
+## <release>: buster|bullseye|bionic|focal|jammy|noble
 ## <basedir>: path to root directory
 create_sources_list()
 {
@@ -450,7 +458,7 @@ create_sources_list()
 	EOF
 	;;
 
-	bionic|focal|hirsute|jammy)
+	bionic|focal|hirsute|jammy|noble)
 	cat <<-EOF | tee $basedir/etc/apt/sources.list
 	deb http://${UBUNTU_MIRROR} $release main restricted universe multiverse
 	#deb-src http://${UBUNTU_MIRROR} $release main restricted universe multiverse
