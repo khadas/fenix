@@ -1,6 +1,6 @@
 PKG_NAME="gstreamer-rockchip-debs"
-PKG_VERSION="1ecbf7ff5fddc9cb51e9e71b06623340d04ccb86"
-PKG_SHA256="5f142e00d8e2f6739b7a228ef61ade695777b97678a05e1fba35f0fc2a188002"
+PKG_VERSION="37e07b62e8a97f57c349df3e8f553c02cd885660"
+PKG_SHA256="e320fe6bc95fea03dd89eac904e81b0376b710e50bb745b3ad21a6009d445f20"
 PKG_SOURCE_DIR="gstreamer-rockchip-debs-${PKG_VERSION}*"
 PKG_SITE="$GITHUB_URL/numbqq/gstreamer-rockchip-debs"
 PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"

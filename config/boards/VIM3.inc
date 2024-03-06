@@ -65,7 +65,7 @@ build_deb_packages_platform() {
 		return 0
 	fi
 
-	if [ "$DISTRIBUTION" == "Ubuntu" ]; then
+	if [ "$DISTRIBUTION" == "Ubuntu" ] || [ "$DISTRIBUTION" == "Debian" ] ; then
 
 		info_msg "Building npu_aml packages..."
 		# FIXME
@@ -137,7 +137,7 @@ build_deb_packages_platform() {
 		fi
 
 		if [ "$LINUX" == "5.15" ]; then
-			if [ "$DISTRIB_RELEASE" == "jammy" ]; then
+			if [ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "bookworm" ] ; then
 				if [ "$DISTRIB_TYPE" != "server" ]; then
 					info_msg "Building mali-debs package..."
 					# FIXME
@@ -220,7 +220,7 @@ install_deb_packages_platform() {
 		return 0
 	fi
 
-	if [ "$DISTRIBUTION" == "Ubuntu" ]; then
+	if [ "$DISTRIBUTION" == "Ubuntu" ] || [ "$DISTRIBUTION" == "Debian" ] ; then
 
 		cd $ROOT
 
@@ -283,7 +283,7 @@ install_deb_packages_platform() {
 		fi
 
 		if [ "$LINUX" == "5.15" ]; then
-			if [ "$DISTRIB_RELEASE" == "jammy" ]; then
+			if [ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "bookworm" ]; then
 				if [ "$DISTRIB_TYPE" != "server" ]; then
 					info_msg "Installing mali-debs package ..."
 					install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/mali-debs/${GPU_PLATFORM}/*.deb

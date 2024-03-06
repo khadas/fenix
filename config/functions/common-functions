@@ -422,25 +422,31 @@ create_sources_list()
 	[[ -z $basedir ]] && error_msg "No basedir passed to create_sources_list" && return -1
 
 	local security=
+	local non_free="non-free"
 	case $release in
 	bullseye)
 	security="-security"
+	;;
+	bookworm)
+	security="-security"
+	non_free="non-free-firmware"
+	;;
 	esac
 
 	case $release in
-	buster|bullseye)
+	buster|bullseye|bookworm)
 	cat <<-EOF | tee $basedir/etc/apt/sources.list
-	deb http://${DEBIAN_MIRROR} $release main contrib non-free
-	#deb-src http://${DEBIAN_MIRROR} $release main contrib non-free
+	deb http://${DEBIAN_MIRROR} $release main contrib ${non_free}
+	#deb-src http://${DEBIAN_MIRROR} $release main contrib ${non_free}
 
-	deb http://${DEBIAN_MIRROR} ${release}-updates main contrib non-free
-	#deb-src http://${DEBIAN_MIRROR} ${release}-updates main contrib non-free
+	deb http://${DEBIAN_MIRROR} ${release}-updates main contrib ${non_free}
+	#deb-src http://${DEBIAN_MIRROR} ${release}-updates main contrib ${non_free}
 
-	deb http://${DEBIAN_MIRROR} ${release}-backports main contrib non-free
-	#deb-src http://${DEBIAN_MIRROR} ${release}-backports main contrib non-free
+	deb http://${DEBIAN_MIRROR} ${release}-backports main contrib ${non_free}
+	#deb-src http://${DEBIAN_MIRROR} ${release}-backports main contrib ${non_free}
 
-	deb http://security.debian.org/ ${release}$security/updates main contrib non-free
-	#deb-src http://security.debian.org/ ${release}/updates main contrib non-free
+	deb http://security.debian.org/ ${release}$security/updates main contrib ${non_free}
+	#deb-src http://security.debian.org/ ${release}/updates main contrib ${non_free}
 	EOF
 	;;
 
