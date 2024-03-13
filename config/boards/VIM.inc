@@ -35,11 +35,6 @@ case "$LINUX" in
 		KERNEL_COMPILER_PATH="$TOOLCHAINS/gcc-arm-aarch64-none-linux-gnu-mainline/bin"
 		LINUX_DIR=$(realpath "$LINUX_VENDOR_DIR")
 		;;
-	4.9)
-		KERNEL_COMPILER="aarch64-linux-gnu-"
-		KERNEL_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/bin"
-		LINUX_DIR=$(realpath "$LINUX_VENDOR_DIR")
-		;;
 esac
 
 LINUX_DEFCONFIG_DIR="$LINUX_DIR/arch/arm64/configs"
@@ -146,8 +141,6 @@ write_uboot_platform()
 ## Write u-boot for vendor u-boot
 write_uboot_platform_ext()
 {
-	# 4.9 kernel has /dev/bootloader
-	[ -b /dev/bootloader ] && dd if="$1/u-boot.bin" of=/dev/bootloader conv=fsync bs=512 seek=1 > /dev/null 2>&1
 	# Update u-boot partition, 5.15 kernel dosen't have /dev/bootloader
 	[ -b /dev/mmcblk0p1 ] && dd if="$1/u-boot.bin" of=/dev/mmcblk0p1 conv=fsync bs=512 seek=1 > /dev/null 2>&1
 	# Enable write access for /dev/mmcblk0boot0
