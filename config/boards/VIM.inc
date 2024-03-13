@@ -40,11 +40,6 @@ case "$LINUX" in
 		KERNEL_COMPILER_PATH="$TOOLCHAINS/gcc-linaro-aarch64-linux-gnu/bin"
 		LINUX_DIR=$(realpath "$LINUX_VENDOR_DIR")
 		;;
-	5.4)
-		KERNEL_COMPILER="aarch64-none-linux-gnu-"
-		KERNEL_COMPILER_PATH="$TOOLCHAINS/gcc-arm-aarch64-none-linux-gnu/bin"
-		LINUX_DIR=$(realpath "$LINUX_VENDOR_DIR")
-		;;
 esac
 
 LINUX_DEFCONFIG_DIR="$LINUX_DIR/arch/arm64/configs"
