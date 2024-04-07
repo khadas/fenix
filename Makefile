@@ -35,10 +35,10 @@ uboot-clean: _env_is_setup
 debs: uboot kernel
 	@./scripts/build.sh debs
 
-uboot-deb: uboot kernel
+uboot-deb: uboot
 	@./scripts/build.sh uboot-deb
 
-uboot-image: uboot kernel
+uboot-image: uboot
 	@./scripts/build.sh uboot-image
 
 kernel-deb: kernel
