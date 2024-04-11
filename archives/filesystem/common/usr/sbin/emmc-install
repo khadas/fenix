@@ -57,6 +57,11 @@ spicheck=$(grep 'mtd' /proc/partitions | awk '{print $NF}')
 ROOTFS_TYPE="ext4"
 BOOTFS_TYPE="fat"
 
+if ! grep -qE '/boot.*fat' /etc/fstab; then
+	# we use ext4 on newer devices
+	BOOTFS_TYPE="ext4"
+fi
+
 # define makefs and mount options
 declare -A parttype mkopts mountopts mkfs mounttype
 
@@ -217,34 +222,26 @@ create_filesystem()
 		if [[ -f "${TempDir}"/bootfs/env.txt ]]; then
 			sed -e 's,rootdev=.*,rootdev='"$rootfsuuid"',g' -i "${TempDir}"/bootfs/env.txt
 			grep -q '^rootdev' "${TempDir}"/bootfs/env.txt || echo "rootdev=$rootfsuuid" >> "${TempDir}"/bootfs/env.txt
+			# if the rootfstype is not defined as cmdline argument on env.txt
+			# Add the line of type of the selected rootfstype to the file env.txt
+			grep -qE '^rootfstype=.*' "${TempDir}"/bootfs/env.txt || echo "rootfstype=$ROOTFS_TYPE" >> "${TempDir}"/bootfs/env.txt
+			sed -e 's,rootfstype=.*,rootfstype='$ROOTFS_TYPE',g' -i "${TempDir}"/bootfs/env.txt
 		fi
 
 		if [[ -f "${TempDir}"/bootfs/uEnv.txt ]]; then
 			sed -e 's,rootdev=root=.*,rootdev=root='"$rootfsuuid"',g' -i "${TempDir}"/bootfs/uEnv.txt
 			grep -q '^rootdev' "${TempDir}"/bootfs/uEnv.txt || echo "rootdev=root=$rootfsuuid" >> "${TempDir}"/bootfs/uEnv.txt
 			sed -e 's,partitiontype=partition_type=.*,partitiontype=partition_type=generic,g' -i "${TempDir}"/bootfs/uEnv.txt
+			# Add the line of type of the selected rootfstype to the file uEnv.txt, if not already defined
+			grep -qE '^rootfstype=.*' "${TempDir}"/bootfs/uEnv.txt || echo "rootfstype=$ROOTFS_TYPE" >> "${TempDir}"/bootfs/uEnv.txt
+			sed -e 's,rootfstype=.*,rootfstype='$ROOTFS_TYPE',g' -i "${TempDir}"/bootfs/uEnv.txt
 		fi
 
 		# fstab adjust
 		if [[ "$1" != "$2" ]]; then
 			echo "$bootfsuuid   				/boot		${mounttype[$BOOTFS_TYPE]}	${mountopts[$BOOTFS_TYPE]}" >> "${TempDir}"/rootfs/etc/fstab
 		fi
-		# if the rootfstype is not defined as cmdline argument on env.txt
-		if ! grep -qE '^rootfstype=.*' "${TempDir}"/bootfs/env.txt; then
-			# Add the line of type of the selected rootfstype to the file env.txt
-			echo "rootfstype=$BOOTFS_TYPE" >> "${TempDir}"/bootfs/env.txt
-		fi
-		if ! grep -qE '^rootfstype=.*' "${TempDir}"/bootfs/uEnv.txt; then
-			# Add the line of type of the selected rootfstype to the file eEnv.txt
-			echo "rootfstype=$BOOTFS_TYPE" >> "${TempDir}"/bootfs/eEnv.txt
-		fi
 
-		if [[ -f "${TempDir}"/bootfs/env.txt ]]; then
-			sed -e 's,rootfstype=.*,rootfstype='$ROOTFS_TYPE',g' -i "${TempDir}"/bootfs/env.txt
-		fi
-		if [[ -f "${TempDir}"/bootfs/uEnv.txt ]]; then
-			sed -e 's,rootfstype=.*,rootfstype='$ROOTFS_TYPE',g' -i "${TempDir}"/bootfs/uEnv.txt
-		fi
 		echo "$rootfsuuid	/		${mounttype[$ROOTFS_TYPE]}	${mountopts[$ROOTFS_TYPE]}" >> "${TempDir}"/rootfs/etc/fstab
 
 		# update installation type
