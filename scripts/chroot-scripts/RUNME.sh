@@ -33,7 +33,7 @@ usermod -aG sudo,adm $USERNAME
 rm -f /etc/ssh/ssh_host*
 
 # Add group
-DEFGROUPS="audio,video,disk,input,tty,root,users,games,dialout,cdrom,dip,plugdev,bluetooth,pulse-access,systemd-journal,netdev,staff,i2c"
+DEFGROUPS="audio,video,disk,input,tty,root,users,games,dialout,cdrom,dip,plugdev,bluetooth,pulse-access,systemd-journal,netdev,staff,i2c,render"
 IFS=','
 for group in $DEFGROUPS; do
 	/bin/egrep  -i "^$group" /etc/group > /dev/null
