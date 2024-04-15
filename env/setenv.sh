@@ -326,6 +326,10 @@ file '$ROOT/config/boards/${KHADAS_BOARD}.conf'? Please add it!"
 
     echo_
 
+    # no need ask if only one choose ;-)
+    [ "$UBOOT_VERSION_ARRAY_LEN" = 1 ] && echo_ -n "only one choose " && \
+		UBOOT="${SUPPORTED_UBOOT[0]}" && return 0
+
     local DEFAULT_NUM
     DEFAULT_NUM=1
     export UBOOT=
