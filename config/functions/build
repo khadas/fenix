@@ -194,7 +194,11 @@ build_linux() {
 	echo "${KERNEL_COMPILER} $KERNEL_COMPILER_PATH"
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
 	make ARCH=arm64 CROSS_COMPILE="${KERNEL_COMPILER}" $LINUX_DEFCONFIG
-	make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE="${CCACHE} ${KERNEL_COMPILER}" Image dtbs  modules $EXTRA_MAKE_ARGS
+	if [ "${BUILD_LINUX_DTBS_ONLY:-no}" == "yes" ]; then
+		make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE="${CCACHE} ${KERNEL_COMPILER}" dtbs $EXTRA_MAKE_ARGS
+	else
+		make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE="${CCACHE} ${KERNEL_COMPILER}" Image dtbs  modules $EXTRA_MAKE_ARGS
+	fi
 }
 
 ## Build linux debs
