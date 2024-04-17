@@ -17,6 +17,9 @@ image: _env_is_setup
 kernel: _env_is_setup
 	@./scripts/build.sh linux
 
+kernel-dtbs: _env_is_setup
+	@BUILD_LINUX_DTBS_ONLY=yes ./scripts/build.sh linux
+
 kernel-clean: _env_is_setup
 	@./scripts/build.sh linux-clean
 
@@ -35,10 +38,10 @@ uboot-clean: _env_is_setup
 debs: uboot kernel
 	@./scripts/build.sh debs
 
-uboot-deb: uboot kernel
+uboot-deb: uboot kernel-dtbs
 	@./scripts/build.sh uboot-deb
 
-uboot-image: uboot kernel
+uboot-image: uboot kernel-dtbs
 	@./scripts/build.sh uboot-image
 
 kernel-deb: kernel
