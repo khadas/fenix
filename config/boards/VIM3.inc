@@ -74,7 +74,7 @@ build_deb_packages_platform() {
 		build_package "npu_aml:target"
 
 		if [ "$LINUX" == "5.15" ]; then
-			if [ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "bookworm" ] ; then
+			if [ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "noble" ] || [ "$DISTRIB_RELEASE" == "bookworm" ] ; then
 				if [ "$DISTRIB_TYPE" != "server" ]; then
 					info_msg "Building mali-debs package..."
 					# FIXME
@@ -165,7 +165,7 @@ install_deb_packages_platform() {
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/npu_aml/*.deb
 
 		if [ "$LINUX" == "5.15" ]; then
-			if [ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "bookworm" ]; then
+			if [ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "noble" ] || [ "$DISTRIB_RELEASE" == "bookworm" ]; then
 				if [ "$DISTRIB_TYPE" != "server" ]; then
 					info_msg "Installing mali-debs package ..."
 					install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/mali-debs/${GPU_PLATFORM}/*.deb
@@ -197,6 +197,8 @@ install_deb_packages_platform() {
 
 				info_msg "Installing gstreamer_aml package..."
 				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gstreamer-aml_*.deb
+
+				if [ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "bookworm" ]; then
 				# gstreamer1.0
 				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gstreamer1.0-debs/libgstreamer1.0-0_*.deb
 				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gstreamer1.0-debs/gir1.2-gstreamer-1.0_*.deb
@@ -216,6 +218,8 @@ install_deb_packages_platform() {
 				# gst-plugins-bad1.0
 				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-bad1.0-debs/libgstreamer-plugins-bad1.0-0_*.deb
 				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-bad1.0-debs/gstreamer1.0-plugins-bad_*.deb
+
+				fi
 
 				info_msg "Installing meson-display package..."
 				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/meson-display-deb-aml/*.deb
