@@ -67,7 +67,7 @@ build_deb_packages_platform() {
 
 	if [ "$LINUX" == "5.15" ]; then
 
-		if [ "$DISTRIB_RELEASE" == "jammy" ]; then
+		if [ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "noble" ]; then
 			info_msg "Building npu_aml packages..."
 			# FIXME
 			# remove build stamp to force build for other arch
@@ -75,7 +75,7 @@ build_deb_packages_platform() {
 			build_package "npu_aml:target"
 		fi
 
-		if ([ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "bookworm" ]) && [ "$DISTRIB_TYPE" != "server" ]; then
+		if ([ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "bookworm" ] || [ "$DISTRIB_RELEASE" == "noble" ]) && [ "$DISTRIB_TYPE" != "server" ]; then
 			info_msg "Building mali-debs package..."
 			# FIXME
 			# remove build stamp to force build for other arch
@@ -159,7 +159,7 @@ install_deb_packages_platform() {
 
 		cd $ROOT
 
-		if [ "$DISTRIB_RELEASE" == "jammy" ]; then
+		if [ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "noble" ]; then
 			info_msg "Installing npu_aml packages..."
 			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/npu_aml/*.deb
 		fi
@@ -192,6 +192,11 @@ install_deb_packages_platform() {
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/multimedia_debs_aml/gst-aml-drmbufferpool-plugins_*.deb
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/multimedia_debs_aml/mediactrlsrc_*.deb
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/multimedia_debs_aml/ispaml_*.deb
+
+		if [ "$DISTRIB_RELEASE" == "noble" ]; then
+			info_msg "Installing gstreamer_aml package..."
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gstreamer-aml_*.deb
+		fi
 
 		if [ "$DISTRIB_RELEASE" == "jammy" ]; then
 			info_msg "Installing gstreamer_aml package..."
