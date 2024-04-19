@@ -65,78 +65,76 @@ build_deb_packages_platform() {
 		return 0
 	fi
 
-	if [ "$DISTRIBUTION" == "Ubuntu" ] || [ "$DISTRIBUTION" == "Debian" ] ; then
+	if [ "$LINUX" == "5.15" ]; then
 
-		info_msg "Building npu_aml packages..."
-		# FIXME
-		# remove build stamp to force build for other arch
-		rm -rf $BUILD/.stamps/npu_aml
-		build_package "npu_aml:target"
-
-		if [ "$LINUX" == "5.15" ]; then
-			if [ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "bookworm" ] ; then
-				if [ "$DISTRIB_TYPE" != "server" ]; then
-					info_msg "Building mali-debs package..."
-					# FIXME
-					# remove build stamp to force build for other arch
-					rm -rf $BUILD/.stamps/mali-debs
-					build_package "mali-debs:target"
-				fi
-
-				info_msg "Building OPTEE userspace package..."
-				# FIXME
-				# remove build stamp to force build for other arch
-				rm -rf $BUILD/.stamps/optee_userspace_deb_aml
-				build_package "optee_userspace_deb_aml:target"
-
-				info_msg "Building OPTEE video firmware package..."
-				# FIXME
-				# remove build stamp to force build for other arch
-				rm -rf $BUILD/.stamps/optee_video_firmware_deb_aml
-				build_package "optee_video_firmware_deb_aml:target"
-
-				info_msg "Building libion package..."
-				# FIXME
-				# remove build stamp to force build for other arch
-				rm -rf $BUILD/.stamps/libion_deb_aml
-				build_package "libion_deb_aml:target"
-
-				info_msg "Building libge2d package..."
-				# FIXME
-				# remove build stamp to force build for other arch
-				rm -rf $BUILD/.stamps/libge2d_deb_aml
-				build_package "libge2d_deb_aml:target"
-
-				info_msg "Building libjpegenc package..."
-				# FIXME
-				# remove build stamp to force build for other arch
-				rm -rf $BUILD/.stamps/libjpegenc_deb_aml
-				build_package "libjpegenc_deb_aml:target"
-
-				# FIXME
-				# remove build stamp to force build for other arch
-				rm -rf $BUILD/.stamps/libamvenc_deb_aml
-				build_package "libamvenc_deb_aml:target"
-
-				info_msg "Building multimedia package..."
-				# FIXME
-				# remove build stamp to force build for other arch
-				rm -rf $BUILD/.stamps/multimedia_debs_aml
-				build_package "multimedia_debs_aml:target"
-
-				info_msg "Building gstreamer_aml package..."
-				# FIXME
-				# remove build stamp to force build for other arch
-				rm -rf $BUILD/.stamps/gstreamer_aml
-				build_package "gstreamer_aml:target"
-
-				info_msg "Building meson-display package..."
-				# FIXME
-				# remove build stamp to force build for other arch
-				rm -rf $BUILD/.stamps/meson-display-deb-aml
-				build_package "meson-display-deb-aml:target"
-			fi
+		if [ "$DISTRIB_RELEASE" == "jammy" ]; then
+			info_msg "Building npu_aml packages..."
+			# FIXME
+			# remove build stamp to force build for other arch
+			rm -rf $BUILD/.stamps/npu_aml
+			build_package "npu_aml:target"
 		fi
+
+		if ([ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "bookworm" ]) && [ "$DISTRIB_TYPE" != "server" ]; then
+			info_msg "Building mali-debs package..."
+			# FIXME
+			# remove build stamp to force build for other arch
+			rm -rf $BUILD/.stamps/mali-debs
+			build_package "mali-debs:target"
+		fi
+
+			info_msg "Building OPTEE userspace package..."
+			# FIXME
+			# remove build stamp to force build for other arch
+			rm -rf $BUILD/.stamps/optee_userspace_deb_aml
+			build_package "optee_userspace_deb_aml:target"
+
+			info_msg "Building OPTEE video firmware package..."
+			# FIXME
+			# remove build stamp to force build for other arch
+			rm -rf $BUILD/.stamps/optee_video_firmware_deb_aml
+			build_package "optee_video_firmware_deb_aml:target"
+
+			info_msg "Building libion package..."
+			# FIXME
+			# remove build stamp to force build for other arch
+			rm -rf $BUILD/.stamps/libion_deb_aml
+			build_package "libion_deb_aml:target"
+
+			info_msg "Building libge2d package..."
+			# FIXME
+			# remove build stamp to force build for other arch
+			rm -rf $BUILD/.stamps/libge2d_deb_aml
+			build_package "libge2d_deb_aml:target"
+
+			info_msg "Building libjpegenc package..."
+			# FIXME
+			# remove build stamp to force build for other arch
+			rm -rf $BUILD/.stamps/libjpegenc_deb_aml
+			build_package "libjpegenc_deb_aml:target"
+
+			# FIXME
+			# remove build stamp to force build for other arch
+			rm -rf $BUILD/.stamps/libamvenc_deb_aml
+			build_package "libamvenc_deb_aml:target"
+
+			info_msg "Building multimedia package..."
+			# FIXME
+			# remove build stamp to force build for other arch
+			rm -rf $BUILD/.stamps/multimedia_debs_aml
+			build_package "multimedia_debs_aml:target"
+
+			info_msg "Building gstreamer_aml package..."
+			# FIXME
+			# remove build stamp to force build for other arch
+			rm -rf $BUILD/.stamps/gstreamer_aml
+			build_package "gstreamer_aml:target"
+
+			info_msg "Building meson-display package..."
+			# FIXME
+			# remove build stamp to force build for other arch
+			rm -rf $BUILD/.stamps/meson-display-deb-aml
+				build_package "meson-display-deb-aml:target"
 	fi
 
 	if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" == "focal" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_TYPE" != "minimal" ]; then
@@ -157,70 +155,71 @@ install_deb_packages_platform() {
 		return 0
 	fi
 
-	if [ "$DISTRIBUTION" == "Ubuntu" ] || [ "$DISTRIBUTION" == "Debian" ] ; then
+	if [ "$LINUX" == "5.15" ]; then
 
 		cd $ROOT
 
-		info_msg "Installing npu_aml packages..."
-		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/npu_aml/*.deb
-
-		if [ "$LINUX" == "5.15" ]; then
-			if [ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "bookworm" ]; then
-				if [ "$DISTRIB_TYPE" != "server" ]; then
-					info_msg "Installing mali-debs package ..."
-					install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/mali-debs/${GPU_PLATFORM}/*.deb
-				fi
-
-				info_msg "Installing OPTEE userspace package..."
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/optee_userspace_deb_aml/*.deb
-
-				info_msg "Installing OPTEE video firmware package..."
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/optee_video_firmware_deb_aml/*.deb
-
-				info_msg "Installing libion package..."
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libion_deb_aml/*.deb
-
-				info_msg "Installing libge2d package..."
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libge2d_deb_aml/*.deb
-
-				info_msg "Installing libjpegenc package..."
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libjpegenc_deb_aml/*.deb
-
-				info_msg "Installing libamvenc package..."
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libamvenc_deb_aml/*.deb
-
-				# Multimdia
-				info_msg "Installing multimdia package..."
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/multimedia_debs_aml/gst-aml-drmbufferpool-plugins_*.deb
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/multimedia_debs_aml/mediactrlsrc_*.deb
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/multimedia_debs_aml/ispaml_*.deb
-
-				info_msg "Installing gstreamer_aml package..."
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gstreamer-aml_*.deb
-				# gstreamer1.0
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gstreamer1.0-debs/libgstreamer1.0-0_*.deb
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gstreamer1.0-debs/gir1.2-gstreamer-1.0_*.deb
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gstreamer1.0-debs/gstreamer1.0-tools_*.deb
-				# gst-plugins-base1.0
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-base1.0-debs/libgstreamer-plugins-base1.0-0_*.deb
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-base1.0-debs/libgstreamer-gl1.0-0_*.deb
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-base1.0-debs/gstreamer1.0-plugins-base_*.deb
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-base1.0-debs/gstreamer1.0-plugins-base-apps_*.deb
-				#install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-base1.0-debs/gstreamer1.0-x_*.deb
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-base1.0-debs/gstreamer1.0-alsa_*.deb
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-base1.0-debs/gir1.2-gst-plugins-base-1.0_*.deb
-				# gst-plugins-good1.0
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-good1.0-debs/libgstreamer-plugins-good1.0-0_*.deb
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-good1.0-debs/gstreamer1.0-plugins-good_*.deb
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-good1.0-debs/gstreamer1.0-pulseaudio_*.deb
-				# gst-plugins-bad1.0
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-bad1.0-debs/libgstreamer-plugins-bad1.0-0_*.deb
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-bad1.0-debs/gstreamer1.0-plugins-bad_*.deb
-
-				info_msg "Installing meson-display package..."
-				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/meson-display-deb-aml/*.deb
-			fi
+		if [ "$DISTRIB_RELEASE" == "jammy" ]; then
+			info_msg "Installing npu_aml packages..."
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/npu_aml/*.deb
 		fi
+
+		if ([ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "bookworm" ]) && [ "$DISTRIB_TYPE" != "server" ]; then
+			info_msg "Installing mali-debs package ..."
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/mali-debs/${GPU_PLATFORM}/*.deb
+		fi
+
+		info_msg "Installing OPTEE userspace package..."
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/optee_userspace_deb_aml/*.deb
+
+		info_msg "Installing OPTEE video firmware package..."
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/optee_video_firmware_deb_aml/*.deb
+
+		info_msg "Installing libion package..."
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libion_deb_aml/*.deb
+
+		info_msg "Installing libge2d package..."
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libge2d_deb_aml/*.deb
+
+		info_msg "Installing libjpegenc package..."
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libjpegenc_deb_aml/*.deb
+
+		info_msg "Installing libamvenc package..."
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/libamvenc_deb_aml/*.deb
+
+		# Multimdia
+		info_msg "Installing multimdia package..."
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/multimedia_debs_aml/gst-aml-drmbufferpool-plugins_*.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/multimedia_debs_aml/mediactrlsrc_*.deb
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/multimedia_debs_aml/ispaml_*.deb
+
+		if [ "$DISTRIB_RELEASE" == "jammy" ]; then
+			info_msg "Installing gstreamer_aml package..."
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gstreamer-aml_*.deb
+			# gstreamer1.0
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gstreamer1.0-debs/libgstreamer1.0-0_*.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gstreamer1.0-debs/gir1.2-gstreamer-1.0_*.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gstreamer1.0-debs/gstreamer1.0-tools_*.deb
+			# gst-plugins-base1.0
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-base1.0-debs/libgstreamer-plugins-base1.0-0_*.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-base1.0-debs/libgstreamer-gl1.0-0_*.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-base1.0-debs/gstreamer1.0-plugins-base_*.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-base1.0-debs/gstreamer1.0-plugins-base-apps_*.deb
+			#install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-base1.0-debs/gstreamer1.0-x_*.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-base1.0-debs/gstreamer1.0-alsa_*.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-base1.0-debs/gir1.2-gst-plugins-base-1.0_*.deb
+			# gst-plugins-good1.0
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-good1.0-debs/libgstreamer-plugins-good1.0-0_*.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-good1.0-debs/gstreamer1.0-plugins-good_*.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-good1.0-debs/gstreamer1.0-pulseaudio_*.deb
+			# gst-plugins-bad1.0
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-bad1.0-debs/libgstreamer-plugins-bad1.0-0_*.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-bad1.0-debs/gstreamer1.0-plugins-bad_*.deb
+		fi
+
+		info_msg "Installing meson-display package..."
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/meson-display-deb-aml/*.deb
+
 	fi
 
 	if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" == "focal" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_TYPE" != "minimal" ]; then
