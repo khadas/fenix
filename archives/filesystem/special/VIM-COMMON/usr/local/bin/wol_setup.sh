@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Only for desktop
-if ! which lightdm; then
+if [ "${XDG_SESSION_TYPE}" == "tty" ]; then
 	exit
 fi
 
