@@ -16,8 +16,8 @@ make_target() {
 }
 
 makeinstall_target() {
-	mkdir -p $BUILD_DEBS/$VERSION/$KHADAS_BOARD/wayland-debs
+	mkdir -p $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wayland-debs
 	# Remove old debs
-	rm -rf $BUILD_DEBS/$VERSION/$KHADAS_BOARD/wayland-debs/*
-	[ -d ${DISTRIB_RELEASE}/${DISTRIB_ARCH}/${KHADAS_BOARD} ] && cp -r ${DISTRIB_RELEASE}/${DISTRIB_ARCH}/${KHADAS_BOARD}/* $BUILD_DEBS/$VERSION/$KHADAS_BOARD/wayland-debs || true
+	rm -rf $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wayland-debs/*
+	[ -d ${DISTRIB_RELEASE}/${DISTRIB_ARCH}/${KHADAS_BOARD} ] && cp -r ${DISTRIB_RELEASE}/${DISTRIB_ARCH}/${KHADAS_BOARD}/* $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wayland-debs || true
 }
