@@ -764,7 +764,6 @@ copy_ota_debs() {
 	cd $ota_debs
 
 	cp ../$KHADAS_BOARD/*.deb $KHADAS_BOARD/$DISTRIBUTION-$DISTRIB_RELEASE
-	[ -d ../$KHADAS_BOARD/mali-debs ] && find ../$KHADAS_BOARD/mali-debs -iname "*.deb" -type f -exec cp {} $KHADAS_BOARD/$DISTRIBUTION-$DISTRIB_RELEASE \; || true
 	find ../$KHADAS_BOARD/$DISTRIBUTION-$DISTRIB_RELEASE -iname "*.deb" -type f -exec cp {} $KHADAS_BOARD/$DISTRIBUTION-$DISTRIB_RELEASE \;
 	(
 	cd $KHADAS_BOARD/$DISTRIBUTION-$DISTRIB_RELEASE

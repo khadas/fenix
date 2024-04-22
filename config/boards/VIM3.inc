@@ -166,7 +166,7 @@ install_deb_packages_platform() {
 
 		if ([ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "bookworm" ]) && [ "$DISTRIB_TYPE" != "server" ]; then
 			info_msg "Installing mali-debs package ..."
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/mali-debs/${GPU_PLATFORM}/*.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/$DISTRIBUTION-$DISTRIB_RELEASE/mali-debs/${GPU_PLATFORM}/*.deb
 		fi
 
 		info_msg "Installing OPTEE userspace package..."
