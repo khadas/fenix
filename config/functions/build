@@ -220,6 +220,8 @@ build_linux_debs() {
 		cp archives/patches/misc/headers-debian-byteshift.patch /tmp
 	fi
 
+	touch $LINUX_DIR/.scmversion
+
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
 	make -j${NR_JOBS} -C $LINUX_DIR bindeb-pkg \
 	    KDEB_PKGVERSION="$VERSION" LOCAL_VERSION="-${VENDOR,,}-${LINUX}" \
