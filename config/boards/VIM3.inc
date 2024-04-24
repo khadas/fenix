@@ -83,57 +83,65 @@ build_deb_packages_platform() {
 			build_package "mali-debs:target"
 		fi
 
-			info_msg "Building OPTEE userspace package..."
+		if  [ "$DISTRIB_RELEASE" == "noble" ] && [ "$DISTRIB_TYPE" != "server" ]; then
+			info_msg "Building wayland-debs package..."
 			# FIXME
 			# remove build stamp to force build for other arch
-			rm -rf $BUILD/.stamps/optee_userspace_deb_aml
-			build_package "optee_userspace_deb_aml:target"
+			rm -rf $BUILD/.stamps/wayland-debs
+			build_package "wayland-debs:target"
+		fi
 
-			info_msg "Building OPTEE video firmware package..."
-			# FIXME
-			# remove build stamp to force build for other arch
-			rm -rf $BUILD/.stamps/optee_video_firmware_deb_aml
-			build_package "optee_video_firmware_deb_aml:target"
+		info_msg "Building OPTEE userspace package..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/optee_userspace_deb_aml
+		build_package "optee_userspace_deb_aml:target"
 
-			info_msg "Building libion package..."
-			# FIXME
-			# remove build stamp to force build for other arch
-			rm -rf $BUILD/.stamps/libion_deb_aml
-			build_package "libion_deb_aml:target"
+		info_msg "Building OPTEE video firmware package..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/optee_video_firmware_deb_aml
+		build_package "optee_video_firmware_deb_aml:target"
 
-			info_msg "Building libge2d package..."
-			# FIXME
-			# remove build stamp to force build for other arch
-			rm -rf $BUILD/.stamps/libge2d_deb_aml
-			build_package "libge2d_deb_aml:target"
+		info_msg "Building libion package..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/libion_deb_aml
+		build_package "libion_deb_aml:target"
 
-			info_msg "Building libjpegenc package..."
-			# FIXME
-			# remove build stamp to force build for other arch
-			rm -rf $BUILD/.stamps/libjpegenc_deb_aml
-			build_package "libjpegenc_deb_aml:target"
+		info_msg "Building libge2d package..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/libge2d_deb_aml
+		build_package "libge2d_deb_aml:target"
 
-			# FIXME
-			# remove build stamp to force build for other arch
-			rm -rf $BUILD/.stamps/libamvenc_deb_aml
-			build_package "libamvenc_deb_aml:target"
+		info_msg "Building libjpegenc package..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/libjpegenc_deb_aml
+		build_package "libjpegenc_deb_aml:target"
 
-			info_msg "Building multimedia package..."
-			# FIXME
-			# remove build stamp to force build for other arch
-			rm -rf $BUILD/.stamps/multimedia_debs_aml
-			build_package "multimedia_debs_aml:target"
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/libamvenc_deb_aml
+		build_package "libamvenc_deb_aml:target"
 
-			info_msg "Building gstreamer_aml package..."
-			# FIXME
-			# remove build stamp to force build for other arch
-			rm -rf $BUILD/.stamps/gstreamer_aml
-			build_package "gstreamer_aml:target"
+		info_msg "Building multimedia package..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/multimedia_debs_aml
+		build_package "multimedia_debs_aml:target"
 
-			info_msg "Building meson-display package..."
-			# FIXME
-			# remove build stamp to force build for other arch
-			rm -rf $BUILD/.stamps/meson-display-deb-aml
+		info_msg "Building gstreamer_aml package..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/gstreamer_aml
+		build_package "gstreamer_aml:target"
+
+		info_msg "Building meson-display package..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/meson-display-deb-aml
 				build_package "meson-display-deb-aml:target"
 	fi
 
@@ -159,12 +167,20 @@ install_deb_packages_platform() {
 
 		cd $ROOT
 
+		if ([ "$DISTRIB_RELEASE" == "noble" ]) && [ "$DISTRIB_TYPE" != "server" ]; then
+			info_msg "Installing wayland-debs package ..."
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wayland-debs/libwayland-client0_*.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wayland-debs/libwayland-server0_*.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wayland-debs/libwayland-cursor0_*.deb
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wayland-debs/libwayland-egl1_*.deb
+		fi
+
 		if [ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "noble" ]; then
 			info_msg "Installing npu_aml packages..."
 			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/npu_aml/*.deb
 		fi
 
-		if ([ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "bookworm" ]) && [ "$DISTRIB_TYPE" != "server" ]; then
+		if ([ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "noble" ] || [ "$DISTRIB_RELEASE" == "bookworm" ]) && [ "$DISTRIB_TYPE" != "server" ]; then
 			info_msg "Installing mali-debs package ..."
 			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/$DISTRIBUTION-$DISTRIB_RELEASE/mali-debs/${GPU_PLATFORM}/*.deb
 		fi
