@@ -80,3 +80,5 @@ amlogic-jpegenc
 amlogic-vpu
 
 galcore
+
+snd-seq

@@ -88,3 +88,5 @@ xt_addrtype
 veth
 
 dhd
+
+snd-seq
