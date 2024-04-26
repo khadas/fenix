@@ -10,11 +10,10 @@
 
 Supported build host:
 
-* `Ubuntu 22.04 Jammy x64`
-  * `Building Ubuntu 20.04 Focal image`
-  * `Building Ubuntu 22.04 Jammy image`
-  * `Building Debian 10 Buster image`
-  * `Building Debian 11 Bullseye image`
+* `Ubuntu 24.04 x64`
+  * `Building Ubuntu 22.04 image`
+  * `Building Ubuntu 24.04 image`
+  * `Building Debian 12 image`
 * `Docker`
 
 ## How to use
