@@ -662,6 +662,13 @@ build_rootfs() {
 	echo "NOTE: ENTER CHROOT AND EXECUTE SCRIPT: $POST_SCRIPT"
 	echo
 	mount_chroot "$ROOTFS_TEMP"
+
+	if [ -L "$ROOTFS_TEMP"/etc/resolv.conf ] && [ ! -e "$ROOTFS_TEMP"/etc/resolv.conf ]; then
+		resolvconf_file=$(readlink -m $ROOTFS_TEMP/etc/resolv.conf)
+		mkdir -p $(dirname $resolvconf_file)
+		echo "nameserver $NAMESERVER" >> $resolvconf_file
+	fi
+
 	chroot $ROOTFS_TEMP/ bash "/tmp/${POST_SCRIPT##*/}"
 
 	## Logo
