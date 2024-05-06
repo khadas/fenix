@@ -27,7 +27,6 @@ tweaks_platform() {
 		execute_in_chroot "systemctl --no-reload enable panel.service"
 		if [ "$DISTRIB_TYPE" != "server" ]; then
 			execute_in_chroot "systemctl --no-reload enable tone2-control.service"
-			execute_in_chroot "systemctl --no-reload enable hdmi_resolution.service"
 		fi
 	fi
 
