@@ -79,10 +79,15 @@ prepare_host() {
 
 	[ "$NO_HOST_CHECK" ] || {
 		case $build_host in
-		noble)
-		## looks like can build all prev system
+		jammy)
+		## looks like can build all system
 		;;
-		hirsute|bullseye|jammy)
+		noble)
+			case $DISTRIB_RELEASE in
+				jammy) broken_ ;;
+			esac
+		;;
+		hirsute|bullseye|bookworm)
 			case $DISTRIB_RELEASE in
 				noble) broken_ ;;
 			esac
