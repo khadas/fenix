@@ -421,13 +421,6 @@ build_board_deb() {
 	else
 		rm -rf $pkgdir/usr/share/initramfs-tools/scripts/local.jammy
 	fi
-	# Pipewire HACK for noble
-	if [ "$DISTRIB_RELEASE" == "noble" ]; then
-		mv $pkgdir/etc/pipewire/pipewire.conf.d/pipewire.conf.noble $pkgdir/etc/pipewire/pipewire.conf.d/pipewire.conf
-	else
-		rm $pkgdir/etc/pipewire/pipewire.conf.d/pipewire.conf.noble
-	fi
-
 	[ -f $pkgdir/etc/initramfs-tools/modules.$LINUX ] && mv $pkgdir/etc/initramfs-tools/modules.$LINUX $pkgdir/etc/initramfs-tools/modules
 	rm -rf $pkgdir/etc/initramfs-tools/modules.*
 
