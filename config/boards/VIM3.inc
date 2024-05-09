@@ -208,12 +208,7 @@ install_deb_packages_platform() {
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/multimedia_debs_aml/mediactrlsrc_*.deb
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/multimedia_debs_aml/ispaml_*.deb
 
-		if [ "$DISTRIB_RELEASE" == "noble" ]; then
-			info_msg "Installing gstreamer_aml package..."
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gstreamer-aml_*.deb
-		fi
-
-		if [ "$DISTRIB_RELEASE" == "jammy" ]; then
+		if [ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "noble" ]; then
 			info_msg "Installing gstreamer_aml package..."
 			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gstreamer-aml_*.deb
 			# gstreamer1.0
@@ -239,7 +234,6 @@ install_deb_packages_platform() {
 
 		info_msg "Installing meson-display package..."
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/meson-display-deb-aml/*.deb
-
 	fi
 
 	if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" == "focal" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_TYPE" != "minimal" ]; then
