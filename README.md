@@ -10,7 +10,7 @@
 
 Supported build host:
 
-* `Ubuntu 24.04 x64`
+* `Ubuntu 22.04 x64`
   * `Building Ubuntu 22.04 image`
   * `Building Ubuntu 24.04 image`
   * `Building Debian 12 image`
