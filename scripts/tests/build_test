@@ -601,21 +601,21 @@ TEST_ML)
 # Edge2 Test Images
 
 # Rootfs Cache Only
-#jammy-minimal-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $JAMMY $MINI $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
-#jammy-server-CACHE)                                         ( source  $SETENV -d -q -s $VIM4 $JAMMY $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
-#jammy-gnome-CACHE)                                          ( source  $SETENV -d -q -s $VIM4 $JAMMY $GNOME $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+jammy-minimal-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $JAMMY $MINI $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+jammy-server-CACHE)                                         ( source  $SETENV -d -q -s $VIM4 $JAMMY $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
+jammy-gnome-CACHE)                                          ( source  $SETENV -d -q -s $VIM4 $JAMMY $GNOME $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
 
 noble-minimal-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $NOBLE $MINI $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
 noble-server-CACHE)                                         ( source  $SETENV -d -q -s $VIM4 $NOBLE $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
 noble-gnome-CACHE)                                          ( source  $SETENV -d -q -s $VIM4 $NOBLE $GNOME $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
 
-#bullseye-minimal-CACHE)                                     ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $MINI $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
-#bullseye-server-CACHE)                                      ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
-#bullseye-gnome-CACHE)                                       ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $GNOME $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
+bullseye-minimal-CACHE)                                     ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $MINI $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
+bullseye-server-CACHE)                                      ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
+bullseye-gnome-CACHE)                                       ( source  $SETENV -d -q -s $VIM4 $BULLSEYE $GNOME $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
 
-#bookworm-minimal-CACHE)                                     ( source  $SETENV -d -q -s $VIM4 $BOOKWORM $MINI $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
-#bookworm-server-CACHE)                                      ( source  $SETENV -d -q -s $VIM4 $BOOKWORM $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
-#bookworm-gnome-CACHE)                                       ( source  $SETENV -d -q -s $VIM4 $BOOKWORM $GNOME $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
+bookworm-minimal-CACHE)                                     ( source  $SETENV -d -q -s $VIM4 $BOOKWORM $MINI $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
+bookworm-server-CACHE)                                      ( source  $SETENV -d -q -s $VIM4 $BOOKWORM $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
+bookworm-gnome-CACHE)                                       ( source  $SETENV -d -q -s $VIM4 $BOOKWORM $GNOME $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY" "$NO_HOST_CHECK") & ;;
 
 #TEST_LIST_END
     *)
