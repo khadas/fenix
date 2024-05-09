@@ -34,5 +34,5 @@ jobs:
 
       - name: Rootfs Cache Build
         timeout-minutes: 720
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+        if: ${{ github.event_name == 'schedule' && github.ref == 'refs/heads/master' }}
         run: scripts/tests/build_test -s Install-deps -e "\-CACHE"
