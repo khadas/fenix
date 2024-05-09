@@ -222,7 +222,7 @@ install_deb_packages_platform() {
 			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gstreamer1.0-debs/gstreamer1.0-tools_*.deb
 			# gst-plugins-base1.0
 			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-base1.0-debs/libgstreamer-plugins-base1.0-0_*.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-base1.0-debs/libgstreamer-gl1.0-0_*.deb
+			#install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-base1.0-debs/libgstreamer-gl1.0-0_*.deb
 			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-base1.0-debs/gstreamer1.0-plugins-base_*.deb
 			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-base1.0-debs/gstreamer1.0-plugins-base-apps_*.deb
 			#install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer_aml/gst-plugins-base1.0-debs/gstreamer1.0-x_*.deb
