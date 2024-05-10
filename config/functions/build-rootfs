@@ -30,6 +30,9 @@ install_common()
 	# initial date for fake-hwclock
 	date -u '+%Y-%m-%d %H:%M:%S' > $ROOTFS_TEMP/etc/fake-hwclock.data
 
+	# temporarily disable initramfs generation
+	execute_in_chroot "chmod -v -x /etc/kernel/postinst.d/initramfs-tools"
+
 	# Install linux image deb in chroot
 	if [ -f $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb ]; then
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${LINUX_IMAGE_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
@@ -93,6 +96,12 @@ install_common()
 		# Install updater deb in chroot
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/${FENIX_UPDATER_DEB}_${VERSION}_${DISTRIB_ARCH}.deb
 	fi
+
+	# Now that all debs are installed, reenable initramfs-tools hook and generate initramfs
+	execute_in_chroot "chmod -v +x /etc/kernel/postinst.d/initramfs-tools"
+
+	kernel_version=$(ls $ROOTFS_TEMP/lib/modules)
+	execute_in_chroot "/usr/sbin/update-initramfs -u -k $kernel_version"
 
 	# Tweaks for platform
 	if [[ $(type -t tweaks_platform) == function ]]; then
