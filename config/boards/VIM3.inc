@@ -139,11 +139,13 @@ build_deb_packages_platform() {
 		rm -rf $BUILD/.stamps/multimedia_debs_aml
 		build_package "multimedia_debs_aml:target"
 
-		info_msg "Building gstreamer_aml package..."
-		# FIXME
-		# remove build stamp to force build for other arch
-		rm -rf $BUILD/.stamps/gstreamer_aml
-		build_package "gstreamer_aml:target"
+		if [ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "noble" ]; then
+			info_msg "Building gstreamer_aml package..."
+			# FIXME
+			# remove build stamp to force build for other arch
+			rm -rf $BUILD/.stamps/gstreamer_aml
+			build_package "gstreamer_aml:target"
+		fi
 
 		info_msg "Building meson-display package..."
 		# FIXME
