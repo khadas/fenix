@@ -4,9 +4,9 @@ RC=0
 FAN_INPUT="${1:-"boot"}"
 
 LINUX_VER=$(uname -r)
-LINUX_VER="${LINUX_VER::4}"
+LINUX_VER=$(echo "$LINUX_VER" | cut -d. -f1-2)
 
-if [ "${LINUX_VER}" == "5.10" ]; then
+if [ "${LINUX_VER}" == "5.10" ] || [ "${LINUX_VER}" == "6.1" ]; then
 	FAN_MODE_NODE="/sys/class/fan/mode"
 	FAN_LEVEL_NODE="/sys/class/fan/level"
 	FAN_ENABLE_NODE="/sys/class/fan/enable"
@@ -24,7 +24,7 @@ LEVEL_HIGH=3
 
 usage() {
 	echo ""
-	if [ "${LINUX_VER}" == "5.10" ]; then
+	if [ "${LINUX_VER}" == "5.10" ] || [ "${LINUX_VER}" == "6.1" ]; then
 		echo "Usage: $0 [on|auto|off]  :: Set fan mode"
 		echo "       $0 [low|mid|high] :: Set fan level"
 		echo "       $0 [temp]         :: Query cpu temperature"
@@ -71,7 +71,7 @@ elif [ "$FAN_INPUT" = "trig" ]; then
 elif [ "$FAN_INPUT" = "mode" ]; then
 	mode=$FAN_INPUT
 
-	if [ "${LINUX_VER}" == "5.10" ]; then
+	if [ "${LINUX_VER}" == "5.10" ] || [ "${LINUX_VER}" == "6.1" ]; then
 		FAN_MODE=$(cat $FAN_MODE_NODE | awk '{print $3}')
 		FAN_LEVEL=$(cat $FAN_LEVEL_NODE | awk '{print $3}')
 		FAN_STATE=$(cat $FAN_ENABLE_NODE | awk '{print $3}')
@@ -134,7 +134,7 @@ case $mode in
 		echo 1 > $FAN_ENABLE_NODE
 		;;
 	auto)
-		if [ "${LINUX_VER}" == "5.10" ]; then
+		if [ "${LINUX_VER}" == "5.10" ] || [ "${LINUX_VER}" == "6.1" ]; then
 			echo $AUTO_MODE > $FAN_MODE_NODE
 			echo 1 > $FAN_ENABLE_NODE
 		else
@@ -148,7 +148,7 @@ case $mode in
 		echo "Fan state: $FAN_STATE"
 		;;
 	mode)
-		if [ "${LINUX_VER}" == "5.10" ]; then
+		if [ "${LINUX_VER}" == "5.10" ] || [ "${LINUX_VER}" == "6.1" ]; then
 			echo "Fan mode: $FAN_MODE"
 			echo "Fan level: $FAN_LEVEL"
 			echo "Fan state: $FAN_STATE"
