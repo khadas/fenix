@@ -69,7 +69,7 @@ parttype[fat]=fat32
 parttype[ext4]=ext4
 
 mkopts[fat]=''
-mkopts[ext4]='-qF'
+mkopts[ext4]='-q -F -m 2 -O ^64bit,^metadata_csum'
 
 mkfs[fat]=vfat
 mkfs[ext4]=ext4
@@ -330,9 +330,9 @@ format_emmc()
 	parted -s "$1" set 1 boot on
 	partprobe "$1"
 	dialog --title "$title" --backtitle "$backtitle" --infobox "\nFormating $1"p1" to $BOOTFS_TYPE ... please wait." 5 60
-	mkfs.${mkfs[$BOOTFS_TYPE]} ${mkopts[$BOOTFS_TYPE]} "$1"'p1' >> $logfile 2>&1
+	eval "mkfs.${mkfs[$BOOTFS_TYPE]} ${mkopts[$BOOTFS_TYPE]} ${1}p1" >> $logfile 2>&1
 	dialog --title "$title" --backtitle "$backtitle" --infobox "\nFormating $1"p2" to $ROOTFS_TYPE ... please wait." 5 60
-	mkfs.${mkfs[$ROOTFS_TYPE]} ${mkopts[$ROOTFS_TYPE]} "$1"'p2' >> $logfile 2>&1
+	eval "mkfs.${mkfs[$ROOTFS_TYPE]} ${mkopts[$ROOTFS_TYPE]} ${1}p2" >> $logfile 2>&1
 	emmcrootuuid=$(blkid -o export "$1"'p2' | grep -w UUID)
 	emmcbootuuid=$(blkid -o export "$1"'p1' | grep -w UUID)
 }
