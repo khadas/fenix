@@ -319,6 +319,10 @@ EMMC="INSTALL_TYPE=EMMC"
 USB="INSTALL_TYPE=SD-USB"
 RAW="INSTALL_TYPE_RAW=yes"
 
+LINUX_5_10="LINUX=5.10"
+LINUX_6_1="LINUX=6.1"
+LINUX_ML="LINUX=mainline"
+
 EDGE="KHADAS_BOARD=Edge1"
 EDGE2="KHADAS_BOARD=Edge2"
 VIM1="KHADAS_BOARD=VIM1"
@@ -613,11 +617,16 @@ TEST_ML)
 #Edge2-ubuntu-gnome-jammy-vendor-emmc-REL-CHK)               ( source  $SETENV -d -q -s $EDGE2 $JAMMY $GNOME $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
 #Edge2-ubuntu-server-jammy-vendor-sdusb-REL)                 ( source  $SETENV -d -q -s $EDGE2 $JAMMY $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
 #Edge2-ubuntu-gnome-jammy-vendor-sdusb-REL)                  ( source  $SETENV -d -q -s $EDGE2 $JAMMY $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
-
-#Edge2-ubuntu-server-noble-vendor-emmc-REL-CHK)              ( source  $SETENV -d -q -s $EDGE2 $NOBLE $SERVER $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
-#Edge2-ubuntu-gnome-noble-vendor-emmc-REL-CHK)               ( source  $SETENV -d -q -s $EDGE2 $NOBLE $GNOME $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
-#Edge2-ubuntu-server-noble-vendor-sdusb-REL)                 ( source  $SETENV -d -q -s $EDGE2 $NOBLE $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
-#Edge2-ubuntu-gnome-noble-vendor-sdusb-REL)                  ( source  $SETENV -d -q -s $EDGE2 $NOBLE $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
+# 5.10
+Edge2-ubuntu-server-noble-vendor-5.10-emmc-REL-CHK)          ( source  $SETENV -d -q -s $EDGE2 $LINUX_5_10 $NOBLE $SERVER $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
+Edge2-ubuntu-gnome-noble-vendor-5.10-emmc-REL-CHK)           ( source  $SETENV -d -q -s $EDGE2 $LINUX_5_10 $NOBLE $GNOME $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
+Edge2-ubuntu-server-noble-vendor-5.10-sdusb-REL)             ( source  $SETENV -d -q -s $EDGE2 $LINUX_5_10 $NOBLE $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
+Edge2-ubuntu-gnome-noble-vendor-5.10-sdusb-REL)              ( source  $SETENV -d -q -s $EDGE2 $LINUX_5_10 $NOBLE $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
+# 6.1
+Edge2-ubuntu-server-noble-vendor-6.1-emmc-REL-CHK)           ( source  $SETENV -d -q -s $EDGE2 $LINUX_6_1 $NOBLE $SERVER $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
+Edge2-ubuntu-gnome-noble-vendor-6.1-emmc-REL-CHK)            ( source  $SETENV -d -q -s $EDGE2 $LINUX_6_1 $NOBLE $GNOME $EMMC $CMP && make -C "$MAKEDIR" ) & ;;
+Edge2-ubuntu-server-noble-vendor-6.1-sdusb-REL)              ( source  $SETENV -d -q -s $EDGE2 $LINUX_6_1 $NOBLE $SERVER $USB $CMP && make -C "$MAKEDIR" ) & ;;
+Edge2-ubuntu-gnome-noble-vendor-6.1-sdusb-REL)               ( source  $SETENV -d -q -s $EDGE2 $LINUX_6_1 $NOBLE $GNOME $USB $CMP && make -C "$MAKEDIR" ) & ;;
 
 # Edge2 Test Images
 
