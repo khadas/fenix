@@ -207,6 +207,11 @@ prepare_host() {
 	test -e /proc/sys/fs/binfmt_misc/qemu-arm || $sudo update-binfmts --enable qemu-arm
 	test -e /proc/sys/fs/binfmt_misc/qemu-aarch64 || $sudo update-binfmts --enable qemu-aarch64
 
+	# Looking into qemu source code it seems cortex-a53 and cortex-57 are accelerated via KVM.
+	# IIUC other seems to be emulated using CPU. Also cortex-a53 seems to be faster than cortex-a57
+	# Hence using the same for speeding up execution of commands via qemu-aarch64-static
+	export QEMU_CPU="cortex-a53"
+
 	# python tricks
 	local p m w
 	mkdir -p $BUILD/bin
