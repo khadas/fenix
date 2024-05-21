@@ -5,7 +5,7 @@
 
 [![Documentation](https://img.shields.io/badge/Documentation-Reference-blue.svg)](https://docs.khadas.com/products/sbc/common/development/build-ubuntu)
 [![Licence](https://img.shields.io/badge/Licence-GPL--2.0-brightgreen.svg)](https://github.com/khadas/fenix/blob/master/LICENSE)
-[![Version](https://img.shields.io/badge/Version-v1.6.6-blue.svg)](https://github.com/khadas/fenix/tree/v1.6.6)
+[![Version](https://img.shields.io/badge/Version-v1.6.7-blue.svg)](https://github.com/khadas/fenix/tree/v1.6.7)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/khadas/fenix/pulls)
 
 Supported build host:
