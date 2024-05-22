@@ -516,7 +516,11 @@ prepare_partitions()
 			EOF
 		else
 			parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} mklabel gpt
-			parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} unit s mkpart boot 32768 524287
+			if [ "$BOOTFS_TYPE" == "vfat" ]; then
+				parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} unit s mkpart boot fat16 32768 524287
+			else
+				parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} unit s mkpart boot 32768 524287
+			fi
 			parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} unit s mkpart rootfs 524288 "100%"
 			#parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} set 1 boot on
 		fi
