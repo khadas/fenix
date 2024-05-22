@@ -540,7 +540,7 @@ prepare_partitions()
 		check_loop_device "$IMAGE_LOOP_DEV"
 
 		if [ "$BOOTFS_TYPE" == "vfat" ]; then
-			mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
+			mkfs.vfat -n BOOT -F 16 "${IMAGE_LOOP_DEV_BOOT}"
 		elif [ "$BOOTFS_TYPE" == "ext4" ]; then
 			mkfs.ext4 $BOOT_EXT4_MKOPTS "${IMAGE_LOOP_DEV_BOOT}"
 		fi
