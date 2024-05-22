@@ -516,7 +516,11 @@ prepare_partitions()
 			EOF
 		else
 			parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} mklabel gpt
-			parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} unit s mkpart boot 32768 524287
+			if [ "$BOOTFS_TYPE" == "vfat" ]; then
+				parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} unit s mkpart boot fat16 32768 524287
+			else
+				parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} unit s mkpart boot 32768 524287
+			fi
 			parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} unit s mkpart rootfs 524288 "100%"
 			#parted -s ${BUILD_IMAGES}/${IMAGE_FILE_NAME} set 1 boot on
 		fi
@@ -536,7 +540,7 @@ prepare_partitions()
 		check_loop_device "$IMAGE_LOOP_DEV"
 
 		if [ "$BOOTFS_TYPE" == "vfat" ]; then
-			mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
+			mkfs.vfat -n BOOT -F 16 "${IMAGE_LOOP_DEV_BOOT}"
 		elif [ "$BOOTFS_TYPE" == "ext4" ]; then
 			mkfs.ext4 $BOOT_EXT4_MKOPTS "${IMAGE_LOOP_DEV_BOOT}"
 		fi
