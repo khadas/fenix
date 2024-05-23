@@ -59,10 +59,10 @@ build_updater_deb() {
 				updater_deb_dependencies+="linux-u-boot-vim2-mainline"
 				;;
 			VIM3)
-				updater_deb_dependencies+="linux-u-boot-vim3-mainline, aml-npu"
+				updater_deb_dependencies+="linux-u-boot-vim3-mainline"
 				;;
 			VIM3L)
-				updater_deb_dependencies+="linux-u-boot-vim3l-mainline, aml-npu"
+				updater_deb_dependencies+="linux-u-boot-vim3l-mainline"
 				;;
 			Edge)
 				updater_deb_dependencies+="linux-u-boot-edge-mainline"
