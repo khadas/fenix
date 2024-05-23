@@ -16,11 +16,13 @@ build_common_deb() {
 	rm -rf $BUILD/.stamps/wiringpi_debs
 	build_package "wiringpi_debs:target"
 
-	info_msg "Building DT Overlays packages..."
-	# FIXME
-	# remove build stamp to force build for other arch
-	rm -rf $BUILD/.stamps/dt-overlays-debs
-	build_package "dt-overlays-debs:target"
+	if [ "$SKIP_DT_OVERLAY_PACKAGE" != "yes" ]; then
+		info_msg "Building DT Overlays packages..."
+		# FIXME
+		# remove build stamp to force build for other arch
+		rm -rf $BUILD/.stamps/dt-overlays-debs
+		build_package "dt-overlays-debs:target"
+	fi
 }
 
 ## Build common deb package
@@ -37,10 +39,11 @@ install_common_deb() {
 		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wiringpi_debs/python3-wiringpi_*.deb
 	fi
 
-	# Install DT Overlays in chroot
-	if [ -n "$(ls $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/dt-overlays-debs/ -1)" ]; then
-		info_msg "Installing DT Overlays packages..."
-		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/dt-overlays-debs/*.deb
+	if [ "$SKIP_DT_OVERLAY_PACKAGE" != "yes" ]; then
+		# Install DT Overlays in chroot
+		if [ -n "$(ls $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/dt-overlays-debs/ -1)" ]; then
+			info_msg "Installing DT Overlays packages..."
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/dt-overlays-debs/*.deb
+		fi
 	fi
-
 }
