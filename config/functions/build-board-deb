@@ -139,7 +139,7 @@ build_board_deb() {
 	. /etc/fenix-release
 	ln -sf /lib/firmware /etc/firmware
 	if [[ "\$BOARD" =~ "VIM3" ]]; then
-		if linux-version compare \`uname -r\` lt 6.0; then
+		if [ ! -f /boot/.next ]; then
 			systemctl enable panel.service
 			if [ "\$BOARD" == "VIM3" ]; then
 				systemctl enable camera_isp_3a_server.service
