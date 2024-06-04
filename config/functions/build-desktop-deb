@@ -163,6 +163,8 @@ build_desktop_deb() {
 	if [ -d $ROOT/archives/filesystem/blobs/desktop/${DISTRIB_TYPE} ]; then
 		mkdir -p $pkgdir/etc/skel
 		cp -R $ROOT/archives/filesystem/blobs/desktop/${DISTRIB_TYPE}/skel/.config $pkgdir/etc/skel
+		[ -f $pkgdir/etc/skel/.config/dconf/user.${DISTRIB_RELEASE} ] && mv $pkgdir/etc/skel/.config/dconf/user.${DISTRIB_RELEASE} $pkgdir/etc/skel/.config/dconf/user
+		rm -rf $pkgdir/etc/skel/.config/dconf/user.*
 		cp -R $ROOT/archives/filesystem/blobs/desktop/${DISTRIB_TYPE}/skel/.local $pkgdir/etc/skel
 		if [ -d $ROOT/archives/filesystem/blobs/desktop/${DISTRIB_TYPE}/skel/$KHADAS_BOARD/ ]; then
 			cp -R $ROOT/archives/filesystem/blobs/desktop/${DISTRIB_TYPE}/skel/$KHADAS_BOARD/. $pkgdir/etc/skel
