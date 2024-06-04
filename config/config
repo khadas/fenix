@@ -33,17 +33,11 @@ LINUX_COMMON_DRIVERS_DIR="$LINUX_VENDOR_DIR"/common_drivers
 [ "$UBOOT_VENDOR_DIR" ] || \
 UBOOT_VENDOR_DIR="$BUILD"/u-boot
 
-[ "$SNAPS_VENDOR_DIR" ] || \
-SNAPS_VENDOR_DIR="$BUILD"/snaps
-
 [ -d "$LINUX_VENDOR_DIR" ] || \
 mkdir -p "$LINUX_VENDOR_DIR"
 
 [ -d "$UBOOT_VENDOR_DIR" ] || \
 mkdir -p "$UBOOT_VENDOR_DIR"
-
-[ -d "$SNAPS_VENDOR_DIR" ] || \
-mkdir -p "$SNAPS_VENDOR_DIR"
 
 BUILD=$(realpath "$BUILD")
 ## ccache build directory
@@ -402,14 +396,12 @@ esac
 DEBIAN_MIRROR='httpredir.debian.org/debian'
 UBUNTU_MIRROR='ports.ubuntu.com/'
 ROOTFS_CACHE_URL="http://build.khadas.com/khadas/fenix/cache/rootfs"
+PACKAGES_URL="http://build.khadas.com/khadas/fenix/packages"
 
 ## U-boot & Linux GitHub URL
 LINUX_SOURCE_URL="${LINUX_SOURCE_URL:-https://github.com/khadas/linux}"
 LINUX_COMMON_DRIVERS_SOURCE_URL="${LINUX_COMMON_DRIVERS_SOURCE_URL:-https://github.com/khadas/common_drivers}"
 UBOOT_SOURCE_URL="${UBOOT_SOURCE_URL:-https://github.com/khadas/u-boot}"
-
-SNAPS_SOURCE_URL="${SNAPS_SOURCE_URL:-https://git.khadas.cn/snaps.git}"
-SNAPS_GIT_BRANCH="${SNAPS_GIT_BRANCH:-master}"
 
 if [[ $DOWNLOAD_MIRROR == china ]] ; then
 	DEBIAN_MIRROR='mirrors.tuna.tsinghua.edu.cn/debian'

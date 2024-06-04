@@ -86,8 +86,6 @@ build_debs() {
 	# Build desktop deb
 	if [ "$DISTRIB_TYPE" != "server" ]; then
 		build_desktop_deb
-
-		fetch_snaps
 	fi
 
 	# Build common deb packages
