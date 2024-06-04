@@ -238,6 +238,10 @@ install_distribution_specific()
 		sed -i "s/#RateLimitBurst=.*/RateLimitBurst=10000/g" $ROOTFS_TEMP/etc/systemd/journald.conf
 		;;
 	esac
+
+	if [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_TYPE" != "minimal" ] && [ "$DISTRIB_RELEASE" == "noble" ]; then
+		tar xvf ${BUILD}/snaps/${DISTRIB_RELEASE}/${DISTRIB_ARCH}/snaps.tgz -C ${ROOTFS_TEMP}/
+	fi
 }
 
 ## unpacks cached rootfs for $DISTRIB_RELEASE or creates one

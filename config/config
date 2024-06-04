@@ -33,11 +33,17 @@ LINUX_COMMON_DRIVERS_DIR="$LINUX_VENDOR_DIR"/common_drivers
 [ "$UBOOT_VENDOR_DIR" ] || \
 UBOOT_VENDOR_DIR="$BUILD"/u-boot
 
+[ "$SNAPS_VENDOR_DIR" ] || \
+SNAPS_VENDOR_DIR="$BUILD"/snaps
+
 [ -d "$LINUX_VENDOR_DIR" ] || \
 mkdir -p "$LINUX_VENDOR_DIR"
 
 [ -d "$UBOOT_VENDOR_DIR" ] || \
 mkdir -p "$UBOOT_VENDOR_DIR"
+
+[ -d "$SNAPS_VENDOR_DIR" ] || \
+mkdir -p "$SNAPS_VENDOR_DIR"
 
 BUILD=$(realpath "$BUILD")
 ## ccache build directory
@@ -388,7 +394,7 @@ case $DISTRIB_RELEASE in
 	noble)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
 		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found libgrpc++1.51t64 libboost-system1.83.0 libgcc1 rng-tools iozone3"
-		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER xserver-xorg-input-all language-selector-gnome viewnior dbus-user-session libreoffice-style-tango"
+		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER xserver-xorg-input-all language-selector-gnome viewnior dbus-user-session libreoffice-style-tango firefox"
 		PACKAGE_LIST_OFFICE+="paprefs"
 	;;
 esac
@@ -401,6 +407,9 @@ ROOTFS_CACHE_URL="http://build.khadas.com/khadas/fenix/cache/rootfs"
 LINUX_SOURCE_URL="${LINUX_SOURCE_URL:-https://github.com/khadas/linux}"
 LINUX_COMMON_DRIVERS_SOURCE_URL="${LINUX_COMMON_DRIVERS_SOURCE_URL:-https://github.com/khadas/common_drivers}"
 UBOOT_SOURCE_URL="${UBOOT_SOURCE_URL:-https://github.com/khadas/u-boot}"
+
+SNAPS_SOURCE_URL="${SNAPS_SOURCE_URL:-https://git.khadas.cn/snaps.git}"
+SNAPS_GIT_BRANCH="${SNAPS_GIT_BRANCH:-master}"
 
 if [[ $DOWNLOAD_MIRROR == china ]] ; then
 	DEBIAN_MIRROR='mirrors.tuna.tsinghua.edu.cn/debian'
