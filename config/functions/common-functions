@@ -411,7 +411,7 @@ prepare_packages() {
 		build_package "rkbin_edge1:host"
 	fi
 
-	if [ "${DISTRIB_RELEASE}" == "noble" ]; then
+	if [ "$PREINSTALL_SNAP_PACKAGES" == "yes" ] && [ "${DISTRIB_RELEASE}" == "noble" ]; then
 		build_package "snaps:host"
 	fi
 }

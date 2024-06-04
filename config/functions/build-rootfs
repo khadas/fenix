@@ -239,7 +239,7 @@ install_distribution_specific()
 		;;
 	esac
 
-	if [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_TYPE" != "minimal" ] && [ "$DISTRIB_RELEASE" == "noble" ]; then
+	if [ "$PREINSTALL_SNAP_PACKAGES" == "yes" ] && [ "$DISTRIB_TYPE" != "server" ] && [ "$DISTRIB_TYPE" != "minimal" ] && [ "$DISTRIB_RELEASE" == "noble" ]; then
 		tar xvf ${BUILD}/snaps/${DISTRIB_RELEASE}/${DISTRIB_ARCH}/snaps.tgz -C ${ROOTFS_TEMP}/
 	fi
 }

@@ -67,8 +67,7 @@ echo "[i] FENIX (${0#*/}) BUILD: $BUILD | DL: $DOWNLOAD_PKG_DIR | sudo: $sudo"
 MAKE_PARAMS="BUILD_TYPE DOWNLOAD_MIRROR NO_CCACHE COMPRESS_IMAGE INSTALL_TYPE_RAW \
 			 CLONE_FULL_COMMIT_LOG FORCE_BUILD_KERNEL_DEB SKIP_ROOTFS_CACHE_DOWNLOAD \
 			 FORCE_CREATE_ROOTFS_CACHE CREATE_ROOTFS_CACHE_ONLY NO_APT_CACHER SKIP_HEADER_DEB \
-			 TEST_IMAGE \
-			 PANFORK_SUPPORT"
+			 TEST_IMAGE PANFORK_SUPPORT PREINSTALL_SNAP_PACKAGES"
 
 ## Available values
 BUILD_TYPE_VALUES="develop | release"
@@ -85,6 +84,7 @@ NO_APT_CACHER_VALUES="yes | no"
 SKIP_HEADER_DEB_VALUES="no | yes"
 TEST_IMAGE_VALUES="no | yes"
 PANFORK_SUPPORT_VALUES="no | yes"
+PREINSTALL_SNAP_PACKAGES_VALUES="no | yes"
 
 ## Default values
 [[ -z $NO_CCACHE ]] && NO_CCACHE=no
@@ -101,6 +101,7 @@ PANFORK_SUPPORT_VALUES="no | yes"
 [[ -z $SKIP_HEADER_DEB ]] && SKIP_HEADER_DEB=no
 [[ -z $TEST_IMAGE ]] && TEST_IMAGE=no
 [[ -z $PANFORK_SUPPORT ]] && PANFORK_SUPPORT=no
+[[ -z $PREINSTALL_SNAP_PACKAGES ]] && PREINSTALL_SNAP_PACKAGES=no
 
 
 GITHUB_URL="https://github.com"
@@ -388,7 +389,7 @@ case $DISTRIB_RELEASE in
 	noble)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
 		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found libgrpc++1.51t64 libboost-system1.83.0 libgcc1 rng-tools iozone3"
-		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER xserver-xorg-input-all language-selector-gnome viewnior dbus-user-session libreoffice-style-tango firefox"
+		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER xserver-xorg-input-all language-selector-gnome viewnior dbus-user-session libreoffice-style-tango"
 		PACKAGE_LIST_OFFICE+="paprefs"
 	;;
 esac
