@@ -135,7 +135,7 @@ fi
 
 if [ "$LINUX" == "mainline" ]; then
 	MAINLINE_LINUX_VER=$(cat ${BOARD_CONFIG}/${KHADAS_BOARD}.conf | grep "khadas-linux" | awk -F '-' '{print $3}')
-	MAINLINE_LINUX_VER=${MAINLINE_LINUX_VER:0:3}
+	MAINLINE_LINUX_VER=${MAINLINE_LINUX_VER:0:-3}
 fi
 
 if [ "$UBOOT" == "mainline" ]; then
