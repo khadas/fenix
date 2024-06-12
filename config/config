@@ -348,7 +348,7 @@ case $DISTRIB_RELEASE in
 		PACKAGE_LIST_QT+=" libqt5multimediaquick5"
 		PACKAGE_LIST_MESA="libglvnd-dev libx11-dev"
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_KODI $PACKAGE_LIST_MESA"
-		PACKAGE_LIST_DESKTOP+=" numix-icon-theme chromium mirage task-gnome-desktop"
+		PACKAGE_LIST_DESKTOP+=" numix-icon-theme chromium mirage task-gnome-desktop dbus-user-session"
 	;;
 	focal|hirsute)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
