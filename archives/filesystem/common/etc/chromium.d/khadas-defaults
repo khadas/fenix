@@ -1,0 +1,5 @@
+# Force GPU process to run
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ignore-gpu-blocklist"
+
+# prefer wayland as ozone platform
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ozone-platform-hint=wayland"
