@@ -59,7 +59,7 @@ build_desktop_deb() {
 	#!/bin/bash
 
 	# Add Chromium default configuration
-	if [ -d /etc/chromium.d/ ]; then
+	if [ ! -d /etc/chromium.d/ ]; then
 		mkdir /etc/chromium.d
 	fi
 
