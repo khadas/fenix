@@ -59,11 +59,13 @@ build_desktop_deb() {
 	#!/bin/bash
 
 	# Add Chromium default configuration
-	if [ ! -d /etc/chromium.d/ ]; then
-		mkdir /etc/chromium.d
-	fi
+	if [ "$VENDOR" != "Amlogic" ] || [ "$DISTRIB_RELEASE" != "noble" ]; then
+		if [ ! -d /etc/chromium.d/ ]; then
+			mkdir /etc/chromium.d
+		fi
 
-	ln -sf /etc/fenix/chromium.conf /etc/chromium.d/khadas-default-flags
+		ln -sf /etc/fenix/chromium.conf /etc/chromium.d/khadas-default-flags
+	fi
 
 	# exit if we are running chroot
 	if [ "\$(stat -c %d:%i /)" == "\$(stat -c %d:%i /proc/1/root/.)" ]; then
