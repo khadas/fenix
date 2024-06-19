@@ -58,20 +58,13 @@ build_desktop_deb() {
 	cat <<-EOF > $pkgdir/DEBIAN/postinst
 	#!/bin/bash
 
-	# Overwrite Chromium default configuration
-	if [ -d /etc/chromium-browser/ ]; then ln -sf /etc/fenix/chromium.conf /etc/chromium-browser/default; fi
-	if [ -d /etc/chromium.d/ ]; then ln -sf /etc/fenix/chromium.conf /etc/chromium.d/default-flags; fi
+	# Add Chromium default configuration
+	if [ "$VENDOR" != "Amlogic" ] || [ "$DISTRIB_RELEASE" != "noble" ]; then
+		if [ ! -d /etc/chromium.d/ ]; then
+			mkdir /etc/chromium.d
+		fi
 
-	# Get accelerated back for chromium
-	# Ubuntu
-	if [ -d /usr/lib/chromium-browser/ ]; then
-		ln -fs /usr/lib/aarch64-linux-gnu/libGLESv2.so /usr/lib/chromium-browser/libGLESv2.so
-		ln -fs /usr/lib/aarch64-linux-gnu/libEGL.so /usr/lib/chromium-browser/libEGL.so
-	fi
-	# Debian
-	if [ -d /usr/lib/chromium/ ]; then
-		ln -fs /usr/lib/aarch64-linux-gnu/libGLESv2.so /usr/lib/chromium/libGLESv2.so
-		ln -fs /usr/lib/aarch64-linux-gnu/libEGL.so /usr/lib/chromium/libEGL.so
+		ln -sf /etc/fenix/chromium.conf /etc/chromium.d/khadas-default-flags
 	fi
 
 	# exit if we are running chroot
@@ -152,12 +145,6 @@ build_desktop_deb() {
 	# Install default configuration for Chromium
 	mkdir -p $pkgdir/etc/fenix
 	cp $ROOT/archives/filesystem/blobs/desktop/chromium.conf $pkgdir/etc/fenix
-
-	# Remove Chromium configuration gl for Amlogic platform
-	if [ "$VENDOR" == "Amlogic" ]; then
-		sed -i 's/export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=egl --enable-remote-extensions"/#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=egl --enable-remote-extensions"/g' \
-			$pkgdir/etc/fenix/chromium.conf
-	fi
 
 	# Install default desktop settings
 	if [ -d $ROOT/archives/filesystem/blobs/desktop/${DISTRIB_TYPE} ]; then

@@ -348,7 +348,7 @@ case $DISTRIB_RELEASE in
 		PACKAGE_LIST_QT+=" libqt5multimediaquick5"
 		PACKAGE_LIST_MESA="libglvnd-dev libx11-dev"
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_KODI $PACKAGE_LIST_MESA"
-		PACKAGE_LIST_DESKTOP+=" numix-icon-theme chromium mirage task-gnome-desktop"
+		PACKAGE_LIST_DESKTOP+=" numix-icon-theme chromium mirage task-gnome-desktop dbus-user-session"
 	;;
 	focal|hirsute)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
@@ -372,6 +372,8 @@ case $DISTRIB_RELEASE in
 		DEBOOTSTRAP_COMPONENTS="main,universe"
 		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found libgrpc++1.51t64 libboost-system1.83.0 libgcc1 rng-tools iozone3"
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER xserver-xorg-input-all language-selector-gnome viewnior dbus-user-session libreoffice-style-tango"
+		# Package dependencies for chromium
+		PACKAGE_LIST_DESKTOP+=" libdouble-conversion3 libharfbuzz-subset0 libjsoncpp25 libminizip1t64 libxnvctrl0 xdg-utils"
 	;;
 esac
 
