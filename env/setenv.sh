@@ -813,9 +813,6 @@ ask_yes_no(){
 choose_image_types(){
     ask_yes_no COMPRESS_IMAGE \
     "Compress image?" N || return 1
-    [ "$INSTALL_TYPE" == "SD-USB" ] && return
-    ask_yes_no INSTALL_TYPE_RAW \
-	"Generate RAW image (suitable for dd and krescue usage)?" N || return 1
 }
 #for e in $CONFIG_ARGS ; do
 #	eval t_=\$$e
