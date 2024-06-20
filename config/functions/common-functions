@@ -530,7 +530,7 @@ compress_image() {
 		    LABEL="$label" \
 		    BOARD="$KHADAS_BOARD" \
 		    BUILDER="fenix" \
-		    LINK="https://dl.khadas.com/Firmware/" \
+		    LINK="https://dl.khadas.com/products/oowow/images/${KHADAS_BOARD,,}" \
 		    DESC="$desc" \
 		    > "$BUILD_IMAGES/$IMAGE_FILE_NAME.xz"
 	else
