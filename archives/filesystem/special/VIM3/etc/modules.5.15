@@ -7,7 +7,6 @@ chacha-neon
 poly1305-neon
 zsmalloc
 ntfs3
-zram
 system_heap
 mdio-mux
 pcs_xpcs

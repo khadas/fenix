@@ -5,7 +5,6 @@ amlogic-pcie-v3_host
 sha1-ce
 zsmalloc
 ntfs3
-zram
 system_heap
 mdio-mux
 pcs_xpcs
