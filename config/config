@@ -312,7 +312,7 @@ case $DISTRIB_TYPE in
 	xfce)
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_OFFICE"
 		PACKAGE_LIST_DESKTOP+=" lightdm lightdm-gtk-greeter xfce4 lxtask xfce4-screenshooter xfce4-notifyd xfce4-terminal desktop-base software-properties-gtk thunar-archive-plugin xfce4-power-manager"
-		[[ $DISTRIBUTION == Ubuntu ]] && PACKAGE_LIST_DESKTOP+=" update-manager"
+		[[ $DISTRIBUTION == Ubuntu ]] && PACKAGE_LIST_DESKTOP+=" update-manager x11-utils"
 	;;
 	lxde)
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_OFFICE"
