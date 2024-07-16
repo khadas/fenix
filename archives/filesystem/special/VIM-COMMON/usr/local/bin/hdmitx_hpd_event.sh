@@ -9,7 +9,7 @@ if systemctl is-enabled resize2fs.service | grep "^enabled$" > /dev/null; then
 	exit
 fi
 
-if [ ! -d /usr/share/desktop-base ]; then
+if ! systemctl is-active --quiet gdm ; then
 	## For server
 	## Get hdmi resolution
 	for x in $(cat /proc/cmdline); do
