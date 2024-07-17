@@ -420,9 +420,9 @@ prepare_packages() {
 get_package_list_hash()
 {
 	package_list=$(echo $(
-	printf '%s\n' $PACKAGE_LIST | sort -u
+	printf '%s\n' $PACKAGE_LIST | LC_ALL=C sort -u
 	echo -
-	printf '%s\n' $PACKAGE_LIST_EXCLUDE | sort -u
+	printf '%s\n' $PACKAGE_LIST_EXCLUDE | LC_ALL=C sort -u
 	echo =
 	echo $ROOTFSCACHE_VERSION
 	))
