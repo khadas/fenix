@@ -311,8 +311,8 @@ PACKAGE_LIST_QT="libqt5opengl5 libqt5qml5 libqt5quick5 libqt5widgets5 libqt5gui5
 case $DISTRIB_TYPE in
 	xfce)
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_OFFICE"
-		PACKAGE_LIST_DESKTOP+=" xfce4 lxtask xfce4-screenshooter xfce4-notifyd xfce4-terminal desktop-base software-properties-gtk thunar-archive-plugin xfce4-power-manager"
-		[[ $DISTRIBUTION == Ubuntu ]] && PACKAGE_LIST_DESKTOP+=" update-manager"
+		PACKAGE_LIST_DESKTOP+=" lightdm lightdm-gtk-greeter xfce4 lxtask xfce4-screenshooter xfce4-notifyd xfce4-terminal desktop-base software-properties-gtk thunar-archive-plugin xfce4-power-manager"
+		[[ $DISTRIBUTION == Ubuntu ]] && PACKAGE_LIST_DESKTOP+=" update-manager x11-utils"
 	;;
 	lxde)
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_OFFICE"
@@ -324,6 +324,7 @@ case $DISTRIB_TYPE in
 		PACKAGE_LIST_DESKTOP+=" desktop-base software-properties-gtk gnome-terminal gnome-shell-extensions gnome-tweaks gnome-screenshot"
 		([[ $DISTRIB_RELEASE == focal ]] || [[ $DISTRIB_RELEASE == jammy ]] || [[ $DISTRIB_RELEASE == noble ]]) && PACKAGE_LIST_DESKTOP+=" yaru-theme-gtk yaru-theme-icon yaru-theme-sound"
 		[[ $DISTRIBUTION == Ubuntu ]] && PACKAGE_LIST_DESKTOP+=" ubuntu-desktop update-manager"
+		[[ $DISTRIB_RELEASE == noble ]] && PACKAGE_LIST_DESKTOP+=" gnome-remote-desktop"
 	;;
 esac
 
