@@ -135,6 +135,9 @@ build_desktop_deb() {
 		EOT
 		sed -i 's/#WaylandEnable=.*/WaylandEnable=true/g' /etc/gdm3/custom.conf
 		sed -i 's/WaylandEnable=.*/WaylandEnable=true/g' /etc/gdm3/custom.conf
+		if [ "$KHADAS_BOARD" == "Edge2" ] && [ -f /boot/.next ]; then
+			sed -i 's/^WaylandEnable=true/WaylandEnable=false/' /etc/gdm3/custom.conf
+		fi
 	fi
 
 	exit 0
