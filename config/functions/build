@@ -19,10 +19,16 @@ build_uboot() {
 	fi
 
 	if [ "$UBOOT" == "mainline" ]; then
-		rm -rf $BUILD/.stamps/u-boot-mainline/
-		build_package "u-boot-mainline:target"
-
-		return 0
+		if [ "$KHADAS_BOARD" == "Edge2" ]; then
+			if [[ $(type -t uboot_custom_postprocess) == function ]]; then
+				uboot_custom_postprocess
+			fi
+			return 0
+		else
+			rm -rf $BUILD/.stamps/u-boot-mainline/
+			build_package "u-boot-mainline:target"
+			return 0
+		fi
 	fi
 
 	if [ "$UBOOT_GIT_BRANCH" == "" ]; then
