@@ -18,7 +18,7 @@ build_uboot() {
 		return
 	fi
 
-	if [ "$UBOOT" == "mainline" ]; then
+	if [ "$UBOOT" == "mainline" ] && [ "$KHADAS_BOARD" != "Edge2" ]; then
 		rm -rf $BUILD/.stamps/u-boot-mainline/
 		build_package "u-boot-mainline:target"
 
@@ -80,6 +80,18 @@ build_uboot() {
 			make distclean
 		fi
 		rm -rf .config *.bin *.img
+		# Hack for Edge2 mainline U-Boot
+		if [ "$UBOOT" == "mainline" ] && [ "$KHADAS_BOARD" == "Edge2" ]; then
+			for RK_BIN in "$BUILD"/rkbin-*; do
+					[ -d "$RK_BIN" ] || {
+					error_msg "Not found $RK_BIN"
+					return 1
+					}
+			done
+
+			export BL31=$RK_BIN/rk3588_bl31.elf
+			export ROCKCHIP_TPL=$RK_BIN/rk3588_ddr.bin
+		fi
 		make $UBOOT_DEFCONFIG
 		make -j${NR_JOBS} CROSS_COMPILE="${CCACHE} ${UBOOT_COMPILER}"
 	fi
