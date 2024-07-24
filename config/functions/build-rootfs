@@ -259,7 +259,7 @@ create_rootfs_cache()
 		if [[ $cache_sha256 == $calc_sha256 ]]; then
 			info_msg "Extracting $display_name $date_diff days old"
 			# may be no need progress at all its very fast
-			lz4 -dc < $cache_fname | tar xp --xattrs -C $ROOTFS_TEMP/
+			lz4 -dc < $cache_fname | tar xp --xattrs-include='*' -C $ROOTFS_TEMP/
 			qemu_helper "$ROOTFS_TEMP"
 			return
 		else
