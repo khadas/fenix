@@ -1,6 +1,6 @@
 PKG_NAME="gstreamer-rockchip-debs"
-PKG_VERSION="5a09ea919db53609809108a6b8d1c1388e273f39"
-PKG_SHA256="174dae0db1c7745314be038f0acd355d5fa882d4e06f3856127f084e49026ab9"
+PKG_VERSION="0b71624e0ba56bbdc2b16c35ee3117cad575635e"
+PKG_SHA256="853cdfdb7379a046bb664e0e5bb0fbfb53ef6a071cba6ddc74bec18d6c418c78"
 PKG_SOURCE_DIR="gstreamer-rockchip-debs-${PKG_VERSION}*"
 PKG_SITE="$GITHUB_URL/numbqq/gstreamer-rockchip-debs"
 PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
@@ -18,6 +18,6 @@ makeinstall_target() {
 	mkdir -p $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer-rockchip-debs
 	# Remove old debs
 	rm -rf $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer-rockchip-debs/*
-	[ -d ${DISTRIB_RELEASE}/${DISTRIB_ARCH}/${KHADAS_BOARD} ] && cp -r ${DISTRIB_RELEASE}/${DISTRIB_ARCH}/${KHADAS_BOARD}/* $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer-rockchip-debs || true
+	[ -d ${DISTRIB_RELEASE}/${DISTRIB_ARCH}/${KHADAS_BOARD} ] && cp -rL ${DISTRIB_RELEASE}/${DISTRIB_ARCH}/${KHADAS_BOARD}/* $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/gstreamer-rockchip-debs || true
 }
 
