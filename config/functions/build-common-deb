@@ -27,7 +27,7 @@ build_common_deb() {
 	info_msg "Building fenix-config packages..."
 	# FIXME
 	# remove build stamp to force build for other arch
-	rm -rf $BUILD/.stamps/wiringpi_debs
+	rm -rf $BUILD/.stamps/fenix-config
 	build_package "fenix-config:target"
 }
 
