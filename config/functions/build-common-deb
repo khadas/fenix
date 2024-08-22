@@ -23,6 +23,12 @@ build_common_deb() {
 		rm -rf $BUILD/.stamps/dt-overlays-debs
 		build_package "dt-overlays-debs:target"
 	fi
+
+	info_msg "Building fenix-config packages..."
+	# FIXME
+	# remove build stamp to force build for other arch
+	rm -rf $BUILD/.stamps/fenix-config
+	build_package "fenix-config:target"
 }
 
 ## Build common deb package
@@ -45,5 +51,11 @@ install_common_deb() {
 			info_msg "Installing DT Overlays packages..."
 			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/dt-overlays-debs/*.deb
 		fi
+	fi
+
+	# Install fenix-config in chroot
+	if [ -n "$(ls $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/fenix-config/ -1)" ]; then
+		info_msg "Installing fenix-config package..."
+		install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/fenix-config/fenix-config_*.deb
 	fi
 }
