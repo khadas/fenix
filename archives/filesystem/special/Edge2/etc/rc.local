@@ -41,9 +41,7 @@ chmod 666 /dev/$rootdevice
 [ -f /sys/class/fan/enable ] && chmod 777 /sys/class/fan/enable
 
 # Set white led heartbeat
-echo heartbeat > /sys/class/leds/red_led/trigger
 echo heartbeat > /sys/class/leds/green_led/trigger
-echo heartbeat > /sys/class/leds/blue_led/trigger
 
 # Reboot test handle
 if cat /proc/cmdline | grep -q reboot_test > /dev/null; then
