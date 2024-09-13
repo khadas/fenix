@@ -191,7 +191,9 @@ build_desktop_deb() {
 			rm -rf $pkgdir/etc/skel/.local/share/applications/usb3-pcie-settings.desktop
 			rm -rf $pkgdir/etc/skel/.local/share/applications/cpu-frequency-setting.desktop
 			rm -rf $pkgdir/etc/skel/.local/share/applications/hdmi-resolution-settings.desktop
+			rm -rf $pkgdir/etc/skel/.local/share/applications/xfce-hdmi-resolution-settings.desktop
 			rm -rf $pkgdir/etc/skel/.local/share/applications/wol-settings.desktop
+			rm -rf $pkgdir/etc/skel/.local/share/applications/xfce-wol-settings.desktop
 			rm -rf $pkgdir/etc/skel/.local/share/applications/ext-lcd-settings.desktop
 		fi
 
