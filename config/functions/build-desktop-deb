@@ -135,9 +135,6 @@ build_desktop_deb() {
 		EOT
 		sed -i 's/#WaylandEnable=.*/WaylandEnable=true/g' /etc/gdm3/custom.conf
 		sed -i 's/WaylandEnable=.*/WaylandEnable=true/g' /etc/gdm3/custom.conf
-		if [ "\$KHADAS_BOARD" == "Edge2" ] && [ -f /boot/.next ] && grep -Fxq "DISTRIB_CODENAME=noble" /etc/lsb-release; then
-			sed -i 's/^WaylandEnable=true/WaylandEnable=false/' /etc/gdm3/custom.conf
-		fi
 
 		if [ "\$KHADAS_BOARD" == "Edge2" ] && grep -Fxq "DISTRIB_CODENAME=noble" /etc/lsb-release; then
 			systemctl --no-reload enable gdm_multi_screen_display.service >/dev/null 2>&1
