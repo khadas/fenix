@@ -7,9 +7,10 @@ fi
 
 FAN="/usr/local/bin/fan.sh"
 
-LINUX_VER=`uname -r`
+LINUX_VER=$(uname -r)
+LINUX_VER=$(echo "$LINUX_VER" | cut -d. -f1-2)
 
-if [ ${LINUX_VER::4} == "5.10" ];then
+if [ "${LINUX_VER}" == "5.10" ] || [ "${LINUX_VER}" == "6.1" ];then
 	_fan_mode=$(${FAN} mode | grep "Fan mode:" | awk '{print $3}')
 	_fan_level=$(${FAN} mode | grep "Fan level:" | awk '{print $3}')
 	_fan_state=$(${FAN} mode | grep "Fan state:" | awk '{print $3}')
@@ -28,7 +29,7 @@ else
 fi
 DEFAULT_FAN_MODE=${fan_mode}
 
-if [ ${LINUX_VER::4} == "5.10" ];then
+if [ "${LINUX_VER}" == "5.10" ] || [ "${LINUX_VER}" == "6.1" ];then
 	LIST_MENU=(off low mid high auto)
 	LIST_MENU_VALUE=(FALSE FALSE FALSE FALSE FALSE)
 else
@@ -47,7 +48,7 @@ done
 
 LIST_MENU_VALUE[$index]=TRUE
 
-if [ ${LINUX_VER::4} == "5.10" ];then
+if [ "${LINUX_VER}" == "5.10" ] || [ "${LINUX_VER}" == "6.1" ];then
 selected_mode=$(zenity --height=275 \
 				--list --radiolist \
 				--title 'FAN Setting' \
@@ -91,7 +92,7 @@ fi
 $FAN $selected_mode
 
 zenity  --question \
-	--text 'Do you want to save this mode to configuration file?' \
+	--text 'Do you want to save this mode as default?' \
 	--title 'Warning' \
 	--window-icon /etc/fenix/icons/warning.png \
 	--width=300 \

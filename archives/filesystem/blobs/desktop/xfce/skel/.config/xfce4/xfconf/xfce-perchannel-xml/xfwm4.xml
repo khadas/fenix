@@ -82,5 +82,10 @@
     <property name="sync_to_vblank" type="bool" value="false"/>
     <property name="titleless_maximize" type="bool" value="false"/>
     <property name="zoom_desktop" type="bool" value="true"/>
+    <property name="cycle_raise" type="bool" value="false"/>
+    <property name="cycle_minimized" type="bool" value="false"/>
+    <property name="frame_border_top" type="int" value="0"/>
+    <property name="vblank_mode" type="string" value="auto"/>
+    <property name="zoom_pointer" type="bool" value="true"/>
   </property>
 </channel>

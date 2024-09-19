@@ -67,7 +67,7 @@ echo "[i] FENIX (${0#*/}) BUILD: $BUILD | DL: $DOWNLOAD_PKG_DIR | sudo: $sudo"
 MAKE_PARAMS="BUILD_TYPE DOWNLOAD_MIRROR NO_CCACHE COMPRESS_IMAGE \
 			 CLONE_FULL_COMMIT_LOG FORCE_BUILD_KERNEL_DEB SKIP_ROOTFS_CACHE_DOWNLOAD \
 			 FORCE_CREATE_ROOTFS_CACHE CREATE_ROOTFS_CACHE_ONLY NO_APT_CACHER SKIP_HEADER_DEB \
-			 TEST_IMAGE PANFORK_SUPPORT PREINSTALL_SNAP_PACKAGES"
+			 TEST_IMAGE PANFORK_SUPPORT PREINSTALL_SNAP_PACKAGES PANFROST_SUPPORT"
 
 ## Available values
 BUILD_TYPE_VALUES="develop | release"
@@ -83,6 +83,7 @@ NO_APT_CACHER_VALUES="yes | no"
 SKIP_HEADER_DEB_VALUES="no | yes"
 TEST_IMAGE_VALUES="no | yes"
 PANFORK_SUPPORT_VALUES="no | yes"
+PANFROST_SUPPORT_VALUES="no | yes"
 PREINSTALL_SNAP_PACKAGES_VALUES="no | yes"
 
 ## Default values
@@ -324,6 +325,7 @@ case $DISTRIB_TYPE in
 		PACKAGE_LIST_DESKTOP+=" desktop-base software-properties-gtk gnome-terminal gnome-shell-extensions gnome-tweaks gnome-screenshot"
 		([[ $DISTRIB_RELEASE == focal ]] || [[ $DISTRIB_RELEASE == jammy ]] || [[ $DISTRIB_RELEASE == noble ]]) && PACKAGE_LIST_DESKTOP+=" yaru-theme-gtk yaru-theme-icon yaru-theme-sound"
 		[[ $DISTRIBUTION == Ubuntu ]] && PACKAGE_LIST_DESKTOP+=" ubuntu-desktop update-manager"
+		[[ $DISTRIBUTION == Debian ]] && PACKAGE_LIST_DESKTOP+=" task-gnome-desktop"
 		[[ $DISTRIB_RELEASE == noble ]] && PACKAGE_LIST_DESKTOP+=" gnome-remote-desktop"
 	;;
 esac
@@ -346,7 +348,7 @@ case $DISTRIB_RELEASE in
 		PACKAGE_LIST_QT+=" libqt5multimediaquick5"
 		PACKAGE_LIST_MESA="libglvnd-dev libx11-dev"
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_KODI $PACKAGE_LIST_MESA"
-		PACKAGE_LIST_DESKTOP+=" numix-icon-theme chromium mirage task-gnome-desktop dbus-user-session"
+		PACKAGE_LIST_DESKTOP+=" numix-icon-theme chromium mirage dbus-user-session"
 	;;
 	focal|hirsute)
 		DEBOOTSTRAP_COMPONENTS="main,universe"

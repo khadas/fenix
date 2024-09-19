@@ -1,6 +1,6 @@
 PKG_NAME="rga-rockchip-debs"
-PKG_VERSION="3ac79d178e05c07b2f2f5ff7f66accade6bb28db"
-PKG_SHA256="069f59d316ed0c3ebaaa2b41c1b135e82920eb298e101b64fe3cad983bacf6ce"
+PKG_VERSION="77980321e518e6c1166931ca8fabb9119462b3c0"
+PKG_SHA256="e481b537ca3497f95af132482e3dbeb5c57eeac995519a80440c36a7faf86e5b"
 PKG_SOURCE_DIR="rga-rockchip-debs-${PKG_VERSION}*"
 PKG_SITE="$GITHUB_URL/numbqq/rga-rockchip-debs"
 PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"

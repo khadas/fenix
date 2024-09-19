@@ -55,6 +55,11 @@
         <value type="string" value="blueman-applet"/>
         <value type="string" value="update-notifier"/>
       </property>
+      <property name="known-items" type="array">
+        <value type="string" value="blueman"/>
+        <value type="string" value="nm-applet"/>
+        <value type="string" value="pasystray"/>
+      </property>
     </property>
   </property>
 </channel>
