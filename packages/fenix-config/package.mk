@@ -1,6 +1,6 @@
 PKG_NAME="fenix-config"
-PKG_VERSION="a510ad225bcc4850d65e0001f482ca9039a8fece"
-PKG_SHA256="4291271eaa5eb82cb8bbacd0492e5f94479e2ef457ce69cccc920cc39fa89fe9"
+PKG_VERSION="2d7f74eec003b8b90bed36ad640b95a1c231dc91"
+PKG_SHA256="6e365b4140c8c56baf4e5c279dc776c1d571106617e07319992e0c0dcfccd114"
 PKG_SOURCE_DIR="${PKG_NAME}-${PKG_VERSION}*"
 PKG_SITE="$GITHUB_URL/numbqq/${PKG_NAME}"
 PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
@@ -30,7 +30,7 @@ make_target() {
 	EOF
 
 	mkdir -p "${pkgdir}"/usr/{bin,lib/fenix-config}
-	find bin lib -exec install -m 644 {} "${pkgdir}"/usr/{} \;
+	find bin lib -type f -exec install -m 644 {} "${pkgdir}"/usr/{} \;
 	chmod a+x "${pkgdir}"/usr/bin/fenix-config
 
 	info_msg "Building package: $pkgname"
