@@ -173,6 +173,21 @@ build_board_deb() {
 		fi
 	fi
 
+	# Remove unused files
+	if [ "\$IS_MAINLINE_KERNEL" == "yes" ]; then
+		rm -rf /boot/extlinux
+		rm -rf /boot/uEnv.txt
+	else
+		rm -rf /boot/boot.ini
+		rm -rf /boot/boot.scr
+		rm -rf /boot/env.txt
+		rm -rf /boot/aml_autoscript
+		rm -rf /boot/aml_autoscript.txt
+		rm -rf /boot/aml_autoscript.zip
+		rm -rf /boot/s905_autoscript
+		rm -rf /boot/s905_autoscript.cmd
+	fi
+
 	if [ "\$IS_MAINLINE_KERNEL" == "yes" ]; then
 		# Mainline linux don't use such scripts now
 		echo "#!/bin/sh" >  /etc/initramfs-tools/scripts/local-top/khadas_init.sh
@@ -205,9 +220,16 @@ build_board_deb() {
 		fi
 		# Update modules
 		[ -f /etc/modules.mainlne ] && rm /etc/modules.mainlne
-		[ -f /etc/modules.$LINUX ] && mv /etc/modules.$LINUX /etc/modules
+
+		if [ -f /etc/modules.5.15 ]; then
+			mv /etc/modules.5.15 /etc/modules
+			mv /etc/modprobe.d/dhd.conf.5.15 /etc/modprobe.d/dhd.conf
+		else
+			mv /etc/modules.$LINUX /etc/modules
+			mv /etc/modprobe.d/dhd.conf.$LINUX /etc/modprobe.d/dhd.conf
+		fi
+
 		# Update modules configs
-		[ -f /etc/modprobe.d/dhd.conf.$LINUX ] && mv /etc/modprobe.d/dhd.conf.$LINUX /etc/modprobe.d/dhd.conf
 		if [ "\$BOARD" == "VIM2" ]; then
 			sed -i 's/mali//g' /etc/modules
 		elif [ "\$BOARD" == "VIM3L" ]; then
@@ -422,7 +444,8 @@ build_board_deb() {
 	else
 		rm -rf $pkgdir/usr/share/initramfs-tools/scripts/local.jammy
 	fi
-	[ -f $pkgdir/etc/initramfs-tools/modules.$LINUX ] && mv $pkgdir/etc/initramfs-tools/modules.$LINUX $pkgdir/etc/initramfs-tools/modules
+	filename=$(basename "$(ls $pkgdir/etc/initramfs-tools/modules.*.*)")
+	[ -f $pkgdir/etc/initramfs-tools/$filename ] && mv $pkgdir/etc/initramfs-tools/$filename $pkgdir/etc/initramfs-tools/modules
 	rm -rf $pkgdir/etc/initramfs-tools/modules.*
 
 	# Generate module load order in initramfs
