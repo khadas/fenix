@@ -184,6 +184,10 @@ build_board_deb() {
 		echo "#!/bin/bash" > /usr/local/bin/bluetooth-power-fixup.sh
 		echo "exit 0" >> /usr/local/bin/bluetooth-power-fixup.sh
 
+		# Remove unused files
+		rm -rf /boot/extlinux
+		rm -rf /boot/uEnv.txt
+
 		# Update fw_env.config for mainline linux
 		echo "/dev/mmcblk1    0x27400000      0x10000" > /etc/fw_env.config
 
@@ -197,17 +201,72 @@ build_board_deb() {
 
 		# Update modules
 		[ -f /etc/modules.mainline ] && mv /etc/modules.mainline /etc/modules
+		rm -rf /etc/modules.*
+		[ -f /etc/modprobe.d/dhd.conf.mainline ] && mv /etc/modprobe.d/dhd.conf.mainline /etc/modprobe.d/dhd.conf
+		rm -rf /etc/modprobe.d/dhd.conf.*
+		[ -f /etc/initramfs-tools/modules.mainline ] && mv /etc/initramfs-tools/modules.mainline /etc/initramfs-tools/modules
+		rm -rf /etc/initramfs-tools/modules.*
 	else
+		# Remove unused files
+		rm -rf /boot/boot.ini
+		rm -rf /boot/boot.scr
+		rm -rf /boot/env.txt
+		rm -rf /boot/aml_autoscript
+		rm -rf /boot/aml_autoscript.txt
+		rm -rf /boot/aml_autoscript.zip
+		rm -rf /boot/s905_autoscript
+		rm -rf /boot/s905_autoscript.cmd
+
 		# FIXME Workaround for Bluetooth
 		# Revert Workaround
 		if [ -f /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py.backup ]; then
 			mv /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py.backup /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py
 		fi
+
 		# Update modules
-		[ -f /etc/modules.mainlne ] && rm /etc/modules.mainlne
-		[ -f /etc/modules.$LINUX ] && mv /etc/modules.$LINUX /etc/modules
+		if [ "\$(stat -c %d:%i /)" = "\$(stat -c %d:%i /proc/1/root/.)" ]; then
+			# None chroot
+			version=\$(dpkg -l | grep "linux-image-amlogic" | awk '{print \$2}' | awk -F '-' '{print \$4}')
+
+			[ -f /etc/modules.\$version ] && mv /etc/modules.\$version /etc/modules
+			[ -f /etc/modprobe.d/dhd.conf.\$version ] && mv /etc/modprobe.d/dhd.conf.\$version /etc/modprobe.d/dhd.conf
+			[ -f /etc/initramfs-tools/modules.\$version ] && mv /etc/initramfs-tools/modules.\$version /etc/initramfs-tools/modules
+		else
+			# Chroot
+			[ -f /etc/modules.$LINUX ] && mv /etc/modules.$LINUX /etc/modules
+			[ -f /etc/modprobe.d/dhd.conf.$LINUX ] && mv /etc/modprobe.d/dhd.conf.$LINUX /etc/modprobe.d/dhd.conf
+			[ -f /etc/initramfs-tools/modules.$LINUX ] && mv /etc/initramfs-tools/modules.$LINUX /etc/initramfs-tools/modules
+		fi
+		rm -rf /etc/modules.*
+		rm -rf /etc/modprobe.d/dhd.conf.*
+		rm -rf /etc/initramfs-tools/modules.*
+
+		# Generate module load order in initramfs
+		if [ -e /etc/initramfs-tools/modules ]; then
+			module_count=0
+			pre_module=
+			while read -r m; do
+				# Skip empty lines
+				if [ -z "\$m" ];  then
+					continue
+				fi
+				# Skip comments - d?ash removes whitespace prefix
+				com=\$(printf "%.1s" "\${m}")
+				if [ "\$com" = "#" ]; then
+					continue
+				fi
+				module_count=\$((module_count + 1))
+				if [ \$module_count -gt 1 ]; then
+					echo "softdep \$m pre: \$pre_module" >> /etc/modprobe.d/initramfs-modules-load-order.conf
+				else
+					echo "# Initramfs modules load order" > /etc/modprobe.d/initramfs-modules-load-order.conf
+				fi
+				pre_module=\$m
+
+			done < /etc/initramfs-tools/modules
+		fi
+
 		# Update modules configs
-		[ -f /etc/modprobe.d/dhd.conf.$LINUX ] && mv /etc/modprobe.d/dhd.conf.$LINUX /etc/modprobe.d/dhd.conf
 		if [ "\$BOARD" == "VIM2" ]; then
 			sed -i 's/mali//g' /etc/modules
 		elif [ "\$BOARD" == "VIM3L" ]; then
@@ -421,33 +480,6 @@ build_board_deb() {
 		mv $pkgdir/usr/share/initramfs-tools/scripts/local.jammy $pkgdir/usr/share/initramfs-tools/scripts/local
 	else
 		rm -rf $pkgdir/usr/share/initramfs-tools/scripts/local.jammy
-	fi
-	[ -f $pkgdir/etc/initramfs-tools/modules.$LINUX ] && mv $pkgdir/etc/initramfs-tools/modules.$LINUX $pkgdir/etc/initramfs-tools/modules
-	rm -rf $pkgdir/etc/initramfs-tools/modules.*
-
-	# Generate module load order in initramfs
-	if [ -e $pkgdir/etc/initramfs-tools/modules ]; then
-		module_count=0
-		pre_module=
-		while read -r m; do
-			# Skip empty lines
-			if [ -z "$m" ];  then
-				continue
-			fi
-			# Skip comments - d?ash removes whitespace prefix
-			com=$(printf "%.1s" "${m}")
-			if [ "$com" = "#" ]; then
-				continue
-			fi
-			module_count=$((module_count + 1))
-			if [ $module_count -gt 1 ]; then
-				echo "softdep $m pre: $pre_module" >> $pkgdir/etc/modprobe.d/initramfs-modules-load-order.conf
-			else
-				echo "# Initramfs modules load order" > $pkgdir/etc/modprobe.d/initramfs-modules-load-order.conf
-			fi
-			pre_module=$m
-
-		done < $pkgdir/etc/initramfs-tools/modules
 	fi
 
 	# Trigger uInitrd creation after installation, to apply
