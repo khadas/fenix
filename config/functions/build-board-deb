@@ -102,9 +102,6 @@ build_board_deb() {
 
 	mountpoint -q /boot && check_fs
 
-	# disable deprecated services
-	[ -f "/lib/systemd/system/0hdmi.service" ] && rm /lib/systemd/system/0hdmi.service
-
 	exit 0
 	EOF
 
@@ -192,7 +189,6 @@ build_board_deb() {
 		echo "/dev/mmcblk1    0x27400000      0x10000" > /etc/fw_env.config
 
 		# Disable deprecated services for mainline kernel
-		[ -f "/lib/systemd/system/0hdmi.service" ] && rm /lib/systemd/system/0hdmi.service
 		[ -f "/lib/systemd/system/bluetooth-khadas.service" ] && rm /lib/systemd/system/bluetooth-khadas.service
 		[ -f "/lib/systemd/system/bluetooth-power-fixup.service" ] && rm /lib/systemd/system/bluetooth-power-fixup.service
 		[ -L "/lib/systemd/system/reboot.target.wants/plymouth-reboot.service" ] && rm /lib/systemd/system/reboot.target.wants/plymouth-reboot.service
@@ -216,12 +212,6 @@ build_board_deb() {
 		rm -rf /boot/aml_autoscript.zip
 		rm -rf /boot/s905_autoscript
 		rm -rf /boot/s905_autoscript.cmd
-
-		# FIXME Workaround for Bluetooth
-		# Revert Workaround
-		if [ -f /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py.backup ]; then
-			mv /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py.backup /usr/lib/python3/dist-packages/blueman/plugins/mechanism/RfKill.py
-		fi
 
 		# Update modules
 		if [ "\$(stat -c %d:%i /)" = "\$(stat -c %d:%i /proc/1/root/.)" ]; then
@@ -267,9 +257,7 @@ build_board_deb() {
 		fi
 
 		# Update modules configs
-		if [ "\$BOARD" == "VIM2" ]; then
-			sed -i 's/mali//g' /etc/modules
-		elif [ "\$BOARD" == "VIM3L" ]; then
+		if [ "\$BOARD" == "VIM3L" ]; then
 			sed -i 's/iv009_isp_iq//g' /etc/modules
 			sed -i 's/iv009_isp_lens//g' /etc/modules
 			sed -i 's/iv009_isp_sensor//g' /etc/modules
@@ -452,22 +440,6 @@ build_board_deb() {
 	cp $ROOT/archives/logo/bmp/* $pkgdir/usr/share/fenix/logo
 	# Install png logo
 	cp $ROOT/archives/logo/png/*.png $pkgdir/usr/share/fenix/logo
-
-	if [ "$KHADAS_BOARD" == "VIM1" ] && [ "$DISTRIB_RELEASE" == "bionic" ]; then
-		# Blacklist lima.ko
-		mkdir -p $pkgdir/etc/modprobe.d
-		tee $pkgdir/etc/modprobe.d/lima.conf <<-EOF
-		blacklist lima
-		EOF
-	fi
-
-	if [ "$KHADAS_BOARD" == "VIM2" ] && [ "$DISTRIB_RELEASE" == "bionic" ]; then
-		# Blacklist panfrost.ko
-		mkdir -p $pkgdir/etc/modprobe.d
-		tee $pkgdir/etc/modprobe.d/panfrost.conf <<-EOF
-		blacklist panfrost
-		EOF
-	fi
 
 	# Install asound.state for mainline kernel
 	if [ -f $ROOT/archives/filesystem/blobs/asound.state/$KHADAS_BOARD/asound.state ]; then
