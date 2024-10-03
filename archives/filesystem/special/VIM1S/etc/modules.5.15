@@ -79,15 +79,6 @@ amvdec_mavs_v4l
 amvdec_avs2_fb_v4l
 media_sync
 
-nft_chain_nat
-nft_counter
-nft_compat
-nf_tables
-xt_conntrack
-xt_MASQUERADE
-xt_addrtype
-veth
-
 dhd
 
 snd-seq
