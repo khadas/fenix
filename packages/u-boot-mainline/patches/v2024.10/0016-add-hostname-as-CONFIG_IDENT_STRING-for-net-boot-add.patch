@@ -1,0 +1,29 @@
+From c9dfd9e519a53fab2a6f16fdabc970f828a4c4fa Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Fri, 4 Dec 2020 10:28:19 +0800
+Subject: [PATCH 16/38] add hostname as CONFIG_IDENT_STRING for net boot add
+ hostname value same as CONFIG_DEFAULT_DEVICE_TREE hostname value used as dhcp
+ host name
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ include/configs/meson64.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/include/configs/meson64.h b/include/configs/meson64.h
+index ccb8ea2e71..5165d96f08 100644
+--- a/include/configs/meson64.h
++++ b/include/configs/meson64.h
+@@ -118,6 +118,9 @@
+ #define FDTOVERLAY_ADDR_R	__stringify(0x01000000)
+ #define RAMDISK_ADDR_R		__stringify(0x13000000)
+ 
++#define CONFIG_HOSTNAME CONFIG_DEFAULT_DEVICE_TREE
++#define CONFIG_BOOTP_SEND_HOSTNAME 1
++
+ #include <config_distro_bootcmd.h>
+ 
+ #ifdef CONFIG_OF_UPSTREAM
+-- 
+2.17.1
+

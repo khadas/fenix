@@ -1,0 +1,124 @@
+From bb71423683dbe4237cc778218a80427db7ddf708 Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Fri, 4 Dec 2020 14:16:44 +0800
+Subject: [PATCH 32/38] configiure with autoboot
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ configs/khadas-edge-captain-rk3399_defconfig | 4 ++++
+ configs/khadas-edge-rk3399_defconfig         | 4 ++++
+ configs/khadas-edge-v-rk3399_defconfig       | 4 ++++
+ configs/khadas-vim2_defconfig                | 4 ++++
+ configs/khadas-vim3_defconfig                | 4 ++++
+ configs/khadas-vim3l_defconfig               | 4 ++++
+ configs/khadas-vim_defconfig                 | 4 ++++
+ 7 files changed, 28 insertions(+)
+
+diff --git a/configs/khadas-edge-captain-rk3399_defconfig b/configs/khadas-edge-captain-rk3399_defconfig
+index d2c89264ee..a56e90e647 100644
+--- a/configs/khadas-edge-captain-rk3399_defconfig
++++ b/configs/khadas-edge-captain-rk3399_defconfig
+@@ -17,6 +17,10 @@ CONFIG_SPL_SPI=y
+ CONFIG_SYS_LOAD_ADDR=0x800800
+ CONFIG_PCI=y
+ CONFIG_DEBUG_UART=y
++CONFIG_AUTOBOOT_KEYED=y
++CONFIG_AUTOBOOT_PROMPT="Hit SPACE in %d seconds to stop autoboot"
++CONFIG_AUTOBOOT_DELAY_STR="2"
++CONFIG_AUTOBOOT_STOP_STR=" "
+ CONFIG_USE_PREBOOT=y
+ CONFIG_DEFAULT_FDT_FILE="rockchip/rk3399-khadas-edge-captain.dtb"
+ CONFIG_SYS_PBSIZE=1048
+diff --git a/configs/khadas-edge-rk3399_defconfig b/configs/khadas-edge-rk3399_defconfig
+index 2520620511..68a3499011 100644
+--- a/configs/khadas-edge-rk3399_defconfig
++++ b/configs/khadas-edge-rk3399_defconfig
+@@ -16,6 +16,10 @@ CONFIG_SPL_SPI_FLASH_SUPPORT=y
+ CONFIG_SPL_SPI=y
+ CONFIG_SYS_LOAD_ADDR=0x800800
+ CONFIG_DEBUG_UART=y
++CONFIG_AUTOBOOT_KEYED=y
++CONFIG_AUTOBOOT_PROMPT="Hit SPACE in %d seconds to stop autoboot"
++CONFIG_AUTOBOOT_DELAY_STR="2"
++CONFIG_AUTOBOOT_STOP_STR=" "
+ CONFIG_USE_PREBOOT=y
+ CONFIG_DEFAULT_FDT_FILE="rockchip/rk3399-khadas-edge.dtb"
+ CONFIG_SYS_PBSIZE=1048
+diff --git a/configs/khadas-edge-v-rk3399_defconfig b/configs/khadas-edge-v-rk3399_defconfig
+index 7ed535ec9f..5deed6cf04 100644
+--- a/configs/khadas-edge-v-rk3399_defconfig
++++ b/configs/khadas-edge-v-rk3399_defconfig
+@@ -17,6 +17,10 @@ CONFIG_SPL_SPI=y
+ CONFIG_SYS_LOAD_ADDR=0x800800
+ CONFIG_PCI=y
+ CONFIG_DEBUG_UART=y
++CONFIG_AUTOBOOT_KEYED=y
++CONFIG_AUTOBOOT_PROMPT="Hit SPACE in %d seconds to stop autoboot"
++CONFIG_AUTOBOOT_DELAY_STR="2"
++CONFIG_AUTOBOOT_STOP_STR=" "
+ CONFIG_USE_PREBOOT=y
+ CONFIG_DEFAULT_FDT_FILE="rockchip/rk3399-khadas-edge-v.dtb"
+ CONFIG_SYS_PBSIZE=1048
+diff --git a/configs/khadas-vim2_defconfig b/configs/khadas-vim2_defconfig
+index f0c62ca996..04a0ab42ac 100644
+--- a/configs/khadas-vim2_defconfig
++++ b/configs/khadas-vim2_defconfig
+@@ -21,6 +21,10 @@ CONFIG_FIT_SIGNATURE=y
+ CONFIG_FIT_VERBOSE=y
+ CONFIG_LEGACY_IMAGE_FORMAT=y
+ CONFIG_OF_BOARD_SETUP=y
++CONFIG_AUTOBOOT_KEYED=y
++CONFIG_AUTOBOOT_PROMPT="Hit SPACE in %d seconds to stop autoboot"
++CONFIG_AUTOBOOT_DELAY_STR="2"
++CONFIG_AUTOBOOT_STOP_STR=" "
+ CONFIG_USE_PREBOOT=y
+ # CONFIG_SYS_DEVICE_NULLDEV is not set
+ # CONFIG_DISPLAY_CPUINFO is not set
+diff --git a/configs/khadas-vim3_defconfig b/configs/khadas-vim3_defconfig
+index c50051b67c..46d57a939b 100644
+--- a/configs/khadas-vim3_defconfig
++++ b/configs/khadas-vim3_defconfig
+@@ -23,6 +23,10 @@ CONFIG_FIT_SIGNATURE=y
+ CONFIG_FIT_VERBOSE=y
+ CONFIG_LEGACY_IMAGE_FORMAT=y
+ CONFIG_OF_BOARD_SETUP=y
++CONFIG_AUTOBOOT_KEYED=y
++CONFIG_AUTOBOOT_PROMPT="Hit SPACE in %d seconds to stop autoboot"
++CONFIG_AUTOBOOT_DELAY_STR="2"
++CONFIG_AUTOBOOT_STOP_STR=" "
+ CONFIG_USE_PREBOOT=y
+ # CONFIG_DISPLAY_CPUINFO is not set
+ CONFIG_MISC_INIT_R=y
+diff --git a/configs/khadas-vim3l_defconfig b/configs/khadas-vim3l_defconfig
+index 219166511c..c69c071057 100644
+--- a/configs/khadas-vim3l_defconfig
++++ b/configs/khadas-vim3l_defconfig
+@@ -23,6 +23,10 @@ CONFIG_FIT_SIGNATURE=y
+ CONFIG_FIT_VERBOSE=y
+ CONFIG_LEGACY_IMAGE_FORMAT=y
+ CONFIG_OF_BOARD_SETUP=y
++CONFIG_AUTOBOOT_KEYED=y
++CONFIG_AUTOBOOT_PROMPT="Hit SPACE in %d seconds to stop autoboot"
++CONFIG_AUTOBOOT_DELAY_STR="2"
++CONFIG_AUTOBOOT_STOP_STR=" "
+ CONFIG_USE_PREBOOT=y
+ # CONFIG_DISPLAY_CPUINFO is not set
+ CONFIG_MISC_INIT_R=y
+diff --git a/configs/khadas-vim_defconfig b/configs/khadas-vim_defconfig
+index 6bc797abbe..9aab382b04 100644
+--- a/configs/khadas-vim_defconfig
++++ b/configs/khadas-vim_defconfig
+@@ -21,6 +21,10 @@ CONFIG_FIT_SIGNATURE=y
+ CONFIG_FIT_VERBOSE=y
+ CONFIG_LEGACY_IMAGE_FORMAT=y
+ CONFIG_OF_BOARD_SETUP=y
++CONFIG_AUTOBOOT_KEYED=y
++CONFIG_AUTOBOOT_PROMPT="Hit SPACE in %d seconds to stop autoboot"
++CONFIG_AUTOBOOT_DELAY_STR="2"
++CONFIG_AUTOBOOT_STOP_STR=" "
+ CONFIG_USE_PREBOOT=y
+ # CONFIG_DISPLAY_CPUINFO is not set
+ CONFIG_MISC_INIT_R=y
+-- 
+2.17.1
+

@@ -1,0 +1,26 @@
+From d8a61b2cad6a5632be88f367edc41d62f8f38cb8 Mon Sep 17 00:00:00 2001
+From: Artem Lapkin <art@khadas.com>
+Date: Tue, 20 Oct 2020 18:46:31 +0800
+Subject: [PATCH 25/38] modify_gitignore_list
+
+---
+ .gitignore | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/.gitignore b/.gitignore
+index d5580b4fd3..64451c8e6a 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -5,6 +5,9 @@
+ #
+ # Normal rules (sorted alphabetically)
+ #
++
++/bl31.c
++
+ .*
+ !.checkpatch.conf
+ *.a
+-- 
+2.17.1
+

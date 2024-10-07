@@ -1,0 +1,36 @@
+From ee83cdaf12142a5bfbfada77572af6f97df84bf9 Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Fri, 4 Dec 2020 10:31:46 +0800
+Subject: [PATCH 18/38] fat_env_more_test_by_boot_source additional test for
+ env detection source
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ env/fat.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/env/fat.c b/env/fat.c
+index fa5f8a0096..0d3cf536bd 100644
+--- a/env/fat.c
++++ b/env/fat.c
+@@ -113,7 +113,7 @@ static int env_fat_save(void)
+ 				       &dev_desc, &info, 1);
+ 
+ #ifdef CONFIG_ENV_FAT_AUTO_SOURCE
+-	part = detect_source();
++	part = detect_source(part);
+ #endif
+ 
+ 	if (part < 0)
+@@ -181,7 +181,7 @@ static int env_fat_load(void)
+ 				       &dev_desc, &info, 1);
+ 
+ #ifdef CONFIG_ENV_FAT_AUTO_SOURCE
+-	part = detect_source();
++	part = detect_source(part);
+ #endif
+ 
+ 	if (part < 0)
+-- 
+2.17.1
+

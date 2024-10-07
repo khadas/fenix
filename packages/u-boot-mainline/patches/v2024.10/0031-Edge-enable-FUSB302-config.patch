@@ -1,0 +1,33 @@
+From a46e38a079084ff062746232211bd69b96a55d31 Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Fri, 4 Dec 2020 14:01:56 +0800
+Subject: [PATCH 31/38] Edge enable FUSB302 config
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ configs/khadas-edge-captain-rk3399_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/configs/khadas-edge-captain-rk3399_defconfig b/configs/khadas-edge-captain-rk3399_defconfig
+index bba9947455..d2c89264ee 100644
+--- a/configs/khadas-edge-captain-rk3399_defconfig
++++ b/configs/khadas-edge-captain-rk3399_defconfig
+@@ -25,6 +25,7 @@ CONFIG_SYS_PBSIZE=1048
+ CONFIG_DISPLAY_BOARDINFO_LATE=y
+ CONFIG_SPL_MAX_SIZE=0x40000
+ CONFIG_SPL_PAD_TO=0x7f8000
++CONFIG_MISC_INIT_R=y
+ # CONFIG_SPL_RAW_IMAGE_SUPPORT is not set
+ CONFIG_SPL_SPI_LOAD=y
+ CONFIG_SYS_SPI_U_BOOT_OFFS=0xE0000
+@@ -76,6 +77,7 @@ CONFIG_PHY_ROCKCHIP_TYPEC=y
+ CONFIG_PMIC_RK8XX=y
+ CONFIG_REGULATOR_PWM=y
+ CONFIG_REGULATOR_RK8XX=y
++CONFIG_POWER_FUSB302=y
+ CONFIG_PWM_ROCKCHIP=y
+ CONFIG_RAM_ROCKCHIP_LPDDR4=y
+ CONFIG_BAUDRATE=1500000
+-- 
+2.17.1
+

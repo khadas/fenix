@@ -1,0 +1,81 @@
+From aa1b21a0cc927540a588df404811ea9dfa7791b6 Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Thu, 3 Dec 2020 14:26:16 +0800
+Subject: [PATCH 06/38] edge_no_mmc_env
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ configs/khadas-edge-captain-rk3399_defconfig | 4 ++--
+ configs/khadas-edge-rk3399_defconfig         | 4 ++--
+ configs/khadas-edge-v-rk3399_defconfig       | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/configs/khadas-edge-captain-rk3399_defconfig b/configs/khadas-edge-captain-rk3399_defconfig
+index 0acb52af3c..06481e94fc 100644
+--- a/configs/khadas-edge-captain-rk3399_defconfig
++++ b/configs/khadas-edge-captain-rk3399_defconfig
+@@ -4,7 +4,7 @@ CONFIG_COUNTER_FREQUENCY=24000000
+ CONFIG_ARCH_ROCKCHIP=y
+ CONFIG_NR_DRAM_BANKS=1
+ CONFIG_SF_DEFAULT_SPEED=10000000
+-CONFIG_ENV_OFFSET=0x3F8000
++CONFIG_ENV_SIZE=0x8000
+ CONFIG_DEFAULT_DEVICE_TREE="rockchip/rk3399-khadas-edge-captain"
+ CONFIG_DM_RESET=y
+ CONFIG_ROCKCHIP_RK3399=y
+@@ -43,7 +43,7 @@ CONFIG_CMD_FS_UUID=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_SPL_OF_CONTROL=y
+ CONFIG_OF_SPL_REMOVE_PROPS="clock-names interrupt-parent assigned-clocks assigned-clock-rates assigned-clock-parents"
+-CONFIG_ENV_IS_IN_MMC=y
++# CONFIG_ENV_IS_NOWHERE is not set
+ CONFIG_SYS_RELOC_GD_ENV_ADDR=y
+ # CONFIG_USB_FUNCTION_FASTBOOT is not set
+ CONFIG_ROCKCHIP_GPIO=y
+diff --git a/configs/khadas-edge-rk3399_defconfig b/configs/khadas-edge-rk3399_defconfig
+index 733a295eab..e4b47d45e6 100644
+--- a/configs/khadas-edge-rk3399_defconfig
++++ b/configs/khadas-edge-rk3399_defconfig
+@@ -4,7 +4,7 @@ CONFIG_COUNTER_FREQUENCY=24000000
+ CONFIG_ARCH_ROCKCHIP=y
+ CONFIG_NR_DRAM_BANKS=1
+ CONFIG_SF_DEFAULT_SPEED=10000000
+-CONFIG_ENV_OFFSET=0x3F8000
++CONFIG_ENV_SIZE=0x8000
+ CONFIG_DEFAULT_DEVICE_TREE="rockchip/rk3399-khadas-edge"
+ CONFIG_DM_RESET=y
+ CONFIG_ROCKCHIP_RK3399=y
+@@ -40,7 +40,7 @@ CONFIG_CMD_TIME=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_SPL_OF_CONTROL=y
+ CONFIG_OF_SPL_REMOVE_PROPS="clock-names interrupt-parent assigned-clocks assigned-clock-rates assigned-clock-parents"
+-CONFIG_ENV_IS_IN_MMC=y
++# CONFIG_ENV_IS_NOWHERE is not set
+ CONFIG_SYS_RELOC_GD_ENV_ADDR=y
+ # CONFIG_USB_FUNCTION_FASTBOOT is not set
+ CONFIG_ROCKCHIP_GPIO=y
+diff --git a/configs/khadas-edge-v-rk3399_defconfig b/configs/khadas-edge-v-rk3399_defconfig
+index 3c25ae4277..c92074d38b 100644
+--- a/configs/khadas-edge-v-rk3399_defconfig
++++ b/configs/khadas-edge-v-rk3399_defconfig
+@@ -4,7 +4,7 @@ CONFIG_COUNTER_FREQUENCY=24000000
+ CONFIG_ARCH_ROCKCHIP=y
+ CONFIG_NR_DRAM_BANKS=1
+ CONFIG_SF_DEFAULT_SPEED=10000000
+-CONFIG_ENV_OFFSET=0x3F8000
++CONFIG_ENV_SIZE=0x8000
+ CONFIG_DEFAULT_DEVICE_TREE="rockchip/rk3399-khadas-edge-v"
+ CONFIG_DM_RESET=y
+ CONFIG_ROCKCHIP_RK3399=y
+@@ -42,7 +42,7 @@ CONFIG_CMD_TIME=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_SPL_OF_CONTROL=y
+ CONFIG_OF_SPL_REMOVE_PROPS="clock-names interrupt-parent assigned-clocks assigned-clock-rates assigned-clock-parents"
+-CONFIG_ENV_IS_IN_MMC=y
++# CONFIG_ENV_IS_NOWHERE is not set
+ CONFIG_SYS_RELOC_GD_ENV_ADDR=y
+ # CONFIG_USB_FUNCTION_FASTBOOT is not set
+ CONFIG_ROCKCHIP_GPIO=y
+-- 
+2.17.1
+

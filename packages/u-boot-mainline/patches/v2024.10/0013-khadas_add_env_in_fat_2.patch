@@ -1,0 +1,121 @@
+From 1e7c63bf47f32dc3da5e4f8f2ec228406bababd7 Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Tue, 27 Apr 2021 17:06:29 +0800
+Subject: [PATCH 13/38] khadas_add_env_in_fat_2
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ configs/khadas-edge-captain-rk3399_defconfig | 3 ++-
+ configs/khadas-edge-rk3399_defconfig         | 3 ++-
+ configs/khadas-edge-v-rk3399_defconfig       | 3 ++-
+ configs/khadas-vim2_defconfig                | 3 +++
+ configs/khadas-vim3_defconfig                | 4 +++-
+ configs/khadas-vim3l_defconfig               | 4 +++-
+ configs/khadas-vim_defconfig                 | 3 +++
+ 7 files changed, 18 insertions(+), 5 deletions(-)
+
+diff --git a/configs/khadas-edge-captain-rk3399_defconfig b/configs/khadas-edge-captain-rk3399_defconfig
+index 06481e94fc..4636221d08 100644
+--- a/configs/khadas-edge-captain-rk3399_defconfig
++++ b/configs/khadas-edge-captain-rk3399_defconfig
+@@ -43,7 +43,8 @@ CONFIG_CMD_FS_UUID=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_SPL_OF_CONTROL=y
+ CONFIG_OF_SPL_REMOVE_PROPS="clock-names interrupt-parent assigned-clocks assigned-clock-rates assigned-clock-parents"
+-# CONFIG_ENV_IS_NOWHERE is not set
++CONFIG_ENV_IS_IN_FAT=y
++CONFIG_ENV_FAT_DEVICE_AND_PART="2"
+ CONFIG_SYS_RELOC_GD_ENV_ADDR=y
+ # CONFIG_USB_FUNCTION_FASTBOOT is not set
+ CONFIG_ROCKCHIP_GPIO=y
+diff --git a/configs/khadas-edge-rk3399_defconfig b/configs/khadas-edge-rk3399_defconfig
+index e4b47d45e6..629e837785 100644
+--- a/configs/khadas-edge-rk3399_defconfig
++++ b/configs/khadas-edge-rk3399_defconfig
+@@ -40,7 +40,8 @@ CONFIG_CMD_TIME=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_SPL_OF_CONTROL=y
+ CONFIG_OF_SPL_REMOVE_PROPS="clock-names interrupt-parent assigned-clocks assigned-clock-rates assigned-clock-parents"
+-# CONFIG_ENV_IS_NOWHERE is not set
++CONFIG_ENV_IS_IN_FAT=y
++CONFIG_ENV_FAT_DEVICE_AND_PART="2"
+ CONFIG_SYS_RELOC_GD_ENV_ADDR=y
+ # CONFIG_USB_FUNCTION_FASTBOOT is not set
+ CONFIG_ROCKCHIP_GPIO=y
+diff --git a/configs/khadas-edge-v-rk3399_defconfig b/configs/khadas-edge-v-rk3399_defconfig
+index c92074d38b..181ca0f0bd 100644
+--- a/configs/khadas-edge-v-rk3399_defconfig
++++ b/configs/khadas-edge-v-rk3399_defconfig
+@@ -42,7 +42,8 @@ CONFIG_CMD_TIME=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_SPL_OF_CONTROL=y
+ CONFIG_OF_SPL_REMOVE_PROPS="clock-names interrupt-parent assigned-clocks assigned-clock-rates assigned-clock-parents"
+-# CONFIG_ENV_IS_NOWHERE is not set
++CONFIG_ENV_IS_IN_FAT=y
++CONFIG_ENV_FAT_DEVICE_AND_PART="2"
+ CONFIG_SYS_RELOC_GD_ENV_ADDR=y
+ # CONFIG_USB_FUNCTION_FASTBOOT is not set
+ CONFIG_ROCKCHIP_GPIO=y
+diff --git a/configs/khadas-vim2_defconfig b/configs/khadas-vim2_defconfig
+index 403a9de037..bd1e78a5d5 100644
+--- a/configs/khadas-vim2_defconfig
++++ b/configs/khadas-vim2_defconfig
+@@ -41,6 +41,9 @@ CONFIG_CMD_BMP=y
+ CONFIG_CMD_REGULATOR=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_OF_CONTROL=y
++CONFIG_ENV_IS_NOWHERE=y
++CONFIG_ENV_IS_IN_FAT=y
++CONFIG_ENV_FAT_DEVICE_AND_PART="2"
+ CONFIG_SYS_RELOC_GD_ENV_ADDR=y
+ CONFIG_SARADC_MESON=y
+ CONFIG_DFU_RAM=y
+diff --git a/configs/khadas-vim3_defconfig b/configs/khadas-vim3_defconfig
+index dfa9aef73c..aa76223bd4 100644
+--- a/configs/khadas-vim3_defconfig
++++ b/configs/khadas-vim3_defconfig
+@@ -43,8 +43,10 @@ CONFIG_CMD_USB_MASS_STORAGE=y
+ CONFIG_CMD_REGULATOR=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_OF_CONTROL=y
++CONFIG_ENV_IS_NOWHERE=y
++CONFIG_ENV_IS_IN_FAT=y
++CONFIG_ENV_FAT_DEVICE_AND_PART="2"
+ CONFIG_SYS_RELOC_GD_ENV_ADDR=y
+-CONFIG_ADC=y
+ CONFIG_SARADC_MESON=y
+ CONFIG_BUTTON=y
+ CONFIG_BUTTON_ADC=y
+diff --git a/configs/khadas-vim3l_defconfig b/configs/khadas-vim3l_defconfig
+index 2979d6b592..b8336aadef 100644
+--- a/configs/khadas-vim3l_defconfig
++++ b/configs/khadas-vim3l_defconfig
+@@ -43,8 +43,10 @@ CONFIG_CMD_USB_MASS_STORAGE=y
+ CONFIG_CMD_REGULATOR=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_OF_CONTROL=y
++CONFIG_ENV_IS_NOWHERE=y
++CONFIG_ENV_IS_IN_FAT=y
++CONFIG_ENV_FAT_DEVICE_AND_PART="2"
+ CONFIG_SYS_RELOC_GD_ENV_ADDR=y
+-CONFIG_ADC=y
+ CONFIG_SARADC_MESON=y
+ CONFIG_BUTTON=y
+ CONFIG_BUTTON_ADC=y
+diff --git a/configs/khadas-vim_defconfig b/configs/khadas-vim_defconfig
+index 796fe4db85..95dc091d7e 100644
+--- a/configs/khadas-vim_defconfig
++++ b/configs/khadas-vim_defconfig
+@@ -39,6 +39,9 @@ CONFIG_CMD_BMP=y
+ CONFIG_CMD_REGULATOR=y
+ CONFIG_CMD_KHADAS_KBI=y
+ CONFIG_OF_CONTROL=y
++CONFIG_ENV_IS_NOWHERE=y
++CONFIG_ENV_IS_IN_FAT=y
++CONFIG_ENV_FAT_DEVICE_AND_PART="2"
+ CONFIG_SYS_RELOC_GD_ENV_ADDR=y
+ CONFIG_SARADC_MESON=y
+ CONFIG_DFU_RAM=y
+-- 
+2.17.1
+
