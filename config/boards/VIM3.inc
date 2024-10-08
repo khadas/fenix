@@ -83,19 +83,23 @@ build_deb_packages_platform() {
 		fi
 
 		if ([ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "bookworm" ] || [ "$DISTRIB_RELEASE" == "noble" ]) && [ "$DISTRIB_TYPE" != "server" ]; then
-			info_msg "Building mali-debs package..."
-			# FIXME
-			# remove build stamp to force build for other arch
-			rm -rf $BUILD/.stamps/mali-debs
-			build_package "mali-debs:target"
+			if [ "$PANFROST_SUPPORT" != "yes" ]; then
+				info_msg "Building mali-debs package..."
+				# FIXME
+				# remove build stamp to force build for other arch
+				rm -rf $BUILD/.stamps/mali-debs
+				build_package "mali-debs:target"
+			fi
 		fi
 
 		if  [ "$DISTRIB_RELEASE" == "noble" ] && [ "$DISTRIB_TYPE" != "server" ]; then
-			info_msg "Building wayland-debs package..."
-			# FIXME
-			# remove build stamp to force build for other arch
-			rm -rf $BUILD/.stamps/wayland-debs
-			build_package "wayland-debs:target"
+			if [ "$PANFROST_SUPPORT" != "yes" ]; then
+				info_msg "Building wayland-debs package..."
+				# FIXME
+				# remove build stamp to force build for other arch
+				rm -rf $BUILD/.stamps/wayland-debs
+				build_package "wayland-debs:target"
+			fi
 
 			info_msg "Building chromium-debs package..."
 			# FIXME
@@ -179,11 +183,13 @@ install_deb_packages_platform() {
 		cd $ROOT
 
 		if ([ "$DISTRIB_RELEASE" == "noble" ]) && [ "$DISTRIB_TYPE" != "server" ]; then
-			info_msg "Installing wayland-debs package ..."
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wayland-debs/libwayland-client0_*.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wayland-debs/libwayland-server0_*.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wayland-debs/libwayland-cursor0_*.deb
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wayland-debs/libwayland-egl1_*.deb
+			if [ "$PANFROST_SUPPORT" != "yes" ]; then
+				info_msg "Installing wayland-debs package ..."
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wayland-debs/libwayland-client0_*.deb
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wayland-debs/libwayland-server0_*.deb
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wayland-debs/libwayland-cursor0_*.deb
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/wayland-debs/libwayland-egl1_*.deb
+			fi
 
 			info_msg "Installing chromium-debs package ..."
 			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/chromium-debs/chromium-common_*.deb
@@ -196,8 +202,10 @@ install_deb_packages_platform() {
 		fi
 
 		if ([ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "noble" ] || [ "$DISTRIB_RELEASE" == "bookworm" ]) && [ "$DISTRIB_TYPE" != "server" ]; then
-			info_msg "Installing mali-debs package ..."
-			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/$DISTRIBUTION-$DISTRIB_RELEASE/mali-debs/${GPU_PLATFORM}/*.deb
+			if [ "$PANFROST_SUPPORT" != "yes" ]; then
+				info_msg "Installing mali-debs package ..."
+				install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/$DISTRIBUTION-$DISTRIB_RELEASE/mali-debs/${GPU_PLATFORM}/*.deb
+			fi
 		fi
 
 		info_msg "Installing OPTEE userspace package..."
