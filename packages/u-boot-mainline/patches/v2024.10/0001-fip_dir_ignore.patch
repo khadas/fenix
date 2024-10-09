@@ -1,0 +1,25 @@
+From 7ac16aaa279897e54da00cb870bf75ad548272b0 Mon Sep 17 00:00:00 2001
+From: yan <yan-wyb@foxmail.com>
+Date: Thu, 3 Dec 2020 11:22:00 +0800
+Subject: [PATCH 01/38] fip_dir_ignore
+
+Signed-off-by: yan <yan-wyb@foxmail.com>
+---
+ .gitignore | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/.gitignore b/.gitignore
+index 502a7e6ec7..d5580b4fd3 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -112,6 +112,7 @@ GTAGS
+ *.orig
+ *~
+ \#*#
++/fip/
+ 
+ # Python cache
+ __pycache__
+-- 
+2.17.1
+

@@ -1,0 +1,28 @@
+From 8b18ec8c0d2b45b555938c011ee572ce7ceec37c Mon Sep 17 00:00:00 2001
+From: hyphop <art@khadas.com>
+Date: Tue, 28 Apr 2020 23:43:07 +0900
+Subject: [PATCH 22/38] cosole_font_color
+
+---
+ drivers/video/video-uclass.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/video/video-uclass.c b/drivers/video/video-uclass.c
+index a5aa8dd529..ee2e4d8343 100644
+--- a/drivers/video/video-uclass.c
++++ b/drivers/video/video-uclass.c
+@@ -339,6 +339,11 @@ void video_set_default_colors(struct udevice *dev, bool invert)
+ 		fore = VID_BLACK;
+ 		back = VID_WHITE;
+ 	}
++
++#if defined CONSOLE_FONT_COLOR
++	fore = CONSOLE_FONT_COLOR;
++#endif
++
+ 	if (invert) {
+ 		int temp;
+ 
+-- 
+2.17.1
+
