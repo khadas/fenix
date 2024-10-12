@@ -530,7 +530,7 @@ prepare_partitions()
 		fi
 
 		export IMAGE_LOOP_DEV
-		IMAGE_LOOP_DEV="$(losetup --show -f ${BUILD_IMAGES}/${IMAGE_FILE_NAME})"
+		IMAGE_LOOP_DEV="$(losetup -P --show -f ${BUILD_IMAGES}/${IMAGE_FILE_NAME})"
 		info_msg "Allocated loop device: $IMAGE_LOOP_DEV"
 		if [[ -z $IMAGE_LOOP_DEV ]]; then
 			error_msg "Unable to find free loop device!"
