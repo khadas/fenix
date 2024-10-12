@@ -54,6 +54,11 @@ tweaks_platform() {
 			execute_in_chroot "cp /boot/dtb/$(basename $LINUX_DTB) /boot/dtb.img"
 		fi
 	fi
+
+	if [ "$LINUX" != "mainline" ] && [ "$PANFROST_SUPPORT" == "yes" ]; then
+		local overlay_env="$ROOTFS_TEMP/boot/dtb/${VENDOR,,}/$(basename $LINUX_DTB).overlay.env"
+		sed -i --follow-symlinks '/fdt_overlays/s/=/=panfrost /g' $overlay_env
+	fi
 }
 
 ## Build deb packages for platform
