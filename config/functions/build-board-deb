@@ -182,8 +182,10 @@ build_board_deb() {
 		echo "exit 0" >> /usr/local/bin/bluetooth-power-fixup.sh
 
 		# Remove unused files
-		rm -rf /boot/extlinux
-		rm -rf /boot/uEnv.txt
+		if [ "\$BOARD" == "VIM3" ] || [ "\$BOARD" == "VIM3L" ]; then
+			rm -rf /boot/extlinux
+			rm -rf /boot/uEnv.txt
+		fi
 
 		# Update fw_env.config for mainline linux
 		echo "/dev/mmcblk1    0x27400000      0x10000" > /etc/fw_env.config
