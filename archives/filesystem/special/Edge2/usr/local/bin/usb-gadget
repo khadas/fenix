@@ -69,20 +69,20 @@ echo "Done creating RNDIS USB Gadget...$(cat $F_RNDIS/ifname)"
 
 # Setup adb
 
-#export service_adb_tcp_port=5555
-#echo "Configuring ADB USB gadget driver…"
-#mkdir /dev/usb-ffs -m 0770
-#mkdir /dev/usb-ffs/adb -m 0770
+export service_adb_tcp_port=5555
+echo "Configuring ADB USB gadget driver…"
+mkdir /dev/usb-ffs -m 0770
+mkdir /dev/usb-ffs/adb -m 0770
 
-#mkdir $GADGET/functions/ffs.adb
+mkdir $GADGET/functions/ffs.adb
 
-#echo "adb" > $GADGET/configs/c.1/strings/0x409/configuration
-#mount -t functionfs adb /dev/usb-ffs/adb
+echo "adb" > $GADGET/configs/c.1/strings/0x409/configuration
+mount -t functionfs adb /dev/usb-ffs/adb
 
-#ln -s $GADGET/functions/ffs.adb $GADGET/configs/c.1/ffs.adb
+ln -s $GADGET/functions/ffs.adb $GADGET/configs/c.1/ffs.adb
 
-#adbd &
-#sleep 1
+adbd &
+sleep 1
 
 echo $UDC > $GADGET/UDC
 
