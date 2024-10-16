@@ -13,7 +13,7 @@ fi
 
 # Setup RNDIS Gadget
 F_RNDIS=$GADGET/functions/rndis.0
-SERIAL="$(grep Serial /proc/cpuinfo | grep -o -P '.{0,12}$')"
+SERIAL="$(grep Serial /proc/cpu_chipid | grep -o -P '.{0,12}$')"
 MAC="$(echo ${SERIAL} | sed 's/\(\w\w\)/:\1/g' | cut -b 2-)"
 MAC_HOST="12$(echo ${MAC} | cut -b 3-)"
 MAC_DEV="02$(echo ${MAC} | cut -b 3-)"
@@ -66,7 +66,6 @@ ln -s $GADGET/configs/c.1/ $GADGET/os_desc
 echo "Done creating RNDIS USB Gadget...$(cat $F_RNDIS/ifname)"
 
 # Setup adb
-
 export service_adb_tcp_port=5555
 echo "Configuring ADB USB gadget driver…"
 mkdir /dev/usb-ffs -m 0770
@@ -85,3 +84,4 @@ sleep 1
 echo $UDC > $GADGET/UDC
 
 exit 0
+
