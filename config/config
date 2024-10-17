@@ -366,13 +366,15 @@ case $DISTRIB_RELEASE in
 		DEBOOTSTRAP_COMPONENTS="main,universe"
 		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found libgrpc++1 libboost-system1.74.0 libgcc1 rng-tools iozone3"
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER xserver-xorg-input-all gnome-orca pulseaudio pulseaudio-module-bluetooth pulseaudio-module-gsettings language-selector-gnome viewnior dbus-user-session libreoffice-style-tango"
+		# Package dependencies for chromium
+		PACKAGE_LIST_DESKTOP+=" libdouble-conversion3 libminizip1 libxnvctrl0 xdg-utils"
 	;;
 	noble)
 		DEBOOTSTRAP_COMPONENTS="main,universe"
 		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9 command-not-found libgrpc++1.51t64 libboost-system1.83.0 libgcc1 rng-tools iozone3"
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER xserver-xorg-input-all language-selector-gnome viewnior dbus-user-session libreoffice-style-tango"
 		# Package dependencies for chromium
-		PACKAGE_LIST_DESKTOP+=" libdouble-conversion3 libharfbuzz-subset0 libjsoncpp25 libminizip1t64 libxnvctrl0 xdg-utils"
+		PACKAGE_LIST_DESKTOP+=" libdouble-conversion3 libharfbuzz-subset0 libjsoncpp25 libminizip1t64 libxnvctrl0 xdg-utils libc++1-16t64 libc++abi1-16t64 libunwind-16t64"
 	;;
 esac
 
