@@ -1,0 +1,2 @@
+SUBSYSTEM=="typec", ACTION=="remove", DEVPATH=="/devices/platform/feaa0000.i2c/i2c-2/2-0022/typec/port0/port0-partner", RUN+="/usr/local/bin/dp-hotplug.sh remove"
+SUBSYSTEM=="typec", ACTION=="add", DEVPATH=="/devices/platform/feaa0000.i2c/i2c-2/2-0022/typec/port0/port0-partner", RUN+="/usr/local/bin/dp-hotplug.sh add"
