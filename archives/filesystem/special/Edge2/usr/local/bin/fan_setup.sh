@@ -72,6 +72,7 @@ selected_mode=$(zenity --height=275 \
 				${LIST_MENU_VALUE[0]} ${LIST_MENU[0]} \
 				${LIST_MENU_VALUE[1]} ${LIST_MENU[1]})
 fi
+selected_mode=$(echo "$selected_mode" | grep -oE "off|low|mid|high|auto|manual")
 
 index=0
 for i in ${LIST_MENU[@]}
@@ -91,20 +92,20 @@ fi
 # Change FAN mode
 $FAN $selected_mode
 
-zenity  --question \
+echo $(zenity  --question \
 	--text 'Do you want to save this mode as default?' \
 	--title 'Warning' \
 	--window-icon /etc/fenix/icons/warning.png \
 	--width=300 \
 	--height=40 \
 	--ok-label='Yes, save it' \
-	--cancel-label="No, don't save"
+	--cancel-label="No, don't save")
 
-if [ $? -ne 0 ]; then
+if [ $? -eq 1 ]; then
 	exit
 fi
 
-password=$(zenity --password --title 'Password')
+password=$(echo "$(zenity --password --title 'Password')" | sed -E 's/^.*arm_release_ver.*//')
 
 if [ $? -ne 0 ]; then
 	exit
