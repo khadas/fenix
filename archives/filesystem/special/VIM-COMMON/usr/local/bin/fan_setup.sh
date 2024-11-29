@@ -5,6 +5,8 @@ if [ "${XDG_SESSION_TYPE}" == "tty"]; then
 	exit
 fi
 
+WAYLAND_DISPLAY=
+
 FAN="/usr/local/bin/fan.sh"
 
 LINUX_VER=`uname -r`
