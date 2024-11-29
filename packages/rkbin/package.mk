@@ -14,9 +14,9 @@ PKG_NEED_BUILD="NO"
 make_host() {
 	# Fixup links
 	# For Edge2
-	ln -fs bin/rk35/rk3588_ddr_lp4_2112MHz_lp5_2400MHz_v1.17.bin rk3588_ddr.bin
-	ln -fs bin/rk35/rk3588_bl31_v1.46.elf rk3588_bl31.elf
-	ln -fs bin/rk35/rk3588_bl32_v1.16.bin rk3588_bl32.bin
+	ln -fs bin/rk35/rk3588_ddr_lp4_2112MHz_lp5_2400MHz_v1.18.bin rk3588_ddr.bin
+	ln -fs bin/rk35/rk3588_bl31_v1.47.elf rk3588_bl31.elf
+	ln -fs bin/rk35/rk3588_bl32_v1.17.bin rk3588_bl32.bin
 	ln -fs bin/rk35/rk3588_spl_v1.13.bin rk3588_spl.bin
 }
 
