@@ -5,6 +5,8 @@ if [ "${XDG_SESSION_TYPE}" == "tty" ]; then
 	exit
 fi
 
+WAYLAND_DISPLAY=
+
 FAN="/usr/local/bin/fan.sh"
 
 LINUX_VER=$(uname -r)
@@ -49,7 +51,8 @@ done
 LIST_MENU_VALUE[$index]=TRUE
 
 if [ "${LINUX_VER}" == "5.10" ] || [ "${LINUX_VER}" == "6.1" ];then
-selected_mode=$(zenity --height=275 \
+selected_mode=$(zenity --height=450 \
+				--width=540 \
 				--list --radiolist \
 				--title 'FAN Setting' \
 				--text 'Select FAN Mode' \
@@ -62,7 +65,8 @@ selected_mode=$(zenity --height=275 \
 				${LIST_MENU_VALUE[3]} ${LIST_MENU[3]} \
 				${LIST_MENU_VALUE[4]} ${LIST_MENU[4]})
 else
-selected_mode=$(zenity --height=275 \
+selected_mode=$(zenity --height=450 \
+				--width=540 \
 				--list --radiolist \
 				--title 'FAN Setting' \
 				--text 'Select FAN Mode' \
@@ -72,7 +76,6 @@ selected_mode=$(zenity --height=275 \
 				${LIST_MENU_VALUE[0]} ${LIST_MENU[0]} \
 				${LIST_MENU_VALUE[1]} ${LIST_MENU[1]})
 fi
-selected_mode=$(echo "$selected_mode" | grep -oE "off|low|mid|high|auto|manual")
 
 index=0
 for i in ${LIST_MENU[@]}
@@ -92,20 +95,20 @@ fi
 # Change FAN mode
 $FAN $selected_mode
 
-echo $(zenity  --question \
+zenity  --question \
 	--text 'Do you want to save this mode as default?' \
 	--title 'Warning' \
 	--window-icon /etc/fenix/icons/warning.png \
 	--width=300 \
 	--height=40 \
 	--ok-label='Yes, save it' \
-	--cancel-label="No, don't save")
+	--cancel-label="No, don't save"
 
-if [ $? -eq 1 ]; then
+if [ $? -ne 0 ]; then
 	exit
 fi
 
-password=$(echo "$(zenity --password --title 'Password')" | sed -E 's/^.*arm_release_ver.*//')
+password=$(zenity --password --title 'Password')
 
 if [ $? -ne 0 ]; then
 	exit
