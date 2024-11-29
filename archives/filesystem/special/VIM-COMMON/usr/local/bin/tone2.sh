@@ -5,6 +5,8 @@ if [ ! -d /usr/share/desktop-base ]; then
     exit
 fi
 
+WAYLAND_DISPLAY=
+
 source /etc/fenix-release
 
 if [ "$BOARD" == "VIM1S" ]; then
