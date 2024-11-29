@@ -54,20 +54,23 @@ done
 LIST_MENU_VALUE[$index]=TRUE
 
 if [ ${LINUX_VER::3} == "4.9" ] || [ ${LINUX_VER::3} == "5.4" ] || [ ${LINUX_VER::4} == "5.15" ];then
-selected_mode=$(zenity --height=275 \
+selected_mode=$(zenity --height=450 \
+				--width=540 \
 				--list --radiolist \
 				--title 'FAN Setting' \
 				--text 'Select FAN Mode' \
 				--window-icon /etc/fenix/icons/fan.png \
 				--column 'Select' \
 				--column 'Mode' \
-				${LIST_MENU_VALUE[0]} ${LIST_MENU[0]} \
-				${LIST_MENU_VALUE[1]} ${LIST_MENU[1]} \
-				${LIST_MENU_VALUE[2]} ${LIST_MENU[2]} \
-				${LIST_MENU_VALUE[3]} ${LIST_MENU[3]} \
-				${LIST_MENU_VALUE[4]} ${LIST_MENU[4]})
+				--column 'Description' \
+				${LIST_MENU_VALUE[0]} ${LIST_MENU[0]} 'Turn off the fan (not recommended)' \
+				${LIST_MENU_VALUE[1]} ${LIST_MENU[1]} 'Low speed (quiet)' \
+				${LIST_MENU_VALUE[2]} ${LIST_MENU[2]} 'Medium speed (balanced)' \
+				${LIST_MENU_VALUE[3]} ${LIST_MENU[3]} 'High speed (performance)' \
+				${LIST_MENU_VALUE[4]} ${LIST_MENU[4]} 'Automatic fan control based on system load' )
 else
-selected_mode=$(zenity --height=275 \
+selected_mode=$(zenity --height=300 \
+				--width=540 \
 				--list --radiolist \
 				--title 'FAN Setting' \
 				--text 'Select FAN Mode' \
