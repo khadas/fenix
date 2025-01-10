@@ -204,6 +204,10 @@ build_board_deb() {
 		rm -rf /etc/modprobe.d/dhd.conf.*
 		[ -f /etc/initramfs-tools/modules.mainline ] && mv /etc/initramfs-tools/modules.mainline /etc/initramfs-tools/modules
 		rm -rf /etc/initramfs-tools/modules.*
+
+		# Update asound.state
+		[ -f /var/lib/alsa/asound.state.mainline ] && mv /var/lib/alsa/asound.state.mainline /var/lib/alsa/asound.state
+		rm -rf /var/lib/alsa/asound.state.*
 	else
 		# Remove unused files
 		rm -rf /boot/boot.ini
@@ -215,23 +219,30 @@ build_board_deb() {
 		rm -rf /boot/s905_autoscript
 		rm -rf /boot/s905_autoscript.cmd
 
-		# Update modules
+		# Update modules & asound.state
 		if [ "\$(stat -c %d:%i /)" = "\$(stat -c %d:%i /proc/1/root/.)" ]; then
 			# None chroot
-			version=\$(dpkg -l | grep "linux-image-amlogic" | awk '{print \$2}' | awk -F '-' '{print \$4}')
+			version=\$(dpkg -l | grep "linux-image" | awk '{print \$2}' | awk -F '-' '{print \$4}')
 
 			[ -f /etc/modules.\$version ] && mv /etc/modules.\$version /etc/modules
 			[ -f /etc/modprobe.d/dhd.conf.\$version ] && mv /etc/modprobe.d/dhd.conf.\$version /etc/modprobe.d/dhd.conf
 			[ -f /etc/initramfs-tools/modules.\$version ] && mv /etc/initramfs-tools/modules.\$version /etc/initramfs-tools/modules
+
+			# Update asound.state
+			[ -f /var/lib/alsa/asound.state.\$version ] && mv /var/lib/alsa/asound.state.\$version /var/lib/alsa/asound.state
 		else
 			# Chroot
 			[ -f /etc/modules.$LINUX ] && mv /etc/modules.$LINUX /etc/modules
 			[ -f /etc/modprobe.d/dhd.conf.$LINUX ] && mv /etc/modprobe.d/dhd.conf.$LINUX /etc/modprobe.d/dhd.conf
 			[ -f /etc/initramfs-tools/modules.$LINUX ] && mv /etc/initramfs-tools/modules.$LINUX /etc/initramfs-tools/modules
+
+			# Update asound.state
+			[ -f /var/lib/alsa/asound.state.$LINUX ] && mv /var/lib/alsa/asound.state.$LINUX /var/lib/alsa/asound.state
 		fi
 		rm -rf /etc/modules.*
 		rm -rf /etc/modprobe.d/dhd.conf.*
 		rm -rf /etc/initramfs-tools/modules.*
+		rm -rf /var/lib/alsa/asound.state.*
 
 		# Generate module load order in initramfs
 		if [ -e /etc/initramfs-tools/modules ]; then
@@ -265,10 +276,9 @@ build_board_deb() {
 			sed -i 's/iv009_isp_sensor//g' /etc/modules
 			sed -i 's/iv009_isp//g' /etc/modules
 		fi
-		# Remove unused files for legacy kernel
-		[ "\$BOARD" != "Edge2" ] && [ -f /var/lib/alsa/asound.state ] && rm /var/lib/alsa/asound.state
-		[ -f /var/lib/alsa/asound.state ] && alsactl restore > /dev/null 2>&1
 	fi
+
+	[ -f /var/lib/alsa/asound.state ] && alsactl restore > /dev/null 2>&1
 
 	# Fix env.txt / uEnv.txt
 	rootdev=\$(sed -e 's/^.*root=//' -e 's/ .*\$//' < /proc/cmdline)
@@ -443,10 +453,10 @@ build_board_deb() {
 	# Install png logo
 	cp $ROOT/archives/logo/png/*.png $pkgdir/usr/share/fenix/logo
 
-	# Install asound.state for mainline kernel
-	if [ -f $ROOT/archives/filesystem/blobs/asound.state/$KHADAS_BOARD/asound.state ]; then
+	# Install asound.state
+	if [ -d $ROOT/archives/filesystem/blobs/asound.state/$KHADAS_BOARD ]; then
 		mkdir -p $pkgdir/var/lib/alsa/
-		cp $ROOT/archives/filesystem/blobs/asound.state/$KHADAS_BOARD/asound.state $pkgdir/var/lib/alsa/
+		cp $ROOT/archives/filesystem/blobs/asound.state/$KHADAS_BOARD/* $pkgdir/var/lib/alsa/
 	fi
 
 	# HACK for jammy
