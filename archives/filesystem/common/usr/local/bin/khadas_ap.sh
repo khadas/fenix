@@ -103,10 +103,10 @@ start_sta_ap() {
     console_run "iptables -A FORWARD -i $SOFTAP_INTERFACE -o $STA_INTERFACE -j ACCEPT"
 }
 
-start_eht_ap() {
+start_eth_ap() {
     local ssid=$1
     local password=$2
-    debug_info "Starting EHT+AP Mode..."
+    debug_info "Starting ETH+AP Mode..."
 
     stop_services
     console_run "sleep 2"
@@ -130,7 +130,7 @@ show_menu() {
     echo " WiFi Configuration Tool v$SOFTAP_VERSION"
     echo "========================================"
     echo "1. STA+AP Mode"
-    echo "2. EHT+AP Mode"
+    echo "2. ETH+AP Mode"
     echo "3. Stop All Services"
     echo "4. Exit"
     echo "========================================"
@@ -152,7 +152,7 @@ main() {
                 ;;
             2)
                 get_wifi_credentials
-                start_eht_ap "$ap_ssid" "$ap_password"
+                start_eth_ap "$ap_ssid" "$ap_password"
                 ;;
             3)
                 stop_services
