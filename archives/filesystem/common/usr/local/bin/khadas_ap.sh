@@ -7,6 +7,7 @@ SOFTAP_INTERFACE_STATIC_IP="192.168.43.1"
 DHCP_RANGE="dhcp-range=192.168.43.2,192.168.43.254"
 DNSMASQ_CONF_DIR="/etc/dnsmasq.conf"
 HOSTAPD_CONF_DIR="/etc/hostapd/hostapd.conf"
+SYSTEMD_RESOLVED_CONF_DIR="/etc/systemd/resolved.conf.d/"
 SOFTAP_INTERFACE="wlan1"
 STA_INTERFACE="wlan0"
 ETH_INTERFACE="eth0"
@@ -40,10 +41,27 @@ get_pid() {
     fi
 }
 
+create_systemd_resolved_conf() {
+    [ -d $SYSTEMD_RESOLVED_CONF_DIR ] || mkdir $SYSTEMD_RESOLVED_CONF_DIR
+
+    cat > "$SYSTEMD_RESOLVED_CONF_DIR"/khadas_ap.conf <<EOF
+[Resolve]
+DNS=127.0.0.1
+DNSStubListener=no
+EOF
+}
+
+reload_systemd_resolved() {
+    console_run "systemctl reload-or-restart systemd-resolved"
+}
+
 stop_services() {
     console_run "killall dnsmasq"
     console_run "killall hostapd"
     console_run "killall wpa_supplicant"
+
+    rm "$SYSTEMD_RESOLVED_CONF_DIR"/khadas_ap.conf
+    reload_systemd_resolved
 }
 
 create_hostapd_conf() {
@@ -77,7 +95,7 @@ user=root
 listen-address=$SOFTAP_INTERFACE_STATIC_IP
 $DHCP_RANGE
 server=/google/8.8.8.8
-port=5353
+port=53
 EOF
 }
 
@@ -93,6 +111,9 @@ start_sta_ap() {
     
     create_dnsmasq_conf
     create_hostapd_conf "$ssid" "$password"
+    create_systemd_resolved_conf
+
+    reload_systemd_resolved
     
     console_run "dnsmasq -C $DNSMASQ_CONF_DIR --interface=$SOFTAP_INTERFACE"
     console_run "hostapd $HOSTAPD_CONF_DIR -B"
@@ -115,6 +136,9 @@ start_eth_ap() {
 
     create_dnsmasq_conf
     create_hostapd_conf "$ssid" "$password"
+    create_systemd_resolved_conf
+
+    reload_systemd_resolved
 
     console_run "dnsmasq -C $DNSMASQ_CONF_DIR --interface=$SOFTAP_INTERFACE"
     console_run "hostapd $HOSTAPD_CONF_DIR -B"
