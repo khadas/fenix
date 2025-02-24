@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Only for desktop
-if [ "${XDG_SESSION_TYPE}" == "tty"]; then
+if [ "${XDG_SESSION_TYPE}" == "tty" ]; then
 	exit
 fi
 
