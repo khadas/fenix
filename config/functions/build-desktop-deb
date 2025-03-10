@@ -59,7 +59,7 @@ build_desktop_deb() {
 	#!/bin/bash
 
 	# Add Chromium default configuration
-	if [ "$VENDOR" != "Amlogic" ] || [ "$DISTRIB_RELEASE" != "noble" ]; then
+	if [ "$DISTRIB_RELEASE" != "noble" ]; then
 		if [ ! -d /etc/chromium.d/ ]; then
 			mkdir /etc/chromium.d
 		fi
