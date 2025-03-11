@@ -1,0 +1,1 @@
+KERNEL=="mpp_service" RUN+="/usr/local/bin/create-chromium-vda-vea-devices.sh"
