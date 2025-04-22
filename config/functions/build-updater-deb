@@ -50,6 +50,12 @@ build_updater_deb() {
 				updater_deb_dependencies+="camera-engine-rkaiq"
 				;;
 		esac
+	elif [ "$LINUX" != "mainline" ] && [ "$DISTRIBUTION" == "Ubuntu" ] && [ "$DISTRIB_RELEASE" == "noble" ]; then
+		case $KHADAS_BOARD in
+			Edge2)
+				updater_deb_dependencies+="libv4l-rkmpp, ffmpeg"
+				;;
+		esac
 	elif [ "$LINUX" == "mainline" ] && [ "$DISTRIBUTION" == "Ubuntu" ]; then
 		case $KHADAS_BOARD in
 			VIM1)
