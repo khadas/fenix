@@ -673,7 +673,7 @@ index 00000000..8b2b75ed
 +			switch (CAP_POWER_TYPE(chip->rec_load[chip->pos_power - 1])) {
 +			case 0:
 +				/* Fixed Supply */
-+				chip->send_load[0] |= ((CAP_FPDO_VOLTAGE(chip->rec_load[chip->pos_power - 1]) << 10) & 0x3ff);
++				chip->send_load[0] |= ((CAP_FPDO_VOLTAGE(chip->rec_load[chip->pos_power - 1]) << 10));
 +				chip->send_load[0] |= (CAP_FPDO_CURRENT(chip->rec_load[chip->pos_power - 1]) & 0x3ff);
 +				break;
 +			case 1:
