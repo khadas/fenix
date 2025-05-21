@@ -51,7 +51,7 @@ selected_mode=$(zenity --height=275 \
                 --column 'Mode' \
                 ${LIST_MENU_VALUE[0]} ${LIST_MENU[0]} \
                 ${LIST_MENU_VALUE[1]} ${LIST_MENU[1]} \
-                ${LIST_MENU_VALUE[2]} ${LIST_MENU[2]})
+                ${LIST_MENU_VALUE[2]} ${LIST_MENU[2]})|| exit
 
 echo "$selected_mode"
 
@@ -78,6 +78,10 @@ $password
 EOF
 then
 	sudo mkdir -p $CONFIG_DIR
+else
+    zenity --error --title="Password Error" --width=300 \
+           --text="Incorrect password. Please try again."
+    exit 1
 fi
 
 
