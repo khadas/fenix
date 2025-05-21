@@ -78,6 +78,10 @@ $password
 EOF
 then
 	sudo mkdir -p $CONFIG_DIR
+else
+    zenity --error --title="Password Error" --width=300 \
+           --text="Incorrect password. Please try again."
+    exit 1
 fi
 
 
