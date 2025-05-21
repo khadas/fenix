@@ -51,7 +51,7 @@ selected_mode=$(zenity --height=275 \
                 --column 'Mode' \
                 ${LIST_MENU_VALUE[0]} ${LIST_MENU[0]} \
                 ${LIST_MENU_VALUE[1]} ${LIST_MENU[1]} \
-                ${LIST_MENU_VALUE[2]} ${LIST_MENU[2]})
+                ${LIST_MENU_VALUE[2]} ${LIST_MENU[2]})|| exit
 
 echo "$selected_mode"
 
