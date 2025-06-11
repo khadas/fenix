@@ -100,9 +100,6 @@ install_common()
 	# Now that all debs are installed, reenable initramfs-tools hook and generate initramfs
 	execute_in_chroot "chmod -v +x /etc/kernel/postinst.d/initramfs-tools"
 
-	kernel_version=$(ls $ROOTFS_TEMP/lib/modules)
-	execute_in_chroot "/usr/sbin/update-initramfs -u -k $kernel_version"
-
 	# Tweaks for platform
 	if [[ $(type -t tweaks_platform) == function ]]; then
 		tweaks_platform
@@ -560,6 +557,40 @@ prepare_partitions()
 	rm -rf $ROOTFS/lost+found
 	rm -rf $ROOTFS/boot/lost+found
 
+	if [[ -f $ROOTFS_TEMP/boot/env.txt ]]; then
+		sed -i s/rootdev=.*/rootdev=$rootfs_uuid/g $ROOTFS_TEMP/boot/env.txt
+	fi
+
+	if [[ -f $ROOTFS_TEMP/boot/uEnv.txt ]]; then
+		sed -i s/rootdev=root=.*/rootdev=root=$rootfs_uuid/g $ROOTFS_TEMP/boot/uEnv.txt
+		if [ "$INSTALL_TYPE" == "SD-USB" ]; then
+			sed -i s/partition_type=.*/partition_type=generic/g $ROOTFS_TEMP/boot/uEnv.txt
+		else
+			sed -i s/partition_type=.*/partition_type=vendor/g $ROOTFS_TEMP/boot/uEnv.txt
+		fi
+	fi
+
+	# create /etc/fstab
+	echo "# <file system>                              <mount point>   <type>  <options>                                                             <dump>  <pass>" > $ROOTFS_TEMP/etc/fstab
+	echo "tmpfs                                          /tmp            tmpfs   defaults,nosuid                                                          0   0" >> $ROOTFS_TEMP/etc/fstab
+	echo "$rootfs_uuid      /               ext4    defaults,noatime,nodiratime,commit=600,errors=remount-ro,x-gvfs-hide     0   1" >> $ROOTFS_TEMP/etc/fstab
+	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
+		if [ "$BOOTFS_TYPE" == "vfat" ]; then
+			echo "$bootfs_uuid                                 /boot           vfat    defaults                                                                 0   2" >> $ROOTFS_TEMP/etc/fstab
+		else
+			echo "$bootfs_uuid      /boot               ext4    defaults,noatime,nodiratime,commit=600,errors=remount-ro,x-gvfs-hide     0   1" >> $ROOTFS_TEMP/etc/fstab
+		fi
+	fi
+
+	info_msg "Generating initrd.img..."
+
+	qemu_helper "$ROOTFS_TEMP"
+
+	kernel_version=$(ls $ROOTFS_TEMP/lib/modules)
+	execute_in_chroot "/usr/sbin/update-initramfs -u -k $kernel_version"
+
+	qemu_helper_deactivate "$ROOTFS_TEMP"
+
 	info_msg "Copying files to root directory..."
 
 	rsync_progress="--info=progress2,stats1"
@@ -577,31 +608,6 @@ prepare_partitions()
 	else
 		# ext4
 		rsync -aHWXh $rsync_progress $ROOTFS_TEMP/boot $ROOTFS
-	fi
-
-	if [[ -f $ROOTFS_TEMP/boot/env.txt ]]; then
-		sed -i s/rootdev=.*/rootdev=$rootfs_uuid/g $ROOTFS/boot/env.txt
-	fi
-
-	if [[ -f $ROOTFS_TEMP/boot/uEnv.txt ]]; then
-		sed -i s/rootdev=root=.*/rootdev=root=$rootfs_uuid/g $ROOTFS/boot/uEnv.txt
-		if [ "$INSTALL_TYPE" == "SD-USB" ]; then
-			sed -i s/partition_type=.*/partition_type=generic/g $ROOTFS/boot/uEnv.txt
-		else
-			sed -i s/partition_type=.*/partition_type=vendor/g $ROOTFS/boot/uEnv.txt
-		fi
-	fi
-
-	# create /etc/fstab
-	echo "# <file system>                              <mount point>   <type>  <options>                                                             <dump>  <pass>" > $ROOTFS/etc/fstab
-	echo "tmpfs                                          /tmp            tmpfs   defaults,nosuid                                                          0   0" >> $ROOTFS/etc/fstab
-	echo "$rootfs_uuid      /               ext4    defaults,noatime,nodiratime,commit=600,errors=remount-ro,x-gvfs-hide     0   1" >> $ROOTFS/etc/fstab
-	if [ "$INSTALL_TYPE" == "SD-USB" ]; then
-		if [ "$BOOTFS_TYPE" == "vfat" ]; then
-			echo "$bootfs_uuid                                 /boot           vfat    defaults                                                                 0   2" >> $ROOTFS/etc/fstab
-		else
-			echo "$bootfs_uuid      /boot               ext4    defaults,noatime,nodiratime,commit=600,errors=remount-ro,x-gvfs-hide     0   1" >> $ROOTFS/etc/fstab
-		fi
 	fi
 
 	[ "$DEBUG" ] && {
