@@ -24,7 +24,7 @@ tweaks_platform() {
 	execute_in_chroot "systemctl --no-reload enable fan.service"
 
 	if [ "$LINUX" != "mainline" ]; then
-		execute_in_chroot "systemctl --no-reload enable panel.service"
+		execute_in_chroot "systemctl --no-reload enable panel.service usb-gadget-khadas.service"
 		if [ "$DISTRIB_TYPE" != "server" ]; then
 			execute_in_chroot "systemctl --no-reload enable tone2-control.service"
 		fi
