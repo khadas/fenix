@@ -10,8 +10,9 @@
 # @ UMS_MOUNTPOINTS: The list of mount points.
 # @ UMS_RO: The flag of read only. 0->Read & Write, 1->Read Only.
 
-export USE=0
+export USE=1
 export USB_FUNCS="adb"
+#export USB_FUNCS="rndis"
 #export USB_FUNCS="ums"
 #export USB_FUNCS="adb ums"
 export UMS_MOUNT=0
