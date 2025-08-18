@@ -57,7 +57,7 @@ echo "RNDIS" > $F_RNDIS/os_desc/interface.rndis/compatible_id
 echo "5162001" > $F_RNDIS/os_desc/interface.rndis/sub_compatible_id
 
 # Bind function to configuration
-ln -s $F_RNDIS $GADGET/configs/c.1/
+#ln -s $F_RNDIS $GADGET/configs/c.1/
 ln -s $GADGET/configs/c.1/ $GADGET/os_desc
 
 # Enable the Gadget
