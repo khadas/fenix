@@ -326,8 +326,8 @@ file '$ROOT/config/boards/${KHADAS_BOARD}.conf'? Please add it!"
 
     echo_
 
-    # no need ask if only one choose ;-)
-    [ "$UBOOT_VERSION_ARRAY_LEN" = 1 ] && echo_ -n "only one choose " && \
+    # no need ask if only one choice ;-)
+    [ "$UBOOT_VERSION_ARRAY_LEN" = 1 ] && echo_ -n "only one choice " && \
 		UBOOT="${SUPPORTED_UBOOT[0]}" && return 0
 
     local DEFAULT_NUM
@@ -397,8 +397,8 @@ file '$ROOT/config/boards/${KHADAS_BOARD}.conf'? Please add it!"
 
 	echo_
 
-	# no need ask if only one choose ;-)
-	[ "$LINUX_VERSION_ARRAY_LEN" = 1 ] && echo_ -n "only one choose " && \
+	# no need ask if only one choice ;-)
+	[ "$LINUX_VERSION_ARRAY_LEN" = 1 ] && echo_ -n "only one choice " && \
 		LINUX=$_SUPPORTED_LINUX && return 0
 
 	local DEFAULT_NUM
@@ -526,8 +526,8 @@ function choose_distribution_release() {
 
 	echo_
 
-	# no need ask if only one choose ;-)
-	[ ${!DISTRIBUTION_RELEASE_ARRAY_LEN} = 1 ] && echo_ -n "only one choose " && \
+	# no need ask if only one choice ;-)
+	[ ${!DISTRIBUTION_RELEASE_ARRAY_LEN} = 1 ] && echo_ -n "only one choice " && \
 		DISTRIB_RELEASE=$DISTRIBUTION_RELEASE && DISTRIB_RELEASE_VERSION=$DISTRIBUTION_RELEASE_VERSION && return 0
 
 	local DEFAULT_NUM
@@ -590,7 +590,7 @@ function choose_distribution_type() {
 		DISTRIBUTION_TYPE_ARRAY_ELEMENT_DESC=${DISTRIBUTION}_TYPE_ARRAY_DESC[$i]
 		DISTRIBUTION_TYPE=${!DISTRIBUTION_TYPE_ARRAY_ELEMENT}
 
-		[ ${!DISTRIBUTION_TYPE_ARRAY_LEN} = 1 ] && echo_ -n "only one choose " && \
+		[ ${!DISTRIBUTION_TYPE_ARRAY_LEN} = 1 ] && echo_ -n "only one choice " && \
 		DISTRIB_TYPE=$DISTRIBUTION_TYPE && return 0
 
 		DISTRIBUTION_TYPE_DESC=${!DISTRIBUTION_TYPE_ARRAY_ELEMENT_DESC}
@@ -662,8 +662,8 @@ function choose_install_type() {
 		INSTALL_TYPE_ARRAY_LEN=${#INSTALL_TYPE_ARRAY[@]}
 	fi
 
-	# no need ask if only one choose ;-)
-	[ $INSTALL_TYPE_ARRAY_LEN = 1 ] && echo_ -n "only one choose " && \
+	# no need ask if only one choice ;-)
+	[ $INSTALL_TYPE_ARRAY_LEN = 1 ] && echo_ -n "only one choice " && \
 		INSTALL_TYPE=${INSTALL_TYPE_ARRAY[0]} && return 0
 
 	i=0
@@ -800,7 +800,7 @@ ask_yes_no(){
 	*)
 	echo_
 	[ ! "$NOASK" ] || DIE "$1 have wrong value: $v" || return 1
-	echo_ "Please press Y or N or Enter for default choose!"
+	echo_ "Please press Y or N or Enter for default choice!"
 	echo_
 	unset v
 	sleep 1
