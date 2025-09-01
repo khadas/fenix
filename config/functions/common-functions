@@ -109,7 +109,7 @@ prepare_host() {
 		esac
 	}
 
-	grep -q i386 <(dpkg --print-foreign-architectures) || (warning_msg "Requires root privileges, please enter your passowrd!" && sudo dpkg --add-architecture i386)
+	grep -q i386 <(dpkg --print-foreign-architectures) || (warning_msg "Requires root privileges, please enter your password!" && sudo dpkg --add-architecture i386)
 	if systemd-detect-virt -q -c; then
 		info_msg "Running in container: $(systemd-detect-virt)"
 		# disable apt-cacher unless NO_APT_CACHER=no is not specified explicitly
@@ -183,7 +183,7 @@ prepare_host() {
 
 	if [[ ${#deps[@]} -gt 0 ]]; then
 		info_msg "Installing build dependencies"
-		info_msg "Requires root privileges, please enter your passowrd!"
+		info_msg "Requires root privileges, please enter your password!"
 		$sudo apt-get update
 		# need sudo -E for silent mode pass env param
 		$sudo apt-get -y --no-install-recommends install "${deps[@]}"
