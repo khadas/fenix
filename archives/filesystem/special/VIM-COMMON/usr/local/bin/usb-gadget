@@ -3,6 +3,9 @@
 # Create USB Gadget
 #
 
+export ADB_TCP_PORT=5555
+export ADBD_SHELL=/bin/bash
+
 . /etc/fenix-release
 
 GADGET=/sys/kernel/config/usb_gadget/khadas
