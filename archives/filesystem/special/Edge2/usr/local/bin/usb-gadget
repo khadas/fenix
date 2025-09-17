@@ -1,5 +1,8 @@
 #!/bin/sh
 
+echo usb_adb_en > /tmp/.usb_config
+chmod 666 /tmp/.usb_config
+
 /usr/local/bin/usbdevice start
 
 exit 0
