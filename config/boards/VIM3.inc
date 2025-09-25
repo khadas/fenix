@@ -113,6 +113,14 @@ build_deb_packages_platform() {
 			build_package "chromium-debs:target"
 		fi
 
+		if [ "$DISTRIB_RELEASE" == "noble" ] && [ "$DISTRIB_TYPE" != "server" ]; then
+			info_msg "Building blueman-deb package..."
+			# FIXME
+			# remove build stamp to force build for other arch
+			rm -rf $BUILD/.stamps/blueman-deb
+			build_package "blueman-deb:target"
+		fi
+
 		info_msg "Building OPTEE userspace package..."
 		# FIXME
 		# remove build stamp to force build for other arch
@@ -199,6 +207,11 @@ install_deb_packages_platform() {
 			info_msg "Installing chromium-debs package ..."
 			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/chromium-debs/chromium-common_*.deb
 			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/chromium-debs/chromium_*.deb
+		fi
+
+		if [ "$DISTRIB_RELEASE" == "noble" ] && [ "$DISTRIB_TYPE" != "server" ]; then
+			info_msg "Installing blueman-deb package ..."
+			install_deb_chroot $BUILD_DEBS/$VERSION/$KHADAS_BOARD/${DISTRIBUTION}-${DISTRIB_RELEASE}/blueman-deb/blueman*.deb
 		fi
 
 		if [ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "noble" ]; then
