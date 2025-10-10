@@ -10,8 +10,7 @@
 
 Supported build host:
 
-* `Ubuntu 22.04 x64`
-  * `Building Ubuntu 22.04 image`
+* `Ubuntu 24.04 x64`
   * `Building Ubuntu 24.04 image`
   * `Building Debian 12 image`
 * `Docker`
