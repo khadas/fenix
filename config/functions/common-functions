@@ -83,9 +83,6 @@ prepare_host() {
 		## looks like can build all system
 		;;
 		noble)
-			case $DISTRIB_RELEASE in
-				jammy) broken_ ;;
-			esac
 		;;
 		hirsute|bullseye|bookworm)
 			case $DISTRIB_RELEASE in
