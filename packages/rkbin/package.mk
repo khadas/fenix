@@ -18,5 +18,11 @@ make_host() {
 	ln -fs bin/rk35/rk3588_bl31_v1.53.elf rk3588_bl31.elf
 	ln -fs bin/rk35/rk3588_bl32_v1.20.bin rk3588_bl32.bin
 	ln -fs bin/rk35/rk3588_spl_v1.13.bin rk3588_spl.bin
+
+	# For Edge 2L
+	ln -fs bin/rk35/rk3576_ddr_lp4_2112MHz_lp5_2736MHz_v1.10.bin rk3576_ddr.bin
+	ln -fs bin/rk35/rk3576_bl31_v1.21.elf rk3576_bl31.elf
+	ln -fs bin/rk35/rk3576_bl32_v1.07.bin rk3576_bl32.bin
+	ln -fs bin/rk35/rk3576_spl_v1.08.bin rk3576_spl.bin
 }
 
