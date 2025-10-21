@@ -31,6 +31,7 @@ display_parameters() {
 		[ "$KHADAS_BOARD" != "Generic" ] && echo "Uboot Branch:          $UBOOT_GIT_BRANCH"
 		echo "Linux Version:         $LINUX"
 		echo "Linux Configuration:   $LINUX_DEFCONFIG"
+		echo "Linux Fragment:        $LINUX_DEFCONFIG_FRAGMENT"
 		echo "Linux DTB:             $LINUX_DTB"
 		echo "Linux Branch:          $LINUX_GIT_BRANCH"
 		echo "Distribution:          $DISTRIBUTION"
