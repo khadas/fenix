@@ -1,0 +1,6 @@
+#!/bin/bash
+
+i2cset -f -y 2 0x18 0x92 1
+i2cset -f -y 2 0x18 0x91 1
+
+exit
