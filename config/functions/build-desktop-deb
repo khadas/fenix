@@ -126,6 +126,18 @@ build_desktop_deb() {
 				DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true dpkg-reconfigure "\${DM}"
 			fi
 		fi
+	elif which xfce4-session > /dev/null; then
+		if [ "$KHADAS_BOARD" == "VIM1S" ]; then
+			DM=lightdm
+			if which lightdm > /dev/null; then
+				debconf-set-selections <<-EOT
+				lightdm shared/default-x-display-manager        select  "\${DM}"
+				EOT
+
+				echo "/usr/sbin/\${DM}" > /etc/X11/default-display-manager
+				DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true dpkg-reconfigure "\${DM}"
+			fi
+		fi
 	fi
 
 	if [ "$DISTRIB_RELEASE" == "jammy" ] || [ "$DISTRIB_RELEASE" == "noble" ]; then
