@@ -528,6 +528,7 @@ compress_image() {
 		    LABEL="$label" \
 		    BOARD="$KHADAS_BOARD" \
 		    BUILDER="fenix" \
+		    DATE="$(LC_ALL=C TZ=UTC date)" \
 		    LINK="https://dl.khadas.com/products/oowow/images/${KHADAS_BOARD,,}" \
 		    DESC="$desc" \
 		    > "$BUILD_IMAGES/$IMAGE_FILE_NAME.xz"
