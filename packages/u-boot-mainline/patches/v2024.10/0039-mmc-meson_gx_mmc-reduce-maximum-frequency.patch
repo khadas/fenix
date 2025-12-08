@@ -1,0 +1,30 @@
+From 625c45e71f686239c3a3eacdf74fcc2766bb4107 Mon Sep 17 00:00:00 2001
+From: Nick Xie <nick@khadas.com>
+Date: Mon, 8 Dec 2025 16:27:45 +0800
+Subject: [PATCH 39/39] mmc: meson_gx_mmc: reduce maximum frequency
+
+Reduce the maximum frequency to 40MHz to be compatible with
+more eMMC. And the Amlogic vendor U-Boot also use the maximum
+frequency of 40MHz.
+
+Signed-off-by: Nick Xie <nick@khadas.com>
+---
+ drivers/mmc/meson_gx_mmc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mmc/meson_gx_mmc.c b/drivers/mmc/meson_gx_mmc.c
+index 5852b24c6d2..87c5f04da0f 100644
+--- a/drivers/mmc/meson_gx_mmc.c
++++ b/drivers/mmc/meson_gx_mmc.c
+@@ -278,7 +278,7 @@ static int meson_mmc_probe(struct udevice *dev)
+ 	cfg->host_caps = MMC_MODE_8BIT | MMC_MODE_4BIT |
+ 			MMC_MODE_HS_52MHz | MMC_MODE_HS;
+ 	cfg->f_min = DIV_ROUND_UP(SD_EMMC_CLKSRC_24M, CLK_MAX_DIV);
+-	cfg->f_max = 100000000; /* 100 MHz */
++	cfg->f_max = 40000000; /* 40 MHz */
+ 	cfg->b_max = 511; /* max 512 - 1 blocks */
+ 	cfg->name = dev->name;
+ 
+-- 
+2.17.1
+
