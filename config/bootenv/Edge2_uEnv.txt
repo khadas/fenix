@@ -5,6 +5,9 @@ partitiontype=partition_type=PLACEHOLDER
 ## Setup FAN mode
 fan_mode=auto
 
+## Setup audit mode
+audit_mode=audit=0
+
 ## Add user args here, spilt with space.
 ## e.g. Add bootargs 'test1=111 test2=222'
 ## boot_user_args=test1=111 test2=222
