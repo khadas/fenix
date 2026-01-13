@@ -69,9 +69,10 @@ build_uboot() {
 
 	if [[ $(type -t uboot_custom_build) == function ]]; then
 		export PATH=$UBOOT_COMPILER_PATH:$PATH
-		export PATH=$UBOOT_COMPILER_PATH:$PATH
 		export CROSS_COMPILE=$UBOOT_COMPILER
+		export CC="${CCACHE} ${UBOOT_COMPILER}gcc"
 		uboot_custom_build
+		unset CC
 		export CROSS_COMPILE=
 	else
 		export PATH=$UBOOT_COMPILER_PATH:$PATH
@@ -81,7 +82,7 @@ build_uboot() {
 		fi
 		rm -rf .config *.bin *.img
 		make $UBOOT_DEFCONFIG
-		make -j${NR_JOBS} CROSS_COMPILE="${CCACHE} ${UBOOT_COMPILER}"
+		make -j${NR_JOBS} CROSS_COMPILE="${UBOOT_COMPILER}" CC="${CCACHE} ${UBOOT_COMPILER}gcc"
 	fi
 
 	if [[ $(type -t uboot_custom_postprocess) == function ]]; then
@@ -195,9 +196,9 @@ build_linux() {
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
 	make ARCH=arm64 CROSS_COMPILE="${KERNEL_COMPILER}" $LINUX_DEFCONFIG $LINUX_DEFCONFIG_FRAGMENT CONFIG_SHELL="bash"
 	if [ "${BUILD_LINUX_DTBS_ONLY:-no}" == "yes" ]; then
-		make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE="${CCACHE} ${KERNEL_COMPILER}" dtbs $EXTRA_MAKE_ARGS CONFIG_SHELL="bash"
+		make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE="${KERNEL_COMPILER}" CC="${CCACHE} ${KERNEL_COMPILER}gcc" dtbs $EXTRA_MAKE_ARGS CONFIG_SHELL="bash"
 	else
-		make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE="${CCACHE} ${KERNEL_COMPILER}" Image dtbs  modules $EXTRA_MAKE_ARGS CONFIG_SHELL="bash"
+		make -j${NR_JOBS} ARCH=arm64 CROSS_COMPILE="${KERNEL_COMPILER}" CC="${CCACHE} ${KERNEL_COMPILER}gcc" Image dtbs  modules $EXTRA_MAKE_ARGS CONFIG_SHELL="bash"
 	fi
 }
 
@@ -224,10 +225,12 @@ build_linux_debs() {
 
 	export PATH=$KERNEL_COMPILER_PATH:$PATH
 	make -j${NR_JOBS} -C $LINUX_DIR bindeb-pkg \
-	    KDEB_PKGVERSION="$VERSION" LOCAL_VERSION="-${VENDOR,,}-${LINUX}" \
-	    KBUILD_DEBARCH="$DISTRIB_ARCH" ARCH=arm64 DEBFULLNAME="Khadas" \
-	    DEBEMAIL="hello@khadas.com" CROSS_COMPILE="${CCACHE} \
-	    ${KERNEL_COMPILER}" CONFIG_SHELL="bash" KDEB_COMPRESS=xz
+			KDEB_PKGVERSION="$VERSION" LOCAL_VERSION="-${VENDOR,,}-${LINUX}" \
+			KBUILD_DEBARCH="$DISTRIB_ARCH" ARCH=arm64 DEBFULLNAME="Khadas" \
+			DEBEMAIL="hello@khadas.com" \
+			CROSS_COMPILE="${KERNEL_COMPILER}" \
+			CC="${CCACHE} ${KERNEL_COMPILER}gcc" \
+			CONFIG_SHELL="bash" KDEB_COMPRESS=xz
 
 	mkdir -p "$BUILD_DEBS/$VERSION/$KHADAS_BOARD"
 
