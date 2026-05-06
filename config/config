@@ -374,6 +374,16 @@ case $DISTRIB_RELEASE in
 		# Package dependencies for chromium
 		PACKAGE_LIST_DESKTOP+=" libdouble-conversion3 libharfbuzz-subset0 libjsoncpp25 libminizip1t64 libxnvctrl0 xdg-utils"
 	;;
+	resolute)
+		DEBOOTSTRAP_COMPONENTS="main,universe"
+		PACKAGE_LIST_ADDITIONAL="${PACKAGE_LIST_ADDITIONAL/wireless-tools /}"
+		PACKAGE_LIST_GSTREAMER="${PACKAGE_LIST_GSTREAMER/libconfig++9v5/libconfig++11}"
+		PACKAGE_LIST_GSTREAMER="${PACKAGE_LIST_GSTREAMER/libconfig9/libconfig11}"
+		[[ "$DISTRIB_TYPE" != "minimal" ]] && PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher command-not-found libgrpc++1.51t64 libboost-system1.83.0 rng-tools ffmpeg util-linux-extra"
+		PACKAGE_LIST_DESKTOP="${PACKAGE_LIST_DESKTOP/pavumeter /}"
+		PACKAGE_LIST_DESKTOP="${PACKAGE_LIST_DESKTOP/policykit-1 /polkitd pkexec }"
+		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER xserver-xorg-input-all language-selector-gnome viewnior dbus-user-session libreoffice-style-tango"
+	;;
 esac
 
 DEBIAN_MIRROR='httpredir.debian.org/debian'

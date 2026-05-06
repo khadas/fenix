@@ -206,7 +206,7 @@ install_distribution_specific()
 			execute_in_chroot "systemctl disable hostapd.service"
 		fi
 		;;
-	bionic|focal|jammy|noble)
+	bionic|focal|jammy|noble|resolute)
 		# remove doubled uname from motd
 		[[ -f $ROOTFS_TEMP/etc/update-motd.d/10-uname ]] && rm $ROOTFS_TEMP/etc/update-motd.d/10-uname
 		# remove motd news from motd.ubuntu.com
@@ -318,16 +318,44 @@ create_rootfs_cache()
 	echo "debootstrap --variant=minbase --include=${DEBOOTSTRAP_LIST// /,} ${PACKAGE_LIST_EXCLUDE:+ --exclude=${PACKAGE_LIST_EXCLUDE// /,}} \
 		--arch=$DISTRIB_ARCH --components=${DEBOOTSTRAP_COMPONENTS} --foreign $DISTRIB_RELEASE $ROOTFS_TEMP/ $apt_mirror"
 
+	if [ ! -e "/usr/share/debootstrap/scripts/$DISTRIB_RELEASE" ]; then
+		case "$DISTRIB_RELEASE" in
+			resolute)
+				if [ ! -e "/usr/share/debootstrap/scripts/gutsy" ]; then
+					error_msg "debootstrap script for $DISTRIB_RELEASE is missing on host, and /usr/share/debootstrap/scripts/gutsy is not available"
+					return -1
+				fi
+				info_msg "debootstrap script for $DISTRIB_RELEASE is missing on host, creating symlink to /usr/share/debootstrap/scripts/gutsy"
+				ln -sf /usr/share/debootstrap/scripts/gutsy "/usr/share/debootstrap/scripts/$DISTRIB_RELEASE" || {
+					error_msg "Failed to create /usr/share/debootstrap/scripts/$DISTRIB_RELEASE symlink"
+					return -1
+				}
+				;;
+		esac
+	fi
+
 	eval 'debootstrap --variant=minbase --include=${DEBOOTSTRAP_LIST// /,} ${PACKAGE_LIST_EXCLUDE:+ --exclude=${PACKAGE_LIST_EXCLUDE// /,}} \
 		--arch=$DISTRIB_ARCH --components=${DEBOOTSTRAP_COMPONENTS} --foreign $DISTRIB_RELEASE $ROOTFS_TEMP/ $apt_mirror'
 
 	[[ ${PIPESTATUS[0]} -ne 0 || ! -f $ROOTFS_TEMP/debootstrap/debootstrap ]] && error_msg "Debootstrap base system first stage failed" && return -1
 
-	mkdir -p $ROOTFS_TEMP/usr/local/bin
-	qemu_helper "$ROOTFS_TEMP"
+	mkdir -p $ROOTFS_TEMP/usr/local/bin || {
+		error_msg "Failed to create $ROOTFS_TEMP/usr/local/bin"
+		return -1
+	}
+	qemu_helper "$ROOTFS_TEMP" || {
+		error_msg "Failed to prepare qemu helper inside rootfs"
+		return -1
+	}
 
-	mkdir -p $ROOTFS_TEMP/usr/share/keyrings
-	cp /usr/share/keyrings/*-archive-keyring.gpg $ROOTFS_TEMP/usr/share/keyrings
+	mkdir -p $ROOTFS_TEMP/usr/share/keyrings || {
+		error_msg "Failed to create $ROOTFS_TEMP/usr/share/keyrings"
+		return -1
+	}
+	cp /usr/share/keyrings/*-archive-keyring.gpg $ROOTFS_TEMP/usr/share/keyrings || {
+		error_msg "Failed to copy archive keyrings into rootfs"
+		return -1
+	}
 
 	info_msg "Installing base system - Stage 2/2"
 	echo 'chroot $ROOTFS_TEMP /bin/bash -c "/debootstrap/debootstrap --second-stage"'
@@ -708,4 +736,3 @@ build_rootfs() {
 
 	return $ret
 }
-
