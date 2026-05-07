@@ -1,0 +1,35 @@
+#!/bin/sh -e
+
+PREREQS=""
+
+prereqs() { echo "$PREREQS"; }
+
+case "$1" in
+    prereqs)
+    prereqs
+    exit 0
+    ;;
+esac
+
+if [ -w /sys/kernel/uevent_helper ]; then
+	echo > /sys/kernel/uevent_helper
+fi
+
+if [ "${quiet:-n}" = "y" ]; then
+	log_level=notice
+else
+	log_level=info
+fi
+
+SYSTEMD_LOG_LEVEL=$log_level /usr/lib/systemd/systemd-udevd --daemon --resolve-names=never
+
+udevadm trigger --type=subsystems --action=add
+udevadm trigger --type=devices --action=add
+
+# Ubuntu 26.04 can spend minutes here waiting for non-essential
+# vendor events to drain. Keep this bounded so initramfs can continue once
+# the root device nodes are ready.
+udevadm settle --timeout=3 || true
+
+# Leave udev running to process events that come in out-of-band (like USB
+# connections)
