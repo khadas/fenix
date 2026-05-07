@@ -485,6 +485,23 @@ build_board_deb() {
 	fi
 	rm -f "$pkgdir/usr/share/initramfs-tools/scripts/init-bottom"/udev.*
 
+	# Use release-specific profile.d overrides when provided. Install this
+	# after systemd's own profile.d hook so it can remove the OSC context hook.
+	if [ -f "$pkgdir/etc/profile.d/99-fenix-disable-systemd-osc-context.$DISTRIB_RELEASE.sh" ]; then
+		mv "$pkgdir/etc/profile.d/99-fenix-disable-systemd-osc-context.$DISTRIB_RELEASE.sh" \
+			"$pkgdir/etc/profile.d/99-fenix-disable-systemd-osc-context.sh"
+	fi
+	rm -f "$pkgdir/etc/profile.d"/99-fenix-disable-systemd-osc-context.*.sh
+
+	# Use release-specific systemd service drop-ins when provided.
+	for service in serial-getty@ttyS0.service.d serial-getty@ttyAML0.service.d serial-getty@ttyFIQ0.service.d; do
+		if [ -f "$pkgdir/etc/systemd/system/$service/10-term.$DISTRIB_RELEASE.conf" ]; then
+			mv "$pkgdir/etc/systemd/system/$service/10-term.$DISTRIB_RELEASE.conf" \
+				"$pkgdir/etc/systemd/system/$service/10-term.conf"
+		fi
+		rm -f "$pkgdir/etc/systemd/system/$service"/10-term.*.conf
+	done
+
 	# Trigger uInitrd creation after installation, to apply
 	# /etc/initramfs/post-update.d/99-uboot
 	cat <<-EOF > $pkgdir/DEBIAN/triggers
