@@ -741,7 +741,7 @@ function lunch() {
 				export CHIP="A311D2"
 				;;
 		esac
-	elif [[ "$KHADAS_BOARD" =~ Edge[12] ]]; then
+	elif [[ "$KHADAS_BOARD" =~ Edge[12-] ]]; then
 		export VENDOR="Rockchip"
 		case "$KHADAS_BOARD" in
 			Edge1)
@@ -749,6 +749,9 @@ function lunch() {
 				;;
 			Edge2)
 				export CHIP="RK3588S"
+				;;
+			Edge-2L)
+				export CHIP="RK3576"
 				;;
 		esac
 	fi

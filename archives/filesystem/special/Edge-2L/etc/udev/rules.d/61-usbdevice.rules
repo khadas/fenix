@@ -1,0 +1,2 @@
+SUBSYSTEM=="android_usb", ACTION=="change", RUN+="/usr/local/bin/usbdevice update"
+SUBSYSTEM=="udc", RUN+="/usr/local/bin/usbdevice update"

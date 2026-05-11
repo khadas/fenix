@@ -1,0 +1,4 @@
+SUBSYSTEM=="sound", ENV{ID_PATH}=="platform-dp0-sound", ENV{SOUND_DESCRIPTION}="DP"
+SUBSYSTEM=="sound", ENV{ID_PATH}=="platform-hdmi0-sound", ENV{SOUND_DESCRIPTION}="HDMI"
+SUBSYSTEM=="sound", ENV{ID_PATH}=="platform-es8316-sound", ENV{SOUND_DESCRIPTION}="ES8316 Codec"
+SUBSYSTEM=="sound", ENV{ID_PATH}=="platform-sound-micarray", ENV{SOUND_DESCRIPTION}="DMIC"
