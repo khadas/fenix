@@ -631,10 +631,6 @@ TEST_ML)
 # Edge2 Test Images
 
 # Rootfs Cache Only
-jammy-minimal-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $JAMMY $MINI $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
-jammy-server-CACHE)                                         ( source  $SETENV -d -q -s $VIM4 $JAMMY $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
-jammy-gnome-CACHE)                                          ( source  $SETENV -d -q -s $VIM4 $JAMMY $GNOME $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
-
 noble-minimal-CACHE)                                        ( source  $SETENV -d -q -s $VIM4 $NOBLE $MINI $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
 noble-server-CACHE)                                         ( source  $SETENV -d -q -s $VIM4 $NOBLE $SERVER $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
 noble-gnome-CACHE)                                          ( source  $SETENV -d -q -s $VIM4 $NOBLE $GNOME $EMMC $CMP && make -C "$MAKEDIR" "$ROOTFS_CACHE_ONLY") & ;;
