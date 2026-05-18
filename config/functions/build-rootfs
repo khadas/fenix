@@ -256,7 +256,7 @@ create_rootfs_cache()
 		if [[ $cache_sha256 == $calc_sha256 ]]; then
 			info_msg "Extracting $display_name $date_diff days old"
 			# may be no need progress at all its very fast
-			lz4 -dc < $cache_fname | tar xp --xattrs-include='*' -C $ROOTFS_TEMP/
+			lz4 -dc < $cache_fname | tar xp --numeric-owner --xattrs-include='*' -C $ROOTFS_TEMP/
 			qemu_helper "$ROOTFS_TEMP"
 			return
 		else
@@ -271,7 +271,7 @@ create_rootfs_cache()
 			local date_diff=$(( ($(date +%s) - $(stat -c %Y $cache_fname)) / 86400 ))
 			info_msg "Extracting $display_name $date_diff days old"
 			# may be no need progress at all its very fast
-			lz4 -dc < $cache_fname | tar xp --xattrs -C $ROOTFS_TEMP/
+			lz4 -dc < $cache_fname | tar xp --numeric-owner --xattrs -C $ROOTFS_TEMP/
 			qemu_helper "$ROOTFS_TEMP"
 			return
 		fi
@@ -456,10 +456,10 @@ create_rootfs_cache()
 	umount_chroot "$ROOTFS_TEMP"
 
 	if [ "$NO_PROGRESS" ]; then
-	    tar cp --xattrs --directory=$ROOTFS_TEMP/ --exclude='./dev/*' --exclude='./proc/*' --exclude='./run/*' --exclude='./tmp/*' \
+	    tar cp --numeric-owner --xattrs --directory=$ROOTFS_TEMP/ --exclude='./dev/*' --exclude='./proc/*' --exclude='./run/*' --exclude='./tmp/*' \
 		--exclude='./sys/*' . | lz4 -c > $cache_fname
 	else
-	    tar cp --xattrs --directory=$ROOTFS_TEMP/ --exclude='./dev/*' --exclude='./proc/*' --exclude='./run/*' --exclude='./tmp/*' \
+	    tar cp --numeric-owner --xattrs --directory=$ROOTFS_TEMP/ --exclude='./dev/*' --exclude='./proc/*' --exclude='./run/*' --exclude='./tmp/*' \
 		--exclude='./sys/*' . | pv -p -b -r -s $(du -sb $ROOTFS_TEMP/ | cut -f1) -N "$display_name" | lz4 -c > $cache_fname
 	fi
 	sha256sum $cache_fname | cut -d" " -f1 > ${cache_fname}.sha256
