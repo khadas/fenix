@@ -12,6 +12,7 @@ Supported build host:
 
 * `Ubuntu 24.04 x64`
   * `Building Ubuntu 24.04 image`
+  * `Building Ubuntu 26.04 image - Testing`
   * `Building Debian 12 image`
 * `Docker`
 
@@ -57,16 +58,6 @@ For Chinese users, it's better to use mirror from China:
 
 ```bash
 $ DOWNLOAD_MIRROR=china make
-```
-
-## Somethings with Redhat series
-
-### Disable SELinux
-
-```bash
-$ vim /etc/selinux/config
-$ SELINUX=enforcing --> SELINUX=disabled
-$ sudo reboot
 ```
 
 ## Build in Docker
