@@ -117,6 +117,7 @@ else
 	*gnome*) T=gnome ;;
 	esac
 	case $IMAGE_FILE_NAME in
+	*26.04*) R=resolute ;;
 	*24.04*) R=noble ;;
 	*22.04*) R=jammy ;;
 	*20.04*) R=focal ;;
