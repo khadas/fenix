@@ -21,7 +21,7 @@ Supported build host:
 ### Install essential packages
 
 ```bash
-$ sudo apt-get install git make lsb-release qemu-user-static
+$ sudo apt-get install git make lsb-release qemu-user-static cmake ninja-build libdw-dev libelf-dev
 ```
 
 ### Clone Fenix repository
