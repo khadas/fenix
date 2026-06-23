@@ -534,7 +534,7 @@ build_board_deb() {
 	#############################################
 	EOF
 
-	if [ "$KHADAS_BOARD" == "VIM4" ] || [ "$KHADAS_BOARD" == "VIM1S" ] || [ "$KHADAS_BOARD" == "Edge2" ]; then
+	if [ "$KHADAS_BOARD" == "VIM4" ] || [ "$KHADAS_BOARD" == "VIM1S" ] || [ "$KHADAS_BOARD" == "Edge2" ] || [ "$KHADAS_BOARD" == "Edge-2L" ]; then
 		sed -i '/INSTALL_TYPE/d' $pkgdir/etc/fenix-release
 	fi
 

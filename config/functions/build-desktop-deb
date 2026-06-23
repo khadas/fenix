@@ -112,8 +112,8 @@ build_desktop_deb() {
 					DM=lightdm
 				fi
 
-				# Fix Ubuntu 20.04 Gnome desktop for VIM4/1S/Edge2
-				if [ "$KHADAS_BOARD" == "VIM4" ] || [ "$KHADAS_BOARD" == "VIM1S" ] || [ "$KHADAS_BOARD" == "Edge2" ]; then
+				# Fix Ubuntu 20.04 Gnome desktop for VIM4/1S/Edge2/Edge 2L
+				if [ "$KHADAS_BOARD" == "VIM4" ] || [ "$KHADAS_BOARD" == "VIM1S" ] || [ "$KHADAS_BOARD" == "Edge2" ] || [ "$KHADAS_BOARD" == "Edge-2L" ]; then
 					DM=gdm3
 				fi
 
